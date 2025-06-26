@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <title>Registro</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: antiquewhite;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .nav {
+      background-color: #622323e8;
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+    }
+    .nav ul li a i{
+      border-radius: 5px;
+      padding: 1px 20px;
+      width: 50px;
+      height: 100px;
+      color: #000
+    }
+    .nav ul li a i:hover{
+      background-color: #982c2c;
+      color: antiquewhite;
+      border-radius: 5px;
+      padding: 1px 20px;
+      width: 50px;
+      height: 100%;
+    }
+
+    .nav ul li a i{
+      font-size: 40px;
+    }
+
+
+    form {
+      background-color: whitesmoke;
+      padding: 40px;
+      border-radius: 20px;
+      width: 400px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin: 100px auto 40px auto; /* Centrado horizontal y separado del nav */
+    }
+
+    form h1 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    form label {
+      display: block;
+      margin-top: 15px;
+      color: black;
+    }
+
+    form input {
+      border: 1px solid #ccc;
+      border-radius: 30px;
+      margin-top: 5px;
+      padding: 10px 15px;
+      width: 100%;
+      outline: none;
+    }
+
+    form input:focus {
+      border-color: brown;
+    }
+
+     form button {
+      background-color: rgb(129, 30, 30);
+      box-shadow: -5px 5px 2px 5px #000 ;
+      border-radius: 20px;
+      border: 1px solid brown;
+      width: 100%;
+      padding: 10px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+
+    form button p {
+      color: whitesmoke;
+      margin: 0;
+      text-align: center;
+    }
+
+
+    form button:hover{
+      background-color: rgb(129, 30, 30);
+      box-shadow: -2px 5px 1px 2px #000 ;
+      margin-left: -3px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="nav">
+    <ul>
+      <li class="m-left" id="list"><a href="/Pagina_principal/pagina_principal TechSLY.html"><i class="bi bi-house-door-fill"></i></a>
+    </ul>
+  </div>
+
+  <form action="">
+    <h1>Iniciar Sesión</h1>
+    <hr>
+    <label for="usuario">Usuario</label>
+    <input type="text" required>
+
+    <label for="password">Contraseña</label>
+    <input type="text" required>
+    <br><br>
+    <a href="/Formularios/Form_registro.html">¿No tiene una cuenta?</a>
+    <br><br>
+    <a href="#">¿Olvidó su Contraseña?</a>
+    <button><p>Ingresar</p></button>
+  </form>
+
+</body>
+</html>
