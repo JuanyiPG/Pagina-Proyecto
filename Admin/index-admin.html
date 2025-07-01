@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Menú Final</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    /* Menú horizontal */
+    #navegador {
+      width: 100%;
+      height: 60px;
+      background-color: #622323;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: fixed;
+      top: 0;
+      z-index: 1001;
+    }
+
+    .menu {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      list-style: none;
+    }
+
+    .left-section {
+      display: flex;
+      align-items: center;
+    }
+
+    .menu-toggle {
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    .menu-toggle i {
+      color: white;
+      font-size: 24px;
+    }
+
+    .logo-menu {
+      height: 40px;
+    }
+
+    .m-right i {
+      color: white;
+      font-size: 24px;
+    }
+
+    /* Menú lateral */
+    .second-list {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100vh;
+      background-color: #622323;
+      list-style: none;
+      padding-top: 60px;
+      transition: left 0.4s ease;
+      z-index: 1000;
+    }
+
+    .second-list li a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      padding: 15px 15px;
+    }
+
+    .second-list li a:hover {
+      background-color: #7d3535;
+    }
+
+    .second-list.show {
+      left: 0;
+    }
+  </style>
+</head>
+<body>
+  <nav id="navegador">
+    <ul class="menu">
+      <li class="left-section">
+        <div class="menu-toggle" onclick="toggleSidebar()">
+          <i class="bi bi-list"></i>
+        </div>
+        <img src="/IMG/logo rosa.jpeg" alt="Logo" class="logo-menu">
+      </li>
+      <li class="m-right">
+        <a href="/Formularios/form.html" class="registro"><i class="bi bi-person-circle"></i></a>
+      </li>
+    </ul>
+  </nav>
+  
+  <ul class="second-list" id="sidebar">
+    <li><a href="#">Inicio</a></li>
+    <li><a href="#">Servicios</a></li>
+    <li><a href="#">Nosotros</a></li>
+    <li><a href="#">Contacto</a></li>
+  </ul>
+</body>
+</html>
