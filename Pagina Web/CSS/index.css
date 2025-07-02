@@ -4,11 +4,7 @@
   box-sizing: border-box;
 }
 
-body{
-  display: flex;
-  min-height: 100vh;
-}
-/*Menus*/
+/*------------------------------Menus------------------------------*/
 
 /*principal*/
 .header{
@@ -71,7 +67,7 @@ body{
 .m-right:hover{
   background-color: #834343;
 }
-/* Menú lateral */
+/*---------------------------- Menú lateral--------------------- */
 
 .second-list {
   position: fixed;
@@ -101,17 +97,17 @@ body{
   left: 0;
 }
 
-/*admin*/
+/*---------------------------------Admin--------------------------------*/
 
 .header-admin{
     left: 0;
 }
 
 .nav-admin{
+  background-color: #ca7575;
+  position: fixed;
   width: 250px;
   height: 100vh;
-  background: #ca7575;
-  position: relative;
   
 }
 
@@ -149,8 +145,10 @@ body{
   margin-right: 2px;
 }
 
-/*Contenido*/
-/*principal*/
+/*---------------------------------Contenido-----------------------------------*/
+
+
+/*----------------------principal----------------------------------*/
 main {
   padding: 40px 20px;
 }
@@ -227,4 +225,38 @@ footer {
   text-align: center;
   bottom:0;
   width: 100%;
+}
+
+/*-----------------------------admin-------------------------------*/
+
+/*----------------------------Producto---------------------------*/
+.title-prod{
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  margin: 30px;
+}
+
+.Buscador{
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  margin: 30px;
+}
+
+.Buscador i{
+  font-size: 20px;
+  margin-right: 15px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 100%;
+  border: #ca7575 solid 4px;
+}
+
+.Buscador input{
+  font-size: 15px;
+  width: 40%;
+  padding: 10px;
+  border-radius: 20px;
+  border: #ca7575 solid 3px;
 }
