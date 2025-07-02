@@ -18,12 +18,20 @@
     }
 
     .nav {
+      display: flex;
       background-color: #ca7575;
       width: 100%;
       position: fixed;
+      align-items: center;
       top: 0;
       left: 0;
       z-index: 1000;
+    }
+
+    .nav img{
+      height: 40px;
+      margin-top: 5px ;
+      padding-top: 5px;
     }
 
     .nav ul li a i{
@@ -35,7 +43,7 @@
       font-size: 40px;
     }
     .nav ul li a i:hover{
-      background-color: #982c2c;
+      background-color: #834343;
       color: antiquewhite;
       border-radius: 5px;
       padding: 1px 20px;
@@ -76,21 +84,15 @@
       width: 100%;
       outline: none;
     }
-
-    form .Logo{
-      height: 40px;
-      margin-top: 20px ;
-    }
-
     form input:focus {
-      border-color: brown;
+      border-color: #834343;
     }
 
      form button {
       background-color:#ca7575;
       box-shadow: -5px 5px 2px 5px #000 ;
       border-radius: 20px;
-      border: 1px solid brown;
+      border: 1px solid #834343;
       width: 100%;
       padding: 10px;
       margin-top: 20px;
@@ -105,7 +107,7 @@
 
 
     form button:hover{
-      background-color: rgb(129, 30, 30);
+      background-color: #834343;
       box-shadow: -2px 5px 1px 2px #000 ;
       margin-left: -3px;
     }
@@ -117,9 +119,8 @@
   <div class="nav">
     <ul>
       <li class="m-left" id="list"><a href="/Pagina_principal/pagina_principal TechSLY.html"><i class="bi bi-house-door-fill"></i></a>
-      <div class="Logo">
-        <a href="/Pagina_principal/pagina_principal TechSLY.html"><img src="/IMG/logo rosa.jpeg" alt="Logo Luxy Fashion"></a>
-      </div>
+      <a href="/Pagina_principal/pagina_principal TechSLY.html"><img src="/IMG/logo rosa.jpeg" alt="Logo Luxy Fashion"></a>
+      </li>
     </ul>
   </div>
 

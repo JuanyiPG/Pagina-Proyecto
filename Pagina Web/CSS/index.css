@@ -4,6 +4,13 @@
   box-sizing: border-box;
 }
 
+/*Menus*/
+
+/*principal*/
+.header{
+  left: 0;
+}
+
 #navegador {
   width: 100%;
   height: 60px;
@@ -90,9 +97,42 @@
   left: 0;
 }
 
+/*admin*/
+
+.header-admin{
+    left: 0;
+}
+
+.nav-admin{
+  position: relative;
+  left: 0;
+  width: 200px;
+  height: 100vh;
+  background: #ca7575;
+}
+
+.nav-admin ul{
+  list-style: none;
+  margin-left: 0px;
+  align-items: center;
+}
+
+.nav-admin ul li{
+  font-size: 25px;
+  margin: auto auto 20px auto ;
+}
+
+.nav-admin img{
+  margin-top: 10px;
+  margin-left: -15px;
+  width: 190px;
+  height: 75px;
+  cursor: pointer;
+}
+
 
 /*Contenido*/
-
+/*principal*/
 main {
   padding: 40px 20px;
 }
