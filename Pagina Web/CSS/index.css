@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+body{
+  display: flex;
+  min-height: 100vh;
+}
 /*Menus*/
 
 /*principal*/
@@ -104,32 +108,46 @@
 }
 
 .nav-admin{
-  position: relative;
-  left: 0;
-  width: 200px;
+  width: 250px;
   height: 100vh;
   background: #ca7575;
+  position: relative;
+  
 }
 
 .nav-admin ul{
   list-style: none;
-  margin-left: 0px;
-  align-items: center;
 }
 
-.nav-admin ul li{
-  font-size: 25px;
-  margin: auto auto 20px auto ;
-}
-
-.nav-admin img{
-  margin-top: 10px;
-  margin-left: -15px;
-  width: 190px;
-  height: 75px;
+.nav-admin a img{
+  margin-top: 20px;
+  margin-left: 5px;
+  width: 230px;
+  height: 80px;
   cursor: pointer;
 }
 
+.nav-admin ul .menu-v-t{
+  font-size: 25px;
+  margin-left: 0px;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-admin ul li a{
+  text-decoration: none;
+  padding: 20px;
+  margin: 2px 0;
+  left: 0;
+  color: #fff;
+}
+ 
+.nav-admin ul .menu-v-t a:hover{
+  background-color: #834343;
+}
+.sing-out a #out{
+  margin-right: 2px;
+}
 
 /*Contenido*/
 /*principal*/
