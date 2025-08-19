@@ -115,13 +115,13 @@
 
   <div class="nav">
     <ul>
-      <li class="m-left" id="list"><a href="/Pagina_principal/pagina_principal TechSLY.html"><i class="bi bi-house-door-fill"></i></a>
-      <img src="/IMG/logo rosa.jpeg" alt="Logo">
+      <li class="m-left" id="list"><a href="../Pagina_principal/pagina_principal TechSLY.php"><i class="bi bi-house-door-fill"></i></a>
+      <img src="../IMG/logo rosa.jpeg" alt="Logo">
       </li>
     </ul>
   </div>
 
-  <form action="">
+  <form action="../Admin/index-admin.php">
     <h1>Registro</h1>
     <hr>
     <label for="name">Nombre</label>
@@ -142,7 +142,7 @@
     <label for="password">Contraseña</label>
     <input type="password" required>
     <br><br>
-    <a href="/Formularios/form.html">¿Ya tiene una cuenta?</a>
+    <a href="form.php">¿Ya tiene una cuenta?</a>
     <br><br>
     <button><p>Registrarse</p></button>
 

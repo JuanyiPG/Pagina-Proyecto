@@ -120,12 +120,12 @@
 <div class="nav">
     <ul>
       <li class="m-left" id="list"><a href="/Pagina_principal/pagina_principal TechSLY.html"><i class="bi bi-house-door-fill" ></i></a>
-      <img src="/IMG/logo rosa.jpeg" alt="Logo">
+      <img src="../IMG/logo rosa.jpeg" alt="Logo">
       </li>
     </ul>
   </div>
 
-  <form action="/Admin/index-admin.html">
+  <form action="../Admin/index-admin.php">
     <h1>Iniciar Sesión</h1>
     <hr>
     <label for="usuario">Usuario</label>
@@ -134,10 +134,10 @@
     <label for="password">Contraseña</label>
     <input type="text" required>
     <br><br>
-    <a href="/Formularios/Form_registro.html">¿No tiene una cuenta?</a>
+    <a href="Form_registro.php">¿No tiene una cuenta?</a>
     <br><br>
     <a href="#">¿Olvidó su Contraseña?</a>
-    <button><a href="/Admin/index-admin.html">Ingresar</a></button>
+    <button>Ingresar</button>
   </form>
 </body>
 </html>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Fashion Luxy</title>
-  <link rel="stylesheet" type="text/css" href="/Pagina Web/CSS/index.css">
+  <link rel="stylesheet" type="text/css" href="../CSS/index.css">
   <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
   <script src="../bootstrap/js/bootstrap.bundle.min.js"></script>
 </head>

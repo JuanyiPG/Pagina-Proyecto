@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="/CSS/index.css">
+  <link rel="stylesheet" href="../CSS/index.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
   <script rel="stylesheet" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
@@ -75,96 +75,7 @@
 </html>
 
 <script>
-  fetch('header-admin.html').then(res=>res.text())
+  fetch('header-admin.php').then(res=>res.text())
   .then(data =>{document.getElementById("header-admin").innerHTML = data})
-
-
-  // <block:setup:2>
-const DATA_COUNT = 12;
-Utils.srand(110);
-
-const actions = [
-  {
-    name: 'Randomize',
-    handler(chart) {
-      chart.data.datasets.forEach(dataset => {
-        dataset.data = generateData();
-      });
-      chart.update();
-    }
-  },
-];
-// </block:setup>
-
-// <block:data:1>
-function generateData() {
-  return Utils.numbers({
-    count: DATA_COUNT,
-    min: 0,
-    max: 100
-  });
-}
-
-const data = {
-  labels: Utils.months({count: DATA_COUNT}),
-  datasets: [{
-    data: generateData()
-  }]
-};
-// </block:data>
-
-// <block:options:0>
-function getLineColor(ctx) {
-  return Utils.color(ctx.datasetIndex);
-}
-
-function alternatePointStyles(ctx) {
-  const index = ctx.dataIndex;
-  return index % 2 === 0 ? 'circle' : 'rect';
-}
-
-function makeHalfAsOpaque(ctx) {
-  return Utils.transparentize(getLineColor(ctx));
-}
-
-function adjustRadiusBasedOnData(ctx) {
-  const v = ctx.parsed.y;
-  return v < 10 ? 5
-    : v < 25 ? 7
-    : v < 50 ? 9
-    : v < 75 ? 11
-    : 15;
-}
-
-const config = {
-  type: 'line',
-  data: data,
-  options: {
-    plugins: {
-      legend: false,
-      tooltip: true,
-    },
-    elements: {
-      line: {
-        fill: false,
-        backgroundColor: getLineColor,
-        borderColor: getLineColor,
-      },
-      point: {
-        backgroundColor: getLineColor,
-        hoverBackgroundColor: makeHalfAsOpaque,
-        radius: adjustRadiusBasedOnData,
-        pointStyle: alternatePointStyles,
-        hoverRadius: 15,
-      }
-    }
-  }
-};
-// </block:options>
-
-module.exports = {
-  actions,
-  config,
-};
 </script>
 </html>
