@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Fashion Luxy</title>
-  <link rel="stylesheet" type="text/css" href="../CSS/index.css">
-  <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
-  <script src="../bootstrap/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="Pagina Web/CSS/index.css">
+  <link rel="stylesheet" href="Pagina Web/bootstrap/css/bootstrap.min.css">
+  <script src="Pagina Web/bootstrap/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
   <header id="header"></header>
@@ -29,15 +29,15 @@
         <h2 class="titulo-seccion">Chaquetas</h2>
         <div class="contenedor-productos">
           <div class="producto">
-            <img src="../IMG/Chaquet_de_cuero_hombre.jpeg" alt="Chaqueta cuero">
+            <img src="Pagina Web/IMG/Chaquet_de_cuero_hombre.jpeg" alt="Chaqueta cuero">
             <p>Chaqueta Black Panther</p>
           </div>
           <div class="producto">
-            <img src="../IMG/chaqueta_clasica.jpeg" alt="Chaqueta clásica">
+            <img src="Pagina Web/IMG/chaqueta_clasica.jpeg" alt="Chaqueta clásica">
             <p>Chaqueta Clásica</p>
           </div>
           <div class="producto">
-            <img src="../IMG/Chaqueta_moderna.jpeg" alt="Chaqueta moderna">
+            <img src="Pagina Web/IMG/Chaqueta_moderna.jpeg" alt="Chaqueta moderna">
             <p>Chaqueta Moderna</p>
           </div>
         </div>
@@ -48,15 +48,15 @@
         <h2 class="titulo-seccion">Pantalones</h2>
         <div class="contenedor-productos">
           <div class="producto">
-            <img src="../IMG/cargo.jpeg" alt="Chaqueta cuero">
+            <img src="Pagina Web/IMG/cargo.jpeg" alt="Chaqueta cuero">
             <p>Chaqueta Black Panther</p>
           </div>
           <div class="producto">
-            <img src="../IMG/Campana.jpeg" alt="Chaqueta clásica">
+            <img src="Pagina Web/IMG/Campana.jpeg" alt="Chaqueta clásica">
             <p>Chaqueta Clásica</p>
           </div>
           <div class="producto">
-            <img src="../IMG/Baggy.jpeg" alt="Chaqueta moderna">
+            <img src="Pagina Web/IMG/Baggy.jpeg" alt="Chaqueta moderna">
             <p>Chaqueta Moderna</p>
           </div>
         </div>
@@ -78,13 +78,13 @@
         <!-- Imagenes -->
         <div class="carousel-inner">
           <div class="carousel-item active">
-            <img src="../IMG/Ropa modelaje 1.webp" style="with:60%; height: 30%;" class="d-block w-100" alt="Imagen 1">
+            <img src="Pagina Web/IMGIMG/Ropa modelaje 1.webp" style="with:60%; height: 30%;" class="d-block w-100" alt="Imagen 1">
           </div>
           <div class="carousel-item">
-            <img src="../IMG/v-ropa.jpg" style="with:60%; height: 30%;" class="d-block w-100" alt="Imagen 2">
+            <img src="Pagina Web/IMGIMG/v-ropa.jpg" style="with:60%; height: 30%;" class="d-block w-100" alt="Imagen 2">
           </div>
           <div class="carousel-item">
-            <img src="../IMG/Ropa modelaje.webp" style="with:60%; height: 30%;" class="d-block w-100" alt="Imagen 3">
+            <img src="Pagina Web/IMGIMG/Ropa modelaje.webp" style="with:60%; height: 30%;" class="d-block w-100" alt="Imagen 3">
           </div>
         </div>
 
@@ -105,14 +105,14 @@
   <footer id="footer"></footer>
 
   <script> 
-    fetch("header.php").then(res => res.text()) 
+    fetch("Pagina Web/Pagina_principal/header.php").then(res => res.text()) 
     .then(data => { document.getElementById("header").innerHTML = data; }); 
 
     function toggleSidebar() {
       document.getElementById('sidebar').classList.toggle('show');
     }
 
-    fetch("footer.php") .then(res => res.text()) 
+    fetch("Pagina Web/Pagina_principal/footer.php") .then(res => res.text()) 
     .then(footer => { document.getElementById("footer").innerHTML = footer; }); 
   </script>
 
