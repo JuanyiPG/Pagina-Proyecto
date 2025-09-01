@@ -6,7 +6,7 @@
           <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
         </svg>
       </div>
-      <a href="../../index.php"><img src="Pagina Web/IMG/logo rosa.jpeg" alt="Logo" class="logo-menu"></a>
+      <a href="../../index.html"><img src="Pagina Web/IMG/logo rosa.jpeg" alt="Logo" class="logo-menu"></a>
     </li>
     <li class="m-right">
     <a href="../Formularios/form.php" class="icon-link">
