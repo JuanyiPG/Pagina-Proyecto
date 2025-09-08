@@ -7,21 +7,10 @@
 /*------------------------------Menus------------------------------*/
 
 /*principal*/
-.header{
-  left: 0;
-}
-
 #navegador {
   width: 100%;
-  height: 60px;
-  background-color: #ca7575;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
   position: fixed;
-  top: 0;
-  z-index: 1001;
+  z-index: 10;
 }
 
 .menu {
@@ -29,6 +18,8 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  margin: 0;
+  padding: 0;
   list-style: none;
 }
 
@@ -37,30 +28,24 @@
   align-items: center;
 }
 
-.menu-toggle {
-  cursor: pointer;
-  margin-right: 20px;
-  color: #fff;
-  margin-top: 10px;
-}
-
-.logo-menu {
-  height: 40px;
-  margin-top: 10px ;
+.logo-menu{
+  height: 80px;
+  max-width: 150px;
+  margin-left: 20px; 
 }
 
 .m-right {
   display: flex;
   align-items: center;
-  gap: 15px; 
+  justify-content: space-between;
 }
 
-.icon-link {
+.iconP-link {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
+  margin: 0 10px;
+  width: 30px;
+  height: 20px;
   color: white;
   border-radius: 10px;
   transition: background-color 0.3s ease;
@@ -68,57 +53,26 @@
 }
 
 .icon-link:hover {
-  background-color: #834343;
+  background-color: #5e0925;
 }
 
 .icon-link svg {
   width: 40px;
-  height: 40px;
+  height: 50px;
   display: block;
 }
-
-/*---------------------------- Menú lateral--------------------- */
-
-.second-list {
-  position: fixed;
-  top: 0;
-  left: -250px;
-  width: 250px;
-  height: 100vh;
-  background-color: #834343;
-  list-style: none;
-  padding-top: 60px;
-  transition: left 0.4s ease;
-  z-index: 1000;
-}
-
-.second-list li a {
-  display: block;
-  color: white;
-  text-decoration: none;
-  padding: 15px 20px;
-}
-
-.second-list li a:hover {
-  background-color: #572d2d;
-}
-
-.second-list.show {
-  left: 0;
-}
-
 /*---------------------------------Admin--------------------------------*/
 
 .header-admin{
-    left: 0;
+  left: 0;
 }
 
 .nav-admin{
-  background-color: #ca7575;
+  background-color: #f1b6d1;
   position: fixed;
   width: 250px;
   height: 100vh;
-  
+  z-index: 1000;
 }
 
 .nav-admin ul{
@@ -149,7 +103,7 @@
 }
  
 .nav-admin ul .menu-v-t a:hover{
-  background-color: #834343;
+  background-color: #922f63;
 }
 .sing-out a #out{
   margin-right: 2px;
@@ -160,57 +114,47 @@
 
 /*----------------------principal----------------------------------*/
 main {
-  padding: 40px 20px;
-  flex: 1;
+  flex: 0;
+  margin: 0;
+  padding: 0;
 }
 
 .seccion{
   margin-bottom: 60px;
-  margin: 0 10px;
+  margin: 0 ;
   width: 100%;
-  border: 2px solid #ca7575;;
+  border: 2px solid #5e0925;
 }
 
 .p-p {
   position: relative;
   width: 100%;
-  height: 700px;
+  height: 90vh;
   overflow: hidden;
 }
 
 .c-p {
   width: 100%;
   height: 100%;
-  position: relative;
+  position: absolute;
 }
 
-.img-p {
+.VPP{
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: brightness(70%);
-  z-index: 1;
-}
-
-.text {
-  position: absolute;
-  top: 50%;
-  left: 25%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-  text-align: center;
-  color: white;
-  text-shadow: #ca7575 -5px 5px 1px;
+  filter: brightness(85%);
+  z-index: 0;
 }
 
 .t-p {
   font-size: 80px;
   margin: 0;
-  background-color: #834343bb;
-  border: #df9393 solid 5px ;
+  background-color:  hsl(304, 28%, 40%);
+  border: #f1b6d1 solid 5px ;
   border-radius: 90px 1px 90px 1px;
   width: 300px;
 }
@@ -220,30 +164,11 @@ main {
   margin: 0;
 }
 
-.b-p{
-  margin-top: 40px;
-  font-size: 30px;
-  background-color: #834343c9;
-  box-shadow: #000 -5px 5px 10px 5px;
-  border: #572d2d96 solid 1px;
-  padding: 15px;
-  color: #fff;
-  border-radius: 50px;
-  text-shadow: #ca7575 -5px 2px 1px;
-}
-
-.b-p:hover{
-  box-shadow: #000 -5px 5px 10px 2px;
-  background-color: #ca7575;
-  text-shadow: #834343 -5px 2px 1px;
-  color: #fff;
-}
-
 .titulo-seccion {
   text-align: center;
   font-size: 28px;
   margin-bottom: 30px;
-  color: #ca7575;
+  color: #5e0925;
 }
 
 .contenedor-productos {
@@ -255,11 +180,11 @@ main {
 
 .producto {
   background-color: #fff;
-  border: 1px solid #ca7575;
+  border: 1px solid #b35d85;
   border-radius: 10px;
   padding: 20px;
   width: 250px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   text-align: center;
   transition: transform 0.3s ease;
 }
@@ -283,17 +208,17 @@ main {
   display: block;
   margin: 20px auto;
   padding: 10px 25px;
-  background-color: #ca7575;
+  background-color: #b35d85;
   color: white;
   text-decoration: none;
-  border-radius: 5px;
+  border-radius: 100px;
   transition: background-color 0.3s ease;
   text-align: center;
   width: fit-content;
 }
 
 .ver-mas:hover {
-  background-color: #834343;
+  background-color: hsl(304, 28%, 40%);
 }
 
 /*Boton de productos*/
@@ -301,7 +226,7 @@ main {
   display: block;
   margin: 20px auto;
   padding: 10px 25px;
-  background-color: #ca7575;
+  background-color: #5e0925;
   color: white;
   text-decoration: none;
   border: none;
@@ -312,14 +237,14 @@ main {
 }
 
 .ver-mas-final:hover {
-  background-color: #834343;
+  background-color: hsl(304, 28%, 40%);
 }
 
 
 footer {
-  background-color: #ca7575;
-  color: #572d2d;
-  text-shadow: #fff 1px 1px 5px ;
+  background-color: #5e0925;
+  color: #000;
+  text-shadow: #fff 1px 1px 8px ;
   padding: 20px;
   text-align: center;
   bottom:0;
@@ -350,7 +275,7 @@ footer {
   cursor: pointer;
   padding: 5px;
   border-radius: 100%;
-  border: #ca7575 solid 4px;
+  border: #5e0925 solid 4px;
 }
 
 .Buscador input{
@@ -358,5 +283,5 @@ footer {
   width: 40%;
   padding: 10px;
   border-radius: 20px;
-  border: #ca7575 solid 3px;
+  border: #5e0925 solid 3px;
 }
