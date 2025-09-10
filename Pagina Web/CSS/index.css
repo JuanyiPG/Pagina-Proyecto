@@ -11,6 +11,12 @@
   width: 100%;
   position: fixed;
   z-index: 10;
+  background-color: transparent;
+  transition : background-color 0.5s ease;
+}
+
+#navegador.scrolled{
+  background-color: #5c0b26;
 }
 
 .menu {
