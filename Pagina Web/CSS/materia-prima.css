@@ -38,7 +38,7 @@
 
         body{
             min-height: 100vh;
-            background-image: url(/Pagina_Web/IMG/Logo.jpg) ;
+            background-image: url(../IMG/Logo.jpg) ;
             background-position-x: 100%;
             background-position-y: 45%;
             background-size: 88%;

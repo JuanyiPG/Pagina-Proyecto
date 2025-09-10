@@ -14,12 +14,12 @@
     }
 
     body {
-      background-color: beige;
+      background: linear-gradient(to right, rgb(255, 255, 255), #5c0b26);
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     .nav {
-      background-color: #ca7575;
+      background: linear-gradient(to right, rgb(255, 255, 255), #5c0b26);
       width: 100%;
       position: fixed;
       top: 0;

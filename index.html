@@ -103,14 +103,14 @@
   <footer id="footer"></footer>
 
   <script> 
-    fetch("Pagina Web/Pagina_principal/header.php").then(res => res.text()) 
+    fetch("Pagina Web/Items/header.php").then(res => res.text()) 
     .then(data => { document.getElementById("header").innerHTML = data; }); 
 
     function toggleSidebar() {
       document.getElementById('sidebar').classList.toggle('show');
     }
 
-    fetch("Pagina Web/Pagina_principal/footer.php") .then(res => res.text()) 
+    fetch("Pagina Web/Items/footer.php") .then(res => res.text()) 
     .then(footer => { document.getElementById("footer").innerHTML = footer; }); 
   </script>
 

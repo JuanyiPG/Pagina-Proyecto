@@ -129,7 +129,7 @@ main {
 .p-p {
   position: relative;
   width: 100%;
-  height: 90vh;
+  height: 100vh;
   overflow: hidden;
 }
 
@@ -144,9 +144,9 @@ main {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 120%;
   object-fit: cover;
-  filter: brightness(85%);
+  filter: brightness(90%);
   z-index: 0;
 }
 
