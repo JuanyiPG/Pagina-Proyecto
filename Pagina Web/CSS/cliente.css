@@ -4,14 +4,26 @@
     box-sizing: border-box;
 }
 header nav{
+    display: block;
+    position: relative;
+    width: 100%;
+}
+nav .menu{
     display: flex;
-    position: fixed;
+    width: 100%;
+    justify-content: space-between;
 }
 
-nav .menu-right img{
-    width: 5%;
-    height: 5px;
+nav .menu .Menu-l{
+    display: flex;
 }
+
+nav .menu .Menu-l img{
+    display: block;
+    width: 80px;
+    height: 40px;
+}
+
 
 
 
