@@ -1,5 +1,5 @@
 <nav class="nav-admin">
-    <a href="/Admin/index-admin.html"><img src="../IMG/logo rosa.jpeg" alt="Logo"></a>
+    <a href="/Admin/index-admin.html"><img src="/Pagina_Web/IMG/logoB.jpg" alt="Logo"></a>
     <ul>
         <li class="menu-v-t"><a href="../Admin/index-admin.php">Dashboard</a></li>
         <li class="menu-v-t"><a href="#">Usuarios</a></li>

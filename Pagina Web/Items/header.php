@@ -1,5 +1,6 @@
 <nav id="navegador">
   <ul class="menu">
+    <li>
       <a href="index.html"><img src="Pagina Web/IMG/Logo_Luxy_Fashion.png" alt="Logo" class="logo-menu"></a>
     </li>
     <li class="m-right">
@@ -18,4 +19,4 @@
       </a>
   </li>
   </ul>
-</nav
+</nav>

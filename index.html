@@ -103,15 +103,27 @@
   <footer id="footer"></footer>
 
   <script> 
-    fetch("Pagina Web/Pagina_principal/header.php").then(res => res.text()) 
-    .then(data => { document.getElementById("header").innerHTML = data; }); 
+    fetch("Pagina Web/Items/header.php").then(res => res.text()) 
+.then(data => { 
+  document.getElementById("header").innerHTML = data;
 
-    function toggleSidebar() {
-      document.getElementById('sidebar').classList.toggle('show');
+  // Ahora que el menú ya está en el DOM, agregar el scroll listener
+  const navegador = document.getElementById('navegador');
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 600) {
+      navegador.classList.add('scrolled');
+    } else {
+      navegador.classList.remove('scrolled');
     }
+  });
+});
 
-    fetch("Pagina Web/Pagina_principal/footer.php") .then(res => res.text()) 
-    .then(footer => { document.getElementById("footer").innerHTML = footer; }); 
+<!--Caso B: El menú se carga dinámicamente via fetch (ejemplo, dentro de #header)
+
+El JS debe ejecutarse después de que el menú esté insertado en el DOM.
+
+Ejemplo de solución:-->
   </script>
 
 </body>
