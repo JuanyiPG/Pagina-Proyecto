@@ -116,7 +116,7 @@
   <div class="nav">
     <ul>
       <li class="m-left" id="list"><a href="../Pagina_principal/pagina_principal TechSLY.php"><i class="bi bi-house-door-fill"></i></a>
-      <img src="../IMG/logo rosa.jpeg" alt="Logo">
+      <img src="../IMG/Logo_Luxy_Fashion.png" alt="Logo">
       </li>
     </ul>
   </div>
