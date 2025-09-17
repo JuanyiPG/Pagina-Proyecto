@@ -1,11 +1,11 @@
-CREATE DATABASE LUXI_FASHON;
+CREATE  DATABASE LUXI_FASHON;
 USE LUXI_FASHON;
 
 CREATE TABLE Rol (
   id_rol INT PRIMARY KEY NOT NULL,
   nombre_rol VARCHAR (50) NOT NULL UNIQUE,
   descripcion VARCHAR(200) NOT NULL,
-  estado BOOLEAN NOT NULL
+  estado VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE Empleado (
@@ -17,7 +17,7 @@ CREATE TABLE Empleado (
   correo_empleado VARCHAR(100) NOT NULL,
   Fecha_ing_empleado DATE NOT NULL,
   salario_empleado FLOAT NOT NULL,
-  Estado_empleado BOOLEAN NOT NULL,
+  Estado_empleado VARCHAR(50) NOT NULL,
   id_rol_fk_empleado INT NOT NULL,
   CONSTRAINT id_rol_fk_empleado FOREIGN KEY (id_rol_fk_empleado) REFERENCES Rol (id_rol)
 );
@@ -40,7 +40,7 @@ CREATE TABLE Factura_Venta (
   total_factura_v BIGINT NOT NULL,
   metodo_pago VARCHAR(50) NOT NULL,
   descuento INT NOT NULL,
-  estado_factura_venta BOOLEAN NOT NULL,
+  estado_factura_venta VARCHAR(50) NOT NULL,
   id_empleado_fk_factura INT NOT NULL,
   CONSTRAINT id_empleado_fk_factura FOREIGN KEY (id_empleado_fk_factura) REFERENCES Empleado (id_empleado)
 );
@@ -54,7 +54,7 @@ CREATE TABLE Produccion (
   costo_idirecto BIGINT NOT NULL,
   costo_total_produccion BIGINT NOT NULL,
   fecha_fin_produccion DATE NOT NULL,
-  estado_produccion BOOLEAN NOT NULL,
+  estado_produccion VARCHAR(50) NOT NULL,
   id_empleado_fk_produccion INT NOT NULL,
   CONSTRAINT id_empleado_fk_produccion FOREIGN KEY(id_empleado_fk_produccion) REFERENCES Empleado (id_empleado)
 );
@@ -71,7 +71,7 @@ CREATE TABLE Pedido (
   fecha_pedido DATE NOT NULL,
   sub_total_pedido BIGINT NOT NULL,
   valor_pedido BIGINT NOT NULL,
-  estado_pedido BOOLEAN NOT NULL,
+  estado_pedido VARCHAR(50) NOT NULL,
   id_cliente_fk_pedido INT NOT NULL,
   CONSTRAINT id_cliente_fk_pedido FOREIGN KEY (id_cliente_fk_pedido) REFERENCES Cliente (id_cliente),
   id_produccion_fk_pedido INT NOT NULL,
@@ -84,7 +84,7 @@ CREATE TABLE Producto_terminado (
   descripcion_producto_t VARCHAR(200) NOT NULL,
   categoria_produ_t VARCHAR(50) NOT NULL,
   unidad_medida VARCHAR(50) NOT NULL,
-  estado_producto_t BOOLEAN NOT NULL,
+  estado_producto_t VARCHAR(50) NOT NULL,
   id_produccion_fk_producto_terminado INT NOT NULL,
   CONSTRAINT id_produccion_fk_producto_terminado FOREIGN KEY (id_produccion_fk_producto_terminado) REFERENCES Produccion (id_produccion)
 );
@@ -107,7 +107,7 @@ CREATE TABLE Materia_prima (
   stock_actual_materia_p NUMERIC NOT NULL,
   stock_minimo_materia_p NUMERIC NOT NULL,
   descripcion_materia_p VARCHAR(200) NOT NULL,
-  estado_materia_p BOOLEAN NOT NULL
+  estado_materia_p VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE Factura_compra (
@@ -115,7 +115,7 @@ CREATE TABLE Factura_compra (
   fecha_factura_compra DATE NOT NULL,
   total_faactura_compra BIGINT NOT NULL,
   metododepago_factura_compra BIGINT NOT NULL,
-  estado_factura_compra BOOLEAN NOT NULL,
+  estado_factura_compra VARCHAR(50) NOT NULL,
   id_empleado_fk_factura_compra INT NOT NULL,
   CONSTRAINT id_empleado_fk_factura_compra FOREIGN KEY (id_empleado_fk_factura_compra) REFERENCES Empleado(id_empleado)
 );
@@ -138,3 +138,4 @@ CREATE TABLE Detalle_produccion_materiap_ (
   CONSTRAINT id_produccion_fk_detalle_p_m FOREIGN KEY (id_produccion_fk_detalle_p_m) REFERENCES Produccion (id_produccion),
   descripcion VARCHAR(200) NOT NULL
 );
+select * from Produccion
