@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pagina_formularios</title>
+  <link rel="stylesheet" href="/Pagina Web/CSS/materia-prima.css">
+</head>
+<body>
+
+  <div class="menulateral">
+    <div class="logo">
+      <img src="../proyecto/20250906_163741.png" alt="Logo Luxy">
+    </div>
+    <hr>
+    <ul>
+      <li class="active">Inicio</li>
+      <li>Formulario1</li>
+      <li>Formulario2</li>
+      <li>Formulario3</li>
+      <li>Formulario4</li>
+    </ul>
+  </div>
+
+
+  <div class="main">
+    <div class="card">
+      <h1>Gestión de productos</h1>
+
+      <form>
+        <div class="form-group">
+          <input type="text" placeholder="Código">
+          <input type="text" placeholder="Nombre">
+        </div>
+        <div class="form-group">
+          <input type="text" placeholder="Talla">
+          <input type="text" placeholder="Color">
+        </div>
+        <div class="form-group">
+          <input type="text" placeholder="Categoría">
+          <input type="text" placeholder="Material">
+        </div>
+        <div class="form-group">
+          <input type="text" placeholder="Medida">
+          <input type="text" placeholder="Cantidad">
+        </div>
+        <div class="form-group">
+          <input type="text" placeholder="Cantidad mínima">
+          <input type="text" placeholder="Valor">
+        </div>
+        <button type="submit" class="save-btn">Insertar</button>
+      </form>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Nombre</th>
+          <th>Talla</th>
+          <th>Color</th>
+          <th>Categoría</th>
+          <th>Material</th>
+          <th>Medida</th>
+          <th>Cantidad</th>
+          <th>Cantidad mínima</th>
+          <th>Valor</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Prod001</td>
+          <td>Chaqueta de cuero</td>
+          <td>M</td>
+          <td>Negra</td>
+          <td>Chaquetas</td>
+          <td>Cuero</td>
+          <td>50cm</td>
+          <td>1</td>
+          <td>1</td>
+          <td>200.000</td>
+          <td>
+            <button class="btn-accion">Actualizar</button>
+            <button class="btn-accion">Desactivar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

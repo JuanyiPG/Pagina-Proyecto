@@ -19,7 +19,7 @@
           </video>
         </div>
       </section>
- <!--productos -->
+<!--productos -->
       <br>
       <section id="productos">
           <section class="seccion">
@@ -107,7 +107,6 @@
 .then(data => { 
   document.getElementById("header").innerHTML = data;
 
-  // Ahora que el menú ya está en el DOM, agregar el scroll listener
   const navegador = document.getElementById('navegador');
 
   window.addEventListener('scroll', () => {
@@ -118,12 +117,6 @@
     }
   });
 });
-
-<!--Caso B: El menú se carga dinámicamente via fetch (ejemplo, dentro de #header)
-
-El JS debe ejecutarse después de que el menú esté insertado en el DOM.
-
-Ejemplo de solución:-->
   </script>
 
 </body>

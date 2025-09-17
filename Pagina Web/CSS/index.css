@@ -16,7 +16,7 @@
 }
 
 #navegador.scrolled{
-  background-color: #5c0b26;
+  background: linear-gradient(to LEFT,#5c0b26, rgb(255, 255, 255));
 }
 
 .menu {

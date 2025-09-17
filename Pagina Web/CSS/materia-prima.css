@@ -1,151 +1,177 @@
-:root{
-            --violet-color: #5e0925;
-            --black-color: hsl(0.0%, 0%);
-            --h1-font-size: 35px;
-            --font-medium: 500;
-            --select-color: #8d405a; 
-        }
-
-        *{
-            box-sizing: border-box;
-            padding: 0;
-            margin: 0px;
-        }
-
-    .cards {
-        display: flex;
-        gap: 35px;
-        flex-wrap: wrap;
-        padding: 10px;
-        margin-left: 400px;
+  * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    .card{
-        padding: 20px;
-        box-shadow: 0 1px 3px var(--violet-color);
+    body {
+      display: flex;
+      height: 100vh;
+      background-color: #f5f6fa;
     }
 
-    .card a {
-        text-decoration: none;
-        color: black;
+
+    .menulateral {
+      width: 250px;
+      background: linear-gradient(180deg, white, #d1b7c2);
+      color: rgb(104, 10, 41);
+      padding: 20px 0;
+      display: flex;
+      flex-direction: column;
+      border-right: 2px solid #ddd;
     }
 
-        body,
-        input,
-        button{
-            font-size: var(--normal-font-size);
-        }
-
-        body{
-            min-height: 100vh;
-            background-image: url(../IMG/Logo.jpg) ;
-            background-position-x: 100%;
-            background-position-y: 45%;
-            background-size: 88%;
-            background-repeat: no-repeat;
-            display: flex;
-        }
-        
-        .login{
-            width: 100vh;
-            align-items: center; 
-            margin-top: 40px;
-            margin-left: 15% ;
-        }
-
-        .login__form{
-            position:relative;
-            background-color: hsla(0, 0%, 10%, 0.1);
-            margin-inline: 1.5rem;
-            padding: 2.5rem 1.5rem;
-            width: 100%;
-            border-radius: 1rem;
-            backdrop-filter: blur(8px);
-            margin-left: 25%;
-            box-shadow: 0 1px 3px var(--violet-color);
-        }
-
-        .login__title{
-            text-align: center;
-            font-size: var(--h1-font-size);
-            font-weight: var(--font-medium);
-            margin-bottom: 2rem;
-            color: var(--violet-color);
-            text-shadow: 2px 2px 0 #ecc9d9,
-                        4px 4px 0 #999,
-                        6px 6px 0 #666;
-            font-style: italic;
-        }
-
-        .login__content{
-            margin: 20px;
-        }
-
-        .login__box-input{
-            margin: 10px;
-        }
-
-        .Fecha input{
-            width: 30%;
-            outline: none;
-        }
-
-        .login__content input{
-            width: 60%;
-            border: 2px solid var(--violet-color);
-            padding-left: 5px;
-            margin-left: 40px;
-            flex-wrap: wrap;
-            border-radius: 15px;
-            background-color: rgb(209, 208, 208);
-            font-style: italic;
-        }
-
-        .login__content select{
-            width: 20%;
-            border: 2px solid var(--violet-color);
-            margin: 5px 20px;
-            outline: none;
-            border-radius: 15px;
-            background-color: rgb(209, 208, 208);
-            font-style: italic;
-        }
-
-        .login__content label{
-            font-size: 20px;
-            font-style: italic;
-        }
-
-    form button {
-    background-color: var(--select-color);
-    border-radius: 20px;
-    border: 1px solid #834343;
-    width: 30%;
-    padding: 10px;
-    margin-top: 20px;
-    cursor: pointer;
-    margin-left: 30%;
+    .menulateral .logo img {
+      width: 180px;
+      height: auto;
+      margin: 0 auto;
+      display: block;
     }
 
-    form button p {
-    color: whitesmoke;
-    margin: 0;
-    text-align: center;
-    font-style: italic;
-    margin-left: 30%;
+    .menulateral hr {
+      margin: 15px 0;
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.3);
     }
 
-    form button:hover{
-    background-color: rgb(187, 80, 98);
-    box-shadow: -2px 5px 1px 2px #000 ;
-    margin-left: -3px;
-    margin-left: 30%;
+    .menulateral ul {
+      list-style: none;
+      margin-top: 20px;
+      font-weight: bold;
     }
 
-        select:focus{
-            border-color: var(--violet-color)
-        }
+    .menulateral ul li {
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: 0.3s;
+      border-radius: 8px;
+    }
 
-        .hidden {
-            display: none;
-        }
+    .menulateral ul li:hover,
+    .menulateral ul li.active {
+      background: rgb(104, 10, 41);
+      color: white;
+      font-weight: bold;
+    }
+
+    .main {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    .main h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 15px;
+      max-width: 900px;
+      margin: auto;
+      margin-bottom: 40px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .card h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      color: rgb(104, 10, 41);
+    }
+
+    form .form-group {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    form .form-group input {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      outline: none;
+      font-size: 14px;
+      width: 200px;
+    }
+
+    form .form-group input:focus {
+      border-color: rgb(104, 10, 41);
+    }
+
+    form .form-group select {
+        flex: 1;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        outline: none;
+        font-size: 14px;
+    }
+
+    .hidden {
+        display: none;
+}
+
+    .save-btn {
+      margin-top: 10px;
+      background: rgb(104, 10, 41);
+      color: #fff;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: bold;
+      transition: 0.3s;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .save-btn:hover {
+        background: #8c1238;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background: #fff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    table th, table td {
+        padding: 12px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+    }
+
+    table th {
+        background: #5e0925;
+        color: white;
+        font-size: 14px;
+    }
+
+    table td {
+        font-size: 14px;
+    }
+
+    .btn-accion {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 13px;
+        color: #fff;
+        background-color: #5e0925;
+        margin: 2px;
+    }
+
+    .btn-accion:hover {
+        background-color: #8c1238;
+    }
