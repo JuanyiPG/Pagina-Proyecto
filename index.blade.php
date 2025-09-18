@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fashion Luxy</title>
+  <link rel="stylesheet" type="text/css" href="Pagina Web/CSS/index.css">
+  <link rel="stylesheet" href="Pagina Web/bootstrap/css/bootstrap.min.css">
+  <script src="Pagina Web/bootstrap/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+  <header id="header"></header>
+  <!--Vista previa -->
+    <main>
+      <section class="p-p">
+        <div class="c-p">
+          <video autoplay muted loop class="VPP">
+            <source src="Pagina Web/VIDEO/VideoPIndex.mp4" type="video/mp4">
+          </video>
+        </div>
+      </section>
+<!--productos -->
+      <br>
+      <section id="productos">
+          <section class="seccion">
+            <h2 class="titulo-seccion">Chaquetas</h2>
+            <div class="contenedor-productos">
+            <div class="producto">
+              <img src="Pagina Web/IMG/Chaquet_de_cuero_hombre.jpeg" alt="Chaqueta cuero">
+              <p>Chaqueta Black Panther</p>
+            </div>
+            <div class="producto">
+              <img src="Pagina Web/IMG/chaqueta_clasica.jpeg" alt="Chaqueta clásica">
+              <p>Chaqueta Clásica</p>
+            </div>
+            <div class="producto">
+              <img src="Pagina Web/IMG/Chaqueta_moderna.jpeg" alt="Chaqueta moderna">
+              <p>Chaqueta Moderna</p>
+            </div>
+          </div>
+          <a href="#" class="ver-mas">Ver más productos</a>
+        </section>
+        <br>
+        <section class="seccion">
+          <h2 class="titulo-seccion">Pantalones</h2>
+          <div class="contenedor-productos">
+            <div class="producto">
+              <img src="Pagina Web/IMG/cargo.jpeg" alt="Chaqueta cuero">
+              <p>Chaqueta Black Panther</p>
+            </div>
+            <div class="producto">
+              <img src="Pagina Web/IMG/Campana.jpeg" alt="Chaqueta clásica">
+              <p>Chaqueta Clásica</p>
+            </div>
+            <div class="producto">
+              <img src="Pagina Web/IMG/Baggy.jpeg" alt="Chaqueta moderna">
+              <p>Chaqueta Moderna</p>
+            </div>
+          </div>
+          <a href="#" class="ver-mas">Ver más productos</a>
+        </section>
+    </section>
+      <button class="ver-mas-final">Ver más</button>
+      <hr>
+      <br>
+      <section>
+        <div id="carruselAuto" class="carousel slide" data-bs-ride="carousel">
+
+          <!-- Indicadores -->
+          <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carruselAuto" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carruselAuto" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carruselAuto" data-bs-slide-to="2" aria-label="Slide 3"></button>
+          </div>
+
+          <!-- Imagenes -->
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img src="Pagina Web/IMG/Ropa modelaje 1.webp" style="width: 100%; height: 80%;" class="d-block mx-auto" alt="Imagen 1">
+            </div>
+            <div class="carousel-item">
+              <img src="Pagina Web/IMG/v-ropa.jpg" style="width: 100%; height: 80%;" class="d-block mx-auto" alt="Imagen 2">
+            </div>
+            <div class="carousel-item">
+              <img src="Pagina Web/IMG/Ropa modelaje.webp" style="width: 100%; height: 80%;" class="d-block mx-auto" alt="Imagen 3">
+            </div>
+          </div>
+
+          <!-- Controles -->
+          <button class="carousel-control-prev" type="button" data-bs-target="#carruselAuto" data-bs-slide="prev" style="background-color: hsla(304, 28%, 40%, 0.253)">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carruselAuto" data-bs-slide="next" style="background-color: hsla(304, 28%, 40%, 0.253)">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+          </button>
+        </div>
+
+      </section>
+  </main>
+  <br>
+  <footer id="footer"></footer>
+
+  <script> 
+    fetch("Pagina Web/Items/header.php").then(res => res.text()) 
+.then(data => { 
+  document.getElementById("header").innerHTML = data;
+
+  const navegador = document.getElementById('navegador');
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 600) {
+      navegador.classList.add('scrolled');
+    } else {
+      navegador.classList.remove('scrolled');
+    }
+  });
+});
+  </script>
+
+</body>
+</html>
