@@ -24,7 +24,10 @@
         </svg>
         <pre>Ayuda</pre>
       </section>
- <!--productos -->
+<!--productos -->
+      <br>
+<!--productos -->
+
       <section id="productos">
           <img src="/Pagina Web/IMG/camisa_beisbolera.jpeg" alt="">
       </section>
@@ -92,6 +95,17 @@
         }
       });
     });
+
+
+  const navegador = document.getElementById('navegador');
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 600) {
+      navegador.classList.add('scrolled');
+    } else {
+      navegador.classList.remove('scrolled');
+    }
+  });
 
   </script>
 

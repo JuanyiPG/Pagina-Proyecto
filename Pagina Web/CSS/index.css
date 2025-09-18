@@ -16,6 +16,11 @@
   transition : background-color 0.5s ease;
 }
 
+
+#navegador.scrolled{
+  background: linear-gradient(to LEFT,#5c0b26, rgb(255, 255, 255));
+}
+
 #navegador.scrolled {
   background-image: linear-gradient(to right, rgb(255, 255, 255), #5c0b26);
 }
