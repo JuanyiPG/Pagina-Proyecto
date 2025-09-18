@@ -15,7 +15,7 @@
     }
     /* Main content */
     .main {
-      margin-left: 25% ;
+      position: relative;
       flex: 1;
       padding: 20px;
     }
@@ -75,7 +75,7 @@
 </html>
 
 <script>
-  fetch('header-admin.php').then(res=>res.text())
+  fetch('header-admin.html').then(res=>res.text())
   .then(data =>{document.getElementById("header-admin").innerHTML = data})
 </script>
 </html>

@@ -1,12 +1,26 @@
+<?php 
+require_once "CONEXION.php"; 
+require_once "CLASE_PRODUCTO_T.php";  
+
+$datos = [];
+$obj = new PRODUCTO_T();
+    
+if (isset($_GET['search'])) {
+    $search = $_GET['search'];
+    $datos = $obj->ConsultarProducto_tPorID($search); 
+} else {
+    $datos = $obj->CONSULTAR_PRODUCTO_T(); 
+}
+?>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pagina_formularios</title>
+  <title>Producto terminado</title>
   <style>
-    * {
+  * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
@@ -169,8 +183,8 @@
     .btn-accion:hover {
       background-color: #8c1238;
     }
-  </style>
-</head>
+</style>
+  </head>
 <body>
 
   <div class="menulateral">
@@ -187,31 +201,28 @@
     </ul>
   </div>
 
-
   <div class="main">
     <div class="card">
       <h1>Gestión de productos</h1>
 
-      <form>
+     
+      <form action="INSERTAR.php" method="post">
         <div class="form-group">
-          <input type="text" placeholder="Código">
-          <input type="text" placeholder="Nombre">
+          <input type="text" name="id_producto_t" placeholder="Código" required>
+          <input type="text" name="nombre_producto_t" placeholder="Nombre" required>
         </div>
         <div class="form-group">
-          <input type="text" placeholder="Talla">
-          <input type="text" placeholder="Color">
+          <input type="text" name="descripcion_producto_t" placeholder="Descripcion">
         </div>
         <div class="form-group">
-          <input type="text" placeholder="Categoría">
-          <input type="text" placeholder="Material">
+          <input type="text" name="categoria_produ_t" placeholder="Categoria">
         </div>
         <div class="form-group">
-          <input type="text" placeholder="Medida">
-          <input type="text" placeholder="Cantidad">
+          <input type="text" name="unidad_medida" placeholder="Medida">
+          <input type="text" name="estado_producto_t" placeholder="Estado">
         </div>
         <div class="form-group">
-          <input type="text" placeholder="Cantidad mínima">
-          <input type="text" placeholder="Valor">
+          <input type="text" name="id_produccion_fk_producto_terminado" placeholder="Identificador de el el numero de produccion">
         </div>
         <button type="submit" class="save-btn">Insertar</button>
       </form>
@@ -222,38 +233,33 @@
         <tr>
           <th>Código</th>
           <th>Nombre</th>
-          <th>Talla</th>
-          <th>Color</th>
-          <th>Categoría</th>
-          <th>Material</th>
-          <th>Medida</th>
-          <th>Cantidad</th>
-          <th>Cantidad mínima</th>
-          <th>Valor</th>
+          <th>Descripcion</th>
+          <th>Categoria</th>
+          <th>Unidad de medida</th>
+          <th>Estado</th>
+          <th>Identificador</th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>Prod001</td>
-          <td>Chaqueta de cuero</td>
-          <td>M</td>
-          <td>Negra</td>
-          <td>Chaquetas</td>
-          <td>Cuero</td>
-          <td>50cm</td>
-          <td>1</td>
-          <td>1</td>
-          <td>200.000</td>
-          <td>
-            <button class="btn-accion">Actualizar</button>
-            <button class="btn-accion">Desactivar</button>
-          </td>
-        </tr>
+        <?php foreach ($datos as $row) { ?>
+          <tr>
+            <td><?php echo $row['id_producto_t']; ?></td>
+            <td><?php echo $row['nombre_producto_t']; ?></td>
+            <td><?php echo $row['descripcion_producto_t']; ?></td>
+            <td><?php echo $row['categoria_produ_t']; ?></td>
+            <td><?php echo $row['unidad_medida']; ?></td>
+            <td><?php echo $row['estado_producto_t']; ?></td>
+            <td><?php echo $row['id_produccion_fk_producto_terminado']; ?></td>
+            <td>
+              <a class="btn-accion" href="EDITAR_PRODUCTOT.php?id_producto_t=<?php echo $row['id_producto_t']; ?>">Actualizar</a>
+              <a class="btn-accion" href="ELIMINAR_PRODUCTOT.php?id_producto_t=<?php echo $row['id_producto_t']; ?>">Eliminar</a>
+            </td>
+          </tr>
+        <?php } ?>
       </tbody>
     </table>
   </div>
 
 </body>
 </html>
-

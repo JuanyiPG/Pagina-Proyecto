@@ -4,9 +4,10 @@
   box-sizing: border-box;
 }
 
-/*------------------------------Menus------------------------------*/
+/*---------------------------Index---------------------------------*/
 
-/*principal*/
+
+/*-----Menu-------*/
 #navegador {
   width: 100%;
   position: fixed;
@@ -15,8 +16,13 @@
   transition : background-color 0.5s ease;
 }
 
+
 #navegador.scrolled{
   background: linear-gradient(to LEFT,#5c0b26, rgb(255, 255, 255));
+}
+
+#navegador.scrolled {
+  background-image: linear-gradient(to right, rgb(255, 255, 255), #5c0b26);
 }
 
 .menu {
@@ -49,84 +55,59 @@
 .iconP-link {
   display: flex;
   align-items: center;
-  margin: 0 10px;
-  width: 30px;
-  height: 20px;
+  justify-content: center;
+  padding: 10px;
+  margin: 0 5px;
+  border-radius: 8px;
+  width: 50px;
+  height: 50px;
   color: white;
-  border-radius: 10px;
   transition: background-color 0.3s ease;
   overflow: visible;
 }
 
-.icon-link:hover {
+.iconP-link:hover {
   background-color: #5e0925;
 }
 
-.icon-link svg {
+.iconP-link svg {
   width: 40px;
   height: 50px;
   display: block;
 }
-/*---------------------------------Admin--------------------------------*/
 
-.header-admin{
-  left: 0;
-}
-
-.nav-admin{
-  background: linear-gradient(to bottom, rgb(255, 255, 255), #5c0b26);
-  position: fixed;
-  width: 250px;
-  height: 100vh;
-  z-index: 1000;
-}
-
-.nav-admin ul{
-  list-style: none;
-}
-
-.nav-admin a img{
-  margin-top: 15px;
-  margin-left: 60px;
-  width: 110px;
-  height: 110px;
-  cursor: pointer;
-}
-
-.nav-admin ul .menu-v-t{
-  font-size: 25px;
-  margin-left: 0px;
-  display: flex;
-  flex-direction: column;
-}
-
-.nav-admin ul li a{
+.LM{
   text-decoration: none;
-  padding: 20px;
-  margin: 2px 0;
-  left: 0;
-  color: #fff;
-}
- 
-.nav-admin ul .menu-v-t a:hover{
-  background-color: #922f63;
-}
-.sing-out a #out{
-  margin-right: 2px;
+  color: white;
+  font-size: 18px;
+  margin: 0 5px;
+  padding: 8px 12px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/*---------------------------------Contenido-----------------------------------*/
+.LM:hover {
+  background-color: #5e0925;
+  color: white;
+}
 
-
-/*----------------------principal----------------------------------*/
+/*----Contenido---*/
 main {
   flex: 0;
   margin: 0;
   padding: 0;
 }
 
+.icon-q{
+  position: fixed;
+  background-color: aqua;
+  z-index: 1000;
+
+}
+
+
 .seccion{
-  margin-bottom: 60px;
+  margin-bottom: 20px;
   margin: 0 ;
   width: 100%;
   border: 2px solid #5e0925;
@@ -150,7 +131,8 @@ main {
   top: 0;
   left: 0;
   width: 100%;
-  height: 120%;
+  height: 90%;
+  object-position: -50px 0;
   object-fit: cover;
   filter: brightness(90%);
   z-index: 0;
@@ -227,7 +209,7 @@ main {
   background-color: hsl(304, 28%, 40%);
 }
 
-/*Boton de productos*/
+/*-----Boton de productos-----*/
 .ver-mas-final {
   display: block;
   margin: 20px auto;
@@ -258,36 +240,95 @@ footer {
 }
 
 
-/*-----------------------------admin-------------------------------*/
+/*----------------------------------------Admin---------------------------------------------*/
 
-/*----------------------------Producto---------------------------*/
-.title-prod{
-  justify-content: center;
-  align-items: center;
+
+/*----Menu Lateral-----*/
+.sidebar {
+  background-image: linear-gradient(to bottom, rgb(255, 255, 255), #5c0b26);
+  width: max-content;
+  height: 100vh;
+  border: #50061f solid 1px;
+  border-radius: 10px;
+  padding: 2rem 1rem;
+
   display: flex;
-  margin: 30px;
+  flex-direction: column;
 }
 
-.Buscador{
-  justify-content: center;
-  align-items: center;
+.list_sidebar {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
   display: flex;
-  margin: 30px;
+  flex-direction: column;
+  gap: .4rem;
 }
 
-.Buscador i{
-  font-size: 20px;
-  margin-right: 15px;
+.element_sidebar {
+  padding: .8rem 1.3rem;
+  border-radius: 3px;
+  display: grid;
+  align-items: center;
+  grid-template-columns: 50px 0fr;
+  color: #50061f;
+  fill: #5c0b26;
+  transition: grid-template-columns .4s;
+}
+
+.sidebar:hover .element_sidebar {
+  grid-template-columns: 40px 1fr;
+}
+
+.element_sidebar:not(:has(.sidebar_icon_logo)):hover {
+  background-color: #5e092593;
+  color: #fff;
+  fill: #fff;
   cursor: pointer;
-  padding: 5px;
-  border-radius: 100%;
-  border: #5e0925 solid 4px;
 }
 
-.Buscador input{
-  font-size: 15px;
-  width: 40%;
-  padding: 10px;
-  border-radius: 20px;
-  border: #5e0925 solid 3px;
+.element_sidebar:has(.sidebar_icon_logo) {
+  margin-bottom: 1rem;
+}
+
+.sidebar-icon {
+  width: 100%;
+  overflow: hidden;
+  justify-self: center;
+}
+
+.sidebar_icon_logo {
+  max-width: 50px;
+}
+
+.sidebar_icon_avatar {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  object-position: center;
+}
+
+.sidebar_element_avatar {
+  margin-top: auto; 
+  text-wrap: nowrap;
+  text-align: left;
+  color: #fff;
+}
+
+.sidebar_Title {
+  padding-left: 1.3rem;
+}
+
+.sidebar-logo,
+.sidebar_text {
+  padding-left: 1.3rem;
+}
+
+.sidebar_hide {
+  overflow: hidden;
+}
+
+.link-m-l{
+  text-decoration: none;
 }
