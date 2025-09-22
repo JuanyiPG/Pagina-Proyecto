@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const users = [
       { email: "juanpintow@gmail.com", password: "12345" },
-      { email: "admin@correo.com", password: "admin" }
+      { email: "luxyfashion@admin.com", password: "admin1234" }
     ];
 
     const usuarioValido = users.find(u => u.email === email && u.password === password);
