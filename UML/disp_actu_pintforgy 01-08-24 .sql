@@ -10,8 +10,8 @@ create trigger D_ACTU_CARGO
 after update on CARGO
 for each row
 begin
-    insert into DISP_ACTU_CARGO (id_carg, nom_carg)
-    values (new.id_cargo, new.nom_cargo);
+   insert into DISP_ACTU_CARGO (id_carg, nom_carg)
+   values (new.id_cargo, new.nom_cargo);
 end //
 DELIMITER ;
 
@@ -36,8 +36,8 @@ create trigger D_ACTU_EMPLE
 after update on EMPLEADO
 for each row
 begin
-    insert into DISP_ACTU_EMPLE (id_emplea, nom_emplea, rh_emplea, numb_tele_emplea, nom_email_emplea, salario_emplea, fechanaci_emplea, fechaentra_emplea, dire_emplea, id_cargo_fk_emplea)
-    values (new.id_emple, new.nom_emple, new.rh_emple, new.numb_tele_emple, new.nom_email_emple, new.salario_emple, new.fechanaci_emple, new.fechaentra_emple, new.dire_emple, new.id_cargo_fk_emple);
+   insert into DISP_ACTU_EMPLE (id_emplea, nom_emplea, rh_emplea, numb_tele_emplea, nom_email_emplea, salario_emplea, fechanaci_emplea, fechaentra_emplea, dire_emplea, id_cargo_fk_emplea)
+   values (new.id_emple, new.nom_emple, new.rh_emple, new.numb_tele_emple, new.nom_email_emple, new.salario_emple, new.fechanaci_emple, new.fechaentra_emple, new.dire_emple, new.id_cargo_fk_emple);
 end //
 DELIMITER ;
 
