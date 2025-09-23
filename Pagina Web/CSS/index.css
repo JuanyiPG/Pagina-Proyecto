@@ -14,12 +14,12 @@
   z-index: 10;
   transition: background-color 0.5s ease, transform 0.5s ease;
   transform: translateY(-5px);
-  opacity: 0.9; 
+  opacity: 0.9;
 }
 
 #navegador.scrolled {
   background: linear-gradient(to left, #5c0b26, rgb(255, 255, 255));
-  transform: translateY(0); 
+  transform: translateY(0);
   opacity: 1;
 }
 
@@ -36,11 +36,11 @@
 
 .mosaico {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
-  grid-auto-rows: 500px; 
-  gap: 0px; 
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-auto-rows: 500px;
+  gap: 0px;
   width: 100%;
-  min-height: 100vh; 
+  min-height: 100vh;
 }
 
 .mosaico a {
@@ -55,7 +55,7 @@
 .mosaico img {
   width: 100%;
   height: 100%;
-  object-fit: cover; 
+  object-fit: cover;
   transition: transform 0.3s ease;
 }
 
@@ -65,11 +65,11 @@
 
 .mosaico .texto {
   position: absolute;
-  bottom: 0; 
+  bottom: 0;
   left: 0;
   width: 100%;
   padding: 10px;
-  background: rgba(0,0,0,0.5); 
+  background: rgba(0, 0, 0, 0.5);
   font-size: 18px;
   text-align: center;
   font-weight: bold;
@@ -96,10 +96,10 @@
   align-items: center;
 }
 
-.logo-menu{
-  height: 80px;
+.logo-menu {
+  height: 80px; 
   max-width: 150px;
-  margin-left: 20px; 
+  margin-left: 20px;
 }
 
 .m-right {
@@ -132,7 +132,7 @@
   display: block;
 }
 
-.LM{
+.LM {
   text-decoration: none;
   color: white;
   font-size: 18px;
@@ -161,7 +161,7 @@ main {
   overflow: hidden;
 }
 
-.VPP{
+.VPP {
   position: absolute;
   top: 0;
   left: 0;
@@ -250,44 +250,44 @@ main {
 }
 
 
-  footer {
+footer {
   background-color: #5e0925;
-    color: #fff;
-    padding: 20px 10px;
-    text-align: center;
-  }
+  color: #fff;
+  padding: 20px 10px;
+  text-align: center;
+}
 
-  .footer-contenido {
-    max-width: 900px;
-    margin: auto;
-  }
+.footer-contenido {
+  max-width: 900px;
+  margin: auto;
+}
 
-  .redes {
-    margin-bottom: 15px;
-  }
+.redes {
+  margin-bottom: 15px;
+}
 
-  .red-social {
-    display: inline-block;
-    margin: 0 10px;
-    padding: 8px 15px;
-    border: 1px solid #fff;
-    border-radius: 20px;
-    text-decoration: none;
-    color: #fff;
-    font-size: 14px;
-    transition: all 0.3s ease;
-  }
+.red-social {
+  display: inline-block;
+  margin: 0 10px;
+  padding: 8px 15px;
+  border: 1px solid #fff;
+  border-radius: 20px;
+  text-decoration: none;
+  color: #fff;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
 
-  .red-social:hover {
+.red-social:hover {
   background-color: #b35d85;
   border-color: #b35d85;
-    color: #fff;
-  }
+  color: #fff;
+}
 
-  footer p {
-    font-size: 14px;
-    color: #ccc;
-  }
+footer p {
+  font-size: 14px;
+  color: #ccc;
+}
 
 /*------------------------------------------Admin---------------------------------------------*/
 
@@ -359,7 +359,7 @@ main {
 }
 
 .sidebar_element_avatar {
-  margin-top: auto; 
+  margin-top: auto;
   text-wrap: nowrap;
   text-align: left;
   color: #fff;
@@ -378,7 +378,7 @@ main {
   overflow: hidden;
 }
 
-.link-m-l{
+.link-m-l {
   text-decoration: none;
 }
 
@@ -392,7 +392,7 @@ main {
   background-color: #fff;
   overflow: hidden;
   border-radius: 15px;
-  box-shadow: 0 0 10px rgb(0, 0, 0,3);
+  box-shadow: 0 0 10px rgb(0, 0, 0, 3);
 }
 
 
@@ -401,7 +401,7 @@ main {
   overflow: hidden;
 }
 
-.container-l-f form{
+.container-l-f form {
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -410,17 +410,17 @@ main {
   transition: transform 0.6s ease-in;
 }
 
-.container-l-f h2{
+.container-l-f h2 {
   font-size: 30px;
   margin-bottom: 20px;
 }
 
-.container-l-f span{
+.container-l-f span {
   font-size: 12px;
   margin-bottom: 15px;
 }
 
-.container-input{
+.container-input {
   width: 300px;
   height: 40px;
   display: flex;
@@ -432,7 +432,7 @@ main {
   background-color: #dddada;
 }
 
-.container-input input{
+.container-input input {
   border: none;
   outline: none;
   width: 100%;
@@ -440,15 +440,16 @@ main {
   background-color: inherit;
   font-size: 16px;
 }
-.container-l-f a{
+
+.container-l-f a {
   color: #000;
   font-size: 14px;
-  margin-bottom:20px;
+  margin-bottom: 20px;
   margin-top: 5px;
 
 }
 
-.button-login{
+.button-login {
   width: 170px;
   height: 45px;
   font-size: 15px;
@@ -463,33 +464,34 @@ main {
 /*animacion de formularios*/
 
 
-.sign-up{
+.sign-up {
   transform: translateX(-100%);
 }
 
-.container-l.toggle .sign-in{
+.container-l.toggle .sign-in {
   transform: translateX(100%);
 }
-.container-l.toggle .sign-up{
+
+.container-l.toggle .sign-up {
   transform: translateX(0%);
 }
 
 /*welcome*/
 
-.container-w-l{
+.container-w-l {
   position: absolute;
   width: 50%;
-  height: 100%;  
-  background-image: linear-gradient(to bottom,#5c0b26,#5c0b26,#5c0b26, rgb(0, 0, 0));
+  height: 100%;
+  background-image: linear-gradient(to bottom, #5c0b26, #5c0b26, #5c0b26, rgb(0, 0, 0));
   display: flex;
-  transform:translateX(100%);
+  transform: translateX(100%);
   align-items: center;
   overflow: hidden;
   transition: transform 0.5s ease-in-out, border-radius 0.5s ease-in-out;
   border-radius: 50% 0 0 50%;
 }
 
-.container-w-l .welcome{
+.container-w-l .welcome {
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -500,39 +502,39 @@ main {
   transition: transform 0.5s ease-in;
 }
 
-.container-l-sign-in{
+.container-l-sign-in {
   transform: translateX(100%);
 }
 
-.container-w-l h3{
+.container-w-l h3 {
   font-size: 40px;
 }
 
-.container-w-l p{
+.container-w-l p {
   font-size: 14px;
   text-align: center;
 }
 
-.container-w-l .button-login{
+.container-w-l .button-login {
   border: 2px solid #fff;
 }
 
-.container-l.toggle .container-l-sign-in{
+.container-l.toggle .container-l-sign-in {
   transform: translateX(0);
 }
 
-.container-l.toggle .container-l-sign-up{
+.container-l.toggle .container-l-sign-up {
   transform: translateX(-100%);
 
 }
 
-.container-l.toggle .container-w-l{
+.container-l.toggle .container-w-l {
   transform: translateX(0);
   border-radius: 0 50% 50% 0;
-  background-image: linear-gradient(to bottom,#5c0b26,#5c0b26,#5c0b26, rgb(0, 0, 0));
+  background-image: linear-gradient(to bottom, #5c0b26, #5c0b26, #5c0b26, rgb(0, 0, 0));
 }
 
-.button-ingre{
+.button-ingre {
   width: 170px;
   height: 45px;
   font-size: 15px;
