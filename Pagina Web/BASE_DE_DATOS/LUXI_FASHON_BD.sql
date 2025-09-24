@@ -1,4 +1,4 @@
-CREATE  DATABASE LUXI_FASHON;
+CREATE    DATABASE LUXI_FASHON;
 USE LUXI_FASHON;
 
 CREATE TABLE Rol (
@@ -51,7 +51,7 @@ CREATE TABLE Produccion (
   cantidad_producida NUMERIC NOT NULL,
   costo_mano_obra BIGINT NOT NULL,
   costo_total_materia_prima BIGINT NOT NULL,
-  costo_idirecto BIGINT NOT NULL,
+  costo_iva BIGINT NOT NULL,
   costo_total_produccion BIGINT NOT NULL,
   fecha_fin_produccion DATE NOT NULL,
   estado_produccion VARCHAR(50) NOT NULL,
@@ -114,7 +114,7 @@ CREATE TABLE Factura_compra (
   cod_factura_compra INT PRIMARY KEY NOT NULL,
   fecha_factura_compra DATE NOT NULL,
   total_faactura_compra BIGINT NOT NULL,
-  metododepago_factura_compra BIGINT NOT NULL,
+  metododepago_factura_compra VARCHAR(50) NOT NULL,
   estado_factura_compra VARCHAR(50) NOT NULL,
   id_empleado_fk_factura_compra INT NOT NULL,
   CONSTRAINT id_empleado_fk_factura_compra FOREIGN KEY (id_empleado_fk_factura_compra) REFERENCES Empleado(id_empleado)
@@ -138,4 +138,5 @@ CREATE TABLE Detalle_produccion_materiap_ (
   CONSTRAINT id_produccion_fk_detalle_p_m FOREIGN KEY (id_produccion_fk_detalle_p_m) REFERENCES Produccion (id_produccion),
   descripcion VARCHAR(200) NOT NULL
 );
-select * from Produccion
+Select * from Rol
+
