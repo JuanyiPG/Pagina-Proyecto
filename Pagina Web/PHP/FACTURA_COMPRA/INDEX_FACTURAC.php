@@ -71,6 +71,20 @@ if (isset($_GET['search'])) {
           <th>Acciones</th>
         </tr>
       </thead>
+                <div id="results" class="results">
+        <?php 
+        require_once '../conexion_b.php'; 
+        $consulta="SELECT * FROM producto_terminado";
+        $filter = "";
+        $search = (isset($_GET['search'])) ? $_GET['search'] : "";
+        if(isset($search) && strlen($search)>3){
+            $filter = " WHERE nombre_producto_t LIKE '%$search%'"
+                        or "WHERE categoria_produ_t LIKE '%$search%'";
+            $consulta = $consulta . $filter; 
+        }
+        $results = mysqli_query($conn,$consulta);
+        while($row = mysqli_fetch_array($results)){
+        ?>
       <tbody>
         <?php foreach ($datos as $row) { ?>
           <tr>
@@ -85,10 +99,15 @@ if (isset($_GET['search'])) {
               <a class="btn-accion" href="ELIMINAR_FACTURAC.php?cod_factura_compra=<?php echo $row['cod_factura_compra']; ?>">Eliminar</a>
             </td>
           </tr>
-        <?php } ?>
       </tbody>
     </table>
+                <?php
+        }
+        ?>
   </div>
 
 </body>
 </html>
+            <?php
+        }
+        ?>

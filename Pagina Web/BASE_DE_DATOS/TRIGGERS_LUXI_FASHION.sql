@@ -10,7 +10,7 @@
     old.salario_empleado <> new.salario_empleado  or 
     old.Estado_empleado <> new.Estado_empleado then 
  insert into  historial_empleado (id_empleado, direccion_empl, telefono_emple, correo_emple, salario_emple, estado_emple)
- values (old.id_empleado, new.direccion_empleado, new.telefonoa_empleado, new.correo_empleado, new.salario_empleado, new.Estado_empleado);
+ values (old.id_empleado, new.direccion_empleado, new.telefono_empleado, new.correo_empleado, new.salario_empleado, new.Estado_empleado);
 end if ;
 end //
  DELIMITER ; 
@@ -38,7 +38,7 @@ if old.stock_actual_materia_p <> new.stock_actual_materia_p or
 old.stock_minimo_materia_p <> new.stock_minimo_materia_p or 
 old.estado_materia_p <> new.estado_materia_p then
 insert into historial_matpri(id_matpri, stock_actual_matpri, stock_min_matpri, estado_matpri )
-values (old.materia_p, new.stock_actual_materia_p, new.stock_minimo_materia_p, new.estado_materia_p);
+values (old.id_materia_p, new.stock_actual_materia_p, new.stock_minimo_materia_p, new.estado_materia_p);
 end if;
 end // 
  DELIMITER ;  

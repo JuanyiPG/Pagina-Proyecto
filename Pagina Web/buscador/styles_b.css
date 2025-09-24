@@ -1,0 +1,50 @@
+.search{
+    width: 50%;
+    margin: 20px auto;
+    background: rgb(194, 192, 192);
+    border-radius: 4px;
+}
+
+div form{
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.search input {
+    width: 70%;
+    height: 35px;
+    padding: 5px;
+    border: none; 
+}
+
+.search input[type="submit"]{
+    width: 20%;
+    height: 45px;
+    background-color: violet;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.results {
+    width: 80%;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;  
+}
+
+.items {
+    background-color: gray;
+    padding: 15px;
+    border-radius: 4px;
+    transition: all 0.5s ease;
+    cursor: pointer;
+}
+
+.items hover {
+    transform: scale(1.05);
+}
