@@ -39,10 +39,7 @@
                     <option value="Insumos">Insumos</option>
                 </select>
                     <div class="login__box-input" id="campoMaterial">
-                        <input type="text" name="material" id="material" required placeholder="Nombre del material">
-                    </div>
-                    <div class="login__box-input" id="campoInsumos">
-                        <input type="text" name="Insumos" id="material" required placeholder="Descripción de los insumos">
+                        <input type="text" name="material" id="material" required placeholder="Nombre">
                     </div>
                 </div>
 
@@ -83,12 +80,14 @@
     <thead>
         <tr>
         <th>Código</th>
-        <th>Nombre</th>
-        <th>Descripcion</th>
+        <th>Ubicacion</th>
+        <th>Fecha de ingreso</th>
         <th>Categoria</th>
-        <th>Unidad de medida</th>
-        <th>Estado</th>
-        <th>Identificador</th>
+        <th>Nombre</th>
+        <th>Color</th>
+        <th>Cantidad</th>
+        <th>Precio</th>
+        <th>Destino</th>
         <th>Acciones</th>
         </tr>
     </thead>
@@ -100,7 +99,6 @@
             <td><?php echo $row['Fecha_ingreso']; ?></td>
             <td><?php echo $row['Categoria']; ?></td>
             <td><?php echo $row['material']; ?></td>
-            <td><?php echo $row['Insumos']; ?></td>
             <td><?php echo $row['Color']; ?></td>
             <td><?php echo $row['Cant']; ?></td>
             <td><?php echo $row['Precio']; ?></td>
@@ -122,7 +120,7 @@
     select.addEventListener("change", () => {
       // Ocultar todos los campos
     document.getElementById("campoMaterial").classList.add("hidden");
-    document.getElementById("campoInsumos").classList.add("hidden");
+    document.getElementById("campoMaterial").classList.add("hidden");
 
       // Mostrar según lo seleccionado
     const seleccionados = Array.from(select.selectedOptions).map(opt => opt.value);
@@ -131,7 +129,7 @@
         document.getElementById("campoMaterial").classList.remove("hidden");
     }
     if (seleccionados.includes("Insumos")) {
-        document.getElementById("campoInsumos").classList.remove("hidden");
+        document.getElementById("campoMaterial").classList.remove("hidden");
     }
     });
 
