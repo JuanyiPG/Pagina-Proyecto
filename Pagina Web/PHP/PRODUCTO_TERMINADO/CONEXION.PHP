@@ -3,9 +3,9 @@
         {
             private $servidor="localhost";
             private $usuario="root";
-            private $password="";
+            private $password="basededatos";
             private $basedatos="LUXI_FASHON";
-          
+        
 
             public function conexion()
             {

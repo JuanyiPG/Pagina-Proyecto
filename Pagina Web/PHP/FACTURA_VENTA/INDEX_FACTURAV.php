@@ -41,7 +41,7 @@ if (isset($_GET['search'])) {
     <div class="card">
       <h1>Gestión de factura venta</h1>
 
-     
+    
       <form action="INSERTAR_FACRURAV.PHP" method="post">
         <div class="form-group">
           <input type="text" name="cod_factura_v" placeholder="Código" required>
@@ -81,6 +81,19 @@ if (isset($_GET['search'])) {
           <th>Acciones</th>
         </tr>
       </thead>
+                <div id="results" class="results">
+        <?php 
+        require_once '../conexion_b.php'; 
+        $consulta="SELECT * FROM factura_venta";
+        $filter = "";
+        $search = (isset($_GET['search'])) ? $_GET['search'] : "";
+        if(isset($search) && strlen($search)>3){
+            $filter = " WHERE fecha_factura_v '%$search%'";
+            $consulta = $consulta . $filter; 
+        }
+        $results = mysqli_query($conn,$consulta);
+        while($row = mysqli_fetch_array($results)){
+        ?>
       <tbody>
         <?php foreach ($datos as $row) { ?>
           <tr>
@@ -98,10 +111,15 @@ if (isset($_GET['search'])) {
               <a class="btn-accion" href="ELIMINAR_FACTURAV.php?cod_factura_v=<?php echo $row['cod_factura_v']; ?>">Eliminar</a>
             </td>
           </tr>
-        <?php } ?>
       </tbody>
     </table>
+                <?php
+        }
+        ?>
   </div>
 
 </body>
 </html>
+            <?php
+        }
+        ?>

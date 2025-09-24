@@ -84,6 +84,20 @@ if (isset($_GET['search'])) {
         </tr>
       </thead>
       <tbody>
+                  <div id="results" class="results">
+        <?php 
+        require_once '../conexion_b.php'; 
+        $consulta="SELECT * FROM materia_prima";
+        $filter = "";
+        $search = (isset($_GET['search'])) ? $_GET['search'] : "";
+        if(isset($search) && strlen($search)>3){
+            $filter = " WHERE nom_materia_p LIKE '%$search%'"
+                        or "WHERE id_materia_p LIKE '%$search%'";
+            $consulta = $consulta . $filter; 
+        }
+        $results = mysqli_query($conn,$consulta);
+        while($row = mysqli_fetch_array($results)){
+        ?>
         <?php foreach ($datos as $row) { ?>
           <tr>
             <td><?php echo $row['id_materia_p']; ?></td>
@@ -100,10 +114,15 @@ if (isset($_GET['search'])) {
               <a class="btn-accion" href="ELIMINAR_MATERIAP.php?id_materia_p=<?php echo $row['id_materia_p']; ?>">Eliminar</a>
             </td>
           </tr>
-        <?php } ?>
       </tbody>
     </table>
+                <?php
+        }
+        ?>
   </div>
 
 </body>
 </html>
+<?php
+        }
+        ?>
