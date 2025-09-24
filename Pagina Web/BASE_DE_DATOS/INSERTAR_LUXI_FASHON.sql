@@ -54,6 +54,7 @@ END$$
 
 
 CREATE PROCEDURE insrt_Factura_Venta(
+  IN insrt_cod_factura_v INT,
   IN insrt_fecha_factura_v DATE,
   IN insrt_sub_total_factura_v BIGINT,
   IN insrt_iva_factura_v BIGINT,
@@ -64,9 +65,9 @@ CREATE PROCEDURE insrt_Factura_Venta(
   IN insrt_id_empleado_fk_factura INT
 )
 BEGIN
-  INSERT INTO Factura_Venta (fecha_factura_v, sub_total_factura_v, iva_factura_v,
+  INSERT INTO Factura_Venta (cod_factura_v,fecha_factura_v, sub_total_factura_v, iva_factura_v,
     total_factura_v, metodo_pago, descuento, estado_factura_venta, id_empleado_fk_factura)
-  VALUES (insrt_fecha_factura_v, insrt_sub_total_factura_v, insrt_iva_factura_v,
+  VALUES (insrt_cod_factura_v,insrt_fecha_factura_v, insrt_sub_total_factura_v, insrt_iva_factura_v,
     insrt_total_factura_v, insrt_metodo_pago, insrt_descuento,
     insrt_estado_factura_venta, insrt_id_empleado_fk_factura);
 END$$
@@ -78,7 +79,7 @@ CREATE PROCEDURE insrt_Produccion(
   IN insrt_cantidad_producida NUMERIC,
   IN insrt_costo_mano_obra BIGINT,
   IN insrt_costo_total_materia_prima BIGINT,
-  IN insrt_costo_idirecto BIGINT,
+  IN insrt_costo_iva BIGINT,
   IN insrt_costo_total_produccion BIGINT,
   IN insrt_fecha_fin_produccion DATE,
   IN insrt_estado_produccion VARCHAR(50),
@@ -86,10 +87,10 @@ CREATE PROCEDURE insrt_Produccion(
 )
 BEGIN
   INSERT INTO Produccion (id_produccion, fecha_inicio_produccion, cantidad_producida,
-    costo_mano_obra, costo_total_materia_prima, costo_idirecto, costo_total_produccion,
+    costo_mano_obra, costo_total_materia_prima, costo_iva, costo_total_produccion,
     fecha_fin_produccion, estado_produccion, id_empleado_fk_produccion)
   VALUES (insrt_id_produccion, insrt_fecha_inicio_produccion, insrt_cantidad_producida,
-    insrt_costo_mano_obra, insrt_costo_total_materia_prima, insrt_costo_idirecto,
+    insrt_costo_mano_obra, insrt_costo_total_materia_prima, insrt_costo_iva,
     insrt_costo_total_produccion, insrt_fecha_fin_produccion, insrt_estado_produccion,
     insrt_id_empleado_fk_produccion);
 END$$
