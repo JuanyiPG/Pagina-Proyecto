@@ -63,9 +63,9 @@ after update on produccion
 for each row 
 begin 
 if old.costo_mano_obra <> new.costo_mano_obra or 
-old.valor_iva <> new.valor_iva then
+old.costo_iva <> new.costo_iva then
 insert into hostorial_produccion(id_produccion, costo_manobra, valor_iva)
-values (old.id_produccion, new.costo_mano_obra, new.valor_iva); 
+values (old.id_produccion, new.costo_mano_obra, new.costo_iva); 
 end if; 
 end // 
  DELIMITER ;
