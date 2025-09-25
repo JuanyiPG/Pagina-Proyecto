@@ -5,12 +5,8 @@ require_once "CLASE_FACTURAC.PHP";
 $datos = [];
 $obj = new FACTURA_C();
     
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-    $datos = $obj->ConsultarfacturactPorID($search); 
-} else {
+$search = (isset($_GET['search'])) ? $_GET['search'] : "";
     $datos = $obj->CONSULTAR_FACTURA_C(); 
-}
 ?>
 
 <!DOCTYPE html>

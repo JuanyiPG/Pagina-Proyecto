@@ -5,10 +5,8 @@ require_once "CLASE_MATERIAP.php";
 $datos = [];
 $obj = new MATERIA_P();
     
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
+$search = (isset($_GET['search'])) ? $_GET['search'] : "";
     $datos = $obj->CONSULTAR_MATERIA_P(); 
-}
 ?>
 
 <!DOCTYPE html>

@@ -39,20 +39,20 @@ class CLIENTE
         $con = new CONECTAR();
         $conexion = $con->conexion();
 
-        $sql = "CALL consultar_Cliente()";
-        $resultado = $conexion->query($sql);
+    $stmt = $conexion->prepare("CALL consultar_Cliente(?)");
 
-        if (!$resultado) {
-            die("Error en la consulta: " . $conexion->error);
+        if ($stmt === false ){
+        die("Error en la preparacion:" . $this->conexion->error);
         }
 
-        $cliente = [];
-        while ($row = $resultado->fetch_assoc()) {
-            $cliente[] = $row;
-        }
+    $stmt->bind_param("s", $search);
+    $stmt->execute();
 
-        $resultado->free();
-        return $cliente; 
+    $resultado = $stmt->get_result();
+    $roles = $resultado->fetch_all(MYSQLI_ASSOC);
+
+    $stmt->close();
+    return $roles;
     }
 
     public function ACTUALIZAR_CLIENTE($datos_cliente)

@@ -5,12 +5,9 @@ require_once "CLASE_CLIENTE.php";
 $datos = [];
 $obj = new CLIENTE();
     
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-    $datos = $obj->Consultarcliente_tPorID($search); 
-} else {
+$search = (isset($_GET['search'])) ? $_GET['search'] : "";
     $datos = $obj->CONSULTAR_CLIENTE(); 
-}
+
 ?>
 
 <!DOCTYPE html>
@@ -19,7 +16,7 @@ if (isset($_GET['search'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gestion CLientes</title>
-   <link rel="stylesheet" href="../CSS/CSS.css">
+  <link rel="stylesheet" href="../CSS/CSS.css">
   </head>
 <body>
 

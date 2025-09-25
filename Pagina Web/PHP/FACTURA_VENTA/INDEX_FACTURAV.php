@@ -5,12 +5,8 @@ require_once "CLASE_FACTURAV.PHP";
 $datos = [];
 $obj = new FACTURA_V();
     
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-    $datos = $obj->ConsultarfacturavtPorID($search); 
-} else {
+$search = (isset($_GET['search'])) ? $_GET['search'] : "";
     $datos = $obj->CONSULTAR_FACTURA_V(); 
-}
 ?>
 
 <!DOCTYPE html>
@@ -50,11 +46,11 @@ if (isset($_GET['search'])) {
                             onblur="if(!this.value) this.type='text'">
         </div>
         <div class="form-group">
-          <input type="text" name="sub_total_factura_v" placeholder=" Sub total de la factura"required>
-          <input type="text" name="iva_factura_v" placeholder="IVA"required>
+          <input type="text" name="sub_total_factura_v" id="SubTotal" placeholder=" Sub total de la factura"required>
+          <input type="text" name="iva_factura_v" id="Iva" placeholder="IVA"required>
         </div>
         <div class="form-group">
-          <input type="text" name="total_factura_v" placeholder="Total"required>
+          <input type="text" name="total_factura_v"id="Total" placeholder="Total"required readonly>
           <input type="text" name="metodo_pago" placeholder="Metodo de pago"required>
         </div>
         <div class="form-group">
@@ -108,7 +104,7 @@ if (isset($_GET['search'])) {
               onclick="return confirm('¿Deseas eliminar este rol?>Eliminar</a>
             </td>
           </tr>
-                        <?php } ?>
+            <?php } ?>
       <?php } else { ?>
     <tr><td colspan="5">No se encontraron resultados</td></tr>
 <?php } ?>
@@ -118,17 +114,20 @@ if (isset($_GET['search'])) {
 </body>
 </html>
  <script>
-    const cantidad = document.getElementById("Cantidad");
-    const precio = document.getElementById("Precio");
-    const total = document.getElementById("total");
+    const subTotal = document.getElementById("SubTotal");
+    const iva = document.getElementById("Iva");
+    const total = document.getElementById("Total");
 
     function calcularTotal() {
-    const cant = parseFloat(cantidad.value) || 0;
-    const prec = parseFloat(precio.value) || 0;
-      total.value = (cant * prec).toFixed(2); // 2 decimales
+    const sub = parseFloat(subTotal.value) || 0;
+    const ivaPct = parseFloat(iva.value) || 0;
+
+    const tot = sub + (sub * ivaPct / 100);
+
+    total.value = tot.toFixed(2); // 2 decimales
     }
 
     
-    cantidad.addEventListener("input", calcularTotal);
-    precio.addEventListener("input", calcularTotal);
+    subTotal.addEventListener("input", calcularTotal);
+    iva.addEventListener("input", calcularTotal);
 </script>

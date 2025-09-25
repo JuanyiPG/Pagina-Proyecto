@@ -51,6 +51,11 @@ class PRODUCTO_T
         $conexion = $con->conexion();
 
     $stmt = $conexion->prepare("CALL consultar_Producto_terminado(?)");
+    
+        if ($stmt === false ){
+        die("Error en la preparacion:" . $this->conexion->error);
+    }
+
     $stmt->bind_param("s", $search);
     $stmt->execute();
 

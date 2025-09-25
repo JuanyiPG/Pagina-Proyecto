@@ -48,6 +48,10 @@ class ROL
         $conexion = $con->conexion();
 
     $stmt = $conexion->prepare("CALL consultar_Rol(?)");
+
+    if ($stmt === false ){
+        die("Error en la preparacion:" . $this->conexion->error);
+    }
     $stmt->bind_param("s", $search);
     $stmt->execute();
 

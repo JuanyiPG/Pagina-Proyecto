@@ -53,6 +53,11 @@ class MATERIA_P
         $conexion = $con->conexion();
 
     $stmt = $conexion->prepare("CALL consultar_Materia_prima(?)");
+
+        if ($stmt === false ){
+        die("Error en la preparacion:" . $this->conexion->error);
+    }
+
     $stmt->bind_param("s", $search);
     $stmt->execute();
 

@@ -5,12 +5,8 @@ require_once "CLASE_PRODUCTO_T.php";
 $datos = [];
 $obj = new PRODUCTO_T();
     
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-    $datos = $obj->ConsultarProducto_tPorID($search); 
-} else {
+$search= (isset($_GET['search'])) ? $_GET['search'] : "";
     $datos = $obj->CONSULTAR_PRODUCTO_T(); 
-}
 ?>
 
 <!DOCTYPE html>
@@ -63,6 +59,7 @@ if (isset($_GET['search'])) {
         <button type="submit" class="save-btn">Insertar</button>
       </form>
     </div>
+
       <div id="search" class="search"> 
         <form action="index_b.php">
             <input type="text" name="search" placeholder="Escribe una palabara">
@@ -83,23 +80,8 @@ if (isset($_GET['search'])) {
           <th>Acciones</th>
         </tr>
       </thead>
-                <div id="search" class="search"> 
-
-          <div id="results" class="results">
-        <?php 
-        require_once '../CONEXION_BUSQUEDA/conexion_b.php'; 
-        $consulta="SELECT * FROM producto_terminado";
-        $filter = "";
-        $search = (isset($_GET['search'])) ? $_GET['search'] : "";
-        if(isset($search) && strlen($search)>3){
-            $filter = " WHERE nombre_producto_t LIKE '%$search%'"
-                        or "WHERE categoria_produ_t LIKE '%$search%'";
-            $consulta = $consulta . $filter; 
-        }
-        $results = mysqli_query($conn,$consulta);
-        while($row = mysqli_fetch_array($results)){
-        ?>
       <tbody>
+        <?php if (!empty($datos)) { ?>
         <?php foreach ($datos as $row) { ?>
           <tr>
             <td><?php echo $row['id_producto_t']; ?></td>
@@ -114,15 +96,13 @@ if (isset($_GET['search'])) {
               <a class="btn-accion" href="ELIMINAR_PRODUCTOT.php?id_producto_t=<?php echo $row['id_producto_t']; ?>">Eliminar</a>
             </td>
           </tr>
+        <?php } ?>
+      <?php } else { ?>
+    <tr><td colspan="5">No se encontraron resultados</td></tr>
+<?php } ?>
       </tbody>
     </table>
-            <?php
-        }
-        ?>
   </div>
 
 </body>
 </html>
-<?php
-        }
-        ?>

@@ -53,6 +53,11 @@ class FACTURA_V
         $conexion = $con->conexion();
 
         $stmt = $conexion->prepare("CALL consultar_Factura_Venta(?)");
+
+        if ($stmt === false ){
+        die("Error en la preparacion:" . $this->conexion->error);
+        }
+
     $stmt->bind_param("s", $search);
     $stmt->execute();
 
