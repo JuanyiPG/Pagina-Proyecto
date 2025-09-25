@@ -2,6 +2,16 @@
 
 class FACTURA_V
 {
+        private $conexion;
+
+    public function __construct() {
+        $this->conexion = new mysqli("localhost", "root", "basededatos", "luxi_fashon");
+
+        if ($this->conexion->connect_error) {
+            die("Error de conexión: " . $this->conexion->connect_error);
+        }
+    }
+    
     public function INSERT_FACTURA_V($datos_factura_v)
     {
         $con = new CONECTAR();
@@ -37,25 +47,20 @@ class FACTURA_V
         return $resultado;
     }
 
-    public function CONSULTAR_FACTURA_V()
+    public function CONSULTAR_FACTURA_V($search = "")
     {
         $con = new CONECTAR();
         $conexion = $con->conexion();
 
-        $sql = "CALL consultar_Factura_Venta()";
-        $resultado = $conexion->query($sql);
+        $stmt = $conexion->prepare("CALL consultar_Factura_Venta(?)");
+    $stmt->bind_param("s", $search);
+    $stmt->execute();
 
-        if (!$resultado) {
-            die("Error en la consulta: " . $conexion->error);
-        }
+    $resultado = $stmt->get_result();
+    $roles = $resultado->fetch_all(MYSQLI_ASSOC);
 
-        $factura_v = [];
-        while ($row = $resultado->fetch_assoc()) {
-            $factura_v[] = $row;
-        }
-
-        $resultado->free();
-        return $factura_v; 
+    $stmt->close();
+    return $roles; 
     }
 
     public function ACTUALIZAR_FACTURA_V($datos_factura_v)

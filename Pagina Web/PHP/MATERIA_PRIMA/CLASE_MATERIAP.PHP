@@ -2,6 +2,16 @@
 
 class MATERIA_P
 {
+        private $conexion;
+
+    public function __construct() {
+        $this->conexion = new mysqli("localhost", "root", "basededatos", "luxi_fashon");
+
+        if ($this->conexion->connect_error) {
+            die("Error de conexión: " . $this->conexion->connect_error);
+        }
+    }
+
     public function INSERT_MATERIA_P($datos_materia_p)
     {
         $con = new CONECTAR();
@@ -37,25 +47,20 @@ class MATERIA_P
         return $resultado;
     }
 
-    public function CONSULTAR_MATERIA_P()
+    public function CONSULTAR_MATERIA_P($search = "")
     {
         $con = new CONECTAR();
         $conexion = $con->conexion();
 
-        $sql = "CALL consultar_Materia_prima()";
-        $resultado = $conexion->query($sql);
+    $stmt = $conexion->prepare("CALL consultar_Materia_prima(?)");
+    $stmt->bind_param("s", $search);
+    $stmt->execute();
 
-        if (!$resultado) {
-            die("Error en la consulta: " . $conexion->error);
-        }
+    $resultado = $stmt->get_result();
+    $roles = $resultado->fetch_all(MYSQLI_ASSOC);
 
-        $materia_p = [];
-        while ($row = $resultado->fetch_assoc()) {
-            $materia_p[] = $row;
-        }
-
-        $resultado->free();
-        return $materia_p; 
+    $stmt->close();
+    return $roles;
     }
 
     public function ACTUALIZAR_MATERIA_P($datos_materia_p)

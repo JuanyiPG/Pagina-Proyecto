@@ -45,7 +45,9 @@ if (isset($_GET['search'])) {
       <form action="INSERTAR_FACRURAC.PHP" method="post">
         <div class="form-group">
           <input type="text" name="cod_factura_compra" placeholder="Código" required>
-          <input type="date" name="fecha_factura_compra" placeholder="Fecha" required>
+          <input type="text" name="fecha_factura_compra" ="fecha" placeholder="Fecha de compra"
+                            onfocus="this.type='date'"  
+                            onblur="if(!this.value) this.type='text'">
         </div>
         <div class="form-group">
           <input type="text" name="total_faactura_compra" placeholder="total de la factura"required>
@@ -57,6 +59,12 @@ if (isset($_GET['search'])) {
         </div>
         <button type="submit" class="save-btn">Insertar</button>
       </form>
+    </div>
+          <div id="search" class="search"> 
+        <form action="" method="get">
+            <input type="text" name="search" placeholder="Escribe una palabara" id="searchInput">
+            <input type="submit" value="Buscar" id="btnSearch">
+        </form>
     </div>
 
     <table>
@@ -71,21 +79,8 @@ if (isset($_GET['search'])) {
           <th>Acciones</th>
         </tr>
       </thead>
-                <div id="results" class="results">
-        <?php 
-        require_once '../conexion_b.php'; 
-        $consulta="SELECT * FROM producto_terminado";
-        $filter = "";
-        $search = (isset($_GET['search'])) ? $_GET['search'] : "";
-        if(isset($search) && strlen($search)>3){
-            $filter = " WHERE nombre_producto_t LIKE '%$search%'"
-                        or "WHERE categoria_produ_t LIKE '%$search%'";
-            $consulta = $consulta . $filter; 
-        }
-        $results = mysqli_query($conn,$consulta);
-        while($row = mysqli_fetch_array($results)){
-        ?>
       <tbody>
+        <?php if (!empty($datos)) { ?>
         <?php foreach ($datos as $row) { ?>
           <tr>
             <td><?php echo $row['cod_factura_compra']; ?></td>
@@ -96,18 +91,17 @@ if (isset($_GET['search'])) {
             <td><?php echo $row['id_empleado_fk_factura_compra']; ?></td>
             <td>
               <a class="btn-accion" href="EDITAR_FACTURAC.php?cod_factura_compra=<?php echo $row['cod_factura_compra']; ?>">Actualizar</a>
-              <a class="btn-accion" href="ELIMINAR_FACTURAC.php?cod_factura_compra=<?php echo $row['cod_factura_compra']; ?>">Eliminar</a>
+              <a class="btn-accion" href="ELIMINAR_FACTURAC.php?cod_factura_compra=<?php echo $row['cod_factura_compra']; ?>"
+              onclick="return confirm('¿Deseas eliminar este rol?');">Eliminar</a>
             </td>
           </tr>
       </tbody>
     </table>
-                <?php
-        }
-        ?>
+                  <?php } ?>
+<?php } else { ?>
+    <tr><td colspan="5">No se encontraron resultados</td></tr>
+<?php } ?>
   </div>
 
 </body>
 </html>
-            <?php
-        }
-        ?>

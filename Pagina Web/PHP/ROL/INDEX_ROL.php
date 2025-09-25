@@ -2,15 +2,10 @@
 require_once "CONEXION.php"; 
 require_once "CLASE_ROL.php";  
 
-$datos = [];
 $obj = new ROL();
     
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-    $datos = $obj->ConsultarProducto_tPorID($search); 
-} else {
-    $datos = $obj->CONSULTAR_ROL(); 
-}
+  $search = (isset($_GET['search'])) ? $_GET['search'] : "";
+  $datos = $obj->CONSULTAR_ROL($search); 
 ?>
 
 <!DOCTYPE html>
@@ -41,7 +36,7 @@ if (isset($_GET['search'])) {
     <div class="card">
       <h1>Gestión de roles</h1>
 
-     
+    
       <form action="INSERTAR_ROL.php" method="post">
         <div class="form-group">
           <input type="text" name="id_rol" placeholder="Código" required>
@@ -57,6 +52,13 @@ if (isset($_GET['search'])) {
       </form>
     </div>
 
+      <div id="search" class="search"> 
+        <form action="" method="get">
+            <input type="text" name="search" placeholder="Escribe una palabara" id="searchInput">
+            <input type="submit" value="Buscar" id="btnSearch">
+        </form>
+    </div>
+
     <table>
       <thead>
         <tr>
@@ -68,6 +70,7 @@ if (isset($_GET['search'])) {
         </tr>
       </thead>
       <tbody>
+        <?php if (!empty($datos)) { ?>
         <?php foreach ($datos as $row) { ?>
           <tr>
             <td><?php echo $row['id_rol']; ?></td>
@@ -76,13 +79,16 @@ if (isset($_GET['search'])) {
             <td><?php echo $row['estado']; ?></td>
             <td>
               <a class="btn-accion" href="EDITAR_ROL.php?id_rol=<?php echo $row['id_rol']; ?>">Actualizar</a>
-              <a class="btn-accion" href="ELIMINAR_ROL.php?id_rol=<?php echo $row['id_rol']; ?>">Eliminar</a>
+              <a class="btn-accion" href="ELIMINAR_ROL.php?id_rol=<?php echo $row['id_rol']; ?>"
+              onclick="return confirm('¿Deseas eliminar este rol?');">Eliminar</a>
             </td>
           </tr>
-        <?php } ?>
+              <?php } ?>
+<?php } else { ?>
+    <tr><td colspan="5">No se encontraron resultados</td></tr>
+<?php } ?>
       </tbody>
-    </table>
+    </table>  
   </div>
-
 </body>
 </html>

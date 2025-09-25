@@ -2,6 +2,16 @@
 
 class FACTURA_C
 {
+        private $conexion;
+
+    public function __construct() {
+        $this->conexion = new mysqli("localhost", "root", "basededatos", "luxi_fashon");
+
+        if ($this->conexion->connect_error) {
+            die("Error de conexión: " . $this->conexion->connect_error);
+        }
+    }
+    
     public function INSERT_FACTURA_C($datos_factura_c)
     {
         $con = new CONECTAR();
@@ -34,25 +44,20 @@ class FACTURA_C
         return $resultado;
     }
 
-    public function CONSULTAR_FACTURA_C()
+    public function CONSULTAR_FACTURA_C($search = "")
     {
         $con = new CONECTAR();
         $conexion = $con->conexion();
 
-        $sql = "CALL consultar_Factura_compra()";
-        $resultado = $conexion->query($sql);
+    $stmt = $conexion->prepare("CALL consultar_Factura_compra(?)");
+    $stmt->bind_param("s", $search);
+    $stmt->execute();
 
-        if (!$resultado) {
-            die("Error en la consulta: " . $conexion->error);
-        }
+    $resultado = $stmt->get_result();
+    $roles = $resultado->fetch_all(MYSQLI_ASSOC);
 
-        $factura_c = [];
-        while ($row = $resultado->fetch_assoc()) {
-            $factura_c[] = $row;
-        }
-
-        $resultado->free();
-        return $factura_c; 
+    $stmt->close();
+    return $roles;
     }
 
     public function ACTUALIZAR_FACTURA_C($datos_factura_c)

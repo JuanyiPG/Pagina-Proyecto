@@ -5,7 +5,6 @@
             private $usuario="root";
             private $password="basededatos";
             private $basedatos="LUXI_FASHON";
-          
 
             public function conexion()
             {

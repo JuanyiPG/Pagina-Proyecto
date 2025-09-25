@@ -83,9 +83,11 @@ if (isset($_GET['search'])) {
           <th>Acciones</th>
         </tr>
       </thead>
+                <div id="search" class="search"> 
+
           <div id="results" class="results">
         <?php 
-        require_once '../conexion_b.php'; 
+        require_once '../CONEXION_BUSQUEDA/conexion_b.php'; 
         $consulta="SELECT * FROM producto_terminado";
         $filter = "";
         $search = (isset($_GET['search'])) ? $_GET['search'] : "";

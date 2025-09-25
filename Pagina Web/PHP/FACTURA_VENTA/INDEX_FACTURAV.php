@@ -45,7 +45,9 @@ if (isset($_GET['search'])) {
       <form action="INSERTAR_FACRURAV.PHP" method="post">
         <div class="form-group">
           <input type="text" name="cod_factura_v" placeholder="Código" required>
-          <input type="date" name="fecha_factura_v" placeholder="Fecha" required>
+          <input type="text" name="fecha_factura_v" ="fecha" placeholder="Fecha de venta"
+                            onfocus="this.type='date'"  
+                            onblur="if(!this.value) this.type='text'">
         </div>
         <div class="form-group">
           <input type="text" name="sub_total_factura_v" placeholder=" Sub total de la factura"required>
@@ -65,6 +67,12 @@ if (isset($_GET['search'])) {
         <button type="submit" class="save-btn">Insertar</button>
       </form>
     </div>
+      <div id="search" class="search"> 
+        <form action="" method="get">
+            <input type="text" name="search" placeholder="Escribe una palabara" id="searchInput">
+            <input type="submit" value="Buscar" id="btnSearch">
+        </form>
+    </div>
 
     <table>
       <thead>
@@ -81,20 +89,8 @@ if (isset($_GET['search'])) {
           <th>Acciones</th>
         </tr>
       </thead>
-                <div id="results" class="results">
-        <?php 
-        require_once '../conexion_b.php'; 
-        $consulta="SELECT * FROM factura_venta";
-        $filter = "";
-        $search = (isset($_GET['search'])) ? $_GET['search'] : "";
-        if(isset($search) && strlen($search)>3){
-            $filter = " WHERE fecha_factura_v '%$search%'";
-            $consulta = $consulta . $filter; 
-        }
-        $results = mysqli_query($conn,$consulta);
-        while($row = mysqli_fetch_array($results)){
-        ?>
       <tbody>
+        <?php if (!empty($datos)) { ?>
         <?php foreach ($datos as $row) { ?>
           <tr>
             <td><?php echo $row['cod_factura_v']; ?></td>
@@ -108,18 +104,31 @@ if (isset($_GET['search'])) {
             <td><?php echo $row['id_empleado_fk_factura']; ?></td>
             <td>
               <a class="btn-accion" href="EDITAR_FACTURAV.php?cod_factura_v=<?php echo $row['cod_factura_v']; ?>">Actualizar</a>
-              <a class="btn-accion" href="ELIMINAR_FACTURAV.php?cod_factura_v=<?php echo $row['cod_factura_v']; ?>">Eliminar</a>
+              <a class="btn-accion" href="ELIMINAR_FACTURAV.php?cod_factura_v=<?php echo $row['cod_factura_v']; ?>"
+              onclick="return confirm('¿Deseas eliminar este rol?>Eliminar</a>
             </td>
           </tr>
+                        <?php } ?>
+      <?php } else { ?>
+    <tr><td colspan="5">No se encontraron resultados</td></tr>
+<?php } ?>
       </tbody>
     </table>
-                <?php
-        }
-        ?>
   </div>
-
 </body>
 </html>
-            <?php
-        }
-        ?>
+ <script>
+    const cantidad = document.getElementById("Cantidad");
+    const precio = document.getElementById("Precio");
+    const total = document.getElementById("total");
+
+    function calcularTotal() {
+    const cant = parseFloat(cantidad.value) || 0;
+    const prec = parseFloat(precio.value) || 0;
+      total.value = (cant * prec).toFixed(2); // 2 decimales
+    }
+
+    
+    cantidad.addEventListener("input", calcularTotal);
+    precio.addEventListener("input", calcularTotal);
+</script>

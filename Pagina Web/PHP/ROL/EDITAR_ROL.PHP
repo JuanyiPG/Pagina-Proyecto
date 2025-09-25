@@ -25,7 +25,7 @@ $data = mysqli_fetch_assoc($resultado);
 <div class="container">
   <div class="formulario">
     <form action="ACTUALIZAR_ROL.php" method="post"> 
-       <h1>Actualizar Rol</h1> 
+      <h1>Actualizar Rol</h1> 
         <input type="hidden" name="id_rol" value="<?php echo $data['id_rol']; ?>"> 
         <label for="nombre_rol">Nombre: </label> 
         <input type="text" name="nombre_rol" value="<?php echo $data['nombre_rol']; ?>" required> 

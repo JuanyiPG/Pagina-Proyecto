@@ -2,6 +2,16 @@
 
 class PRODUCTO_T
 {
+        private $conexion;
+
+    public function __construct() {
+        $this->conexion = new mysqli("localhost", "root", "basededatos", "luxi_fashon");
+
+        if ($this->conexion->connect_error) {
+            die("Error de conexión: " . $this->conexion->connect_error);
+        }
+    }
+
     public function INSERT_PRODUCTO_T($datos_producto_t)
     {
         $con = new CONECTAR();
@@ -35,25 +45,20 @@ class PRODUCTO_T
         return $resultado;
     }
 
-    public function CONSULTAR_PRODUCTO_T()
+    public function CONSULTAR_PRODUCTO_T($search = "")
     {
         $con = new CONECTAR();
         $conexion = $con->conexion();
 
-        $sql = "CALL Consultar_producto_t()";
-        $resultado = $conexion->query($sql);
+    $stmt = $conexion->prepare("CALL consultar_Producto_terminado(?)");
+    $stmt->bind_param("s", $search);
+    $stmt->execute();
 
-        if (!$resultado) {
-            die("Error en la consulta: " . $conexion->error);
-        }
+    $resultado = $stmt->get_result();
+    $roles = $resultado->fetch_all(MYSQLI_ASSOC);
 
-        $producto_t = [];
-        while ($row = $resultado->fetch_assoc()) {
-            $producto_t[] = $row;
-        }
-
-        $resultado->free();
-        return $producto_t; 
+    $stmt->close();
+    return $roles;
     }
 
     public function ACTUALIZAR($datos_producto_t)

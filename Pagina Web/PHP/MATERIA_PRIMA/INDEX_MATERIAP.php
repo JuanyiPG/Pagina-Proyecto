@@ -7,8 +7,6 @@ $obj = new MATERIA_P();
     
 if (isset($_GET['search'])) {
     $search = $_GET['search'];
-    $datos = $obj->Consultarmateriap_tPorID($search); 
-} else {
     $datos = $obj->CONSULTAR_MATERIA_P(); 
 }
 ?>
@@ -49,7 +47,7 @@ if (isset($_GET['search'])) {
         </div>
         <div class="form-group">
           <input type="text" name="color_materia_p" placeholder="Color">
-             <input type="text" name="categoria_mp" placeholder="Categoria">
+            <input type="text" name="categoria_mp" placeholder="Categoria">
         </div>
         <div class="form-group">
           <input type="text" name="tipo_material_materia_p" placeholder="Tipo de material">
@@ -66,9 +64,15 @@ if (isset($_GET['search'])) {
         </div>
         <button type="submit" class="save-btn">Insertar</button>
       </form>
-    </div>
 
-    <table>
+    </div>
+                      <div id="search" class="search"> 
+        <form action="" method="get">
+            <input type="text" name="search" placeholder="Escribe una palabara" id="searchInput">
+            <input type="submit" value="Buscar" id="btnSearch">
+        </form>
+
+    <table class="lll">
       <thead>
         <tr>
           <th>Código</th>
@@ -84,20 +88,7 @@ if (isset($_GET['search'])) {
         </tr>
       </thead>
       <tbody>
-                  <div id="results" class="results">
-        <?php 
-        require_once '../conexion_b.php'; 
-        $consulta="SELECT * FROM materia_prima";
-        $filter = "";
-        $search = (isset($_GET['search'])) ? $_GET['search'] : "";
-        if(isset($search) && strlen($search)>3){
-            $filter = " WHERE nom_materia_p LIKE '%$search%'"
-                        or "WHERE id_materia_p LIKE '%$search%'";
-            $consulta = $consulta . $filter; 
-        }
-        $results = mysqli_query($conn,$consulta);
-        while($row = mysqli_fetch_array($results)){
-        ?>
+        <?php if (!empty($datos)) { ?>
         <?php foreach ($datos as $row) { ?>
           <tr>
             <td><?php echo $row['id_materia_p']; ?></td>
@@ -111,18 +102,17 @@ if (isset($_GET['search'])) {
             <td><?php echo $row['estado_materia_p']; ?></td>
             <td>
               <a class="btn-accion" href="EDITAR_MATERIAP.php?id_materia_p=<?php echo $row['id_materia_p']; ?>">Actualizar</a>
-              <a class="btn-accion" href="ELIMINAR_MATERIAP.php?id_materia_p=<?php echo $row['id_materia_p']; ?>">Eliminar</a>
+              <a class="btn-accion" href="ELIMINAR_MATERIAP.php?id_materia_p=<?php echo $row['id_materia_p']; ?>"
+              onclick="return confirm('¿Deseas eliminar este rol?');>Eliminar</a>
             </td>
           </tr>
+                        <?php } ?>
+<?php } else { ?>
+    <tr><td colspan="5">No se encontraron resultados</td></tr>
+<?php } ?>
       </tbody>
     </table>
-                <?php
-        }
-        ?>
   </div>
 
 </body>
 </html>
-<?php
-        }
-        ?>

@@ -41,7 +41,7 @@ if (isset($_GET['search'])) {
     <div class="card">
       <h1>Gestión Clientes</h1>
 
-     
+    
       <form action="INSERTAR_CLIENTE.php" method="post">
         <div class="form-group">
           <input type="text" name="id_cliente" placeholder="Código" required>

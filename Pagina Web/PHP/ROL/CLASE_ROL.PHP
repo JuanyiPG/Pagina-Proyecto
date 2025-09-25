@@ -2,6 +2,16 @@
 
 class ROL
 {
+        private $conexion;
+
+    public function __construct() {
+        $this->conexion = new mysqli("localhost", "root", "basededatos", "luxi_fashon");
+
+        if ($this->conexion->connect_error) {
+            die("Error de conexión: " . $this->conexion->connect_error);
+        }
+    }
+
     public function INSERT_ROL($datos_rol)
     {
         $con = new CONECTAR();
@@ -32,25 +42,20 @@ class ROL
         return $resultado;
     }
 
-    public function CONSULTAR_ROL()
+    public function CONSULTAR_ROL($search = "")
     {
         $con = new CONECTAR();
         $conexion = $con->conexion();
 
-        $sql = "CALL consultar_Rol()";
-        $resultado = $conexion->query($sql);
+    $stmt = $conexion->prepare("CALL consultar_Rol(?)");
+    $stmt->bind_param("s", $search);
+    $stmt->execute();
 
-        if (!$resultado) {
-            die("Error en la consulta: " . $conexion->error);
-        }
+    $resultado = $stmt->get_result();
+    $roles = $resultado->fetch_all(MYSQLI_ASSOC);
 
-        $producto_t = [];
-        while ($row = $resultado->fetch_assoc()) {
-            $producto_t[] = $row;
-        }
-
-        $resultado->free();
-        return $producto_t; 
+    $stmt->close();
+    return $roles;
     }
 
     public function ACTUALIZAR_ROL($datos_rol)
@@ -81,12 +86,12 @@ class ROL
         return $resultado;
     }
 
-    public function ELIMINAR_ROL($id)
+    public function ELIMINAR_ROLi($id)
     {
         $con = new CONECTAR();
         $conexion = $con->conexion();
 
-        $sql = "CALL ELIMINAR_ROL(?)";
+        $sql = "CALL ELIMINAR_ROLi(?)";
         $stmt = $conexion->prepare($sql);
 
         if ($stmt === false) {
