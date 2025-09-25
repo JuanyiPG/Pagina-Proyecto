@@ -13,7 +13,7 @@ DELIMITER //
 CREATE PROCEDURE ELIMINAR_CLIENTE (IN id_cliente INT)
 BEGIN
     DELETE FROM Pedido WHERE id_cliente_fk_pedido = id_cliente;
-    DELETE FROM Cliente WHERE id_cliente = id_cliente;
+    DELETE FROM Cliente e WHERE e.id_cliente = id_cliente;
 END //
 DELIMITER ;
 
@@ -24,7 +24,7 @@ BEGIN
     DELETE FROM Factura_Venta WHERE id_empleado_fk_factura = id_empleado;
     DELETE FROM Factura_compra WHERE id_empleado_fk_factura_compra = id_empleado;
     DELETE FROM Produccion WHERE id_empleado_fk_produccion = id_empleado;
-    DELETE FROM Empleado WHERE id_empleado = id_empleado;
+    DELETE FROM Empleado e WHERE e.id_empleado = id_empleado;
 END //
 DELIMITER ;
 
@@ -63,7 +63,7 @@ BEGIN
     DELETE FROM Pedido WHERE id_produccion_fk_pedido = id_produccion;
     DELETE FROM Producto_terminado WHERE id_produccion_fk_producto_terminado = id_produccion;
     DELETE FROM Detalle_produccion_materiap_ WHERE id_produccion_fk_detalle_p_m = id_produccion;
-    DELETE FROM Produccion WHERE id_produccion = id_produccion;
+    DELETE FROM Produccion e WHERE e.id_produccion = id_produccion;
 END //
 DELIMITER ;
 
@@ -73,17 +73,17 @@ CREATE PROCEDURE ELIMINAR_PEDIDO (IN id_pedido INT)
 BEGIN
     DELETE FROM detalle_facturav_produtot WHERE cod_factura_v_fk_detalle IN 
         (SELECT cod_factura_v_fk_detalle FROM Factura_Venta WHERE cod_factura_v_fk_detalle = id_pedido);
-    DELETE FROM Pedido WHERE id_pedido = id_pedido;
+    DELETE FROM Pedido e WHERE e.id_pedido = id_pedido;
 END //
 DELIMITER ;
 
 
 DELIMITER //
-CREATE PROCEDURE ELIMINAR_ROL (IN id_rol INT)
+CREATE PROCEDURE ELIMINAR_ROLi (IN id_rol INT)
 BEGIN
     DELETE FROM Empleado WHERE id_rol_fk_empleado = id_rol;
     DELETE FROM Cliente WHERE id_rol_fk_cliente = id_rol;
-    DELETE FROM Rol WHERE id_rol = id_rol;
+    DELETE FROM Rol r WHERE r.id_rol = id_rol;
 END //
 DELIMITER ;
 

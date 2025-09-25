@@ -48,31 +48,31 @@ fecha_modificacion datetime not null default current_timestamp on update current
 /*----------INSERTAR---------------------------*/
 CREATE TABLE historial_insert_empleado (
 id_historial_ins_emple int key auto_increment,
-acccion varchar(100),
+accion varchar(100),
 fecha_modificacion datetime not null
 );
 
 CREATE TABLE historial_insert_factura_c (
 id_historial_ins_emple int key auto_increment,
-acccion varchar(100),
+accion varchar(100),
 fecha_modificacion datetime not null
 );
 
 CREATE TABLE historial_insert_factura_v (
 id_historial_ins_emple int key auto_increment,
-acccion varchar(100),
+accion varchar(100),
 fecha_modificacion datetime not null
 );
 
 CREATE TABLE historial_insert_matepri(
 id_historial_ins_emple int key auto_increment,
-acccion varchar(100),
+accion varchar(100),
 fecha_modificacion datetime not null
 );
 
 CREATE TABLE historial_insert_pedido(
 id_historial_ins_emple int key auto_increment,
-acccion varchar(100),
+accion varchar(100),
 fecha_modificacion datetime not null
 );
 
@@ -80,13 +80,13 @@ fecha_modificacion datetime not null
 
 CREATE TABLE historial_delete_empleado(
 id_historial_ins_emple int key auto_increment,
-acccion varchar(100),
+accion varchar(100),
 fecha_modificacion datetime not null
 );
 
 CREATE TABLE historial_delete_cliente(
 id_historial_ins_emple int key auto_increment,
-acccion varchar(100),
+accion varchar(100),
 fecha_modificacion datetime not null
 );
 

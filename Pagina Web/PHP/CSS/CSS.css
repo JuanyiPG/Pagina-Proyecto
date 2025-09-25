@@ -1,12 +1,4 @@
-
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pagina_formularios</title>
-  <style>
-    * {
+* {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
@@ -155,6 +147,10 @@
       font-size: 14px;
     }
 
+    table .lll{
+      margin-left: -10px;
+    }
+
     .btn-accion {
       padding: 6px 12px;
       border: none;
@@ -169,91 +165,53 @@
     .btn-accion:hover {
       background-color: #8c1238;
     }
-  </style>
-</head>
-<body>
+    /*-------buscador-----*/
+.search{
+    width: 50%;
+    margin: 20px auto;
+    background: #f5f6fa;
+}
 
-  <div class="menulateral">
-    <div class="logo">
-      <img src="../proyecto/20250906_163741.png" alt="Logo Luxy">
-    </div>
-    <hr>
-    <ul>
-      <li class="active">Inicio</li>
-      <li>Formulario1</li>
-      <li>Formulario2</li>
-      <li>Formulario3</li>
-      <li>Formulario4</li>
-    </ul>
-  </div>
+.search input{
+    width: 65%;
+    height: 35px;
+    padding: 5px;
+    border: none;
+}
 
+.search input[type="text"]{
+margin-left: 20px;
+border: 2px solid #5e0925 ;
+border-radius: 20px;
+}
 
-  <div class="main">
-    <div class="card">
-      <h1>Gestión de productos</h1>
+.search input[type="submit"]{
+    width: 20%;
+    height: 40px;
+    background-color: #5e0925;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 5px 5px 5px 0px;
+    border-radius: 20px;
+}
 
-      <form>
-        <div class="form-group">
-          <input type="text" placeholder="Código">
-          <input type="text" placeholder="Nombre">
-        </div>
-        <div class="form-group">
-          <input type="text" placeholder="Talla">
-          <input type="text" placeholder="Color">
-        </div>
-        <div class="form-group">
-          <input type="text" placeholder="Categoría">
-          <input type="text" placeholder="Material">
-        </div>
-        <div class="form-group">
-          <input type="text" placeholder="Medida">
-          <input type="text" placeholder="Cantidad">
-        </div>
-        <div class="form-group">
-          <input type="text" placeholder="Cantidad mínima">
-          <input type="text" placeholder="Valor">
-        </div>
-        <button type="submit" class="save-btn">Insertar</button>
-      </form>
-    </div>
+.results {
+    width: 80%;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;  
+}
 
-    <table>
-      <thead>
-        <tr>
-          <th>Código</th>
-          <th>Nombre</th>
-          <th>Talla</th>
-          <th>Color</th>
-          <th>Categoría</th>
-          <th>Material</th>
-          <th>Medida</th>
-          <th>Cantidad</th>
-          <th>Cantidad mínima</th>
-          <th>Valor</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Prod001</td>
-          <td>Chaqueta de cuero</td>
-          <td>M</td>
-          <td>Negra</td>
-          <td>Chaquetas</td>
-          <td>Cuero</td>
-          <td>50cm</td>
-          <td>1</td>
-          <td>1</td>
-          <td>200.000</td>
-          <td>
-            <button class="btn-accion">Actualizar</button>
-            <button class="btn-accion">Desactivar</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+.items {
+    background-color: gray;
+    padding: 15px;
+    border-radius: 4px;
+    transition: all 0.5s ease;
+    cursor: pointer;
+}
 
-</body>
-</html>
-
+.items hover {
+    transform: scale(1.05);
+}
