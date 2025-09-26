@@ -1,112 +1,89 @@
-use LUXI_FASHON;
+USE LUXI_FASHON;
 
 DELIMITER //
-CREATE PROCEDURE ELIMINAR_PRODUCTO_T (IN id_producto INT)
+
+
+CREATE PROCEDURE ELIMINAR_ROL(IN ID INT)
 BEGIN
-    DELETE FROM detalle_facturav_produtot WHERE id_producto_t_fk_detalle = id_producto;
-    DELETE FROM Producto_terminado WHERE id_producto_t = id_producto;
-END //
-DELIMITER ;
+    DELETE FROM Rol WHERE id_rol = ID;
+END;
+//
 
 
-DELIMITER //
-CREATE PROCEDURE ELIMINAR_CLIENTE (IN id_cliente INT)
+CREATE PROCEDURE ELIMINAR_EMPLEADO(IN ID INT)
 BEGIN
-    DELETE FROM Pedido WHERE id_cliente_fk_pedido = id_cliente;
-    DELETE FROM Cliente e WHERE e.id_cliente = id_cliente;
-END //
-DELIMITER ;
+    DELETE FROM Empleado WHERE id_empleado = ID;
+END;
+//
 
 
-DELIMITER //
-CREATE PROCEDURE ELIMINAR_EMPLEADO (IN id_empleado INT)
+CREATE PROCEDURE ELIMINAR_CLIENTE(IN ID INT)
 BEGIN
-    DELETE FROM Factura_Venta WHERE id_empleado_fk_factura = id_empleado;
-    DELETE FROM Factura_compra WHERE id_empleado_fk_factura_compra = id_empleado;
-    DELETE FROM Produccion WHERE id_empleado_fk_produccion = id_empleado;
-    DELETE FROM Empleado e WHERE e.id_empleado = id_empleado;
-END //
-DELIMITER ;
+    DELETE FROM Cliente WHERE id_cliente = ID;
+END;
+//
 
 
-DELIMITER //
-CREATE PROCEDURE ELIMINAR_FACTURA_COMPRA (IN cod_factura INT)
+CREATE PROCEDURE ELIMINAR_FACTURA_VENTA(IN ID INT)
 BEGIN
-    DELETE FROM Detalle_factuc_compra_m WHERE cod_factura_compra_fk_detalle_fcm = cod_factura;
-    DELETE FROM Factura_compra WHERE cod_factura_compra = cod_factura;
-END //
-DELIMITER ;
+    DELETE FROM Factura_Venta WHERE cod_factura_v = ID;
+END;
+//
 
 
-DELIMITER //
-CREATE PROCEDURE ELIMINAR_FACTURA_VENTA (IN cod_factura INT)
+CREATE PROCEDURE ELIMINAR_PEDIDO(IN ID INT)
 BEGIN
-    DELETE FROM detalle_facturav_produtot WHERE cod_factura_v_fk_detalle = cod_factura;
-    DELETE FROM Factura_Venta WHERE cod_factura_v = cod_factura;
-END //
-DELIMITER ;
+    DELETE FROM Pedido WHERE id_pedido = ID;
+END;
+//
 
 
-DELIMITER //
-CREATE PROCEDURE ELIMINAR_MATERIA_PRIMA (IN id_materia INT)
+CREATE PROCEDURE ELIMINAR_PRODUCCION(IN ID INT)
 BEGIN
-    DELETE FROM Detalle_factuc_compra_m WHERE id_materia_p_compra_fk_detalle_fcm = id_materia;
-    DELETE FROM Detalle_produccion_materiap_ WHERE id_materia_p_fk_detalle_p_m = id_materia;
-    DELETE FROM Materia_prima WHERE id_materia_p = id_materia;
-END //
-DELIMITER ;
+    DELETE FROM Produccion WHERE id_produccion = ID;
+END;
+//
 
 
-DELIMITER //
-CREATE PROCEDURE ELIMINAR_PRODUCCION (IN id_produccion INT)
+CREATE PROCEDURE ELIMINAR_PRODUCTO_TERMINADO(IN ID INT)
 BEGIN
-    DELETE FROM Pedido WHERE id_produccion_fk_pedido = id_produccion;
-    DELETE FROM Producto_terminado WHERE id_produccion_fk_producto_terminado = id_produccion;
-    DELETE FROM Detalle_produccion_materiap_ WHERE id_produccion_fk_detalle_p_m = id_produccion;
-    DELETE FROM Produccion e WHERE e.id_produccion = id_produccion;
-END //
-DELIMITER ;
+    DELETE FROM Producto_terminado WHERE id_producto_t = ID;
+END;
+//
 
 
-DELIMITER //
-CREATE PROCEDURE ELIMINAR_PEDIDO (IN id_pedido INT)
+CREATE PROCEDURE ELIMINAR_DETALLE_FACTURAV_PRODUTOT(IN ID INT)
 BEGIN
-    DELETE FROM detalle_facturav_produtot WHERE cod_factura_v_fk_detalle IN 
-        (SELECT cod_factura_v_fk_detalle FROM Factura_Venta WHERE cod_factura_v_fk_detalle = id_pedido);
-    DELETE FROM Pedido e WHERE e.id_pedido = id_pedido;
-END //
-DELIMITER ;
+    DELETE FROM detalle_facturav_produtot WHERE id_dettallef_p = ID;
+END;
+//
 
 
-DELIMITER //
-CREATE PROCEDURE ELIMINAR_ROLi (IN id_rol INT)
+CREATE PROCEDURE ELIMINAR_MATERIA_PRIMA(IN ID INT)
 BEGIN
-    DELETE FROM Empleado WHERE id_rol_fk_empleado = id_rol;
-    DELETE FROM Cliente WHERE id_rol_fk_cliente = id_rol;
-    DELETE FROM Rol r WHERE r.id_rol = id_rol;
-END //
-DELIMITER ;
+    DELETE FROM Materia_prima WHERE id_materia_p = ID;
+END;
+//
 
 
-DELIMITER //
-CREATE PROCEDURE ELIMINAR_DETALLE_PRODUCCION_MATERIA (IN id_detalle INT)
+CREATE PROCEDURE ELIMINAR_FACTURA_COMPRA(IN ID INT)
 BEGIN
-    DELETE FROM Detalle_produccion_materiap_ WHERE id_dettalle_produccion_materiap = id_detalle;
-END //
-DELIMITER ;
+    DELETE FROM Factura_compra WHERE cod_factura_compra = ID;
+END;
+//
 
 
-DELIMITER //
-CREATE PROCEDURE ELIMINAR_DETALLE_FACTURA_COMPRA (IN id_detalle INT)
+CREATE PROCEDURE ELIMINAR_DETALLE_FACTUC_COMPRA_M(IN ID INT)
 BEGIN
-    DELETE FROM Detalle_factuc_compra_m WHERE id_detalle_fcm = id_detalle;
-END //
-DELIMITER ;
+    DELETE FROM Detalle_factuc_compra_m WHERE id_detalle_fcm = ID;
+END;
+//
 
 
-DELIMITER //
-CREATE PROCEDURE ELIMINAR_DETALLE_FACTURA_VENTA (IN id_detalle INT)
+CREATE PROCEDURE ELIMINAR_DETALLE_PRODUCCION_MATERIAP(IN ID INT)
 BEGIN
-    DELETE FROM detalle_facturav_produtot WHERE id_dettallef_p = id_detalle;
-END //
+    DELETE FROM Detalle_produccion_materiap_ WHERE id_dettalle_produccion_materiap = ID;
+END;
+//
+
 DELIMITER ;
