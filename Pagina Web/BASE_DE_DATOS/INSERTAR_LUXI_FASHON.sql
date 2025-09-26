@@ -25,15 +25,17 @@ CREATE PROCEDURE insrt_Empleado(
   IN insrt_Fecha_ing_empleado DATE,
   IN insrt_salario_empleado FLOAT,
   IN insrt_Estado_empleado VARCHAR(50),
+  IN insrt_nom_usuario VARCHAR(50),
+  IN insrt_contras VARCHAR (100),
   IN insrt_id_rol_fk_empleado INT
 )
 BEGIN
   INSERT INTO Empleado (id_empleado, nom_empleado, direccion_empleado, tipo_sangre,
     telefono_empleado, correo_empleado, Fecha_ing_empleado,
-    salario_empleado, Estado_empleado, id_rol_fk_empleado)
+    salario_empleado, Estado_empleado,nom_usuario,contras, id_rol_fk_empleado)
   VALUES (insrt_id_empleado, insrt_nom_empleado, insrt_direccion_empleado, insrt_tipo_sangre,
     insrt_telefono_empleado, insrt_correo_empleado, insrt_Fecha_ing_empleado,
-    insrt_salario_empleado, insrt_Estado_empleado, insrt_id_rol_fk_empleado);
+    insrt_salario_empleado, insrt_Estado_empleado,insrt_nom_usuario,insrt_contras, insrt_id_rol_fk_empleado);
 END$$
 
 
@@ -43,13 +45,15 @@ CREATE PROCEDURE insrt_Cliente(
   IN insrt_direccion_cliente VARCHAR(100),
   IN insrt_telefono_cliente INT,
   IN insrt_correo_cliente VARCHAR(100),
+  IN insrt_nombre_usuari VARCHAR (50),
+  IN insrt_contra VARCHAR(100),
   IN insrt_id_rol_fk_cliente INT
 )
 BEGIN
   INSERT INTO Cliente (id_cliente, nom_cliente, direccion_cliente,
-    telefono_cliente, correo_cliente, id_rol_fk_cliente)
+    telefono_cliente, correo_cliente,nombre_usuari,contra, id_rol_fk_cliente)
   VALUES (insrt_id_cliente, insrt_nom_cliente, insrt_direccion_cliente,
-    insrt_telefono_cliente, insrt_correo_cliente, insrt_id_rol_fk_cliente);
+    insrt_telefono_cliente, insrt_correo_cliente,insrt_nombre_usuari, insrt_contra,insrt_id_rol_fk_cliente);
 END$$
 
 
@@ -73,30 +77,8 @@ BEGIN
 END$$
 
 
-CREATE PROCEDURE insrt_Produccion(
-  IN insrt_id_produccion INT,
-  IN insrt_fecha_inicio_produccion DATE,
-  IN insrt_cantidad_producida NUMERIC,
-  IN insrt_costo_mano_obra BIGINT,
-  IN insrt_costo_total_materia_prima BIGINT,
-  IN insrt_costo_iva BIGINT,
-  IN insrt_costo_total_produccion BIGINT,
-  IN insrt_fecha_fin_produccion DATE,
-  IN insrt_estado_produccion VARCHAR(50),
-  IN insrt_id_empleado_fk_produccion INT
-)
-BEGIN
-  INSERT INTO Produccion (id_produccion, fecha_inicio_produccion, cantidad_producida,
-    costo_mano_obra, costo_total_materia_prima, costo_iva, costo_total_produccion,
-    fecha_fin_produccion, estado_produccion, id_empleado_fk_produccion)
-  VALUES (insrt_id_produccion, insrt_fecha_inicio_produccion, insrt_cantidad_producida,
-    insrt_costo_mano_obra, insrt_costo_total_materia_prima, insrt_costo_iva,
-    insrt_costo_total_produccion, insrt_fecha_fin_produccion, insrt_estado_produccion,
-    insrt_id_empleado_fk_produccion);
-END$$
-
-
-CREATE PROCEDURE insrt_Pedido(
+CREATE  PROCEDURE insrt_Pedido(
+  IN insrt_id_pedido INT,
   IN insrt_nom_p_edido VARCHAR(100),
   IN insrt_talla_p_pedido VARCHAR(50),
   IN insrt_color_p_pedido VARCHAR(50),
@@ -108,18 +90,45 @@ CREATE PROCEDURE insrt_Pedido(
   IN insrt_sub_total_pedido BIGINT,
   IN insrt_valor_pedido BIGINT,
   IN insrt_estado_pedido VARCHAR(50),
-  IN insrt_id_cliente_fk_pedido INT,
-  IN insrt_id_produccion_fk_pedido INT
+  IN insrt_id_cliente_fk_pedido INT
+  
 )
 BEGIN
-  INSERT INTO Pedido (nom_p_edido, talla_p_pedido, color_p_pedido, categoria_p_pedido,
+  INSERT INTO Pedido (id_pedido,nom_p_edido, talla_p_pedido, color_p_pedido, categoria_p_pedido,
     material_p_pedido, cant_producto, descripcion_p_pedido, fecha_pedido,
-    sub_total_pedido, valor_pedido, estado_pedido, id_cliente_fk_pedido, id_produccion_fk_pedido)
-  VALUES (insrt_nom_p_edido, insrt_talla_p_pedido, insrt_color_p_pedido, insrt_categoria_p_pedido,
+    sub_total_pedido, valor_pedido, estado_pedido, id_cliente_fk_pedido)
+  VALUES (insrt_id_pedido,nom_p_edido, insrt_talla_p_pedido, insrt_color_p_pedido, insrt_categoria_p_pedido,
     insrt_material_p_pedido, insrt_cant_producto, insrt_descripcion_p_pedido, insrt_fecha_pedido,
     insrt_sub_total_pedido, insrt_valor_pedido, insrt_estado_pedido,
-    insrt_id_cliente_fk_pedido, insrt_id_produccion_fk_pedido);
+    insrt_id_cliente_fk_pedido);
 END$$
+
+
+CREATE PROCEDURE insrt_Produccion(
+  IN insrt_id_produccion INT,
+  IN insrt_fecha_inicio_produccion DATE,
+  IN insrt_cantidad_producida NUMERIC,
+  IN insrt_costo_mano_obra BIGINT,
+  IN insrt_costo_total_materia_prima BIGINT,
+  IN insrt_costo_iva BIGINT,
+  IN insrt_costo_total_produccion BIGINT,
+  IN insrt_fecha_fin_produccion DATE,
+  IN insrt_estado_produccion VARCHAR(50),
+  IN insrt_id_empleado_fk_produccion INT,
+  IN insrt_id_pedido_fk_produccion INT
+)
+
+BEGIN
+  INSERT INTO Produccion (id_produccion, fecha_inicio_produccion, cantidad_producida,
+    costo_mano_obra, costo_total_materia_prima, costo_iva, costo_total_produccion,
+    fecha_fin_produccion, estado_produccion, id_empleado_fk_produccion,id_pedido_fk_produccion)
+  VALUES (insrt_id_produccion, insrt_fecha_inicio_produccion, insrt_cantidad_producida,
+    insrt_costo_mano_obra, insrt_costo_total_materia_prima, insrt_costo_iva,
+    insrt_costo_total_produccion, insrt_fecha_fin_produccion, insrt_estado_produccion,
+    insrt_id_empleado_fk_produccion, insrt_id_pedido_fk_produccion);
+END$$
+
+
 
 
 CREATE PROCEDURE insrt_Producto_terminado(
