@@ -1,4 +1,4 @@
-CREATE    DATABASE LUXI_FASHON;
+CREATE DATABASE LUXI_FASHON;
 USE LUXI_FASHON;
 
 CREATE TABLE Rol (
@@ -18,6 +18,8 @@ CREATE TABLE Empleado (
   Fecha_ing_empleado DATE NOT NULL,
   salario_empleado FLOAT NOT NULL,
   Estado_empleado VARCHAR(50) NOT NULL,
+  nom_usuario VARCHAR(50) NOT NULL,
+  contras VARCHAR (100) NOT NULL,
   id_rol_fk_empleado INT NOT NULL,
   CONSTRAINT id_rol_fk_empleado FOREIGN KEY (id_rol_fk_empleado) REFERENCES Rol (id_rol)
 );
@@ -28,6 +30,8 @@ CREATE TABLE Cliente (
   direccion_cliente VARCHAR(100) NOT NULL,
   telefono_cliente INT NOT NULL,
   correo_cliente VARCHAR(100) NOT NULL,
+  nombre_usuari VARCHAR (50) NOT NULL,
+  contra VARCHAR(100) NOT NULL,
   id_rol_fk_cliente INT NOT NULL,
   CONSTRAINT id_rol_fk_cliente FOREIGN KEY (id_rol_fk_cliente) REFERENCES Rol (id_rol)
 );
@@ -45,22 +49,10 @@ CREATE TABLE Factura_Venta (
   CONSTRAINT id_empleado_fk_factura FOREIGN KEY (id_empleado_fk_factura) REFERENCES Empleado (id_empleado)
 );
 
-CREATE TABLE Produccion (
-  id_produccion INT PRIMARY KEY NOT NULL,
-  fecha_inicio_produccion DATE NOT NULL,
-  cantidad_producida NUMERIC NOT NULL,
-  costo_mano_obra BIGINT NOT NULL,
-  costo_total_materia_prima BIGINT NOT NULL,
-  costo_iva BIGINT NOT NULL,
-  costo_total_produccion BIGINT NOT NULL,
-  fecha_fin_produccion DATE NOT NULL,
-  estado_produccion VARCHAR(50) NOT NULL,
-  id_empleado_fk_produccion INT NOT NULL,
-  CONSTRAINT id_empleado_fk_produccion FOREIGN KEY(id_empleado_fk_produccion) REFERENCES Empleado (id_empleado)
-);
+
 
 CREATE TABLE Pedido (
-  id_pedido INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  id_pedido INT PRIMARY KEY  NOT NULL,
   nom_p_edido VARCHAR(100) NOT NULL,
   talla_p_pedido VARCHAR(50) NOT NULL,
   color_p_pedido VARCHAR(50) NOT NULL,
@@ -73,9 +65,23 @@ CREATE TABLE Pedido (
   valor_pedido BIGINT NOT NULL,
   estado_pedido VARCHAR(50) NOT NULL,
   id_cliente_fk_pedido INT NOT NULL,
-  CONSTRAINT id_cliente_fk_pedido FOREIGN KEY (id_cliente_fk_pedido) REFERENCES Cliente (id_cliente),
-  id_produccion_fk_pedido INT NOT NULL,
-  CONSTRAINT id_produccion_fk_pedido FOREIGN KEY (id_produccion_fk_pedido) REFERENCES Produccion (id_produccion)
+  CONSTRAINT id_cliente_fk_pedido FOREIGN KEY (id_cliente_fk_pedido) REFERENCES Cliente (id_cliente)
+);
+
+CREATE TABLE Produccion (
+  id_produccion INT PRIMARY KEY NOT NULL,
+  fecha_inicio_produccion DATE NOT NULL,
+  cantidad_producida NUMERIC NOT NULL,
+  costo_mano_obra BIGINT NOT NULL,
+  costo_total_materia_prima BIGINT NOT NULL,
+  costo_iva BIGINT NOT NULL,
+  costo_total_produccion BIGINT NOT NULL,
+  fecha_fin_produccion DATE NOT NULL,
+  estado_produccion VARCHAR(50) NOT NULL,
+  id_empleado_fk_produccion INT NOT NULL,
+  CONSTRAINT id_empleado_fk_produccion FOREIGN KEY(id_empleado_fk_produccion) REFERENCES Empleado (id_empleado),
+  id_pedido_fk_produccion INT NOT NULL,
+  CONSTRAINT id_pedido_fk_produccion FOREIGN KEY (id_pedido_fk_produccion) REFERENCES Pedido (id_pedido)
 );
 
 CREATE TABLE Producto_terminado (
