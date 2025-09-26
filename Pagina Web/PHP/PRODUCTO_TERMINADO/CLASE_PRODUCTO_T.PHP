@@ -35,12 +35,14 @@ class PRODUCTO_T
         return $resultado;
     }
 
-    public function CONSULTAR_PRODUCTO_T()
+    public function CONSULTAR_PRODUCTO_T($filtro = '')
     {
         $con = new CONECTAR();
         $conexion = $con->conexion();
 
-        $sql = "CALL Consultar_producto_t()";
+        $filtro = $conexion->real_escape_string($filtro);
+
+        $sql = "CALL Consultar_producto_terminado('$filtro')";
         $resultado = $conexion->query($sql);
 
         if (!$resultado) {
@@ -53,6 +55,7 @@ class PRODUCTO_T
         }
 
         $resultado->free();
+        $conexion->next_result();
         return $producto_t; 
     }
 

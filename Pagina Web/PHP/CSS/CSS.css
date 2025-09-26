@@ -117,3 +117,54 @@
     .btn-accion:hover {
       background-color: #8c1238;
     }
+
+        /*-------buscador-----*/
+.search{
+    width: 50%;
+    margin: 20px auto;
+    background: #f5f6fa;
+}
+
+.search input{
+    width: 65%;
+    height: 35px;
+    padding: 5px;
+    border: none;
+}
+
+.search input[type="text"]{
+margin-left: 20px;
+border: 2px solid #5e0925 ;
+border-radius: 20px;
+}
+
+.search input[type="submit"]{
+    width: 20%;
+    height: 40px;
+    background-color: #5e0925;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 5px 5px 5px 0px;
+    border-radius: 20px;
+}
+
+.results {
+    width: 80%;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;  
+}
+
+.items {
+    background-color: gray;
+    padding: 15px;
+    border-radius: 4px;
+    transition: all 0.5s ease;
+    cursor: pointer;
+}
+
+.items hover {
+    transform: scale(1.05);
+}

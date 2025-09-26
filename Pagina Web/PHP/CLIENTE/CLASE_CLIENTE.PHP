@@ -34,12 +34,14 @@ class CLIENTE
         return $resultado;
     }
 
-    public function CONSULTAR_CLIENTE()
+    public function CONSULTAR_CLIENTE($filtro = '')
     {
         $con = new CONECTAR();
         $conexion = $con->conexion();
 
-        $sql = "CALL consultar_Cliente()";
+        $filtro = $conexion->real_escape_string($filtro);
+
+        $sql = "CALL consultar_Cliente('$filtro')";
         $resultado = $conexion->query($sql);
 
         if (!$resultado) {
@@ -52,6 +54,7 @@ class CLIENTE
         }
 
         $resultado->free();
+        $conexion->next_result();
         return $cliente; 
     }
 

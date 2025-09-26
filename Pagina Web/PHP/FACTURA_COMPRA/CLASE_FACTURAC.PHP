@@ -34,12 +34,14 @@ class FACTURA_C
         return $resultado;
     }
 
-    public function CONSULTAR_FACTURA_C()
+    public function CONSULTAR_FACTURA_C($filtro = '')
     {
         $con = new CONECTAR();
         $conexion = $con->conexion();
 
-        $sql = "CALL consultar_Factura_compra()";
+        $filtro = $conexion->real_escape_string($filtro);
+
+        $sql = "CALL consultar_Factura_compra('$filtro')";
         $resultado = $conexion->query($sql);
 
         if (!$resultado) {
@@ -52,6 +54,7 @@ class FACTURA_C
         }
 
         $resultado->free();
+        $conexion->next_result();
         return $factura_c; 
     }
 

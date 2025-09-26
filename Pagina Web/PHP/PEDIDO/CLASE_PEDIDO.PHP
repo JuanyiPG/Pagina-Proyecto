@@ -42,12 +42,14 @@ class PEDIDO
         return $resultado;
     }
 
-    public function CONSULTAR_PEDIDO()
+    public function CONSULTAR_PEDIDO($filtro = '')
     {
         $con = new CONECTAR();
         $conexion = $con->conexion();
 
-        $sql = "CALL consultar_Pedido()";
+        $filtro = $conexion->real_escape_string($filtro);
+
+        $sql = "CALL consultar_Pedido('$filtro')";
         $resultado = $conexion->query($sql);
 
         if (!$resultado) {
@@ -60,6 +62,7 @@ class PEDIDO
         }
 
         $resultado->free();
+        $conexion->next_result();
         return $produccion; 
     }
 

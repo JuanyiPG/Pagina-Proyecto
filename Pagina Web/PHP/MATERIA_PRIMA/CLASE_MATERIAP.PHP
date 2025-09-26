@@ -37,12 +37,14 @@ class MATERIA_P
         return $resultado;
     }
 
-    public function CONSULTAR_MATERIA_P()
+    public function CONSULTAR_MATERIA_P($filtro = '')
     {
         $con = new CONECTAR();
         $conexion = $con->conexion();
 
-        $sql = "CALL consultar_Materia_prima()";
+        $filtro = $conexion->real_escape_string($filtro);
+
+        $sql = "CALL consultar_Materia_prima('$filtro')";
         $resultado = $conexion->query($sql);
 
         if (!$resultado) {
@@ -55,6 +57,7 @@ class MATERIA_P
         }
 
         $resultado->free();
+        $conexion->next_result();
         return $materia_p; 
     }
 

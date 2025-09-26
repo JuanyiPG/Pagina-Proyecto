@@ -5,12 +5,8 @@ require_once "CLASE_ROL.php";
 $datos = [];
 $obj = new ROL();
     
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-    $datos = $obj->ConsultarProducto_tPorID($search); 
-} else {
+$search= (isset($_GET['search']))? $_GET['search'] : "";
     $datos = $obj->CONSULTAR_ROL(); 
-}
 ?>
 
 <!DOCTYPE html>
@@ -268,6 +264,13 @@ if (isset($_GET['search'])) {
         </div>
         <button type="submit" class="save-btn">Insertar</button>
       </form>
+    </div>
+
+      <div id="search" class="search"> 
+        <form action="" method="get">
+            <input type="text" name="search" placeholder="Escribe una palabara" id="searchInput">
+            <input type="submit" value="Buscar" id="btnSearch">
+        </form>
     </div>
 
     <table>

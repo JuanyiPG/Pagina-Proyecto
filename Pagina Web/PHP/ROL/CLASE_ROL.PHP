@@ -32,12 +32,14 @@ class ROL
         return $resultado;
     }
 
-    public function CONSULTAR_ROL()
+    public function CONSULTAR_ROL($filtro = '')
     {
         $con = new CONECTAR();
         $conexion = $con->conexion();
 
-        $sql = "CALL consultar_Rol()";
+        $filtro = $conexion->real_escape_string($filtro);
+
+        $sql = "CALL consultar_Rol('$filtro')";
         $resultado = $conexion->query($sql);
 
         if (!$resultado) {
@@ -50,6 +52,7 @@ class ROL
         }
 
         $resultado->free();
+        $conexion->next_result();
         return $producto_t; 
     }
 
@@ -86,7 +89,7 @@ class ROL
         $con = new CONECTAR();
         $conexion = $con->conexion();
 
-        $sql = "CALL ELIMINAR_ROL(?)";
+        $sql = "CALL ELIMINAR_ROLi(?)";
         $stmt = $conexion->prepare($sql);
 
         if ($stmt === false) {
