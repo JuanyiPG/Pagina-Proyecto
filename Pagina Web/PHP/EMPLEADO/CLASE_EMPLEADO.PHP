@@ -1,29 +1,33 @@
 <?php
 
-class CLIENTE
+class EMPLEADO
 {
-    public function INSERT_CLIENTE($datos_cliente)
+    public function INSERT_EMPLEADO($datos_empleado)
     {
         $con = new CONECTAR();
         $conexion = $con->conexion();
 
         
-        $sql = "CALL insrt_Cliente(?,?,?,?,?,?,?,?)";
+        $sql = "CALL insrt_Empleado(?,?,?,?,?,?,?,?,?,?,?,?)";
         $stmt = $conexion->prepare($sql);
 
         if ($stmt === false) {
             die("Error en la preparación: " . $conexion->error);
         }
 
-        $stmt->bind_param("ississsi", 
-            $datos_cliente[0], 
-            $datos_cliente[1], 
-            $datos_cliente[2], 
-            $datos_cliente[3], 
-            $datos_cliente[4], 
-            $datos_cliente[5],
-            $datos_cliente[6],
-            $datos_cliente[7]
+        $stmt->bind_param("isssississsi", 
+            $datos_empleado[0], 
+            $datos_empleado[1], 
+            $datos_empleado[2], 
+            $datos_empleado[3], 
+            $datos_empleado[4], 
+            $datos_empleado[5], 
+            $datos_empleado[6],
+            $datos_empleado[7],
+            $datos_empleado[8],
+            $datos_empleado[9],
+            $datos_empleado[10],
+            $datos_empleado[11]
         );
 
         $resultado = $stmt->execute();
@@ -36,52 +40,52 @@ class CLIENTE
         return $resultado;
     }
 
-    public function CONSULTAR_CLIENTE($filtro = '')
+    public function CONSULTAR_EMPLEADO()
     {
         $con = new CONECTAR();
         $conexion = $con->conexion();
 
-        $filtro = $conexion->real_escape_string($filtro);
-
-        $sql = "CALL consultar_Cliente('$filtro')";
+        $sql = "CALL consultar_Empleado()";
         $resultado = $conexion->query($sql);
 
         if (!$resultado) {
             die("Error en la consulta: " . $conexion->error);
         }
 
-        $cliente = [];
+        $empleado = [];
         while ($row = $resultado->fetch_assoc()) {
-            $cliente[] = $row;
+            $empleado[] = $row;
         }
 
         $resultado->free();
-        $conexion->next_result();
-        return $cliente; 
+        return $empleado; 
     }
 
-    public function ACTUALIZAR_CLIENTE($datos_cliente)
+    public function ACTUALIZAR_EMPLEADO($datos_empleado)
     {
         $con = new CONECTAR();
         $conexion = $con->conexion();
 
-        $sql = "CALL actualizar_Cliente(?,?,?,?,?,?,?,?)";
+        $sql = "CALL actualizar_Empleado(?,?,?,?,?,?,?,?,?,?,?,?)";
         $stmt = $conexion->prepare($sql);
 
         if ($stmt === false) {
             die("Error en la preparación: " . $conexion->error);
         }
 
-        $stmt->bind_param("ississsi",
-            $datos_cliente[0], 
-            $datos_cliente[1], 
-            $datos_cliente[2], 
-            $datos_cliente[3], 
-            $datos_cliente[4], 
-            $datos_cliente[5],
-            $datos_cliente[6],
-            $datos_cliente[7]
-        );
+        $stmt->bind_param("isssississsi",
+            $datos_empleado[0], 
+            $datos_empleado[1], 
+            $datos_empleado[2], 
+            $datos_empleado[3], 
+            $datos_empleado[4], 
+            $datos_empleado[5], 
+            $datos_empleado[6],
+            $datos_empleado[7],
+            $datos_empleado[8],
+            $datos_empleado[9],
+            $datos_empleado[10],
+            $datos_empleado[11]);
 
         $resultado = $stmt->execute();
 
@@ -93,12 +97,12 @@ class CLIENTE
         return $resultado;
     }
 
-    public function ELIMINAR_CLIENTE($id)
+    public function ELIMINAR_EMPLEADO($id)
     {
         $con = new CONECTAR();
         $conexion = $con->conexion();
 
-        $sql = "CALL ELIMINAR_CLIENTE(?)";
+        $sql = "CALL ELIMINAR_EMPLEADO(?)";
         $stmt = $conexion->prepare($sql);
 
         if ($stmt === false) {

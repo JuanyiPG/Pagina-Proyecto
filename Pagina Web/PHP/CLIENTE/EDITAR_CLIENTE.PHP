@@ -5,7 +5,7 @@ $obj = new CONECTAR();
 $conexion = $obj->conexion();
 
 $id = $_GET['id_cliente'];
-$sql = "SELECT id_cliente,nom_cliente,direccion_cliente,telefono_cliente,correo_cliente,id_rol_fk_cliente
+$sql = "SELECT id_cliente,nom_cliente,direccion_cliente,telefono_cliente,correo_cliente,nombre_usuari,contra,id_rol_fk_cliente
 FROM Cliente
 WHERE id_cliente ='$id'";
 $resultado = mysqli_query($conexion,$sql);
@@ -35,6 +35,10 @@ $data = mysqli_fetch_assoc($resultado);
         <input type="text" name="telefono_cliente" value="<?php echo $data['telefono_cliente']; ?>" required> 
         <label for="correo_cliente">Unidad de medida:</label> 
         <input type="text" name="correo_cliente" value="<?php echo $data['correo_cliente']; ?>" required> 
+        <label for="nombre_usuari">Nombre de usuario:</label> 
+        <input type="text" name="nombre_usuari" value="<?php echo $data['nombre_usuari']; ?>" required> 
+        <label for="contra">Contraseña:</label> 
+        <input type="text" name="contra" value="<?php echo $data['contra']; ?>" required> 
         <label for="id_rol_fk_cliente">numero de produccion:</label> 
         <input type="text" name="id_rol_fk_cliente" value="<?php echo $data['id_rol_fk_cliente']; ?>" required>
 

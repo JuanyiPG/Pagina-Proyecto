@@ -1,15 +1,15 @@
 <?php 
 require_once "CONEXION.php"; 
-require_once "CLASE_CLIENTE.php";  
+require_once "CLASE_EMPLEADO.php";  
 
 $datos = [];
-$obj = new CLIENTE();
+$obj = new EMPLEADO();
     
 if (isset($_GET['search'])) {
     $search = $_GET['search'];
-    $datos = $obj->Consultarcliente_tPorID($search); 
+    $datos = $obj->Consultarempleado_tPorID($search); 
 } else {
-    $datos = $obj->CONSULTAR_CLIENTE(); 
+    $datos = $obj->CONSULTAR_EMPLEADO(); 
 }
 ?>
 
@@ -18,10 +18,9 @@ if (isset($_GET['search'])) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestion CLientes</title>
-   <link rel="stylesheet" href="../CSS/CSS.css">
-  </head>
-<body>
+  <title>Producto terminado</title>
+  <link rel="stylesheet" href="../CSS/CSS.css">
+  
 
 <style>
     .sidebar {
@@ -168,7 +167,7 @@ if (isset($_GET['search'])) {
 .sidebar::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.4);
 }
-  </style>
+</style>
 </head>
 <body>
   <aside class="sidebar">
@@ -252,29 +251,36 @@ if (isset($_GET['search'])) {
     });
   </script>
 
+
   <div class="main">
     <div class="card">
-      <h1>Gestión Clientes</h1>
+      <h1>Gestión de Empleados</h1>
 
      
-      <form action="INSERTAR_CLIENTE.php" method="post">
+      <form action="INSERTAR_EMPLEADO.php" method="post">
         <div class="form-group">
-          <input type="text" name="id_cliente" placeholder="Código" required>
-          <input type="text" name="nom_cliente" placeholder="Nombre" required>
+          <input type="text" name="id_empleado" placeholder="Código" required>
+          <input type="text" name="nom_empleado" placeholder="Nombre" required>
         </div>
         <div class="form-group">
-          <input type="text" name="direccion_cliente" placeholder="Direccion"required>
+          <input type="text" name="direccion_empleado" placeholder="Direccion">
+          <input type="text" name="tipo_sangre" placeholder="tipo de sangre">
         </div>
         <div class="form-group">
-          <input type="text" name="telefono_cliente" placeholder="telefono"required>
-          <input type="text" name="correo_cliente" placeholder="Correo"required>
+          <input type="text" name="telefono_empleado" placeholder="Telefono">
+          <input type="text" name="correo_empleado" placeholder="Correo">
         </div>
         <div class="form-group">
-          <input type="text" name="nombre_usuari" placeholder="Nombre de usuario"required>
-          <input type="text" name="contra" placeholder="Contraseña"required>
+          <input type="date" name="Fecha_ing_empleado" placeholder="Fecha">
+          <input type="text" name="salario_empleado" placeholder="Salario">
         </div>
         <div class="form-group">
-          <input type="text" name="id_rol_fk_cliente" placeholder="Numero de rol"required>
+          <input type="text" name="Estado_empleado" placeholder="Estado">
+          <input type="text" name="nom_usuario" placeholder="Nombre de usuario">
+        </div>
+        <div class="form-group">
+            <input type="text" name="contras" placeholder="Contaseña">
+            <input type="text" name="id_rol_fk_empleado" placeholder="Identificador de rol">
         </div>
         <button type="submit" class="save-btn">Insertar</button>
       </form>
@@ -286,10 +292,14 @@ if (isset($_GET['search'])) {
           <th>Código</th>
           <th>Nombre</th>
           <th>Direccion</th>
+          <th>Tipo de sangre</th>
           <th>Telefono</th>
           <th>Correo</th>
-          <th>nombre de usuario</th>
-          <th>contraseña</th>
+          <th>Fecha de ingreso</th>
+          <th>Salario</th>
+          <th>Estado</th>
+          <th>Nombre de usuario</th>
+          <th>Contraseña</th>
           <th>Numero de rol</th>
           <th>Acciones</th>
         </tr>
@@ -297,17 +307,21 @@ if (isset($_GET['search'])) {
       <tbody>
         <?php foreach ($datos as $row) { ?>
           <tr>
-            <td><?php echo $row['id_cliente']; ?></td>
-            <td><?php echo $row['nom_cliente']; ?></td>
-            <td><?php echo $row['direccion_cliente']; ?></td>
-            <td><?php echo $row['telefono_cliente']; ?></td>
-            <td><?php echo $row['correo_cliente']; ?></td>
-            <td><?php echo $row['nombre_usuari']; ?></td>
-            <td><?php echo $row['contra']; ?></td>
-            <td><?php echo $row['id_rol_fk_cliente']; ?></td>
+            <td><?php echo $row['id_empleado']; ?></td>
+            <td><?php echo $row['nom_empleado']; ?></td>
+            <td><?php echo $row['direccion_empleado']; ?></td>
+            <td><?php echo $row['tipo_sangre']; ?></td>
+            <td><?php echo $row['telefono_empleado']; ?></td>
+            <td><?php echo $row['correo_empleado']; ?></td>
+            <td><?php echo $row['Fecha_ing_empleado']; ?></td>
+            <td><?php echo $row['salario_empleado']; ?></td>
+            <td><?php echo $row['Estado_empleado']; ?></td>
+            <td><?php echo $row['nom_usuario']; ?></td>
+            <td><?php echo $row['contras']; ?></td>
+            <td><?php echo $row['id_rol_fk_empleado']; ?></td>
             <td>
-              <a class="btn-accion" href="EDITAR_CLIENTE.php?id_cliente=<?php echo $row['id_cliente']; ?>">Actualizar</a>
-              <a class="btn-accion" href="ELIMINAR_CLIENTE.php?id_cliente=<?php echo $row['id_cliente']; ?>">Eliminar</a>
+              <a class="btn-accion" href="EDITAR_EMPLEADO.php?id_empleado=<?php echo $row['id_empleado']; ?>">Actualizar</a>
+              <a class="btn-accion" href="ELIMINAR_EMPLEADO.php?id_empleado=<?php echo $row['id_empleado']; ?>">Eliminar</a>
             </td>
           </tr>
         <?php } ?>
