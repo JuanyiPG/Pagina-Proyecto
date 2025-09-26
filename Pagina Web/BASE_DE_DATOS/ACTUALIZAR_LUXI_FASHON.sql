@@ -27,6 +27,8 @@ CREATE PROCEDURE actualizar_Empleado (
     IN actuali_fecha_ing_empleado DATE,
     IN actuali_salario_empleado FLOAT,
     IN actuali_estado_empleado VARCHAR(50),
+    IN actuali_nom_usuario VARCHAR(50),
+    IN actuali_contras VARCHAR (100),
     IN actuali_id_rol_fk_empleado INT
 )
 BEGIN
@@ -39,6 +41,8 @@ BEGIN
         Fecha_ing_empleado = actuali_fecha_ing_empleado,
         salario_empleado = actuali_salario_empleado,
         Estado_empleado = actuali_estado_empleado,
+		nom_usuario = actuali_nom_usuario,
+        contras = actuali_contras,
         id_rol_fk_empleado = actuali_id_rol_fk_empleado
     WHERE id_empleado = actuali_id_empleado;
 END$$
@@ -50,6 +54,8 @@ CREATE PROCEDURE actualizar_Cliente (
     IN actuali_direccion_cliente VARCHAR(100),
     IN actuali_telefono_cliente INT,
     IN actuali_correo_cliente VARCHAR(100),
+	IN actuali_nombre_usuari VARCHAR (50),
+    IN actuali_contra VARCHAR(100),
     IN actuali_id_rol_fk_cliente INT
 )
 BEGIN
@@ -58,6 +64,8 @@ BEGIN
         direccion_cliente = actuali_direccion_cliente,
         telefono_cliente = actuali_telefono_cliente,
         correo_cliente = actuali_correo_cliente,
+        nombre_usuari = actuali_nombre_usuari,
+        contra = actuali_contra,
         id_rol_fk_cliente = actuali_id_rol_fk_cliente
     WHERE id_cliente = actuali_id_cliente;
 END$$
@@ -88,32 +96,6 @@ BEGIN
 END$$
 
 
-CREATE PROCEDURE actualizar_Produccion (
-    IN actuali_id_produccion INT,
-    IN actuali_fecha_inicio_produccion DATE,
-    IN actuali_cantidad_producida NUMERIC,
-    IN actuali_costo_mano_obra BIGINT,
-    IN actuali_costo_total_materia_prima BIGINT,
-    IN costo_iva BIGINT,
-    IN actuali_costo_total_produccion BIGINT,
-    IN actuali_fecha_fin_produccion DATE,
-    IN actuali_estado_produccion VARCHAR(50),
-    IN actuali_id_empleado_fk_produccion INT
-)
-BEGIN
-    UPDATE Produccion
-    SET fecha_inicio_produccion = actuali_fecha_inicio_produccion,
-        cantidad_producida = actuali_cantidad_producida,
-        costo_mano_obra = actuali_costo_mano_obra,
-        costo_total_materia_prima = actuali_costo_total_materia_prima,
-        costo_iva = actuali_costo_iva,
-        costo_total_produccion = actuali_costo_total_produccion,
-        fecha_fin_produccion = actuali_fecha_fin_produccion,
-        estado_produccion = actuali_estado_produccion,
-        id_empleado_fk_produccion = actuali_id_empleado_fk_produccion
-    WHERE id_produccion = actuali_id_produccion;
-END$$
-
 
 CREATE PROCEDURE actualizar_Pedido (
     IN actuali_id_pedido INT,
@@ -128,12 +110,13 @@ CREATE PROCEDURE actualizar_Pedido (
     IN actuali_sub_total_pedido BIGINT,
     IN actuali_valor_pedido BIGINT,
     IN actuali_estado_pedido VARCHAR(50),
-    IN actuali_id_cliente_fk_pedido INT,
-    IN actuali_id_produccion_fk_pedido INT
+    IN actuali_id_cliente_fk_pedido INT
+    
 )
 BEGIN
     UPDATE Pedido
-    SET nom_p_edido = actuali_nom_p_edido,
+    SET id_pedido = actuali_id_pedido,
+        nom_p_edido = actuali_nom_p_edido,
         talla_p_pedido = actuali_talla_p_pedido,
         color_p_pedido = actuali_color_p_pedido,
         categoria_p_pedido = actuali_categoria_p_pedido,
@@ -144,9 +127,36 @@ BEGIN
         sub_total_pedido = actuali_sub_total_pedido,
         valor_pedido = actuali_valor_pedido,
         estado_pedido = actuali_estado_pedido,
-        id_cliente_fk_pedido = actuali_id_cliente_fk_pedido,
-        id_produccion_fk_pedido = actuali_id_produccion_fk_pedido
+        id_cliente_fk_pedido = actuali_id_cliente_fk_pedido
     WHERE id_pedido = actuali_id_pedido;
+END$$
+
+CREATE PROCEDURE actualizar_Produccion (
+    IN actuali_id_produccion INT,
+    IN actuali_fecha_inicio_produccion DATE,
+    IN actuali_cantidad_producida NUMERIC,
+    IN actuali_costo_mano_obra BIGINT,
+    IN actuali_costo_total_materia_prima BIGINT,
+    IN actuali_costo_iva BIGINT,
+    IN actuali_costo_total_produccion BIGINT,
+    IN actuali_fecha_fin_produccion DATE,
+    IN actuali_estado_produccion VARCHAR(50),
+    IN actuali_id_empleado_fk_produccion INT,
+    IN actuali_id_pedido_fk_produccion INT
+)
+BEGIN
+    UPDATE Produccion
+    SET fecha_inicio_produccion = actuali_fecha_inicio_produccion,
+        cantidad_producida = actuali_cantidad_producida,
+        costo_mano_obra = actuali_costo_mano_obra,
+        costo_total_materia_prima = actuali_costo_total_materia_prima,
+        costo_iva = actuali_costo_iva,
+        costo_total_produccion = actuali_costo_total_produccion,
+        fecha_fin_produccion = actuali_fecha_fin_produccion,
+        estado_produccion = actuali_estado_produccion,
+        id_empleado_fk_produccion = actuali_id_empleado_fk_produccion,
+        id_pedido_fk_produccion = actuali_id_pedido_fk_produccion
+    WHERE id_produccion = actuali_id_produccion;
 END$$
 
 
