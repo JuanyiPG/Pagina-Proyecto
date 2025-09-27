@@ -1,5 +1,5 @@
 <?php
-require_once "CONEXION.php";
+require_once "../CONFIG.php";
 
 $obj = new CONECTAR();
 $conexion = $obj->conexion();

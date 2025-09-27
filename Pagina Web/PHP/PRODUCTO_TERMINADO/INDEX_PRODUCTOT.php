@@ -1,16 +1,12 @@
 <?php 
-require_once "CONEXION.php"; 
+require_once "../CONFIG.php"; 
 require_once "CLASE_PRODUCTO_T.php";  
 
 $datos = [];
 $obj = new PRODUCTO_T();
     
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-    $datos = $obj->ConsultarProducto_tPorID($search); 
-} else {
-    $datos = $obj->CONSULTAR_PRODUCTO_T(); 
-}
+$search = (isset($_GET['search'])) ? $_GET['search']: "";
+    $datos = $obj->CONSULTAR_PRODUCTO_T($search); 
 ?>
 
 <!DOCTYPE html>
@@ -277,6 +273,13 @@ if (isset($_GET['search'])) {
       </form>
     </div>
 
+    <div id="search" class="search"> 
+        <form action="" method="get">
+            <input type="text" name="search" placeholder="Escribe una palabara" id="searchInput">
+            <input type="submit" value="Buscar" id="btnSearch">
+        </form>
+    </div>
+
     <table>
       <thead>
         <tr>
@@ -291,7 +294,9 @@ if (isset($_GET['search'])) {
         </tr>
       </thead>
       <tbody>
+        <?php if (!empty($datos)) { ?>
         <?php foreach ($datos as $row) { ?>
+          
           <tr>
             <td><?php echo $row['id_producto_t']; ?></td>
             <td><?php echo $row['nombre_producto_t']; ?></td>
@@ -306,6 +311,9 @@ if (isset($_GET['search'])) {
             </td>
           </tr>
         <?php } ?>
+        <?php } else { ?>
+        <tr><td colspan="5">No se encontraron resultados</td></tr>
+<?php } ?>
       </tbody>
     </table>
   </div>

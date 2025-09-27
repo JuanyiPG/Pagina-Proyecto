@@ -1,16 +1,12 @@
 <?php 
-require_once "CONEXION.php"; 
+require_once "../CONFIG.PHP"; 
 require_once "CLASE_EMPLEADO.php";  
 
 $datos = [];
 $obj = new EMPLEADO();
     
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-    $datos = $obj->Consultarempleado_tPorID($search); 
-} else {
-    $datos = $obj->CONSULTAR_EMPLEADO(); 
-}
+$search = (isset($_GET['search'])) ? $_GET['search'] : "";
+    $datos = $obj->CONSULTAR_EMPLEADO($search); 
 ?>
 
 <!DOCTYPE html>
@@ -19,7 +15,7 @@ if (isset($_GET['search'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Producto terminado</title>
-  <link rel="stylesheet" href="../CSS/CSS.css">
+  <link rel="stylesheet" href="../CSS/form.css">
   
 
 <style>
@@ -286,6 +282,13 @@ if (isset($_GET['search'])) {
       </form>
     </div>
 
+    <div id="search" class="search"> 
+        <form action="" method="get">
+            <input type="text" name="search" placeholder="Escribe una palabara" id="searchInput">
+            <input type="submit" value="Buscar" id="btnSearch">
+        </form>
+    </div>
+
     <table>
       <thead>
         <tr>
@@ -305,6 +308,7 @@ if (isset($_GET['search'])) {
         </tr>
       </thead>
       <tbody>
+        <?php if (!empty($datos)) { ?>
         <?php foreach ($datos as $row) { ?>
           <tr>
             <td><?php echo $row['id_empleado']; ?></td>
@@ -320,11 +324,14 @@ if (isset($_GET['search'])) {
             <td><?php echo $row['contras']; ?></td>
             <td><?php echo $row['id_rol_fk_empleado']; ?></td>
             <td>
-              <a class="btn-accion" href="EDITAR_EMPLEADO.php?id_empleado=<?php echo $row['id_empleado']; ?>">Actualizar</a>
-              <a class="btn-accion" href="ELIMINAR_EMPLEADO.php?id_empleado=<?php echo $row['id_empleado']; ?>">Eliminar</a>
+              <a class="btn" href="EDITAR_EMPLEADO.php?id_empleado=<?php echo $row['id_empleado']; ?>">Actualizar</a>
+              <a class="btn" href="ELIMINAR_EMPLEADO.php?id_empleado=<?php echo $row['id_empleado']; ?>">Eliminar</a>
             </td>
           </tr>
         <?php } ?>
+        <?php } else { ?>
+    <tr><td colspan="5">No se encontraron resultados</td></tr>
+<?php } ?>
       </tbody>
     </table>
   </div>

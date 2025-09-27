@@ -1,6 +1,6 @@
 <?php
 
-require_once "CONEXION.php"; 
+require_once "../CONFING.php"; 
 require_once "CLASE_FACTURAV.PHP"; 
 
 $cod_factura_v = $_POST['cod_factura_v'];

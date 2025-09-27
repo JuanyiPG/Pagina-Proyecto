@@ -1,6 +1,6 @@
 <?php
 
-require_once "CONEXION.php"; 
+require_once "../CONFIG.php"; 
 require_once "CLASE_MATERIAP.php"; 
 
 $id_materia_p = $_POST['id_materia_p'];

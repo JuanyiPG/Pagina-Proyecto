@@ -1,16 +1,12 @@
 <?php 
-require_once "CONEXION.php"; 
+require_once "../CONFIG.php"; 
 require_once "CLASE_FACTURAV.PHP";  
 
 $datos = [];
 $obj = new FACTURA_V();
     
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-    $datos = $obj->ConsultarfacturavtPorID($search); 
-} else {
-    $datos = $obj->CONSULTAR_FACTURA_V(); 
-}
+$search = (isset($_GET['search'])) ? $_GET['search'] : "";
+    $datos = $obj->CONSULTAR_FACTURA_V($search); 
 ?>
 
 <!DOCTYPE html>
@@ -19,7 +15,7 @@ if (isset($_GET['search'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fctura Venta</title>
-  <link rel="stylesheet" href="../CSS/CSS.css">
+  <link rel="stylesheet" href="../CSS/form.css">
  <style>
     .sidebar {
       background-image: linear-gradient(to bottom, rgb(255, 255, 255), #5c0b26);
@@ -261,11 +257,11 @@ if (isset($_GET['search'])) {
           <input type="date" name="fecha_factura_v" placeholder="Fecha" required>
         </div>
         <div class="form-group">
-          <input type="text" name="sub_total_factura_v" placeholder=" Sub total de la factura"required>
+          <input type="text" name="sub_total_factura_v" id="SubTotal" placeholder=" Sub total de la factura"required>
           <input type="text" name="iva_factura_v" id = "Iva" placeholder="IVA"required>
         </div>
         <div class="form-group">
-          <input type="text" name="total_factura_v" id= "Total" placeholder="Total"required>
+          <input type="text" name="total_factura_v" id= "Total" placeholder="Total"required readonly >
           <input type="text" name="metodo_pago" placeholder="Metodo de pago"required>
         </div>
         <div class="form-group">

@@ -1,16 +1,12 @@
 <?php 
-require_once "CONEXION.php"; 
+require_once "../CONFIG.PHP"; 
 require_once "CLASE_PRODUCCION.PHP";  
 
 $datos = [];
 $obj = new PRODUCCION();
     
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-    $datos = $obj->ConsultarproduccionPorID($search); 
-} else {
-    $datos = $obj->CONSULTAR_PRODUCCION(); 
-}
+$search = (isset($_GET['search'])) ? $_GET['search'] : ""; 
+    $datos = $obj->CONSULTAR_PRODUCCION($search); 
 ?>
 
 <!DOCTYPE html>
@@ -19,7 +15,7 @@ if (isset($_GET['search'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Produccion</title>
-  <link rel="stylesheet" href="../CSS/CSS.css">
+  <link rel="stylesheet" href="../CSS/form.css">
 <style>
     .sidebar {
       background-image: linear-gradient(to bottom, rgb(255, 255, 255), #5c0b26);
@@ -282,6 +278,12 @@ if (isset($_GET['search'])) {
         <button type="submit" class="save-btn">Insertar</button>
       </form>
     </div>
+    <div id="search" class="search"> 
+        <form action="" method="get">
+            <input type="text" name="search" placeholder="Escribe una palabara" id="searchInput">
+            <input type="submit" value="Buscar" id="btnSearch">
+        </form>
+    </div>
 
     <table>
       <thead>
@@ -301,6 +303,7 @@ if (isset($_GET['search'])) {
         </tr>
       </thead>
       <tbody>
+        <?php if (!empty($datos)) { ?>
         <?php foreach ($datos as $row) { ?>
           <tr>
             <td><?php echo $row['id_produccion']; ?></td>
@@ -315,11 +318,14 @@ if (isset($_GET['search'])) {
             <td><?php echo $row['id_empleado_fk_produccion']; ?></td>
             <td><?php echo $row['id_pedido_fk_produccion']; ?></td>
             <td>
-              <a class="btn-accion" href="EDITAR_PRODUCCION.php?id_produccion=<?php echo $row['id_produccion']; ?>">Actualizar</a>
-              <a class="btn-accion" href="ELIMINAR_PRODUCCION.php?id_produccion=<?php echo $row['id_produccion']; ?>">Eliminar</a>
+              <a class="btn" href="EDITAR_PRODUCCION.php?id_produccion=<?php echo $row['id_produccion']; ?>">Actualizar</a>
+              <a class="btn" href="ELIMINAR_PRODUCCION.php?id_produccion=<?php echo $row['id_produccion']; ?>">Eliminar</a>
             </td>
           </tr>
         <?php } ?>
+        <?php } else { ?>
+    <tr><td colspan="5">No se encontraron resultados</td></tr>
+<?php } ?>
       </tbody>
     </table>
   </div>

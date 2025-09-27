@@ -1,6 +1,6 @@
 <?php
 
-require_once "CONEXION.php"; 
+require_once "../CONFIG.php"; 
 require_once "CLASE_ROL.php"; 
 
 $id_rol = $_POST['id_rol'];

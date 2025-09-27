@@ -1,12 +1,12 @@
 <?php 
-require_once "CONEXION.php"; 
+require_once "../CONFIG.php"; 
 require_once "CLASE_ROL.php";  
 
 $datos = [];
 $obj = new ROL();
     
 $search= (isset($_GET['search']))? $_GET['search'] : "";
-    $datos = $obj->CONSULTAR_ROL(); 
+    $datos = $obj->CONSULTAR_ROL($search); 
 ?>
 
 <!DOCTYPE html>
@@ -15,7 +15,7 @@ $search= (isset($_GET['search']))? $_GET['search'] : "";
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Roles</title>
-  <link rel="stylesheet" href="../CSS/CSS.css">
+  <link rel="stylesheet" href="../CSS/form.css">
 <style>
     .sidebar {
       background-image: linear-gradient(to bottom, rgb(255, 255, 255), #5c0b26);
@@ -284,6 +284,7 @@ $search= (isset($_GET['search']))? $_GET['search'] : "";
         </tr>
       </thead>
       <tbody>
+        <?php if (!empty($datos)) { ?>
         <?php foreach ($datos as $row) { ?>
           <tr>
             <td><?php echo $row['id_rol']; ?></td>
@@ -292,10 +293,14 @@ $search= (isset($_GET['search']))? $_GET['search'] : "";
             <td><?php echo $row['estado']; ?></td>
             <td>
               <a class="btn-accion" href="EDITAR_ROL.php?id_rol=<?php echo $row['id_rol']; ?>">Actualizar</a>
-              <a class="btn-accion" href="ELIMINAR_ROL.php?id_rol=<?php echo $row['id_rol']; ?>">Eliminar</a>
+              <a class="btn-accion" href="ELIMINAR_ROL.php?id_rol=<?php echo $row['id_rol']; ?>"
+              >Eliminar</a>
             </td>
           </tr>
         <?php } ?>
+        <?php } else { ?>
+    <tr><td colspan="5">No se encontraron resultados</td></tr>
+<?php } ?>
       </tbody>
     </table>
   </div>

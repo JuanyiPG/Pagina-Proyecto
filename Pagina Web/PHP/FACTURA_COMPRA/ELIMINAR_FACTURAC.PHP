@@ -1,5 +1,5 @@
 <?php 
-require_once "CONEXION.php"; 
+require_once "../CONFIG.php"; 
 require_once "CLASE_FACTURAC.php"; 
 
 $id = $_GET['cod_factura_compra']; 

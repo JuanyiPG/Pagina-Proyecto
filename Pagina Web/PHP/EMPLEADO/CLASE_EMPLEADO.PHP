@@ -40,12 +40,12 @@ class EMPLEADO
         return $resultado;
     }
 
-    public function CONSULTAR_EMPLEADO()
+    public function CONSULTAR_EMPLEADO($filtro = '')
     {
         $con = new CONECTAR();
         $conexion = $con->conexion();
 
-        $sql = "CALL consultar_Empleado()";
+        $sql = "CALL consultar_Empleado('$filtro')";
         $resultado = $conexion->query($sql);
 
         if (!$resultado) {

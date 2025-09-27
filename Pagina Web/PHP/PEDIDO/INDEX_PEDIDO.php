@@ -1,16 +1,12 @@
 <?php 
-require_once "CONEXION.php"; 
+require_once "../CONFIG.php"; 
 require_once "CLASE_PEDIDO.PHP";  
 
 $datos = [];
 $obj = new PEDIDO();
     
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-    $datos = $obj->ConsultarpedidoPorID($search); 
-} else {
-    $datos = $obj->CONSULTAR_PEDIDO(); 
-}
+$search=(isset($_GET['search'])) ? $_GET['search'] : "";
+    $datos = $obj->CONSULTAR_PEDIDO($search); 
 ?>
 
 <!DOCTYPE html>
@@ -19,7 +15,7 @@ if (isset($_GET['search'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pedido</title>
-  <link rel="stylesheet" href="../CSS/CSS.css">
+  <link rel="stylesheet" href="../CSS/form.css">
 <style>
     .sidebar {
       background-image: linear-gradient(to bottom, rgb(255, 255, 255), #5c0b26);
@@ -287,6 +283,13 @@ if (isset($_GET['search'])) {
       </form>
     </div>
 
+    <div id="search" class="search"> 
+        <form action="" method="get">
+            <input type="text" name="search" placeholder="Escribe una palabara" id="searchInput">
+            <input type="submit" value="Buscar" id="btnSearch">
+        </form>
+    </div>
+
     <table>
       <thead>
         <tr>
@@ -307,6 +310,7 @@ if (isset($_GET['search'])) {
         </tr>
       </thead>
       <tbody>
+        <?php if (!empty($datos)) { ?>
         <?php foreach ($datos as $row) { ?>
           <tr>
             <td><?php echo $row['id_pedido']; ?></td>
@@ -323,11 +327,14 @@ if (isset($_GET['search'])) {
             <td><?php echo $row['estado_pedido']; ?></td>
             <td><?php echo $row['id_cliente_fk_pedido']; ?></td>
             <td>
-              <a class="btn-accion" href="EDITAR_PEDIDO.php?id_pedido=<?php echo $row['id_pedido']; ?>">Actualizar</a>
-              <a class="btn-accion" href="ELIMINAR_PEDIDO.php?id_pedido=<?php echo $row['id_pedido']; ?>">Eliminar</a>
+              <a class="btn" href="EDITAR_PEDIDO.php?id_pedido=<?php echo $row['id_pedido']; ?>">Actualizar</a>
+              <a class="btn" href="ELIMINAR_PEDIDO.php?id_pedido=<?php echo $row['id_pedido']; ?>">Eliminar</a>
             </td>
           </tr>
         <?php } ?>
+        <?php } else { ?>
+        <tr><td colspan="5">No se encontraron resultados</td></tr>
+<?php } ?>
       </tbody>
     </table>
   </div>

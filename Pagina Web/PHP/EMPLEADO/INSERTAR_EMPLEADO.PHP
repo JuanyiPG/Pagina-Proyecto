@@ -1,6 +1,6 @@
 <?php
 
-require_once "CONEXION.php"; 
+require_once "../CONFIG.PHP"; 
 require_once "CLASE_EMPLEADO.php"; 
 
 $id_empleado = $_POST['id_empleado'];

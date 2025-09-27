@@ -1,16 +1,12 @@
 <?php 
-require_once "CONEXION.php"; 
+require_once "../CONFIG.php"; 
 require_once "CLASE_CLIENTE.php";  
 
 $datos = [];
 $obj = new CLIENTE();
     
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-    $datos = $obj->Consultarcliente_tPorID($search); 
-} else {
-    $datos = $obj->CONSULTAR_CLIENTE(); 
-}
+$search = (isset($_GET['search'])) ? $_GET['search'] : "";
+    $datos = $obj->CONSULTAR_CLIENTE($search); 
 ?>
 
 <!DOCTYPE html>
@@ -19,7 +15,7 @@ if (isset($_GET['search'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gestion CLientes</title>
-   <link rel="stylesheet" href="../CSS/CSS.css">
+   <link rel="stylesheet" href="../CSS/form.css">
   </head>
 <body>
 
@@ -280,6 +276,13 @@ if (isset($_GET['search'])) {
       </form>
     </div>
 
+    <div id="search" class="search"> 
+        <form action="" method="get">
+            <input type="text" name="search" placeholder="Escribe una palabara" id="searchInput">
+            <input type="submit" value="Buscar" id="btnSearch">
+        </form>
+    </div>
+
     <table>
       <thead>
         <tr>
@@ -295,6 +298,7 @@ if (isset($_GET['search'])) {
         </tr>
       </thead>
       <tbody>
+        <?php if (!empty($datos)) { ?>
         <?php foreach ($datos as $row) { ?>
           <tr>
             <td><?php echo $row['id_cliente']; ?></td>
@@ -311,6 +315,9 @@ if (isset($_GET['search'])) {
             </td>
           </tr>
         <?php } ?>
+        <?php } else { ?>
+    <tr><td colspan="5">No se encontraron resultados</td></tr>
+<?php } ?>
       </tbody>
     </table>
   </div>

@@ -1,5 +1,5 @@
 <?php 
-require_once "CONEXION.php"; 
+require_once "../CONFIG.php"; 
 require_once "CLASE_PRODUCTO_T.php"; 
 
 $id = $_GET['id_producto_t']; 
