@@ -3,7 +3,7 @@ USE LUXI_FASHON;
 
 CREATE TABLE Rol (
   id_rol INT PRIMARY KEY NOT NULL,
-  nombre_rol VARCHAR (50) NOT NULL UNIQUE,
+  nombre_rol VARCHAR (50) NOT NULL,
   descripcion VARCHAR(200) NOT NULL,
   estado VARCHAR(50) NOT NULL
 );
