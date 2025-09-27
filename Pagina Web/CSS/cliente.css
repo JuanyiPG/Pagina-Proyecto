@@ -1,44 +1,269 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-header nav{
-    display: block;
-    position: fixed;
-    position: relative;
-    width: 100%;
-    height: 60px;
-}
-nav .menu{
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-nav .menu .Menu-l{
-    display: flex;
-    align-items: center;
-    margin-left: 10px;
+header nav {
+  display: block;
+  position: fixed; 
+  top: 0;
+  width: 100%;
+  height: 60px;
+  z-index: 1000;
 }
 
-nav .menu .Menu-l img{
-    display: block;
-    width: 90px;
-    height: 50px;
-    margin-left: 5px;
+nav .menu {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
 }
 
-.search{
-    position: relative;
-    justify-content: center;
-    align-items: center;
+nav .menu .menu-l {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 }
 
-.search .buscador{
-    position: absolute;
-    display: flex;
-    justify-content: center;
+nav .menu .menu-l img {
+  display: block;
+  width: 100px;
+  height: 60px;
+  margin-left: 5px;
 }
 
+.menu a {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  color: black;
+}
+
+.search {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search .buscador {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.search .buscador input {
+  border: none;
+  outline: none;
+  margin-left: 5px;
+}
+
+nav .menu .menu-r {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+video {
+  width: 100%;
+}
+
+/* Carrusel */
+.slider-container {
+  position: relative;
+  width: 100%;
+  margin: 10px auto 10px auto;
+  overflow: hidden;
+  background-color: #d4cfcf9f;
+}
+
+.slider {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  white-space: nowrap; 
+}
+
+.item {
+  min-width: 200px;
+  margin: 10px;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.item img {
+  width: 100%;
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.item img:hover {
+  transform: scale(1.1);
+}
+
+/* Flechas */
+.arrow {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.5);
+  color: white;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  z-index: 10;
+}
+
+.arrow.left {
+  left: 5px;
+}
+
+.arrow.right {
+  right: 5px;
+}
+
+
+/* ===== PRODUCTO PARA VENDER ===== */
+
+.sec-for-pro {
+  display: flex;
+  font-size: large;
+  font-style: italic;
+}
+
+.con-pro-cli {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+  background-color: #f9f9f9;
+  padding: 20px;
+}
+
+.imgs-of-produc {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.imgs-of-produc img {
+  margin-top: 15%;
+  width: 100px;
+  height: auto;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border 0.2s;
+}
+
+.imgs-of-produc img:hover {
+  border: 2px solid #5c0b26;
+}
+
+.img-prin-pro img {
+  width: 500px;
+  height: auto;
+  border-radius: 5px;
+}
+
+.form-pro {
+  margin-top: 15%;
+  flex: 1;
+  position: relative;
+}
+
+.form-pro svg{
+  position: absolute;
+  padding: 10px;
+  height: 50px;
+  width: 50px;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+}
+
+.form-pro svg:hover{
+  background-color: #5c0b261f;
+  border: #a03458 2px solid;
+  border-radius: 20%;
+}
+.titu{
+  font-size: 35px;
+  margin-bottom: 10px ;
+}
+
+input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.btn-talla {
+  display: inline-block;
+  padding: 10px 16px;
+  margin: 6px 6px;
+  border: solid 2px #5c0b26;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.12s ease;
+  user-select: none;
+}
+
+.btn-talla:hover {
+  transform: translateY(-3px);
+}
+
+input[type="radio"]:focus + .btn-talla {
+  box-shadow: 0 0 0 4px  #a03458;
+}
+
+input[type="radio"]:checked + .btn-talla {
+  background: #5c0b26f1;
+  color: #fff;
+  border-color: #5c0b26;
+}
+
+.color-picker input[type="radio"] {
+  display: none;
+}
+
+.color-picker .color-option {
+  display: inline-block;
+  width: 30px;
+  height: 20px;
+  border-radius: 10px;
+  margin: 8px;
+  cursor: pointer;
+  border: 2px solid #ccc;
+  transition: transform 0.2s ease, border 0.2s ease;
+}
+
+.color-picker .color-option:hover {
+  transform: scale(1.2);
+}
+
+.color-picker input[type="radio"]:checked + .color-option {
+  border: 3px solid #000;
+}
+
+
+.color-picker .rojo   { background: red; }
+.color-picker .azul   { background: grey;  border: 2px solid #585858;}
+.color-picker .blanco { background: #fff; border: 2px solid #aaa; }
+.color-picker .negro  { background: #000; }
+
+#add-car-shop {
+  background-color: #5c0b26f1;
+  color: white;
+  border: none;
+  width: 100%;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
