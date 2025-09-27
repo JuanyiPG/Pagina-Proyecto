@@ -89,7 +89,7 @@ class ROL
         $con = new CONECTAR();
         $conexion = $con->conexion();
 
-        $sql = "CALL ELIMINAR_ROLi(?)";
+        $sql = "CALL ELIMINAR_ROL(?)";
         $stmt = $conexion->prepare($sql);
 
         if ($stmt === false) {

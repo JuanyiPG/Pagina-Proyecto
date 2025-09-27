@@ -325,7 +325,8 @@ $search = (isset($_GET['search'])) ? $_GET['search'] : "";
             <td><?php echo $row['id_rol_fk_empleado']; ?></td>
             <td>
               <a class="btn" href="EDITAR_EMPLEADO.php?id_empleado=<?php echo $row['id_empleado']; ?>">Actualizar</a>
-              <a class="btn" href="ELIMINAR_EMPLEADO.php?id_empleado=<?php echo $row['id_empleado']; ?>">Eliminar</a>
+              <a class="btn" href="ELIMINAR_EMPLEADO.php?id_empleado=<?php echo $row['id_empleado']; ?>"
+              onclick="return confirm('¿Deseas eliminar este rol?');>Eliminar</a>
             </td>
           </tr>
         <?php } ?>

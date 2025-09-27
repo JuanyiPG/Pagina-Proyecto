@@ -315,7 +315,8 @@ $search = (isset($_GET['search'])) ? $_GET['search'] : "";
             <td><?php echo $row['estado_materia_p']; ?></td>
             <td>
               <a class="btn-accion" href="EDITAR_MATERIAP.php?id_materia_p=<?php echo $row['id_materia_p']; ?>">Actualizar</a>
-              <a class="btn-accion" href="ELIMINAR_MATERIAP.php?id_materia_p=<?php echo $row['id_materia_p']; ?>">Eliminar</a>
+              <a class="btn-accion" href="ELIMINAR_MATERIAP.php?id_materia_p=<?php echo $row['id_materia_p']; ?>"
+              onclick="return confirm('¿Deseas eliminar este rol?');>Eliminar</a>
             </td>
           </tr>
         <?php } ?>

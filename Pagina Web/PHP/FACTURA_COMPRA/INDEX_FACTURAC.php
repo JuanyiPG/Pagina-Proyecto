@@ -300,7 +300,8 @@ $search = (isset($_GET['search'])) ? $_GET['search'] : "";
             <td><?php echo $row['id_empleado_fk_factura_compra']; ?></td>
             <td>
               <a class="btn-accion" href="EDITAR_FACTURAC.php?cod_factura_compra=<?php echo $row['cod_factura_compra']; ?>">Actualizar</a>
-              <a class="btn-accion" href="ELIMINAR_FACTURAC.php?cod_factura_compra=<?php echo $row['cod_factura_compra']; ?>">Eliminar</a>
+              <a class="btn-accion" href="ELIMINAR_FACTURAC.php?cod_factura_compra=<?php echo $row['cod_factura_compra']; ?>"
+              onclick="return confirm('¿Deseas eliminar este rol?');>Eliminar</a>
             </td>
           </tr>
         <?php } ?>
