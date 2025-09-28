@@ -161,6 +161,12 @@ $search = (isset($_GET['search'])) ? $_GET['search'] : "";
 .sidebar::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.4);
 }
+
+li a {
+      text-decoration: none; 
+      color: inherit;
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -187,15 +193,9 @@ $search = (isset($_GET['search'])) ? $_GET['search'] : "";
             <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/>
         </svg>
         <div class="sidebar_hide">
+          <a href="../index-admin.php">
           <p class="sidebar_text">Inicio</p>
-        </div>
-      </li>
-      <li class="element_sidebar">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart" viewBox="0 0 16 16">
-            <path d="M4 11H2v3h2zm5-4H7v7h2zm5-5v12h-2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
-         </svg>
-        <div class="sidebar_hide">
-          <p class="sidebar_text">Estadisticas</p>
+          </a>
         </div>
       </li>
 

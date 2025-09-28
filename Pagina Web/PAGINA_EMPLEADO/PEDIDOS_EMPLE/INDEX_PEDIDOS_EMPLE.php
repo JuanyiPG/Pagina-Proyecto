@@ -241,6 +241,18 @@ $search = (isset($_GET['search'])) ? $_GET['search']: "";
     });
   </script>
 
+  <div id="notificacion" style="
+  position: fixed;
+  top: 20px; right: 20px;
+  background: #4caf50;
+  color: white;
+  padding: 15px;
+  border-radius: 10px;
+  display: none;
+">
+  📢 Nuevo pedido registrado
+</div>
+
 
   <div class="main">
           <div id="search" class="search"> 
@@ -382,6 +394,30 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 </script>
+<script>
+function mostrarNotificacion(mensaje) {
+  let notif = document.getElementById("notificacion");
+  notif.textContent = mensaje;
+  notif.style.display = "block";
+  
+  setTimeout(() => { notif.style.display = "none"; }, 3000); // se oculta en 3s
+}
+
+document.querySelector("form").addEventListener("submit", async function(e) {
+  e.preventDefault();
+  let datos = new FormData(this);
+
+  let resp = await fetch("../Cliente/insertar_cliente.php", { method: "POST", body: datos });
+  let text = await resp.text();
+
+  if (text === "ok") {
+    mostrarNotificacion("✅ Se registró un nuevo pedido");
+  } else {
+    mostrarNotificacion("❌ Error al guardar");
+  }
+});
+</script>
+
 
 
 </body>

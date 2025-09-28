@@ -3,24 +3,63 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="../CSS/index.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
   <script rel="stylesheet" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <title>Admin Dashboard</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
     body{
       display: flex;
-      min-height: 100vh;
+      height: 100vh;
+      background-color: #f5f6fa;
+    }
+        /* Main content */
+    .main {
+      position: relative;
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    .header {
+      background-color: #fff;
+      padding: 10px 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .cards {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      flex: 1;
+      min-width: 200px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
     }
 /*--header---*/
-    .sidebar {
+.sidebar {
       background-image: linear-gradient(to bottom, rgb(255, 255, 255), #5c0b26);
       width: max-content;
       height: 100vh;
       border: #50061f solid 1px;
       border-radius: 10px;
-      padding: 2rem 1rem;
+      padding: 3rem 2rem;
       overflow: scroll;
       display: flex;
       flex-direction: column;
@@ -37,14 +76,14 @@
     }
 
     .element_sidebar {
-      padding: .8rem 1.3rem;
+      padding: .4rem 1rem;
       border-radius: 3px;
       display: grid;
-      align-items: center;
-      grid-template-columns: 50px 0fr;
+      grid-template-columns: 20px 0fr;
       color: #50061f;
       fill: #5c0b26;
       transition: grid-template-columns .4s;
+      margin-left:-30px;
     }
 
     .sidebar:hover .element_sidebar {
@@ -73,7 +112,7 @@
     }
 
     .sidebar_icon_avatar {
-      width: 40px;
+      width: 25px;
       height: 40px;
       object-fit: cover;
       object-position: center;
@@ -97,6 +136,7 @@
 
     .sidebar_hide {
       overflow: hidden;
+      padding: 2px;
     }
 
     .sidebar_hide_a {
@@ -106,12 +146,6 @@
 
     .sidebar_hide_a:hover {
       color: #fff;
-    }
-
-    li a {
-      text-decoration: none; 
-      color: inherit;
-      display: block;
     }
 
 
@@ -164,42 +198,16 @@
 .sidebar::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.4);
 }
-    /* Main content */
-    .main {
-      position: relative;
-      flex: 1;
-      padding: 20px;
-    }
 
-    .header {
-      background-color: #fff;
-      padding: 10px 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+li a {
+      text-decoration: none; 
+      color: inherit;
+      display: block;
     }
-
-    .cards {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-
-    .card {
-      background-color: white;
-      padding: 20px;
-      border-radius: 8px;
-      flex: 1;
-      min-width: 200px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-
-    .card h3 {
-      margin-bottom: 10px;
-    }
-  </style>
+    </style>
 </head>
 <body>
-   <aside class="sidebar">
+      <aside class="sidebar">
     <ul class="list_sidebar">
       <li class="element_sidebar">
 
@@ -213,14 +221,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16">
             <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4 4 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4 4 0 0 0-3.203-3.92zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5 5 0 0 1 13 6c0 .88.32 4.2 1.22 6"/>
           </svg>
-          <span id="notiCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-    0
-    <span class="visually-hidden">notificaciones nuevas</span>
-  </span>
         <div class="sidebar_hide">
-          <a href="../PHP/NOTIFICACIONES/ver_produccion.php">
           <p class="sidebar_text">Notificaciones</p>
-        </a>
         </div>
       </li>
       <li class="element_sidebar">
@@ -228,11 +230,11 @@
             <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/>
         </svg>
         <div class="sidebar_hide">
-          <a href="index-admin.php">
-          <p class="sidebar_text">Inicio</p>
-          </a>
+        <a href="index-admin.php">
+        <p class="sidebar_text">Inicio</p>
+        </a>
         </div>
-      </li>
+    </li>
 
       <li class="element_sidebar" id="formToggle">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grid" viewBox="0 0 16 16">
@@ -244,15 +246,15 @@
       </li>
 
       <ul class="submenu" id="submenuForm">
-        <li><a href="../ROL/INDEX_ROL.php" class="sidebar_hide_a">Rol</a></li>
-        <li><a href="../CLIENTE/INDEX_CLIENTE.php" class="sidebar_hide_a">Cliente</a></li>
-        <li><a href="../EMPLEADO/INDEX_EMPLEADO.php" class="sidebar_hide_a">Empleado</a></li>
-        <li><a href="../FACTURA_COMPRA/INDEX_FACTURAC.php" class="sidebar_hide_a">Factura Compra</a></li>
-        <li><a href="../FACTURA_VENTA/INDEX_FACTURAV.php" class="sidebar_hide_a">Factura Venta</a></li>
-        <li><a href="../MATERIA_PRIMA/INDEX_MATERIAP.php" class="sidebar_hide_a">Materia Prima</a></li>
-        <li><a href="../PEDIDO/INDEX_PEDIDO.php" class="sidebar_hide_a">Pedidos</a></li>
-        <li><a href="../PRODUCCION/INDEX_PRODUCCION.php" class="sidebar_hide_a">Producción</a></li>
-        <li><a href="../PRODUCTO_TERMINADO/INDEX_PRODUCTOT.php" class="sidebar_hide_a">Productos Terminados</a></li>
+        <li><a href="ROL/INDEX_ROL.php" class="sidebar_hide_a">Rol</a></li>
+        <li><a href="CLIENTE/INDEX_CLIENTE.php" class="sidebar_hide_a">Cliente</a></li>
+        <li><a href="EMPLEADO/INDEX_EMPLEADO.php" class="sidebar_hide_a">Empleado</a></li>
+        <li><a href="FACTURA_COMPRA/INDEX_FACTURAC.php" class="sidebar_hide_a">Factura Compra</a></li>
+        <li><a href="FACTURA_VENTA/INDEX_FACTURAV.php" class="sidebar_hide_a">Factura Venta</a></li>
+        <li><a href="MATERIA_PRIMA/INDEX_MATERIAP.php" class="sidebar_hide_a">Materia Prima</a></li>
+        <li><a href="PEDIDO/INDEX_PEDIDO.php" class="sidebar_hide_a">Pedidos</a></li>
+        <li><a href="PRODUCCION/INDEX_PRODUCCION.php" class="sidebar_hide_a">Producción</a></li>
+        <li><a href="PRODUCTO_TERMINADO/INDEX_PRODUCTOT.php" class="sidebar_hide_a">Productos Terminados</a></li>
       </ul>
 
     </ul>

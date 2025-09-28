@@ -31,11 +31,11 @@ if (file_exists($file)) {
       padding: 40px;
       border-radius: 15px;
       max-width: 1900px;
-      margin: 10px 10px 10px 100px;
+      margin: 10px 10px 10px 60px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
-        h1 {
+        h2 {
             text-align: center;
             margin-bottom: 20px;
             color: #5c0a2e; /* burdeos */
@@ -224,6 +224,10 @@ li a {
       color: inherit;
       display: block;
     }
+
+    .filtro {
+      display: none; 
+    }
     </style>
 </head>
 <body>
@@ -250,19 +254,11 @@ li a {
             <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/>
         </svg>
         <div class="sidebar_hide">
-        <a href="../../index-admin.php">
+        <a href="../index-admin.php">
         <p class="sidebar_text">Inicio</p>
         </a>
         </div>
     </li>
-    <li class="element_sidebar">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart" viewBox="0 0 16 16">
-            <path d="M4 11H2v3h2zm5-4H7v7h2zm5-5v12h-2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
-         </svg>
-        <div class="sidebar_hide">
-          <p class="sidebar_text">Estadisticas</p>
-        </div>
-      </li>
 
       <li class="element_sidebar" id="formToggle">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grid" viewBox="0 0 16 16">
@@ -310,10 +306,11 @@ li a {
     });
   </script>
     <div class="card">
-        <h1>Pedidos en Producción</h1>
+        <h2>PEDIDOS PARA PRODUCCION</h2>
         <?php if (empty($pedidos)): ?>
             <p style="text-align:center;">No hay pedidos enviados todavía.</p>
         <?php else: ?>
+          <input type="search" class="buscador form-control mb-3" id="buscador" name="buscador">
         <table>
             <thead>
                 <tr>
@@ -335,24 +332,36 @@ li a {
             <tbody>
                 <?php foreach ($pedidos as $p): ?>
                     <tr>
-                        <td><?= $p['id_pedido'] ?? '-' ?></td>
-                        <td><?= $p['nombre'] ?? '-' ?></td>
-                        <td><?= $p['talla'] ?? '-' ?></td>
-                        <td><?= $p['color'] ?? '-' ?></td>
-                        <td><?= $p['categoria'] ?? '-' ?></td>
-                        <td><?= $p['material'] ?? '-' ?></td>
-                        <td><?= $p['cantidad'] ?? '-' ?></td>
-                        <td><?= $p['descripcion'] ?? '-' ?></td>
-                        <td><?= $p['fecha'] ?? '-' ?></td>
-                        <td><?= $p['subtotal'] ?? '-' ?></td>
-                        <td><?= $p['valor'] ?? '-' ?></td>
-                        <td><?= $p['estado'] ?? '-' ?></td>
-                        <td><?= $p['cliente'] ?? '-' ?></td>
+                        <td class='articulos'><?= $p['id_pedido'] ?? '-' ?></td>
+                        <td class='articulos'><?= $p['nombre'] ?? '-' ?></td>
+                        <td class='articulos'><?= $p['talla'] ?? '-' ?></td>
+                        <td class='articulos'><?= $p['color'] ?? '-' ?></td>
+                        <td class='articulos'><?= $p['categoria'] ?? '-' ?></td>
+                        <td class='articulos'><?= $p['material'] ?? '-' ?></td>
+                        <td class='articulos'><?= $p['cantidad'] ?? '-' ?></td>
+                        <td class='articulos'><?= $p['descripcion'] ?? '-' ?></td>
+                        <td class='articulos'><?= $p['fecha'] ?? '-' ?></td>
+                        <td class='articulos'><?= $p['subtotal'] ?? '-' ?></td>
+                        <td class='articulos'><?= $p['valor'] ?? '-' ?></td>
+                        <td class='articulos'><?= $p['estado'] ?? '-' ?></td>
+                        <td class='articulos'><?= $p['cliente'] ?? '-' ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
         <?php endif; ?>
     </div>
+    <script>
+      document.addEventListener('keyup', e =>{
+        if (e.target.matches('#buscador')){
+          document.querySelectorAll('.articulos').forEach(fruta => {
+            fruta.textContent.toLowerCase().includes(e.target.value) 
+            ? fruta.classList.remove('filtro')
+            : fruta.classList.add('filtro')
+
+          })
+        }
+      })
+      </script>
 </body>
 </html>
