@@ -7,7 +7,7 @@
     <title>Document</title>
 </head>
 <body>
-    <header id="header-clien"></header>
+    <header id="header-productocliente"></header>
     <div class="con-pro-cli">
         <div class="imgs-of-produc">
             <img src="../IMG/camisa_hombro.jpeg" class="imgs-of-produc" alt="hji">
@@ -22,8 +22,14 @@
               <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
             </svg>
             <form action="" method="post">
-                <p class="titu">Blusa camisa de hombro</p>
-                <label for="talla" class="sec-for-pro">Talla:</label>
+                <p class="Nombre">Blusa camisa de hombro</p>
+                <br>
+                <!--el valor-->
+                <label for="valor" class="subinfo">Valor:</label>
+                <pre class="readonly">$<input type="text"  class="valor" name="valor" value="45.000" readonly></pre>
+                <br>
+                <!--Tala-->
+                <label for="talla" class="sec-for-pro subinfo">Talla:</label>
                 
                 <input type="radio" name="talla" id="talla-s" value="S">
                 <label for="talla-s" class="btn-talla">S</label>
@@ -40,7 +46,8 @@
                 <input type="radio" name="talla" id="talla-xxl" value="XXL">
                 <label for="talla-xxl" class="btn-talla">XXL</label>
                 <br><br>
-                <div class="color-picker">
+                <div class="color-picker subinfo">
+                    <!-- aqui esta  los colores -->
                     <p class="sec-for-pro">Elige un color:</p>
 
                     <input type="radio" name="color" id="color-rojo" value="Rojo">
@@ -55,12 +62,36 @@
                     <input type="radio" name="color" id="color-negro" value="Negro">
                     <label for="color-negro" class="color-option negro"></label>
                 </div>
+                <div>
+                    <!--categoria-->
+                    <label for="categoria" class="subinfo">Categoria:</label>
+                    <pre class="readonly"><input type="text" class="categoria "name="categoria" value="Blusa" readonly></pre>
+                </div>
 
-
+                <br>
                 <button type="button" class="btn" id="add-car-shop">Comprar</button>
             </form>
+            <br>
+           <div class="descripcion-container">
+                <div class="descripcion-header">
+                    <h1 class="titulo-desc">Descripción</h1>
+                    <span class="arrow-desc">▶</span>
+                </div>
+                <p id="descrip-produc" class="hidden">
+                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ipsa ex reprehenderit porro minima, id laudantium voluptatem voluptates modi provident obcaecati incidunt nam, ad unde sequi? Ab autem sequi amet omnis!
+                </p>
+            </div>
+
+
         </div>
     </div>
-    <script src="../JS/clien.js"></script>
+    <br>
+    <hr>
+    <br>
+    <div>
+    </div>
+    <script src="../JS/clien.js">
+        
+    </script>
 </body>
 </html>
