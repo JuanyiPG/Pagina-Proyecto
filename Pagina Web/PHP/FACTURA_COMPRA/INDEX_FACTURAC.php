@@ -255,7 +255,8 @@ $search = (isset($_GET['search'])) ? $_GET['search'] : "";
       <form action="INSERTAR_FACRURAC.PHP" method="post">
         <div class="form-group">
           <input type="text" name="cod_factura_compra" placeholder="Código" required>
-          <input type="date" name="fecha_factura_compra" placeholder="Fecha" required>
+          <input type="text" name="fecha_factura_compra"= "date" placeholder="Fecha de compra" required
+          onfocus="this.type='date'" onblur="if(!this.value) this.type='text'">
         </div>
         <div class="form-group">
           <input type="text" name="total_faactura_compra" placeholder="total de la factura"required>
@@ -263,7 +264,7 @@ $search = (isset($_GET['search'])) ? $_GET['search'] : "";
         </div>
         <div class="form-group">
           <input type="text" name="estado_factura_compra" placeholder="Estado"required>
-          <input type="text" name="id_empleado_fk_factura_compra" placeholder="Identificador de el empleado que regustro la factura compra"required>
+          <input type="text" name="id_empleado_fk_factura_compra" placeholder="ID empleado que registro la compra"required>
         </div>
         <button type="submit" class="save-btn">Insertar</button>
       </form>

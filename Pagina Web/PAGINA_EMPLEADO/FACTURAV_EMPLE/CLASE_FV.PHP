@@ -37,12 +37,12 @@ class FACTURA_V
         return $resultado;
     }
 
-    public function CONSULTAR_FACTURA_V()
+    public function CONSULTAR_FACTURA_V($filtro = "")
     {
         $con = new CONECTAR();
         $conexion = $con->conexion();
 
-        $sql = "CALL consultar_Factura_Venta()";
+        $sql = "CALL consultar_Factura_Venta('$filtro')";
         $resultado = $conexion->query($sql);
 
         if (!$resultado) {

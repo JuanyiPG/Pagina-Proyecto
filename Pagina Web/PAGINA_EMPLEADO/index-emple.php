@@ -1,26 +1,50 @@
-<?php 
-require_once "../FACTURAV_EMPLE/CONEXION.PHP"; 
-require_once "../FACTURAV_EMPLE/CLASE_FV.PHP";  
-
-$datos = [];
-$obj = new FACTURA_V();
-    
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-    $datos = $obj->ConsultarfacturavtPorID($search); 
-} else {
-    $datos = $obj->CONSULTAR_FACTURA_V(); 
-}
-?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fctura Venta</title>
-  <link rel="stylesheet" href="../CSS/CSS.css">
- <style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../CSS/index.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <title>Empleado dashboard</title>
+  <style>
+    body{
+      display: flex;
+      min-height: 100vh;
+    }
+    /* Main content */
+    .main {
+      position: relative;
+      flex: 1;
+      padding: 20px;
+    }
+
+    .header {
+      background-color: #fff;
+      padding: 10px 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .cards {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      flex: 1;
+      min-width: 200px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+    }
     .sidebar {
       background-image: linear-gradient(to bottom, rgb(255, 255, 255), #5c0b26);
       width: max-content;
@@ -149,6 +173,12 @@ if (isset($_GET['search'])) {
       color: inherit;
       display: block;
     }
+
+    li a {
+      text-decoration: none; 
+      color: inherit;
+      display: block;
+    }
 .sidebar::-webkit-scrollbar {
   width: 8px;
 }
@@ -165,6 +195,7 @@ if (isset($_GET['search'])) {
 .sidebar::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.4);
 }
+
   </style>
 </head>
 <body>
@@ -186,13 +217,15 @@ if (isset($_GET['search'])) {
           <p class="sidebar_text">Notificaciones</p>
         </div>
       </li>
-      </li>
+      
       <li class="element_sidebar">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart" viewBox="0 0 16 16">
             <path d="M4 11H2v3h2zm5-4H7v7h2zm5-5v12h-2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
          </svg>
         <div class="sidebar_hide">
+          <a href="index-emple.php">
           <p class="sidebar_text">Estadisticas</p>
+          </a>
         </div>
       </li>
 
@@ -206,14 +239,14 @@ if (isset($_GET['search'])) {
       </li>
 
       <ul class="submenu" id="submenuForm">
-        <li><a href="../FACTURAV_EMPLE/INDEX_FACTURA_EMPLE.php" class="sidebar_hide_a">Factura Venta</a></li>
-        <li><a href="../PEDIDOS_EMPLE/INDEX_PEDIDOS_EMPLE.php" class="sidebar_hide_a">Pedidos</a></li>
-        <li><a href="../PRODUCTO_TERMINADO/INDEX_PRODUCTOT.php" class="sidebar_hide_a">Productos Terminados</a></li>
+        <li><a href="FACTURAV_EMPLE/INDEX_FACTURA_EMPLE.php" class="sidebar_hide_a">Factura Venta</a></li>
+        <li><a href="PEDIDOS_EMPLE/INDEX_PEDIDOS_EMPLE.php" class="sidebar_hide_a">Pedidos</a></li>
+        <li><a href="PRODUCTO_TERMINADO/INDEX_PRODUCTOT.php" class="sidebar_hide_a">Productos Terminados</a></li>
       </ul>
 
     </ul>
       <a href="../../index.html"class="element_sidebar sidebar_element_avatar link-m-l">
-            <svg class="sidebar_icon sidebar_icon_avatar" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-arrow-left" viewBox="0 0 16 16">
+            <svg class="sidebar_icon sidebar_icon_avatar" xmlns="http://www.w3.org/2000/svg" width="10" height="20" fill="currentColor" class="bi bi-box-arrow-left" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a.5.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0z"/>
                     <path fill-rule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708z"/>
             </svg>
@@ -236,66 +269,31 @@ if (isset($_GET['search'])) {
     });
   </script>
 
+  <header id="header-emple"></header>
 
-  <div class="main">
-    <div class="card">
-      <h1>Gestión de factura venta</h1>
-
-     
-      <form action="../FACTURAV_EMPLE/INSERTAR_FV.PHP" method="post">
-        <div class="form-group">
-          <input type="text" name="cod_factura_v" placeholder="Código" required>
-          <input type="date" name="fecha_factura_v" placeholder="Fecha" required>
-        </div>
-        <div class="form-group">
-          <input type="text" name="sub_total_factura_v" placeholder=" Sub total de la factura"required>
-          <input type="text" name="iva_factura_v" placeholder="IVA"required>
-        </div>
-        <div class="form-group">
-          <input type="text" name="total_factura_v" placeholder="Total"required>
-          <input type="text" name="metodo_pago" placeholder="Metodo de pago"required>
-        </div>
-        <div class="form-group">
-          <input type="text" name="descuento" placeholder="Descuento"required>
-          <input type="text" name="estado_factura_venta" placeholder="Estado"required>
-        </div>
-        <div>
-          <input type="hidden" name="id_empleado_fk_factura" value="2">
-        </div>
-        <button type="submit" class="save-btn">Insertar</button>
-      </form>
+    <div class="main">
+    <div class="header">
+        <h1>¡Hola! Bienvenido al panel de empleado</h1>
     </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Código</th>
-          <th>Fecha</th>
-          <th>Sub total</th>
-          <th>IVA</th>
-          <th>Total</th>
-          <th>metodo de pago</th>
-          <th>Descuento</th>
-          <th>estado</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php foreach ($datos as $row) { ?>
-          <tr>
-            <td><?php echo $row['cod_factura_v']; ?></td>
-            <td><?php echo $row['fecha_factura_v']; ?></td>
-            <td><?php echo $row['sub_total_factura_v']; ?></td>
-            <td><?php echo $row['iva_factura_v']; ?></td>
-            <td><?php echo $row['total_factura_v']; ?></td>
-            <td><?php echo $row['metodo_pago']; ?></td>
-            <td><?php echo $row['descuento']; ?></td>
-            <td><?php echo $row['estado_factura_venta']; ?></td>
-
-          </tr>
-        <?php } ?>
-      </tbody>
-    </table>
-  </div>
-
+    <div class="cards">
+        <div class="card">
+        <h3>Usuarios</h3>
+        <p>135 registrados</p>     
+        </div>
+        <div class="card">
+        <h3>Ventas</h3>
+        <p>34 este mes</p>
+        </div>
+        <div class="card">
+        <h3>Ingresos</h3>
+        <p>$1,700.000</p>
+        </div>
+ <a href="../PAGINA_EMPLEADO/INDEX_FACTURA_EMPLE.php"></a>
+    </div>
+    </div>
 </body>
+</html>
+
+
 </html>

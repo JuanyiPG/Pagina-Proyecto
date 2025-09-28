@@ -254,7 +254,8 @@ $search = (isset($_GET['search'])) ? $_GET['search'] : "";
       <form action="INSERTAR_FACRURAV.PHP" method="post">
         <div class="form-group">
           <input type="text" name="cod_factura_v" placeholder="Código" required>
-          <input type="date" name="fecha_factura_v" placeholder="Fecha" required>
+          <input type="text" name="fecha_factura_v" = "text" placeholder="Fecha" required
+          onfocus="this.type='date'" onblur="if(!this.value) this.type='text'">
         </div>
         <div class="form-group">
           <input type="text" name="sub_total_factura_v" id="SubTotal" placeholder=" Sub total de la factura"required>

@@ -254,19 +254,21 @@ $search = (isset($_GET['search'])) ? $_GET['search'] : "";
       <form action="INSERTAR_PRODUCCION.PHP" method="post">
         <div class="form-group">
           <input type="text" name="id_produccion" placeholder="Numero de produccion" required>
-          <input type="date" name="fecha_inicio_produccion" placeholder="Fecha " required>
+          <input type="text" name="fecha_inicio_produccion" = "text" placeholder="Fecha inicio de produccion " required
+          onfocus="this.type='date'" onblur="if(!this.value) this.type='text'">
         </div>
         <div class="form-group">
           <input type="text" name="cantidad_producida" placeholder=" Cantidad"required>
           <input type="text" name="costo_mano_obra" placeholder="Costo de mano de obra"required>
         </div>
         <div class="form-group">
-          <input type="text" name="costo_total_materia_prima" placeholder="Costo total de la materia prima"required>
-          <input type="text" name="costo_iva" placeholder="IVA"required>
+          <input type="text" name="costo_total_materia_prima" id="SubTotal" placeholder="Costo total de la materia prima"required>
+          <input type="text" name="costo_iva" id="Iva" placeholder="IVA"required>
         </div>
         <div class="form-group">
-          <input type="text" name="costo_total_produccion" placeholder="Costo total"required>
-          <input type="date" name="fecha_fin_produccion" placeholder="Fecha fin de la produccion"required>
+          <input type="text" name="costo_total_produccion" id="Total" placeholder="Costo total"required readonly>
+          <input type="text" name="fecha_fin_produccion" = "text" placeholder="Fecha fin de produccion" required
+                    onfocus="this.type='date'" onblur="if(!this.value) this.type='text'">
         </div>
         <div class="form-group">
           <input type="text" name="estado_produccion" placeholder="estado"required>
@@ -330,6 +332,24 @@ $search = (isset($_GET['search'])) ? $_GET['search'] : "";
       </tbody>
     </table>
   </div>
+    <script>
+    const subTotal = document.getElementById("SubTotal");
+    const iva = document.getElementById("Iva");
+    const total = document.getElementById("Total");
+
+    function calcularTotal() {
+    const sub = parseFloat(subTotal.value) || 0;
+    const ivaPct = parseFloat(iva.value) || 0;
+
+    const tot = sub + (sub * ivaPct / 100);
+
+    total.value = tot.toFixed(2); // 2 decimales
+    }
+
+    
+    subTotal.addEventListener("input", calcularTotal);
+    iva.addEventListener("input", calcularTotal);
+</script> 
 
 </body>
 </html>

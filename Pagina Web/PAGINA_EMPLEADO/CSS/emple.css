@@ -26,7 +26,7 @@
       background: #ffffff;
       padding: 40px;
       border-radius: 15px;
-      max-width: 900px;
+      max-width: 1900px;
       margin: auto;
       margin-bottom: 40px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -112,8 +112,78 @@
       color: #fff;
       background-color: #5e0925;
       margin: 2px;
+      display: inline-block;
     }
 
     .btn-accion:hover {
       background-color: #8c1238;
     }
+
+      .notificacion {
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 6px;
+    background-color: #d1f7c4;
+    color: #333;
+    font-weight: bold;
+    border: 1px solid #5cb85c;
+    animation: desaparecer 0.5s ease-in-out 4s forwards;
+}
+
+@keyframes desaparecer {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+  }
+
+            /*-------buscador-----*/
+.search{
+    width: 50%;
+    margin: 20px auto;
+    background: #f5f6fa;
+}
+
+.search input{
+    width: 65%;
+    height: 35px;
+    padding: 5px;
+    border: none;
+}
+
+.search input[type="text"]{
+margin-left: 20px;
+border: 2px solid #5e0925 ;
+border-radius: 20px;
+}
+
+.search input[type="submit"]{
+    width: 20%;
+    height: 40px;
+    background-color: #5e0925;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 5px 5px 5px 0px;
+    border-radius: 20px;
+}
+
+.results {
+    width: 80%;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;  
+}
+
+.items {
+    background-color: gray;
+    padding: 15px;
+    border-radius: 4px;
+    transition: all 0.5s ease;
+    cursor: pointer;
+}
+
+.items hover {
+    transform: scale(1.05);
+}

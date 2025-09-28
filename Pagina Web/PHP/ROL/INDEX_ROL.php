@@ -250,7 +250,7 @@ $search= (isset($_GET['search']))? $_GET['search'] : "";
     <div class="card">
       <h1>Gestión de roles</h1>
 
-     
+
       <form action="INSERTAR_ROL.php" method="post">
         <div class="form-group">
           <input type="text" name="id_rol" placeholder="Código" required>

@@ -1,26 +1,19 @@
-<?php 
-require_once "../PEDIDOS_EMPLE/CONEXION.PHP"; 
-require_once "../PEDIDOS_EMPLE/CLASE_PEDIDOS_E.PHP";  
-
-$datos = [];
-$obj = new FACTURA_V();
-    
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-    $datos = $obj->ConsultarfacturavtPorID($search); 
-} else {
-    $datos = $obj->CONSULTAR_FACTURA_V(); 
-}
-?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fctura Venta</title>
-  <link rel="stylesheet" href="../CSS/CSS.css">
- <style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../CSS/index.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script rel="stylesheet" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <title>Admin Dashboard</title>
+  <style>
+    body{
+      display: flex;
+      min-height: 100vh;
+    }
+/*--header---*/
     .sidebar {
       background-image: linear-gradient(to bottom, rgb(255, 255, 255), #5c0b26);
       width: max-content;
@@ -115,6 +108,12 @@ if (isset($_GET['search'])) {
       color: #fff;
     }
 
+    li a {
+      text-decoration: none; 
+      color: inherit;
+      display: block;
+    }
+
 
   .submenu {
       display: none;
@@ -165,10 +164,42 @@ if (isset($_GET['search'])) {
 .sidebar::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.4);
 }
+    /* Main content */
+    .main {
+      position: relative;
+      flex: 1;
+      padding: 20px;
+    }
+
+    .header {
+      background-color: #fff;
+      padding: 10px 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .cards {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      flex: 1;
+      min-width: 200px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
-  <aside class="sidebar">
+   <aside class="sidebar">
     <ul class="list_sidebar">
       <li class="element_sidebar">
 
@@ -180,19 +211,26 @@ if (isset($_GET['search'])) {
 
       <li class="element_sidebar">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16">
-             <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4 4 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4 4 0 0 0-3.203-3.92zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5 5 0 0 1 13 6c0 .88.32 4.2 1.22 6"/>
+            <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4 4 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4 4 0 0 0-3.203-3.92zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5 5 0 0 1 13 6c0 .88.32 4.2 1.22 6"/>
           </svg>
+          <span id="notiCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+    0
+    <span class="visually-hidden">notificaciones nuevas</span>
+  </span>
         <div class="sidebar_hide">
+          <a href="../PHP/NOTIFICACIONES/ver_produccion.php">
           <p class="sidebar_text">Notificaciones</p>
+        </a>
         </div>
       </li>
-      </li>
       <li class="element_sidebar">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart" viewBox="0 0 16 16">
-            <path d="M4 11H2v3h2zm5-4H7v7h2zm5-5v12h-2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
-         </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16">
+            <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/>
+        </svg>
         <div class="sidebar_hide">
-          <p class="sidebar_text">Estadisticas</p>
+          <a href="index-admin.php">
+          <p class="sidebar_text">Inicio</p>
+          </a>
         </div>
       </li>
 
@@ -206,8 +244,14 @@ if (isset($_GET['search'])) {
       </li>
 
       <ul class="submenu" id="submenuForm">
+        <li><a href="../ROL/INDEX_ROL.php" class="sidebar_hide_a">Rol</a></li>
+        <li><a href="../CLIENTE/INDEX_CLIENTE.php" class="sidebar_hide_a">Cliente</a></li>
+        <li><a href="../EMPLEADO/INDEX_EMPLEADO.php" class="sidebar_hide_a">Empleado</a></li>
+        <li><a href="../FACTURA_COMPRA/INDEX_FACTURAC.php" class="sidebar_hide_a">Factura Compra</a></li>
         <li><a href="../FACTURA_VENTA/INDEX_FACTURAV.php" class="sidebar_hide_a">Factura Venta</a></li>
+        <li><a href="../MATERIA_PRIMA/INDEX_MATERIAP.php" class="sidebar_hide_a">Materia Prima</a></li>
         <li><a href="../PEDIDO/INDEX_PEDIDO.php" class="sidebar_hide_a">Pedidos</a></li>
+        <li><a href="../PRODUCCION/INDEX_PRODUCCION.php" class="sidebar_hide_a">Producción</a></li>
         <li><a href="../PRODUCTO_TERMINADO/INDEX_PRODUCTOT.php" class="sidebar_hide_a">Productos Terminados</a></li>
       </ul>
 
@@ -235,44 +279,57 @@ if (isset($_GET['search'])) {
       });
     });
   </script>
-
+  
 
   <div class="main">
-    <div class="card">
-      <h1>Tabla Pedidos</h1>
-    <table>
-      <thead>
-        <tr>
-          <th>Código</th>
-          <th>Fecha</th>
-          <th>Sub total</th>
-          <th>IVA</th>
-          <th>Total</th>
-          <th>metodo de pago</th>
-          <th>Descuento</th>
-          <th>estado</th>
-          <th>Enviar</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php foreach ($datos as $row) { ?>
-          <tr>
-            <td><?php echo $row['cod_factura_v']; ?></td>
-            <td><?php echo $row['fecha_factura_v']; ?></td>
-            <td><?php echo $row['sub_total_factura_v']; ?></td>
-            <td><?php echo $row['iva_factura_v']; ?></td>
-            <td><?php echo $row['total_factura_v']; ?></td>
-            <td><?php echo $row['metodo_pago']; ?></td>
-            <td><?php echo $row['descuento']; ?></td>
-            <td><?php echo $row['estado_factura_venta']; ?></td>
-            <td>
-            <a class="btn-accion">Enviar a pduccion</a>
-            </td>
-          </tr>
-        <?php } ?>
-      </tbody>
-    </table>
+    <div class="header">
+      <h1>Bienvenido al panel de administración</h1>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Usuarios</h3>
+        <p>135 registrados</p>
+        
+      </div>
+      <div class="card">
+        <h3>Ventas</h3>
+        <p>34 este mes</p>
+      </div>
+      <div class="card">
+        <h3>Ingresos</h3>
+        <p>$4,500</p>
+      </div>
+    </div>
   </div>
+  <script>
+document.addEventListener("DOMContentLoaded", function() {
+  function actualizarNotificaciones() {
+    fetch("../PHP/NOTIFICACIONES/contar_notis.php")
+      .then(response => response.text())
+      .then(data => {
+        const noti = document.getElementById("notiCount");
+        noti.textContent = data;
+
+        // Ocultar badge si es 0
+        if (parseInt(data) === 0) {
+          noti.style.display = "none";
+        } else {
+          noti.style.display = "inline-block";
+        }
+      })
+      .catch(error => console.error("Error cargando notificaciones:", error));
+  }
+
+  // Llamar al cargar la página
+  actualizarNotificaciones();
+
+  // Refrescar cada 10 segundos
+  setInterval(actualizarNotificaciones, 10000);
+});
+</script>
 
 </body>
+</html>
+
 </html>

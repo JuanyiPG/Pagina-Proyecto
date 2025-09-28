@@ -1,51 +1,80 @@
+<?php
+header("Content-Type: text/html; charset=UTF-8");
+
+$file = __DIR__ . "/produccion.json";
+$pedidos = [];
+
+if (file_exists($file)) {
+    $json = file_get_contents($file);
+    $pedidos = json_decode($json, true) ?? [];
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="../CSS/index.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-  <title>Empleado dashboard</title>
-  <style>
-    body{
-      display: flex;
-      min-height: 100vh;
-    }
-    /* Main content */
-    .main {
-      position: relative;
-      flex: 1;
-      padding: 20px;
+    <meta charset="UTF-8">
+    <title>Producción</title>
+    <style>
+        * {
+        margin: 0;
+        padding: 0; 
+        box-sizing: border-box;
+        }
+        body {
+        display: flex;
+        height: 100vh;
+        background-color: #f5f6fa;
+        }
+
+      .card {
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 15px;
+      max-width: 1900px;
+      margin: 10px 10px 10px 100px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
-    .header {
-      background-color: #fff;
-      padding: 10px 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #5c0a2e; /* burdeos */
+        }
+
+ table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
-    .cards {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
+    table th, table td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
     }
 
-    .card {
-      background-color: white;
-      padding: 20px;
-      border-radius: 8px;
-      flex: 1;
-      min-width: 200px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    table th {
+      background: #5e0925;
+      color: white;
+      font-size: 14px;
     }
 
-    .card h3 {
-      margin-bottom: 10px;
+    table td {
+      font-size: 14px;
     }
-    .sidebar {
+
+        tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+        th {
+            font-weight: bold;
+        }
+
+/*----Header------*/
+
+.sidebar {
       background-image: linear-gradient(to bottom, rgb(255, 255, 255), #5c0b26);
       width: max-content;
       height: 100vh;
@@ -189,17 +218,23 @@
 .sidebar::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.4);
 }
-  </style>
+
+li a {
+      text-decoration: none; 
+      color: inherit;
+      display: block;
+    }
+    </style>
 </head>
 <body>
-  <aside class="sidebar">
+      <aside class="sidebar">
     <ul class="list_sidebar">
       <li class="element_sidebar">
 
-            <img src="../FORMULARIO_CON_PHP/IMG/logoB.png" class="sidebar_icon_logo" style="height: 55px; width:40px;">
+            <img src="../../IMG/logoB.png" class="sidebar_icon_logo" style="height: 55px; width:40px;">
 
             <div class="sidebar_hide">
-                <img src="../FORMULARIO_CON_PHP/IMG/Luxy LL.png" class="sidebar-logo"style="width: 150px; height: 50px;"> 
+                <img src="../../IMG/Luxy LL.png" class="sidebar-logo"style="width: 150px; height: 50px;"> 
             </div>
 
       <li class="element_sidebar">
@@ -210,8 +245,17 @@
           <p class="sidebar_text">Notificaciones</p>
         </div>
       </li>
-      
       <li class="element_sidebar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16">
+            <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/>
+        </svg>
+        <div class="sidebar_hide">
+        <a href="../../index-admin.php">
+        <p class="sidebar_text">Inicio</p>
+        </a>
+        </div>
+    </li>
+    <li class="element_sidebar">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart" viewBox="0 0 16 16">
             <path d="M4 11H2v3h2zm5-4H7v7h2zm5-5v12h-2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
          </svg>
@@ -230,8 +274,14 @@
       </li>
 
       <ul class="submenu" id="submenuForm">
-        <li><a href="../PAGINA_EMPLEADO/FACTURAV_EMPLE/INDEX_FACTURA_EMPLE.php" class="sidebar_hide_a">Factura Venta</a></li>
+        <li><a href="../ROL/INDEX_ROL.php" class="sidebar_hide_a">Rol</a></li>
+        <li><a href="../CLIENTE/INDEX_CLIENTE.php" class="sidebar_hide_a">Cliente</a></li>
+        <li><a href="../EMPLEADO/INDEX_EMPLEADO.php" class="sidebar_hide_a">Empleado</a></li>
+        <li><a href="../FACTURA_COMPRA/INDEX_FACTURAC.php" class="sidebar_hide_a">Factura Compra</a></li>
+        <li><a href="../FACTURA_VENTA/INDEX_FACTURAV.php" class="sidebar_hide_a">Factura Venta</a></li>
+        <li><a href="../MATERIA_PRIMA/INDEX_MATERIAP.php" class="sidebar_hide_a">Materia Prima</a></li>
         <li><a href="../PEDIDO/INDEX_PEDIDO.php" class="sidebar_hide_a">Pedidos</a></li>
+        <li><a href="../PRODUCCION/INDEX_PRODUCCION.php" class="sidebar_hide_a">Producción</a></li>
         <li><a href="../PRODUCTO_TERMINADO/INDEX_PRODUCTOT.php" class="sidebar_hide_a">Productos Terminados</a></li>
       </ul>
 
@@ -259,32 +309,50 @@
       });
     });
   </script>
-
-  <header id="header-emple"></header>
-
-    <div class="main">
-    <div class="header">
-        <h1>¡Hola! Bienvenido al panel de empleado</h1>
-    </div>
-
-    <div class="cards">
-        <div class="card">
-        <h3>Usuarios</h3>
-        <p>135 registrados</p>     
-        </div>
-        <div class="card">
-        <h3>Ventas</h3>
-        <p>34 este mes</p>
-        </div>
-        <div class="card">
-        <h3>Ingresos</h3>
-        <p>$1,700.000</p>
-        </div>
- <a href="../PAGINA_EMPLEADO/INDEX_FACTURA_EMPLE.php"></a>
-    </div>
+    <div class="card">
+        <h1>Pedidos en Producción</h1>
+        <?php if (empty($pedidos)): ?>
+            <p style="text-align:center;">No hay pedidos enviados todavía.</p>
+        <?php else: ?>
+        <table>
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Talla</th>
+                    <th>Color</th>
+                    <th>Categoría</th>
+                    <th>Material</th>
+                    <th>Cantidad</th>
+                    <th>Descripción</th>
+                    <th>Fecha</th>
+                    <th>Subtotal</th>
+                    <th>Valor</th>
+                    <th>Estado</th>
+                    <th>Cliente</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($pedidos as $p): ?>
+                    <tr>
+                        <td><?= $p['id_pedido'] ?? '-' ?></td>
+                        <td><?= $p['nombre'] ?? '-' ?></td>
+                        <td><?= $p['talla'] ?? '-' ?></td>
+                        <td><?= $p['color'] ?? '-' ?></td>
+                        <td><?= $p['categoria'] ?? '-' ?></td>
+                        <td><?= $p['material'] ?? '-' ?></td>
+                        <td><?= $p['cantidad'] ?? '-' ?></td>
+                        <td><?= $p['descripcion'] ?? '-' ?></td>
+                        <td><?= $p['fecha'] ?? '-' ?></td>
+                        <td><?= $p['subtotal'] ?? '-' ?></td>
+                        <td><?= $p['valor'] ?? '-' ?></td>
+                        <td><?= $p['estado'] ?? '-' ?></td>
+                        <td><?= $p['cliente'] ?? '-' ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        <?php endif; ?>
     </div>
 </body>
-</html>
-
-
 </html>

@@ -14,6 +14,11 @@ BEGIN
   VALUES (insrt_id_rol, insrt_nombre_rol, insrt_descripcion, insrt_estado);
 END$$
 
+ INSERT INTO luxi_fashon.rol (id_rol, nombre_rol, descripcion, estado)
+  VALUES (1, 'cliente', 'juan', 'activo');
+
+
+
 
 CREATE PROCEDURE insrt_Empleado(
   IN insrt_id_empleado INT,
@@ -55,6 +60,10 @@ BEGIN
   VALUES (insrt_id_cliente, insrt_nom_cliente, insrt_direccion_cliente,
     insrt_telefono_cliente, insrt_correo_cliente,insrt_nombre_usuari, insrt_contra,insrt_id_rol_fk_cliente);
 END$$
+
+INSERT INTO luxi_fashon.cliente (id_cliente, nom_cliente, direccion_cliente,
+    telefono_cliente, correo_cliente,nombre_usuari,contra, id_rol_fk_cliente)
+  VALUES (1, 'juan', 'calle 42 a bis sur',310254620, 'juan@gmail.com','Juani', 'juani321',1);
 
 
 CREATE PROCEDURE insrt_Factura_Venta(
@@ -102,6 +111,12 @@ BEGIN
     insrt_sub_total_pedido, insrt_valor_pedido, insrt_estado_pedido,
     insrt_id_cliente_fk_pedido);
 END$$
+
+
+INSERT INTO luxi_fashon.pedido (id_pedido,nom_p_edido, talla_p_pedido, color_p_pedido, categoria_p_pedido,
+    material_p_pedido, cant_producto, descripcion_p_pedido, fecha_pedido,
+    sub_total_pedido, valor_pedido, estado_pedido, id_cliente_fk_pedido)
+VALUES (5,'chaqueta','m','azul','chaquetas','algodon',5,'chaqueta con forro', '12-05-15', 50000, 50000, 'pendiente',1);
 
 
 CREATE PROCEDURE insrt_Produccion(

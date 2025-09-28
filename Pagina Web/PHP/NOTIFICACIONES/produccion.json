@@ -1,0 +1,32 @@
+[
+    {
+        "id_pedido": "5",
+        "nombre": "chaqueta",
+        "talla": "m",
+        "color": "azul",
+        "categoria": "chaquetas",
+        "material": "algodon",
+        "cantidad": "5",
+        "descripcion": "chaqueta con forro",
+        "fecha": "2012-05-15",
+        "subtotal": "50000",
+        "valor": "50000",
+        "estado": "pendiente",
+        "cliente": "1"
+    },
+    {
+        "id_pedido": "5",
+        "nombre": "chaqueta",
+        "talla": "m",
+        "color": "azul",
+        "categoria": "chaquetas",
+        "material": "algodon",
+        "cantidad": "5",
+        "descripcion": "chaqueta con forro",
+        "fecha": "2012-05-15",
+        "subtotal": "50000",
+        "valor": "50000",
+        "estado": "pendiente",
+        "cliente": "1"
+    }
+]

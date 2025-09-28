@@ -1,11 +1,11 @@
 <?php 
-require_once "../CONFIG.php"; 
-require_once "CLASE_PEDIDO.PHP";  
+require_once "../PEDIDOS_EMPLE/CONEXION.PHP"; 
+require_once "../PEDIDOS_EMPLE/CLASE_PEDIDOS_E.PHP";  
 
 $datos = [];
 $obj = new PEDIDO();
     
-$search=(isset($_GET['search'])) ? $_GET['search'] : "";
+$search = (isset($_GET['search'])) ? $_GET['search']: "";
     $datos = $obj->CONSULTAR_PEDIDO($search); 
 ?>
 
@@ -14,9 +14,10 @@ $search=(isset($_GET['search'])) ? $_GET['search'] : "";
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pedido</title>
-  <link rel="stylesheet" href="../CSS/form.css">
-<style>
+  <title>Fctura Venta</title>
+  <link rel="stylesheet" href="../CSS/emple.css">
+ <style>
+
     .sidebar {
       background-image: linear-gradient(to bottom, rgb(255, 255, 255), #5c0b26);
       width: max-content;
@@ -145,6 +146,12 @@ $search=(isset($_GET['search'])) ? $_GET['search'] : "";
       color: inherit;
       display: block;
     }
+
+    li a {
+      text-decoration: none; 
+      color: inherit;
+      display: block;
+    }
 .sidebar::-webkit-scrollbar {
   width: 8px;
 }
@@ -168,40 +175,35 @@ $search=(isset($_GET['search'])) ? $_GET['search'] : "";
     <ul class="list_sidebar">
       <li class="element_sidebar">
 
-            <img src="../IMG/logoB.png" class="sidebar_icon_logo" style="height: 55px; width:40px;">
+            <img src="../../IMG/logoB.png" class="sidebar_icon_logo" style="height: 55px; width:40px;">
 
             <div class="sidebar_hide">
-                <img src="../IMG/Luxy LL.png" class="sidebar-logo"style="width: 150px; height: 50px;"> 
+                <img src="../../IMG/Luxy LL.png" class="sidebar-logo"style="width: 150px; height: 50px;"> 
             </div>
 
       <li class="element_sidebar">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16">
-             <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4 4 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4 4 0 0 0-3.203-3.92zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5 5 0 0 1 13 6c0 .88.32 4.2 1.22 6"/>
+            <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4 4 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4 4 0 0 0-3.203-3.92zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5 5 0 0 1 13 6c0 .88.32 4.2 1.22 6"/>
           </svg>
         <div class="sidebar_hide">
           <p class="sidebar_text">Notificaciones</p>
         </div>
       </li>
-      <li class="element_sidebar">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16">
-            <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/>
-        </svg>
-        <div class="sidebar_hide">
-          <p class="sidebar_text">Inicio</p>
-        </div>
       </li>
       <li class="element_sidebar">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart" viewBox="0 0 16 16">
             <path d="M4 11H2v3h2zm5-4H7v7h2zm5-5v12h-2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
-         </svg>
+        </svg>
         <div class="sidebar_hide">
+          <a href="../index-emple.php">
           <p class="sidebar_text">Estadisticas</p>
+        </a>
         </div>
       </li>
 
       <li class="element_sidebar" id="formToggle">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grid" viewBox="0 0 16 16">
-           <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5zM2.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zm6.5.5A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zM1 10.5A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zm6.5.5A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5z"/>
+          <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5zM2.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zm6.5.5A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zM1 10.5A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zm6.5.5A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5z"/>
         </svg>
         <div class="sidebar_hide">
           <p class="sidebar_text">Formularios</p>
@@ -209,20 +211,14 @@ $search=(isset($_GET['search'])) ? $_GET['search'] : "";
       </li>
 
       <ul class="submenu" id="submenuForm">
-        <li><a href="../ROL/INDEX_ROL.php" class="sidebar_hide_a">Rol</a></li>
-        <li><a href="../CLIENTE/INDEX_CLIENTE.php" class="sidebar_hide_a">Cliente</a></li>
-        <li><a href="../EMPLEADO/INDEX_EMPLEADO.php" class="sidebar_hide_a">Empleado</a></li>
-        <li><a href="../FACTURA_COMPRA/INDEX_FACTURAC.php" class="sidebar_hide_a">Factura Compra</a></li>
-        <li><a href="../FACTURA_VENTA/INDEX_FACTURAV.php" class="sidebar_hide_a">Factura Venta</a></li>
-        <li><a href="../MATERIA_PRIMA/INDEX_MATERIAP.php" class="sidebar_hide_a">Materia Prima</a></li>
-        <li><a href="../PEDIDO/INDEX_PEDIDO.php" class="sidebar_hide_a">Pedidos</a></li>
-        <li><a href="../PRODUCCION/INDEX_PRODUCCION.php" class="sidebar_hide_a">Producción</a></li>
+        <li><a href="../FACTURAV_EMPLE/INDEX_FACTURA_EMPLE.php" class="sidebar_hide_a">Factura Venta</a></li>
+        <li><a href="../PEDIDOS_EMPLE/INDEX_PEDIDOS_EMPLE.php" class="sidebar_hide_a">Pedidos</a></li>
         <li><a href="../PRODUCTO_TERMINADO/INDEX_PRODUCTOT.php" class="sidebar_hide_a">Productos Terminados</a></li>
       </ul>
 
     </ul>
       <a href="../../index.html"class="element_sidebar sidebar_element_avatar link-m-l">
-            <svg class="sidebar_icon sidebar_icon_avatar" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-arrow-left" viewBox="0 0 16 16">
+            <svg class="sidebar_icon sidebar_icon_avatar" xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-box-arrow-left" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a.5.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0z"/>
                     <path fill-rule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708z"/>
             </svg>
@@ -230,7 +226,7 @@ $search=(isset($_GET['search'])) ? $_GET['search'] : "";
               <p class="sidebar_Title">Cerrar Sesión</p>
           </div>
       </a>
-     
+
   </aside>
 
   <script>
@@ -247,50 +243,14 @@ $search=(isset($_GET['search'])) ? $_GET['search'] : "";
 
 
   <div class="main">
-    <div class="card">
-      <h1>Gestión de pedidos</h1>
-
-     
-      <form action="INSERTAR_PEDIDO.PHP" method="post">
-        <div class="form-group">
-          <input type="text" name="id_pedido" placeholder="Numero de pedido" required>
-          <input type="text" name="nom_p_edido" placeholder="Nombre " required>
-        </div>
-        <div class="form-group">
-          <input type="text" name="talla_p_pedido" placeholder=" talla"required>
-          <input type="text" name="color_p_pedido" placeholder="Color"required>
-        </div>
-        <div class="form-group">
-          <input type="text" name="categoria_p_pedido" placeholder="Categoria"required>
-          <input type="text" name="material_p_pedido" placeholder="Material"required>
-        </div>
-        <div class="form-group">
-          <input type="text" name="cant_producto" placeholder="Cantidad"required>
-          <input type="text" name="descripcion_p_pedido" placeholder="descripcion"required>
-        </div>
-        <div class="form-group">
-          <input type="text" name="fecha_pedido" = "text" placeholder="fecha de pedido" required
-          onfocus="this.type='date'" onblur="if(!this.value) this.type='text'">
-          <input type="text" name="sub_total_pedido" placeholder="sub total"required>
-        </div>
-         <div class="form-group">
-          <input type="text" name="valor_pedido" placeholder="Valor"required>
-          <input type="text" name="estado_pedido" placeholder="estado"required>
-        </div>
-         <div class="form-group">
-          <input type="text" name="id_cliente_fk_pedido" placeholder="numero de cliente que hizo el pedido"required>
-        </div>
-        <button type="submit" class="save-btn">Insertar</button>
-      </form>
-    </div>
-
-    <div id="search" class="search"> 
+          <div id="search" class="search"> 
         <form action="" method="get">
             <input type="text" name="search" placeholder="Escribe una palabara" id="searchInput">
             <input type="submit" value="Buscar" id="btnSearch">
         </form>
     </div>
-
+    <div class="card">
+      <h1>Tabla Pedidos</h1>
     <table>
       <thead>
         <tr>
@@ -307,7 +267,7 @@ $search=(isset($_GET['search'])) ? $_GET['search'] : "";
           <th>valor</th>
           <th>estado</th>
           <th>numero de cliente que realizo el pedido</th>
-          <th>Acciones</th>
+          <th>Enviar</th>
         </tr>
       </thead>
       <tbody>
@@ -328,9 +288,19 @@ $search=(isset($_GET['search'])) ? $_GET['search'] : "";
             <td><?php echo $row['estado_pedido']; ?></td>
             <td><?php echo $row['id_cliente_fk_pedido']; ?></td>
             <td>
-              <a class="btn" href="EDITAR_PEDIDO.php?id_pedido=<?php echo $row['id_pedido']; ?>">Actualizar</a>
-              <a class="btn" href="ELIMINAR_PEDIDO.php?id_pedido=<?php echo $row['id_pedido']; ?>"
-              onclick="return confirm('¿Deseas eliminar este rol?');">Eliminar</a>
+            <button class="btn-accion enviar-btn"  data-id="<?php echo $row['id_pedido']; ?>"
+            data-nombre="<?php echo $row['nom_p_edido']; ?>"
+            data-talla="<?php echo $row['talla_p_pedido']; ?>"
+            data-color="<?php echo $row['color_p_pedido']; ?>"
+            data-categoria="<?php echo $row['categoria_p_pedido']; ?>"
+            data-material="<?php echo $row['material_p_pedido']; ?>"
+            data-cantidad="<?php echo $row['cant_producto']; ?>"
+            data-descripcion="<?php echo $row['descripcion_p_pedido']; ?>"
+            data-fecha="<?php echo $row['fecha_pedido']; ?>"
+            data-subtotal="<?php echo $row['sub_total_pedido']; ?>"
+            data-valor="<?php echo $row['valor_pedido']; ?>"
+            data-estado="<?php echo $row['estado_pedido']; ?>"
+            data-cliente="<?php echo $row['id_cliente_fk_pedido']; ?>">Enviar a produccion</button>
             </td>
           </tr>
         <?php } ?>
@@ -340,6 +310,79 @@ $search=(isset($_GET['search'])) ? $_GET['search'] : "";
       </tbody>
     </table>
   </div>
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const botones = document.querySelectorAll(".enviar-btn");
+
+  botones.forEach(boton => {
+    boton.addEventListener("click", async (e) => {
+      e.preventDefault();
+
+      const idPedido   = boton.getAttribute("data-id");
+      const nombre     = boton.getAttribute("data-nombre");
+      const talla      = boton.getAttribute("data-talla");
+      const color      = boton.getAttribute("data-color");
+      const categoria  = boton.getAttribute("data-categoria");
+      const material   = boton.getAttribute("data-material");
+      const cantidad   = boton.getAttribute("data-cantidad");
+      const descripcion= boton.getAttribute("data-descripcion");
+      const fecha      = boton.getAttribute("data-fecha");
+      const subtotal   = boton.getAttribute("data-subtotal");
+      const valor      = boton.getAttribute("data-valor");
+      const estado     = boton.getAttribute("data-estado");
+      const cliente    = boton.getAttribute("data-cliente");
+
+      if (!idPedido) return;
+
+      // Construcción correcta del body
+      const body = 
+        `id_pedido=${encodeURIComponent(idPedido)}&` +
+        `nombre=${encodeURIComponent(nombre)}&` +
+        `talla=${encodeURIComponent(talla)}&` +
+        `color=${encodeURIComponent(color)}&` +
+        `categoria=${encodeURIComponent(categoria)}&` +
+        `material=${encodeURIComponent(material)}&` +
+        `cantidad=${encodeURIComponent(cantidad)}&` +
+        `descripcion=${encodeURIComponent(descripcion)}&` +
+        `fecha=${encodeURIComponent(fecha)}&` +
+        `subtotal=${encodeURIComponent(subtotal)}&` +
+        `valor=${encodeURIComponent(valor)}&` +
+        `estado=${encodeURIComponent(estado)}&` +
+        `cliente=${encodeURIComponent(cliente)}`;
+
+      try {
+        const respuesta = await fetch("../../PHP/NOTIFICACIONES/enviar_a_produccion.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: body
+        });
+
+        const texto = await respuesta.text();
+        console.log("📩 Respuesta cruda del servidor:", texto);
+
+        let data;
+        try {
+          data = JSON.parse(texto);
+        } catch (e) {
+          throw new Error("El servidor no devolvió JSON válido");
+        }
+
+        if (data.success) {
+          alert("✅ Pedido enviado a producción correctamente.");
+          boton.disabled = true;
+          boton.innerText = "Enviado";
+        } else {
+          alert("❌ Error: " + data.message);
+        }
+      } catch (err) {
+        console.error("Error en la petición:", err);
+        alert("⚠️ No se pudo conectar con el servidor.");
+      }
+    });
+  });
+});
+</script>
+
 
 </body>
 </html>

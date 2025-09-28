@@ -1,12 +1,11 @@
 <?php 
-require_once "../CONFIG.php"; 
-require_once "CLASE_PRODUCTO_T.php";  
+require_once "../FACTURAV_EMPLE/CONEXION.PHP"; 
+require_once "../FACTURAV_EMPLE/CLASE_FV.PHP";  
 
 $datos = [];
-$obj = new PRODUCTO_T();
-    
-$search = (isset($_GET['search'])) ? $_GET['search']: "";
-    $datos = $obj->CONSULTAR_PRODUCTO_T($search); 
+$obj = new FACTURA_V();
+    $search = (isset($_GET['search'])) ? $_GET['search'] : "";
+    $datos = $obj->CONSULTAR_FACTURA_V(); 
 ?>
 
 <!DOCTYPE html>
@@ -14,8 +13,8 @@ $search = (isset($_GET['search'])) ? $_GET['search']: "";
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Producto terminado</title>
-  <link rel="stylesheet" href="../CSS/form.css">
+  <title>Fctura Venta</title>
+  <link rel="stylesheet" href="../CSS/emple.css">
 <style>
     .sidebar {
       background-image: linear-gradient(to bottom, rgb(255, 255, 255), #5c0b26);
@@ -145,6 +144,12 @@ $search = (isset($_GET['search'])) ? $_GET['search']: "";
       color: inherit;
       display: block;
     }
+
+    li a {
+      text-decoration: none; 
+      color: inherit;
+      display: block;
+    }
 .sidebar::-webkit-scrollbar {
   width: 8px;
 }
@@ -168,10 +173,10 @@ $search = (isset($_GET['search'])) ? $_GET['search']: "";
     <ul class="list_sidebar">
       <li class="element_sidebar">
 
-            <img src="../IMG/logoB.png" class="sidebar_icon_logo" style="height: 55px; width:40px;">
+            <img src="../../IMG/logoB.png" class="sidebar_icon_logo" style="height: 55px; width:40px;">
 
             <div class="sidebar_hide">
-                <img src="../IMG/Luxy LL.png" class="sidebar-logo"style="width: 150px; height: 50px;"> 
+                <img src="../../IMG/Luxy LL.png" class="sidebar-logo"style="width: 150px; height: 50px;"> 
             </div>
 
       <li class="element_sidebar">
@@ -182,20 +187,15 @@ $search = (isset($_GET['search'])) ? $_GET['search']: "";
           <p class="sidebar_text">Notificaciones</p>
         </div>
       </li>
-      <li class="element_sidebar">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16">
-            <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/>
-        </svg>
-        <div class="sidebar_hide">
-          <p class="sidebar_text">Inicio</p>
-        </div>
       </li>
       <li class="element_sidebar">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart" viewBox="0 0 16 16">
             <path d="M4 11H2v3h2zm5-4H7v7h2zm5-5v12h-2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
          </svg>
         <div class="sidebar_hide">
+          <a href="../index-emple.php">
           <p class="sidebar_text">Estadisticas</p>
+          </a>
         </div>
       </li>
 
@@ -209,20 +209,14 @@ $search = (isset($_GET['search'])) ? $_GET['search']: "";
       </li>
 
       <ul class="submenu" id="submenuForm">
-        <li><a href="../ROL/INDEX_ROL.php" class="sidebar_hide_a">Rol</a></li>
-        <li><a href="../CLIENTE/INDEX_CLIENTE.php" class="sidebar_hide_a">Cliente</a></li>
-        <li><a href="../EMPLEADO/INDEX_EMPLEADO.php" class="sidebar_hide_a">Empleado</a></li>
-        <li><a href="../FACTURA_COMPRA/INDEX_FACTURAC.php" class="sidebar_hide_a">Factura Compra</a></li>
-        <li><a href="../FACTURA_VENTA/INDEX_FACTURAV.php" class="sidebar_hide_a">Factura Venta</a></li>
-        <li><a href="../MATERIA_PRIMA/INDEX_MATERIAP.php" class="sidebar_hide_a">Materia Prima</a></li>
-        <li><a href="../PEDIDO/INDEX_PEDIDO.php" class="sidebar_hide_a">Pedidos</a></li>
-        <li><a href="../PRODUCCION/INDEX_PRODUCCION.php" class="sidebar_hide_a">Producción</a></li>
+        <li><a href="../FACTURAV_EMPLE/INDEX_FACTURA_EMPLE.php" class="sidebar_hide_a">Factura Venta</a></li>
+        <li><a href="../PEDIDOS_EMPLE/INDEX_PEDIDOS_EMPLE.php" class="sidebar_hide_a">Pedidos</a></li>
         <li><a href="../PRODUCTO_TERMINADO/INDEX_PRODUCTOT.php" class="sidebar_hide_a">Productos Terminados</a></li>
       </ul>
 
     </ul>
       <a href="../../index.html"class="element_sidebar sidebar_element_avatar link-m-l">
-            <svg class="sidebar_icon sidebar_icon_avatar" xmlns="http://www.w3.org/2000/svg" width="5" height="5" fill="currentColor" class="bi bi-box-arrow-left" viewBox="0 0 16 16">
+            <svg class="sidebar_icon sidebar_icon_avatar" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-arrow-left" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a.5.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0z"/>
                     <path fill-rule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708z"/>
             </svg>
@@ -230,7 +224,7 @@ $search = (isset($_GET['search'])) ? $_GET['search']: "";
               <p class="sidebar_Title">Cerrar Sesión</p>
           </div>
       </a>
-    
+     
   </aside>
 
   <script>
@@ -248,73 +242,60 @@ $search = (isset($_GET['search'])) ? $_GET['search']: "";
 
   <div class="main">
     <div class="card">
-      <h1>Gestión de productos terminados</h1>
+      <h1>Gestión de factura venta</h1>
 
      
-      <form action="INSERTAR.php" method="post">
+      <form action="../FACTURAV_EMPLE/INSERTAR_FV.PHP" method="post">
         <div class="form-group">
-          <input type="text" name="id_producto_t" placeholder="Código" required>
-          <input type="text" name="nombre_producto_t" placeholder="Nombre" required>
+          <input type="text" name="cod_factura_v" placeholder="Código" required>
+          <input type="date" name="fecha_factura_v" placeholder="Fecha" required>
         </div>
         <div class="form-group">
-          <input type="text" name="descripcion_producto_t" placeholder="Descripcion">
+          <input type="text" name="sub_total_factura_v" placeholder=" Sub total de la factura"required>
+          <input type="text" name="iva_factura_v" placeholder="IVA"required>
         </div>
         <div class="form-group">
-          <input type="text" name="categoria_produ_t" placeholder="Categoria">
+          <input type="text" name="total_factura_v" placeholder="Total"required>
+          <input type="text" name="metodo_pago" placeholder="Metodo de pago"required>
         </div>
         <div class="form-group">
-          <input type="text" name="unidad_medida" placeholder="Medida">
-          <input type="text" name="estado_producto_t" placeholder="Estado">
+          <input type="text" name="descuento" placeholder="Descuento"required>
+          <input type="text" name="estado_factura_venta" placeholder="Estado"required>
         </div>
-        <div class="form-group">
-          <input type="text" name="id_produccion_fk_producto_terminado" placeholder="Identificador de el el numero de produccion">
+        <div>
+          <input type="hidden" name="id_empleado_fk_factura" value="2">
         </div>
         <button type="submit" class="save-btn">Insertar</button>
       </form>
-    </div>
-
-    <div id="search" class="search"> 
-        <form action="" method="get">
-            <input type="text" name="search" placeholder="Escribe una palabara" id="searchInput">
-            <input type="submit" value="Buscar" id="btnSearch">
-        </form>
     </div>
 
     <table>
       <thead>
         <tr>
           <th>Código</th>
-          <th>Nombre</th>
-          <th>Descripcion</th>
-          <th>Categoria</th>
-          <th>Unidad de medida</th>
-          <th>Estado</th>
-          <th>Identificador</th>
-          <th>Acciones</th>
+          <th>Fecha</th>
+          <th>Sub total</th>
+          <th>IVA</th>
+          <th>Total</th>
+          <th>metodo de pago</th>
+          <th>Descuento</th>
+          <th>estado</th>
         </tr>
       </thead>
       <tbody>
-        <?php if (!empty($datos)) { ?>
         <?php foreach ($datos as $row) { ?>
-          
           <tr>
-            <td><?php echo $row['id_producto_t']; ?></td>
-            <td><?php echo $row['nombre_producto_t']; ?></td>
-            <td><?php echo $row['descripcion_producto_t']; ?></td>
-            <td><?php echo $row['categoria_produ_t']; ?></td>
-            <td><?php echo $row['unidad_medida']; ?></td>
-            <td><?php echo $row['estado_producto_t']; ?></td>
-            <td><?php echo $row['id_produccion_fk_producto_terminado']; ?></td>
-            <td>
-              <a class="btn-accion" href="EDITAR_PRODUCTOT.php?id_producto_t=<?php echo $row['id_producto_t']; ?>">Actualizar</a>
-              <a class="btn-accion" href="ELIMINAR_PRODUCTOT.php?id_producto_t=<?php echo $row['id_producto_t']; ?>"
-              onclick="return confirm('¿Deseas eliminar este rol?');">Eliminar</a>
-            </td>
+            <td><?php echo $row['cod_factura_v']; ?></td>
+            <td><?php echo $row['fecha_factura_v']; ?></td>
+            <td><?php echo $row['sub_total_factura_v']; ?></td>
+            <td><?php echo $row['iva_factura_v']; ?></td>
+            <td><?php echo $row['total_factura_v']; ?></td>
+            <td><?php echo $row['metodo_pago']; ?></td>
+            <td><?php echo $row['descuento']; ?></td>
+            <td><?php echo $row['estado_factura_venta']; ?></td>
+
           </tr>
         <?php } ?>
-        <?php } else { ?>
-        <tr><td colspan="5">No se encontraron resultados</td></tr>
-<?php } ?>
       </tbody>
     </table>
   </div>

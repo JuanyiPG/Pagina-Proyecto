@@ -267,7 +267,8 @@ $search = (isset($_GET['search'])) ? $_GET['search'] : "";
           <input type="text" name="correo_empleado" placeholder="Correo">
         </div>
         <div class="form-group">
-          <input type="date" name="Fecha_ing_empleado" placeholder="Fecha">
+          <input type="text" name="Fecha_ing_empleado" placeholder="Fecha ingreso"
+          onfocus="this.type='date'" onblur="if(!this.value) this.type='text'">
           <input type="text" name="salario_empleado" placeholder="Salario">
         </div>
         <div class="form-group">
