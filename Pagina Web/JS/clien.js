@@ -1,9 +1,6 @@
 
-
-
-// clien.js (reemplaza el contenido anterior)
 document.addEventListener('DOMContentLoaded', () => {
-  /* -------------------- CARRUSEL (seguro) -------------------- */
+
   try {
     const slider = document.querySelector('.slider');
     const leftBtn = document.querySelector('.arrow.left');
@@ -54,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error('Error en la lógica del carrusel:', err);
   }
 
-  /* -------------------- CARGAR HEADER (si existe) -------------------- */
   (async () => {
     try {
       const res = await fetch('../Items/header-productocliente.html');
@@ -67,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   })();
 
-  /* -------------------- DESPLEGABLE "DESCRIPCIÓN" (seguro) -------------------- */
   try {
     const descripcionHeaders = document.querySelectorAll('.descripcion-header');
 

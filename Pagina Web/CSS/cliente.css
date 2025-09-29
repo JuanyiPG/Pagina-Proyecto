@@ -70,7 +70,8 @@ video {
   width: 100%;
 }
 
-/* ===== SLIDER ===== */
+
+
 .slider-container {
   position: relative;
   width: 100%;
@@ -109,7 +110,6 @@ video {
   transform: scale(1.1);
 }
 
-/* Overlay con nombre y precio */
 .overlay {
   position: absolute;
   bottom: 0;
@@ -191,7 +191,7 @@ footer {
   margin-top: 40px;
 }
 
-/* ===== PRODUCTO PARA VENDER ===== */
+/* ----------------PRODUCTO PARA VENDER ---------*/
 .header-pc {
   background: linear-gradient(to left, #5c0b26, rgb(255, 255, 255));
 }

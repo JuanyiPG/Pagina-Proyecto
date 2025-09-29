@@ -3,7 +3,6 @@
     <div class="menu">
       <!-- Izquierda -->
       <div class="menu-l">
-        <!-- Botón Hamburguesa -->
         <button id="btnHamburguesa" class="btn btn-link p-0 border-0">
           <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" 
             class="bi bi-list" viewBox="0 0 16 16">
@@ -36,7 +35,6 @@
         </a>
 
         <!-- Login -->
-        <a href="#">
           <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" 
             class="bi bi-person-circle" viewBox="0 0 16 16">
             <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
@@ -46,27 +44,6 @@
               11.226 4.805 10 8 10s4.757 1.225 
               5.468 2.37A7 7 0 0 0 8 1"/>
           </svg>
-        </a>
-      </div>
-    </div>
-
-    <!-- Buscador -->
-    <div>
-      <div class="search">
-        <div class="buscador">
-          <label for="b-Search">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" 
-              class="bi bi-search" viewBox="0 0 16 16">
-              <path 
-                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 
-                1.398h-.001q.044.06.098.115l3.85 
-                3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 
-                1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 
-                1-11 0 5.5 5.5 0 0 1 11 0"/>
-            </svg>
-          </label>
-          <input type="search" placeholder="Buscar.." id="b-Search" name="b-Search">
-        </div>
       </div>
     </div>
   </nav>
