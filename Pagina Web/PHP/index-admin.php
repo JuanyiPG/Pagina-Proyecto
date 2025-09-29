@@ -20,7 +20,7 @@
       height: 100vh;
       background-color: #f5f6fa;
     }
-    /* Main content */
+    
     .main {
       position: relative;
       flex: 1;
@@ -54,7 +54,6 @@
       margin-bottom: 10px;
     }
 
-    /*--sidebar---*/
     .sidebar {
       background-image: linear-gradient(to bottom, rgb(255, 255, 255), #5c0b26);
       width: max-content;
@@ -207,7 +206,6 @@
       display: block;
     }
 
-    /* Charts reducidas */
     .charts {
       display: flex;
       gap: 20px;
@@ -284,7 +282,6 @@
       </ul>
     </ul>
 
-    <!-- Cerrar sesión (re-incluido) -->
     <a href="../../index.html" class="element_sidebar sidebar_element_avatar link-m-l">
       <svg class="sidebar_icon sidebar_icon_avatar" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
         <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a.5.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0z"/>
@@ -316,7 +313,6 @@
       </div>
     </div>
 
-    <!-- Charts añadidas (tamaño reducido) -->
     <div class="charts">
       <div class="chart-card">
         <canvas id="ventasChart"></canvas>
@@ -330,7 +326,6 @@
     </div>
   </div>
 
-  <!-- Submenu toggle -->
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       const toggleBtn = document.getElementById("formToggle");
@@ -344,7 +339,6 @@
     });
   </script>
 
-  <!-- Notificaciones (tu script original) -->
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       function actualizarNotificaciones() {
@@ -372,7 +366,6 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Ventas (line)
       const ventasCtx = document.getElementById('ventasChart').getContext('2d');
       const ventasChart = new Chart(ventasCtx, {
         type: 'line',
@@ -390,7 +383,6 @@
         options: { responsive: true, maintainAspectRatio: false }
       });
 
-      // Usuarios (pie)
       const usuariosCtx = document.getElementById('usuariosChart').getContext('2d');
       const usuariosChart = new Chart(usuariosCtx, {
         type: 'pie',
@@ -404,7 +396,6 @@
         options: { responsive: true, maintainAspectRatio: false }
       });
 
-      // Ingresos (bar)
       const ingresosCtx = document.getElementById('ingresosChart').getContext('2d');
       const ingresosChart = new Chart(ingresosCtx, {
         type: 'bar',
@@ -419,7 +410,6 @@
         options: { responsive: true, maintainAspectRatio: false }
       });
 
-      // Simulación de actualización (puedes reemplazar por fetch a tu backend)
       setInterval(() => {
         ventasChart.data.datasets[0].data = Array.from({length:6}, () => Math.floor(Math.random()*40));
         ventasChart.update();
