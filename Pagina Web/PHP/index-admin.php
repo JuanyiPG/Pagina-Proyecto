@@ -12,12 +12,15 @@ require_once "../Items/header-adminn.php"
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   <script rel="stylesheet" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
   <title>Admin Dashboard</title>
   <link rel="stylesheet" href="../CSS/index.css">
     <body class="body-3">
   <div class="main-1">
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -269,31 +272,10 @@ require_once "../Items/header-adminn.php"
   </aside>
 
   <div class="main">
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
     <div class="header">
       <h1>Bienvenido al panel de administración</h1>
     </div>
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
     <div class="cards-1">
       <div class="card-1">
         <h3>Usuarios</h3>
@@ -304,15 +286,6 @@ require_once "../Items/header-adminn.php"
         <p id="stat-ventas">0</p>
       </div>
       <div class="card-1">
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
     <div class="cards">
       <div class="card">
         <h3>Usuarios</h3>
@@ -323,19 +296,6 @@ require_once "../Items/header-adminn.php"
         <p id="stat-ventas">0</p>
       </div>
       <div class="card">
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
         <h3>Ingresos</h3>
         <p id="stat-ingresos">$0</p>
       </div>
@@ -375,19 +335,6 @@ require_once "../Items/header-adminn.php"
       setInterval(actualizarNotificaciones, 10000);
     });
   </script>
-
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-  // Llamar al cargar la página
-  actualizarNotificaciones();
-
-  // Refrescar cada 10 segundos
-  setInterval(actualizarNotificaciones, 10000);
-});
 </script>
 <!------header----------->
  <script>
@@ -400,6 +347,8 @@ require_once "../Items/header-adminn.php"
         submenu.classList.toggle("show");
       });
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -430,6 +379,9 @@ require_once "../Items/header-adminn.php"
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
