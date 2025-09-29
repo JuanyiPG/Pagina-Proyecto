@@ -11,12 +11,15 @@ require_once "../Items/header-adminn.php"
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   <script rel="stylesheet" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
   <title>Admin Dashboard</title>
   <link rel="stylesheet" href="../CSS/index.css">
     <body class="body-3">
   <div class="main-1">
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -270,6 +273,9 @@ require_once "../Items/header-adminn.php"
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -283,6 +289,7 @@ require_once "../Items/header-adminn.php"
       <h1>Bienvenido al panel de administración</h1>
     </div>
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
@@ -304,6 +311,8 @@ require_once "../Items/header-adminn.php"
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
     <div class="cards">
       <div class="card">
         <h3>Usuarios</h3>
@@ -317,6 +326,9 @@ require_once "../Items/header-adminn.php"
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -369,6 +381,7 @@ require_once "../Items/header-adminn.php"
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   // Llamar al cargar la página
   actualizarNotificaciones();
 
@@ -387,6 +400,8 @@ require_once "../Items/header-adminn.php"
         submenu.classList.toggle("show");
       });
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -414,6 +429,9 @@ require_once "../Items/header-adminn.php"
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
