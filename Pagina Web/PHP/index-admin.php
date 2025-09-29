@@ -7,12 +7,15 @@ require_once "../Items/header-adminn.php"
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   <script rel="stylesheet" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
   <title>Admin Dashboard</title>
   <link rel="stylesheet" href="../CSS/index.css">
     <body class="body-3">
   <div class="main-1">
 =======
+=======
+>>>>>>> Stashed changes
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
@@ -254,11 +257,15 @@ require_once "../Items/header-adminn.php"
   </aside>
 
   <div class="main">
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     <div class="header">
       <h1>Bienvenido al panel de administración</h1>
     </div>
 
+<<<<<<< Updated upstream
     <div class="cards-1">
       <div class="card-1">
         <h3>Usuarios</h3>
@@ -269,6 +276,18 @@ require_once "../Items/header-adminn.php"
         <p id="stat-ventas">0</p>
       </div>
       <div class="card-1">
+=======
+    <div class="cards">
+      <div class="card">
+        <h3>Usuarios</h3>
+        <p id="stat-usuarios">5</p>
+      </div>
+      <div class="card">
+        <h3>Ventas</h3>
+        <p id="stat-ventas">0</p>
+      </div>
+      <div class="card">
+>>>>>>> Stashed changes
         <h3>Ingresos</h3>
         <p id="stat-ingresos">$0</p>
       </div>
@@ -310,6 +329,7 @@ require_once "../Items/header-adminn.php"
   </script>
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   // Llamar al cargar la página
   actualizarNotificaciones();
 
@@ -328,6 +348,8 @@ require_once "../Items/header-adminn.php"
         submenu.classList.toggle("show");
       });
 =======
+=======
+>>>>>>> Stashed changes
   <!-- Estadísticas dinámicas -->
   <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -343,6 +365,9 @@ require_once "../Items/header-adminn.php"
       }
       actualizarEstadisticas();
       setInterval(actualizarEstadisticas, 10000);
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     });
   </script>
