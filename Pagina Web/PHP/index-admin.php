@@ -20,7 +20,7 @@
       height: 100vh;
       background-color: #f5f6fa;
     }
-    
+
     .main {
       position: relative;
       flex: 1;
@@ -315,10 +315,10 @@
 
     <div class="charts">
       <div class="chart-card">
-        <canvas id="ventasChart"></canvas>
+        <canvas id="usuariosChart"></canvas>
       </div>
       <div class="chart-card">
-        <canvas id="usuariosChart"></canvas>
+        <canvas id="ventasChart"></canvas>
       </div>
       <div class="chart-card">
         <canvas id="ingresosChart"></canvas>
