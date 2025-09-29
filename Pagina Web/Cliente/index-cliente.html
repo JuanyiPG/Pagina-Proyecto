@@ -6,17 +6,15 @@
   <title>Fashion Luxy</title>
   <link rel="stylesheet" type="text/css" href="../CSS/cliente.css">
   <link rel="stylesheet" href="Pagina Web/bootstrap/css/bootstrap.min.css">
-  <script src="Pagina Web/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="Pagina Web/bootstrap/js/bootstrap.bundle.min.js" defer></script>
 </head>
 <body>
-  <!-- HEADER -->
   <header id="header-cliente"></header>
-
-  <!-- VIDEO -->
   <video autoplay muted loop class="VPP">
     <source src="../VIDEO/VideoPClien.mp4" type="video/mp4">
   </video>
 
+  <!-- SLIDER -->
   <div class="slider-container">
     <button class="arrow left">&#10094;</button>
     <div class="slider">
@@ -58,7 +56,7 @@
     <button class="arrow right">&#10095;</button>
   </div>
 
-  <!-- BANNER PROMOCIONAL -->
+  <!-- BANNER -->
   <section class="banner-promo">
     <h2>Ofertas Exclusivas para Clientes</h2>
     <p>Disfruta de descuentos especiales solo por ser parte de Fashion Luxy</p>
@@ -95,17 +93,10 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer>
     <p>&copy; 2025 Fashion Luxy - Todos los derechos reservados</p>
   </footer>
 
-  <!-- JS -->
-  <script src="../JS/clien.js"></script>
-  <script>
-    fetch('../Items/header-indexcliente.php')
-      .then(res => res.text()) 
-      .then(data => { document.getElementById("header-cliente").innerHTML = data });
-  </script>
+  <script src="../JS/clien.js" defer></script>
 </body>
 </html>
