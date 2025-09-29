@@ -1,43 +1,13 @@
-<?php
-require_once "../Items/header-adminn.php"
-?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-  <script rel="stylesheet" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
-  <title>Admin Dashboard</title>
-  <link rel="stylesheet" href="../CSS/index.css">
-    <body class="body-3">
-  <div class="main-1">
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <title>Admin Dashboard</title>
+
   <style>
     * {
       margin: 0;
@@ -57,17 +27,20 @@ require_once "../Items/header-adminn.php"
       padding: 30px;
       overflow-y: auto;
     }
+
     .header {
       background-color: #fff;
       padding: 10px 20px;
       margin-bottom: 20px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
+
     .cards {
       display: flex;
       gap: 20px;
       flex-wrap: wrap;
     }
+
     .card {
       background-color: white;
       padding: 20px;
@@ -75,8 +48,8 @@ require_once "../Items/header-adminn.php"
       flex: 1;
       min-width: 200px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      text-align: center;
     }
+
     .card h3 {
       margin-bottom: 10px;
     }
@@ -93,6 +66,7 @@ require_once "../Items/header-adminn.php"
       display: flex;
       flex-direction: column;
     }
+
     .list_sidebar_a{
       list-style: none;
       padding: 0;
@@ -102,6 +76,7 @@ require_once "../Items/header-adminn.php"
       flex-direction: column;
       gap: .4rem;
     }
+
     .element_sidebar {
       padding: .4rem 1rem;
       border-radius: 3px;
@@ -112,56 +87,69 @@ require_once "../Items/header-adminn.php"
       transition: grid-template-columns .4s;
       margin-left:-30px;
     }
+
     .sidebar:hover .element_sidebar {
       grid-template-columns: 40px 1fr;
     }
+
     .element_sidebar:not(:has(.sidebar_icon_logo)):hover {
       background-color: #5e092593;
       color: #fff;
       fill: #fff;
       cursor: pointer;
     }
+
     .element_sidebar:has(.sidebar_icon_logo) {
       margin-bottom: 1rem;
     }
+
     .sidebar-icon {
       width: 100%;
       overflow: hidden;
       justify-self: center;
     }
+
     .sidebar_icon_logo {
       max-width: 50px;
     }
+
     .sidebar_icon_avatar {
       width: 25px;
       height: 40px;
       object-fit: cover;
       object-position: center;
     }
+
     .sidebar_element_avatar {
       margin-top: auto;
       text-wrap: nowrap;
       text-align: left;
       color: #fff;
     }
+
     .sidebar_Title {
       padding-left: 1.3rem;
     }
+
     .sidebar-logo,
     .sidebar_text {
       padding-left: 1.3rem;
     }
+
     .sidebar_hide {
       overflow: hidden;
       padding: 2px;
     }
+
     .sidebar_hide_a {
       text-decoration: none;
       color: inherit;
     }
+
     .sidebar_hide_a:hover {
       color: #fff;
     }
+
     .submenu {
       display: none;
       flex-direction: column;
@@ -170,9 +158,11 @@ require_once "../Items/header-adminn.php"
       list-style: none;
       gap: .3rem;
     }
+
     .submenu.show {
       display: flex;
     }
+
     .submenu li {
       padding: .5rem .8rem;
       font-size: 14px;
@@ -181,33 +171,64 @@ require_once "../Items/header-adminn.php"
       transition: background 0.3s, color 0.3s;
       color: #50061f;
     }
+
     .submenu li:hover {
       background: #5c0b26;
       color: #fff;
       cursor: pointer;
     }
+
     .submenu li a {
       text-decoration: none;
       color: inherit;
       display: block;
     }
+
     .sidebar::-webkit-scrollbar {
       width: 8px;
     }
+
     .sidebar::-webkit-scrollbar-track {
       background: transparent;
     }
+
     .sidebar::-webkit-scrollbar-thumb {
       background: rgba(255, 255, 255, 0.2);
       border-radius: 4px;
     }
+
     .sidebar::-webkit-scrollbar-thumb:hover {
       background: rgba(255, 255, 255, 0.4);
     }
+
     li a {
       text-decoration: none; 
       color: inherit;
       display: block;
+    }
+
+    /* Charts reducidas */
+    .charts {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .chart-card {
+      flex: 1;
+      min-width: 250px;
+      max-width: 350px;
+      height: 250px;
+      background: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .chart-card canvas {
+      width: 100% !important;
+      height: 100% !important;
     }
   </style>
 </head>
@@ -217,7 +238,7 @@ require_once "../Items/header-adminn.php"
       <li class="element_sidebar">
         <img src="../IMG/logoB.png" class="sidebar_icon_logo" style="height: 55px; width:40px;">
         <div class="sidebar_hide">
-          <img src="../IMG/Luxy LL.png" class="sidebar-logo"style="width: 150px; height: 50px;"> 
+          <img src="../IMG/Luxy LL.png" class="sidebar-logo" style="width: 150px; height: 50px;">
         </div>
       </li>
 
@@ -226,7 +247,7 @@ require_once "../Items/header-adminn.php"
           <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4 4 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4 4 0 0 0-3.203-3.92zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5 5 0 0 1 13 6c0 .88.32 4.2 1.22 6"/>
         </svg>
         <div class="sidebar_hide">
-          <p class="sidebar_text">Notificaciones <span id="notiCount" class="badge bg-danger">0</span></p>
+          <p class="sidebar_text">Notificaciones</p>
         </div>
       </li>
 
@@ -243,7 +264,7 @@ require_once "../Items/header-adminn.php"
 
       <li class="element_sidebar" id="formToggle">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grid" viewBox="0 0 16 16">
-          <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5zM2.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zm6.5.5A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zM1 10.5A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zm6.5.5A1.5 1.5 0 0 1 10.5 9h3a.5.5 0 0 1 1.5 1.5v3a.5.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5z"/>
+          <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5zM2.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zm6.5.5A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zM1 10.5A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5zm6.5.5A1.5 1.5 0 0 1 10.5 9h3a1.5.5 0 0 1 1.5 1.5v3a1.5.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5z"/>
         </svg>
         <div class="sidebar_hide">
           <p class="sidebar_text">Formularios</p>
@@ -263,6 +284,7 @@ require_once "../Items/header-adminn.php"
       </ul>
     </ul>
 
+    <!-- Cerrar sesión (re-incluido) -->
     <a href="../../index.html" class="element_sidebar sidebar_element_avatar link-m-l">
       <svg class="sidebar_icon sidebar_icon_avatar" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
         <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a.5.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0z"/>
@@ -279,31 +301,31 @@ require_once "../Items/header-adminn.php"
       <h1>Bienvenido al panel de administración</h1>
     </div>
 
-<<<<<<< Updated upstream
-    <div class="cards-1">
-      <div class="card-1">
-        <h3>Usuarios</h3>
-        <p id="stat-usuarios">5</p>
-      </div>
-      <div class="card-1">
-        <h3>Ventas</h3>
-        <p id="stat-ventas">0</p>
-      </div>
-      <div class="card-1">
-=======
->>>>>>> Stashed changes
     <div class="cards">
       <div class="card">
         <h3>Usuarios</h3>
-        <p id="stat-usuarios">5</p>
+        <p>135 registrados</p>
       </div>
       <div class="card">
         <h3>Ventas</h3>
-        <p id="stat-ventas">0</p>
+        <p>34 este mes</p>
       </div>
       <div class="card">
         <h3>Ingresos</h3>
-        <p id="stat-ingresos">$0</p>
+        <p>$4,500</p>
+      </div>
+    </div>
+
+    <!-- Charts añadidas (tamaño reducido) -->
+    <div class="charts">
+      <div class="chart-card">
+        <canvas id="ventasChart"></canvas>
+      </div>
+      <div class="chart-card">
+        <canvas id="usuariosChart"></canvas>
+      </div>
+      <div class="chart-card">
+        <canvas id="ingresosChart"></canvas>
       </div>
     </div>
   </div>
@@ -313,14 +335,16 @@ require_once "../Items/header-adminn.php"
     document.addEventListener("DOMContentLoaded", function() {
       const toggleBtn = document.getElementById("formToggle");
       const submenu = document.getElementById("submenuForm");
-      toggleBtn.addEventListener("click", function(e) {
-        e.preventDefault();
-        submenu.classList.toggle("show");
-      });
+      if (toggleBtn && submenu) {
+        toggleBtn.addEventListener("click", function(e) {
+          e.preventDefault();
+          submenu.classList.toggle("show");
+        });
+      }
     });
   </script>
 
-  <!-- Notificaciones -->
+  <!-- Notificaciones (tu script original) -->
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       function actualizarNotificaciones() {
@@ -328,11 +352,13 @@ require_once "../Items/header-adminn.php"
           .then(response => response.text())
           .then(data => {
             const noti = document.getElementById("notiCount");
-            noti.textContent = data;
-            if (parseInt(data) === 0) {
-              noti.style.display = "none";
-            } else {
-              noti.style.display = "inline-block";
+            if (noti) {
+              noti.textContent = data;
+              if (parseInt(data) === 0) {
+                noti.style.display = "none";
+              } else {
+                noti.style.display = "inline-block";
+              }
             }
           })
           .catch(error => console.error("Error cargando notificaciones:", error));
@@ -341,73 +367,70 @@ require_once "../Items/header-adminn.php"
       setInterval(actualizarNotificaciones, 10000);
     });
   </script>
-<<<<<<< Updated upstream
-</script>
-<!------header----------->
- <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      const toggleBtn = document.getElementById("formToggle");
-      const submenu = document.getElementById("submenuForm");
 
-      toggleBtn.addEventListener("click", function(e) {
-        e.preventDefault();
-        submenu.classList.toggle("show");
-      });
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
-
->>>>>>> Stashed changes
-  <!-- Estadísticas dinámicas -->
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      function actualizarEstadisticas() {
-        fetch("../PHP/ESTADISTICAS/estadisticas.php")
-          .then(response => response.json())
-          .then(data => {
-            document.getElementById("stat-usuarios").textContent = data.usuarios;
-            document.getElementById("stat-ventas").textContent = data.ventas;
-            document.getElementById("stat-ingresos").textContent = "$" + data.ingresos;
-          })
-          .catch(error => console.error("Error cargando estadísticas:", error));
-      }
-      actualizarEstadisticas();
-      setInterval(actualizarEstadisticas, 10000);
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+    document.addEventListener('DOMContentLoaded', () => {
+      // Ventas (line)
+      const ventasCtx = document.getElementById('ventasChart').getContext('2d');
+      const ventasChart = new Chart(ventasCtx, {
+        type: 'line',
+        data: {
+          labels: ['Ene','Feb','Mar','Abr','May','Jun'],
+          datasets:[{
+            label:'Ventas',
+            data:[12,19,15,25,22,30],
+            borderColor:'#5c0b26',
+            backgroundColor:'rgba(92,11,38,0.15)',
+            tension:0.3,
+            fill:true
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+
+      // Usuarios (pie)
+      const usuariosCtx = document.getElementById('usuariosChart').getContext('2d');
+      const usuariosChart = new Chart(usuariosCtx, {
+        type: 'pie',
+        data: {
+          labels:['Activos','Inactivos'],
+          datasets:[{
+            data:[100,35],
+            backgroundColor:['#5c0b26','#d6a5b1']
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+
+      // Ingresos (bar)
+      const ingresosCtx = document.getElementById('ingresosChart').getContext('2d');
+      const ingresosChart = new Chart(ingresosCtx, {
+        type: 'bar',
+        data: {
+          labels:['Ene','Feb','Mar','Abr','May','Jun'],
+          datasets:[{
+            label:'Ingresos',
+            data:[500,700,400,900,1200,800],
+            backgroundColor:'#5c0b26'
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+
+      // Simulación de actualización (puedes reemplazar por fetch a tu backend)
+      setInterval(() => {
+        ventasChart.data.datasets[0].data = Array.from({length:6}, () => Math.floor(Math.random()*40));
+        ventasChart.update();
+
+        usuariosChart.data.datasets[0].data = [Math.floor(Math.random()*150), Math.floor(Math.random()*60)];
+        usuariosChart.update();
+
+        ingresosChart.data.datasets[0].data = Array.from({length:6}, () => Math.floor(Math.random()*1600));
+        ingresosChart.update();
+      }, 7000);
     });
   </script>
-
 </body>
 </html>
