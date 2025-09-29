@@ -21,10 +21,6 @@ require_once "../../Items/header-admin.html"
     <title>Producción</title>
     <link rel="stylesheet" href="../../CSS/index.css">
     <style>
-    /*-----------------buscador-------------------------*/
-    .filtro {
-      display: none; 
-    }
     </style>
 </head>
 <body class="body2">
@@ -33,7 +29,6 @@ require_once "../../Items/header-admin.html"
         <?php if (empty($pedidos)): ?>
             <p style="text-align:center;">No hay pedidos enviados todavía.</p>
         <?php else: ?>
-          <input type="search" class="buscador form-control mb-3" id="buscador" name="buscador">
         <table class="tables">
             <thead class="theads">
                 <tr>
@@ -76,19 +71,6 @@ require_once "../../Items/header-admin.html"
     </div>
 
 <!-------------JAVA SCRIPT ----------------->
-<!---------BUSCADOR--------------->
-    <script>
-      document.addEventListener('keyup', e =>{
-        if (e.target.matches('#buscador')){
-          document.querySelectorAll('.articulos').forEach(fruta => {
-            fruta.textContent.toLowerCase().includes(e.target.value) 
-            ? fruta.classList.remove('filtro')
-            : fruta.classList.add('filtro')
-
-          })
-        }
-      })
-      </script>
 <!-------------header---------------->
         <script>
     document.addEventListener("DOMContentLoaded", function() {

@@ -118,6 +118,10 @@ INSERT INTO luxi_fashon.pedido (id_pedido,nom_p_edido, talla_p_pedido, color_p_p
     sub_total_pedido, valor_pedido, estado_pedido, id_cliente_fk_pedido)
 VALUES (5,'chaqueta','m','azul','chaquetas','algodon',5,'chaqueta con forro', '12-05-15', 50000, 50000, 'pendiente',1);
 
+INSERT INTO luxi_fashon.pedido (id_pedido,nom_p_edido, talla_p_pedido, color_p_pedido, categoria_p_pedido,
+    material_p_pedido, cant_producto, descripcion_p_pedido, fecha_pedido,
+    sub_total_pedido, valor_pedido, estado_pedido, id_cliente_fk_pedido)
+VALUES (1,'BLUSA HOMBRO DESCUBIERTO','m','azul','blusa','algodon',2,'blusa en algodon ajustada al cuerpo ', '29-09-25', 45000, 45000, 'pendiente',1);
 
 CREATE PROCEDURE insrt_Produccion(
   IN insrt_id_produccion INT,

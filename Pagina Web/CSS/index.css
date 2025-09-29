@@ -37,25 +37,6 @@
   list-style: none;
 }
 
-.mosaico {
-  margin-top: 10px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  grid-auto-rows: 500px;
-  gap: 0px;
-  width: 100%;
-  min-height: 100vh;
-}
-
-.mosaico a {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  color: #fff;
-}
-
 
 .mosaico img {
   object-fit: cover;

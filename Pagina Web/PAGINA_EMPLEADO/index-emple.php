@@ -4,9 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../CSS/index.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <title>Empleado dashboard</title>
   <style>
     body{
@@ -241,7 +239,6 @@
       <ul class="submenu" id="submenuForm">
         <li><a href="FACTURAV_EMPLE/INDEX_FACTURA_EMPLE.php" class="sidebar_hide_a">Factura Venta</a></li>
         <li><a href="PEDIDOS_EMPLE/INDEX_PEDIDOS_EMPLE.php" class="sidebar_hide_a">Pedidos</a></li>
-        <li><a href="PRODUCTO_TERMINADO/INDEX_PRODUCTOT.php" class="sidebar_hide_a">Productos Terminados</a></li>
       </ul>
 
     </ul>
@@ -278,16 +275,16 @@
 
     <div class="cards">
         <div class="card">
-        <h3>Usuarios</h3>
-        <p>135 registrados</p>     
+        <h3>PEDIDOS</h3>
+        <p>10 pendientes</p>     
         </div>
         <div class="card">
-        <h3>Ventas</h3>
-        <p>34 este mes</p>
+        <h3>FACTURAS</h3>
+        <p>5 por pagar </p>
         </div>
         <div class="card">
-        <h3>Ingresos</h3>
-        <p>$1,700.000</p>
+        <h3>PRODUCCION</h3>
+        <p>3 pendientes por mandar a produccion</p>
         </div>
  <a href="../PAGINA_EMPLEADO/INDEX_FACTURA_EMPLE.php"></a>
     </div>
