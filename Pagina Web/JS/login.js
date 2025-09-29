@@ -22,9 +22,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     
     const users = [
-      { email: "luxyfashion@admin.com", password: "luxy12345", redirect: "../PHP/index-admin.php" },
+      { email: "luxyfashion@admin.com", password: "luxy123", redirect: "../PHP/index-admin.php" },
       { email: "yulieth@luxy.com", password: "yuli123", redirect: "../PAGINA_EMPLEADO/index-emple.php" },
-      { email: "juanpintow@gmail.com", password: "juan4321", redirect: "../Cliente/index-cliente.html" }
+      { email: "juanpintow@gmail.com", password: "juan12345", redirect: "../Cliente/index-cliente.html" }
     ];
 
     
