@@ -12,24 +12,28 @@ btnSignUp.addEventListener('click',()=>{
 
 document.addEventListener("DOMContentLoaded", () => {
   const formSignIn = document.querySelector(".sign-in");
+  if (!formSignIn) return; 
 
   formSignIn.addEventListener("submit", (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
 
     const email = formSignIn.querySelector("input[placeholder='Email']").value.trim();
     const password = formSignIn.querySelector("input[placeholder='Contraseña']").value.trim();
 
+    
     const users = [
-      { email: "juanpintow@gmail.com", password: "12345" },
-      { email: "luxyfashion@admin.com", password: "luxy4321" }
+      { email: "luxyfashion@admin.com", password: "luxy12345", redirect: "../PHP/index-admin.php" },
+      { email: "yulieth@luxy.com", password: "yuli123", redirect: "../PAGINA_EMPLEADO/index-emple.php" },
+      { email: "juanpintow@gmail.com", password: "juan4321", redirect: "../Cliente/index-cliente.html" }
     ];
 
+    
     const usuarioValido = users.find(u => u.email === email && u.password === password);
 
     if (usuarioValido) {
-      window.location.href = "../Admin/index-admin.html"; 
+      window.location.href = usuarioValido.redirect; 
     } else {
-      alert("Usuario o contraseña incorrectos ");
+      alert("Usuario o contraseña incorrectos");
     }
   });
 });
