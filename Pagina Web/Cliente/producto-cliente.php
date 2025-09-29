@@ -79,21 +79,23 @@ $search=(isset($_GET['search'])) ? $_GET['search'] : "";
                 </div>
                 <div>
                     <!--categoria-->
-                    <label for="categoria" class="subinfo" style="font-family: Georgia, 'Times New Roman', Times, serif;">Categoria:</label>
-                    <pre class="readonly"><input type="text" class="categoria" name="categoria" value="Blusa" readonly style="font-family: Georgia, 'Times New Roman', Times, serif;"></pre>
+                    <label for="categoria" class="subinfo">Categoria:</label>
+                    <pre class="readonly"><input type="text" class="categoria "name="categoria" value="Blusa" readonly></pre>
+                    <br><br>
+                    <label for="cantidad" class="subinfo">Cantidad:</label>
+                    <input type="text" name="cantidad" id="cantidad">
                 </div>
 
                 <br>
-                <button type="submit" class="btn" id="add-car-shop">Comprar</button>
-
+                <button type="button" class="btn" id="add-car-shop">Comprar</button>
+                <br>
                 <div class="descripcion-container">
-                    <div class="descripcion-header">
-                        <label for="descrip" class="titulo-desc" style="font-family:Georgia, 'Times New Roman', Times, serif;">Descripción</label>
-                        <span class="arrow-desc">▶</span>
-                    </div>
-                    <input type=""  readonly id="descrip-produc" name="descipcion" class="hidden" value="Blusa perfecta para clima caliente, con colores cautivadores para darle un plus a tu conjunto "style="width: 100%; border: none; 
-                    background-color: #f9f9f9">
-                </div>
+                     <div class="descripcion-header">
+                         <label for="descrip" class="titulo-desc">Descripción</label>
+                         <span class="arrow-desc">▶</span>
+                     </div>
+                     <input type=""  readonly id="descrip-produc" name="descipcion" class="hidden" value="Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ipsa ex reprehenderit porro minima, id laudantium voluptatem voluptates modi provident obcaecati incidunt nam, ad unde sequi? Ab autem sequi amet omnis">
+                 </div>
             </form>
             <br>
 
