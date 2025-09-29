@@ -1,3 +1,6 @@
+
+
+
 // clien.js (reemplaza el contenido anterior)
 document.addEventListener('DOMContentLoaded', () => {
   /* -------------------- CARRUSEL (seguro) -------------------- */
