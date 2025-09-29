@@ -9,6 +9,8 @@ $search= (isset($_GET['search']))? $_GET['search'] : "";
     $datos = $obj->CONSULTAR_ROL($search); 
 ?>
 
+
+
 <?php
 require_once "../../Items/header-admin.html"
 ?>
@@ -20,6 +22,17 @@ require_once "../../Items/header-admin.html"
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Roles</title>
   <link rel="stylesheet" href="../../CSS/index.css">
+  <style>
+    .alerta {
+  margin: 15px 0;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 15px;
+}
+.alerta p {
+  margin: 0;
+}
+  </style>
   <body class="body2">
 
   <div class="main">
@@ -38,7 +51,7 @@ require_once "../../Items/header-admin.html"
         <div class="form-group">
           <input type="text" name="estado" placeholder="Estado">
         </div>
-        <button type="submit" class="save-btn">Insertar</button>
+        <button type="submit" class="save-btn" onclick="return>Insertar</button>
       </form>
     </div>
 
@@ -80,6 +93,15 @@ require_once "../../Items/header-admin.html"
       </tbody>
     </table>
   </div>
+  <?php if (isset($_GET['mensaje'])): ?>
+    <div class="alerta">
+        <?php if ($_GET['mensaje'] == 'insertado'): ?>
+            <p style="color: green; font-weight:bold;">✅ Rol insertado correctamente</p>
+        <?php elseif ($_GET['mensaje'] == 'error'): ?>
+            <p style="color: red; font-weight:bold;">❌ Error al insertar el rol</p>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>
 <!------JAVA SCRIPT-------->
   <script>
     document.addEventListener("DOMContentLoaded", function() {

@@ -279,6 +279,10 @@ footer {
   background: linear-gradient(to left, #5c0b26, rgb(255, 255, 255));
 }
 
+.prod-cli-header{
+  background: linear-gradient(to left, #5c0b26, rgb(255, 255, 255));
+}
+
 .header-pc .menu-r svg {
   color: #ffffff;
 }
@@ -491,7 +495,7 @@ input[type="radio"]:checked + .btn-talla {
 }
 
 .color-picker .rojo   { background: red; }
-.color-picker .azul   { background: grey;  border: 2px solid #585858;}
+.color-picker .gris  { background: grey;  border: 2px solid #585858;}
 .color-picker .blanco { background: #fff; border: 2px solid #aaa; }
 .color-picker .negro  { background: #000;  border: 2px solid #adacac;}
 

@@ -1,4 +1,5 @@
 (async function () {
+  // ---------------- cargar header ----------------
   async function loadHeader() {
     try {
       const res = await fetch('../Items/header-indexcliente.php');
@@ -13,7 +14,7 @@
     }
   }
 
-  // ------------- inicializadores del header -------------
+  // ---------------- inicializadores del header ----------------
   function initHeaderInteractions() {
     const btnHamb = document.getElementById('btnHamburguesa');
     const hambMenu = document.getElementById('hamburgerMenu');
@@ -59,14 +60,13 @@
     }
     if (btnCerrar) {
       btnCerrar.addEventListener('click', () => {
-
         try { localStorage.removeItem('userToken'); } catch (e) {}
         window.location.href = '../../index.html';
       });
     }
   }
 
-  // ------------- inicializador del slider -------------
+  // ---------------- inicializador del slider ----------------
   function initSlider() {
     try {
       const slider = document.querySelector('.slider');
@@ -74,7 +74,6 @@
       const rightBtn = document.querySelector('.arrow.right');
 
       if (!slider || !leftBtn || !rightBtn) return;
-
 
       const items = slider.querySelectorAll('.item');
       if (items.length > 0 && !slider.dataset.duplicated) {
@@ -123,7 +122,6 @@
     }
   }
 
-
   const headerLoaded = await loadHeader();
   if (headerLoaded) {
     initHeaderInteractions();
@@ -132,5 +130,95 @@
   }
 
   initSlider();
-
 })();
+
+// ---------------- Add to cart ----------------
+try {
+  const addcarshop = document.getElementById('add-car-shop');
+  if (addcarshop) {
+    addcarshop.addEventListener('click', (e) => {
+      e.preventDefault();
+      const tallaEl = document.querySelector('input[name="talla"]:checked');
+      const colorEl = document.querySelector('input[name="color"]:checked');
+      const talla = tallaEl ? tallaEl.value : 'No seleccionada';
+      const color = colorEl ? colorEl.value : 'No seleccionada';
+      alert(`Producto agregado al carrito.\nTalla: ${talla}\nColor: ${color}`);
+    });
+  }
+} catch (err) {
+  console.error('Error al inicializar add-car-shop:', err);
+}
+
+// ---------------- descripción expandible ----------------
+document.addEventListener("DOMContentLoaded", () => {
+  const headerDesc = document.querySelector('.descripcion-header');
+  const textoDesc = document.getElementById('descrip-produc');
+  const arrowDesc = document.querySelector('.arrow-desc');
+
+  if (headerDesc && textoDesc && arrowDesc) {
+    headerDesc.addEventListener('click', () => {
+      textoDesc.classList.toggle('show');
+      textoDesc.classList.toggle('hidden');
+      arrowDesc.classList.toggle('rotate');
+    });
+  }
+
+  // ---------------- cambio de colores de imágenes ----------------
+  const imgprin = document.getElementById('imgprin');
+  const img1 = document.getElementById('img1');
+  const img2 = document.getElementById('img2');
+  const img3 = document.getElementById('img3');
+
+  if (imgprin && img1 && img2 && img3) {
+    const cambiarImagenes = (imagenes) => {
+      imgprin.src = imagenes[0];
+      img1.src = imagenes[1];
+      img2.src = imagenes[2];
+      img3.src = imagenes[3];
+    };
+
+    const botonrojo = document.getElementById('color-rojo');
+    if (botonrojo) {
+      const imagenroja = [
+        '../IMG/blusa-hombro-rojo.jpg',
+        '../IMG/blusa-hombro-rojo.jpg',
+        '../IMG/blusa-hombro-rojo.jpg',
+        '../IMG/blusa-hombro-rojo.jpg',
+      ];
+      botonrojo.addEventListener('click', () => cambiarImagenes(imagenroja));
+    }
+
+    const botonblanco = document.getElementById('color-blanco');
+    if (botonblanco) {
+      const imagenblanca = [
+        '../IMG/blusa-hombro-blanco.jpg',
+        '../IMG/blusa-hombro-blanco.jpg',
+        '../IMG/blusa-hombro-blanco.jpg',
+        '../IMG/blusa-hombro-blanco.jpg',
+      ];
+      botonblanco.addEventListener('click', () => cambiarImagenes(imagenblanca));
+    }
+
+    const botongris = document.getElementById('color-gris');
+    if (botongris) {
+      const imagengriss = [
+        '../IMG/blusa-hombro-gris.jpg',
+        '../IMG/blusa-hombro-gris.jpg',
+        '../IMG/blusa-hombro-gris.jpg',
+        '../IMG/blusa-hombro-gris.jpg',
+      ];
+      botongris.addEventListener('click', () => cambiarImagenes(imagengriss));
+    }
+
+    const botonnegro = document.getElementById('color-negro');
+    if (botonnegro) {
+      const imagennegra = [
+        '../IMG/blusa-hombro-negro.jpeg',
+        '../IMG/blusa-hombro-negro.jpeg',
+        '../IMG/blusa-hombro-negro.jpeg',
+        '../IMG/blusa-hombro-negro.jpeg',
+      ];
+      botonnegro.addEventListener('click', () => cambiarImagenes(imagennegra));
+    }
+  }
+});

@@ -17,15 +17,17 @@ $search=(isset($_GET['search'])) ? $_GET['search'] : "";
     <title>Document</title>
 </head>
 <body>
-    <header id="header-productocliente"></header>
+    <div class="prod-cli-header">
+        <header id="header-cliente"></header>
+    </div>
     <div class="con-pro-cli">
         <div class="imgs-of-produc">
-            <img src="../IMG/camisa_hombro.jpeg" class="imgs-of-produc" alt="hji">
-            <img src="../IMG/camisa_hombro.jpeg" class="imgs-of-produc" alt="s">
-            <img src="../IMG/camisa_hombro.jpeg" class="imgs-of-produc" alt="si">
+            <img id="img1" src="../IMG/blusa-hombro-rojo.jpg" class="imgs-of-produc" alt="hji">
+            <img id="img2" src="../IMG/blusa-hombro-rojo.jpg" class="imgs-of-produc" alt="s">
+            <img id="img3" src="../IMG/blusa-hombro-rojo.jpg" class="imgs-of-produc" alt="si">
         </div>
         <div class="img-prin-pro">
-            <img src="../IMG/camisa_hombro.jpeg" class="img" alt="Producto">
+            <img id="imgprin" src="../IMG/blusa-hombro-rojo.jpg" class="img" alt="Producto">
         </div>
         <div class="form-pro">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
@@ -68,8 +70,8 @@ $search=(isset($_GET['search'])) ? $_GET['search'] : "";
                     <input type="radio" name="color" id="color-rojo" value="Rojo">
                     <label for="color-rojo" class="color-option rojo"></label>
 
-                    <input type="radio" name="color" id="color-azul" value="Azul">
-                    <label for="color-azul" class="color-option azul"></label>
+                    <input type="radio" name="color" id="color-gris" value="gris">
+                    <label for="color-gris" class="color-option gris"></label>
 
                     <input type="radio" name="color" id="color-blanco" value="Blanco">
                     <label for="color-blanco" class="color-option blanco"></label>
