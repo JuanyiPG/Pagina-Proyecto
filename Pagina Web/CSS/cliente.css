@@ -240,11 +240,12 @@ video {
   border: none;
   outline: none;
   margin-left: 10px;
+  background-color: #f9f9f9;
 }
+
 
 .readonly .categoria{
 font-size: 20px;
-font-family: Arial, Helvetica, sans-serif cursive;
 }
 
 .valor{

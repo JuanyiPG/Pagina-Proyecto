@@ -1,9 +1,9 @@
 <?php
 
-require_once "../CONFIG.php"; 
-require_once "CLASE_PEDIDO.PHP"; 
+require_once "../PHP/CONFIG.php"; 
+require_once "clase_cliente.php"; 
 
-
+$id_pedido = 1;
 $nom_p_edido = "Blusa camisa de hombro";
 $talla_p_pedido = $_POST['talla'];
 $color_p_pedido = $_POST['color'];
@@ -14,7 +14,7 @@ $descripcion_p_pedido = $_POST['descripcion'];
 $fecha_pedido = date("Y-m-d");
 $sub_total_pedido = $valor * $cantidad;
 $valor_pedido = $_POST['valor'] ?? 0;
-$estado_pedido = $_POST['pendiente'];
+$estado_pedido = "pendiente";
 $id_cliente_fk_pedido = $_POST['1'];
 
 

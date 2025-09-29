@@ -1,6 +1,6 @@
 <?php 
-require_once "../CONFIG.php"; 
-require_once "CLASE_PEDIDO.PHP";  
+require_once "../PHP/CONFIG.php"; 
+require_once "clase_cliente.php";  
 
 $datos = [];
 $obj = new PEDIDO();
@@ -32,14 +32,19 @@ $search=(isset($_GET['search'])) ? $_GET['search'] : "";
               <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
             </svg>
             <form action="insertar_cliente.php" method="post">
-                <p class="Nombre">Blusa camisa de hombro</p>
+                <pre class="readonly"><input type="text" class="nombre" name="nomPedido" value="BLUSA HOMBRO DESCUBIERTO" readonly style="width: 70%; font-family:Georgia, 'Times New Roman', Times, serif;"></pre>
+                <div>
+                    <!--Material-->
+                    <label for="categoria" class="subinfo" style="font-family: Georgia, 'Times New Roman', Times, serif;"">Material:</label>
+                    <pre class="readonly"><input type="text" class="categoria" name="material" value="Algodon" readonly style="margin: 6px ; font-family: Georgia, 'Times New Roman', Times, serif;"></pre>
+                </div>
                 <br>
                 <!--el valor-->
-                <label for="valor" class="subinfo">Valor:</label>
-                <pre class="readonly">$<input type="text"  class="valor" name="valor" value="45.000" readonly></pre>
+                <label for="valor" class="subinfo" style="font-family: Georgia, 'Times New Roman', Times, serif;">Valor:</label>
+                <pre class="readonly">$<input type="text"  class="valor" name="valor" value="45.000" readonly style="font-family: Georgia, 'Times New Roman', Times, serif;"></pre>
                 <br>
                 <!--Tala-->
-                <label for="talla" class="sec-for-pro subinfo">Talla:</label>
+                <label for="talla" class="sec-for-pro subinfo" style="font-family: Georgia, 'Times New Roman', Times, serif;">Talla:</label>
                 
                 <input type="radio" name="talla" id="talla-s" value="S">
                 <label for="talla-s" class="btn-talla">S</label>
@@ -58,7 +63,7 @@ $search=(isset($_GET['search'])) ? $_GET['search'] : "";
                 <br><br>
                 <div class="color-picker subinfo">
                     <!-- aqui esta  los colores -->
-                    <p class="sec-for-pro">Elige un color:</p>
+                    <p class="sec-for-pro" style="font-family: Georgia, 'Times New Roman', Times, serif;">Elige un color:</p>
 
                     <input type="radio" name="color" id="color-rojo" value="Rojo">
                     <label for="color-rojo" class="color-option rojo"></label>
@@ -74,23 +79,23 @@ $search=(isset($_GET['search'])) ? $_GET['search'] : "";
                 </div>
                 <div>
                     <!--categoria-->
-                    <label for="categoria" class="subinfo">Categoria:</label>
-                    <pre class="readonly"><input type="text" class="categoria "name="categoria" value="Blusa" readonly></pre>
+                    <label for="categoria" class="subinfo" style="font-family: Georgia, 'Times New Roman', Times, serif;">Categoria:</label>
+                    <pre class="readonly"><input type="text" class="categoria" name="categoria" value="Blusa" readonly style="font-family: Georgia, 'Times New Roman', Times, serif;"></pre>
                 </div>
 
                 <br>
-                <button type="button" class="btn" id="add-car-shop">Comprar</button>
+                <button type="submit" class="btn" id="add-car-shop">Comprar</button>
+
+                <div class="descripcion-container">
+                    <div class="descripcion-header">
+                        <label for="descrip" class="titulo-desc" style="font-family:Georgia, 'Times New Roman', Times, serif;">Descripción</label>
+                        <span class="arrow-desc">▶</span>
+                    </div>
+                    <input type=""  readonly id="descrip-produc" name="descipcion" class="hidden" value="Blusa perfecta para clima caliente, con colores cautivadores para darle un plus a tu conjunto "style="width: 100%; border: none; 
+                    background-color: #f9f9f9">
+                </div>
             </form>
             <br>
-           <div class="descripcion-container">
-                <div class="descripcion-header">
-                    <h1 class="titulo-desc">Descripción</h1>
-                    <span class="arrow-desc">▶</span>
-                </div>
-                <p id="descrip-produc" name="descipcion" class="hidden">
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ipsa ex reprehenderit porro minima, id laudantium voluptatem voluptates modi provident obcaecati incidunt nam, ad unde sequi? Ab autem sequi amet omnis!
-                </p>
-            </div>
 
 
         </div>
