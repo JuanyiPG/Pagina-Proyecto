@@ -18,13 +18,13 @@ $data = mysqli_fetch_assoc($resultado);
 <head> 
     <meta charset="UTF-8"> 
     <title>Editar Factura Venta</title> 
-    <link rel="stylesheet" href="../CSS/CSS_EDITAR.css">
+    <link rel="stylesheet" href="../../CSS/index.css">
     <img src="" height="50PX">
 
 </head> 
 <body> 
-<div class="container">
-  <div class="formulario">
+<div class="container-1">
+  <div class="formulario-1">
     <form action="ACTUALIZAR_FACTURAV.php" method="post"> 
        <h1>Actualizar Factura venta</h1> 
         <input type="hidden" name="cod_factura_v" value="<?php echo $data['cod_factura_v']; ?>"> 

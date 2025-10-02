@@ -1,5 +1,5 @@
 <?php
-require_once "../CLIENTE/CONEXION.PHP"; 
+require_once "../PHP/CONFIG.PHP"; 
 require_once "../Login/CLASE_REGISTRO.PHP";  
 
 $datos = [];

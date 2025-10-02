@@ -101,7 +101,7 @@ require_once "../../Items/header-admin.html"
     </table>
   </div>
 
-<---------JAVA SCRIPT----->
+<!---------JAVA SCRIPT----->
 <!----------CALCULO-------------->
   <script>
     const subTotal = document.getElementById("SubTotal");

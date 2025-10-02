@@ -18,13 +18,13 @@ $data = mysqli_fetch_assoc($resultado);
 <head> 
     <meta charset="UTF-8"> 
     <title>Editar Materia Prima</title> 
-    <link rel="stylesheet" href="../CSS/CSS_EDITAR.css">
+    <link rel="stylesheet" href="../../CSS/index.css">
     <img src="" height="50PX">
 
 </head> 
 <body> 
-<div class="container">
-  <div class="formulario">
+<div class="container-1">
+  <div class="formulario-1">
     <form action="ACTUALIZAR_MATERIAP.php" method="post"> 
        <h1>Actualizar Materia prima</h1> 
         <input type="hidden" name="id_materia_p" value="<?php echo $data['id_materia_p']; ?>"> 

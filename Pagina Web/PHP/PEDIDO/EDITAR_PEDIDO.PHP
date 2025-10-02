@@ -1,5 +1,5 @@
 <?php
-require_once "CONFIG.PHP";
+require_once "../CONFIG.PHP";
 
 $obj = new CONECTAR();
 $conexion = $obj->conexion();
@@ -18,13 +18,13 @@ $data = mysqli_fetch_assoc($resultado);
 <head> 
     <meta charset="UTF-8"> 
     <title>Editar Pedido</title> 
-    <link rel="stylesheet" href="../CSS/CSS_EDITAR.css">
+    <link rel="stylesheet" href="../../CSS/index.css">
     <img src="" height="50PX">
 
 </head> 
 <body> 
-<div class="container">
-  <div class="formulario">
+<div class="container-1">
+  <div class="formulario-1">
     <form action="ACTUALIZAR_PEDIDO.php" method="post"> 
        <h1>Actualizar pedido</h1> 
         <input type="hidden" name="id_pedido" value="<?php echo $data['id_pedido']; ?>"> 
