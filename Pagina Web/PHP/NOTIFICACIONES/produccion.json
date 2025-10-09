@@ -28,5 +28,20 @@
         "valor": "14000",
         "estado": "BOGOT\u00c1 D.C.",
         "cliente": "1"
+    },
+    {
+        "id_pedido": "1",
+        "nombre": "BLUSA HOMBRO DESCUBIERTO",
+        "talla": "m",
+        "color": "azul",
+        "categoria": "blusa",
+        "material": "algodon",
+        "cantidad": "2",
+        "descripcion": "blusa en algodon ajustada al cuerpo ",
+        "fecha": "2029-09-25",
+        "subtotal": "45000",
+        "valor": "45000",
+        "estado": "pendiente",
+        "cliente": "1"
     }
 ]

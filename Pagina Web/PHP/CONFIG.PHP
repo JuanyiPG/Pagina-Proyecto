@@ -3,7 +3,7 @@
         {
             private $servidor="localhost";
             private $usuario="root";
-            private $password="basededatos";
+            private $password="";
             private $basedatos="LUXI_FASHON";
         
 
