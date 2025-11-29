@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar rol</title>
+    <link rel="stylesheet" href="../../CSS/index.css">
+    <img src="" height="50PX">
+</head>
+<body class= "body">
+<div class="container-1">
+    <div class="formulario-1">
+        <form th:action="@{/roles/guardar}" method="post" th:object="${rol}">
+            <h1 th:text="${rol != null and rol.id_rol != null} ? 'Editar Rol' : 'Nuevo Rol'"></h1>
+            <input type="hidden" name="id_rol" th:field="*{id_rol}">
+            <label >Nombre: </label>
+            <input type="text" name="nom_rol" th:field="*{nom_rol}" required>
+            <label >Descripcion: </label>
+            <input type="text" name="desc_rol" th:field="*{desc_rol}" required>
+            <button type="submit">Actualizar</button>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>
