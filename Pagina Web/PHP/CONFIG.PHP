@@ -3,8 +3,8 @@
         {
             private $servidor="localhost";
             private $usuario="root";
-            private $password="";
-            private $basedatos="LUXI_FASHON";
+            private $password="basededatos";
+            private $basedatos="LUXY_FASHION";
         
 
             public function conexion()

@@ -2,24 +2,37 @@
 
 class ROL
 {
+    public function existeRol($id_rol){
+        $con = new CONECTAR();
+        $conexion = $con->conexion();
+
+        $sql = "SELECT COUNT(*) FROM rol WHERE id_rol = ?";
+        $stmt = $conexion->prepare($sql);
+        $stmt->bind_param("i", $id_rol);
+        $stmt->execute();
+        $stmt->bind_result($existe); 
+        $stmt->fetch();
+        $stmt->close();
+
+        return $existe > 0 ; 
+    }
     public function INSERT_ROL($datos_rol)
     {
         $con = new CONECTAR();
         $conexion = $con->conexion();
 
         
-        $sql = "CALL insrt_Rol(?,?,?,?)";
+        $sql = "CALL insertar_rol(?,?,?)";
         $stmt = $conexion->prepare($sql);
 
         if ($stmt === false) {
             die("Error en la preparación: " . $conexion->error);
         }
 
-        $stmt->bind_param("isss", 
+        $stmt->bind_param("iss", 
             $datos_rol[0], 
             $datos_rol[1], 
-            $datos_rol[2], 
-            $datos_rol[3]
+            $datos_rol[2]
         );
 
         $resultado = $stmt->execute();
@@ -61,18 +74,17 @@ class ROL
         $con = new CONECTAR();
         $conexion = $con->conexion();
 
-        $sql = "CALL actualizar_Rol(?,?,?,?)";
+        $sql = "CALL act_rol(?,?,?)";
         $stmt = $conexion->prepare($sql);
 
         if ($stmt === false) {
             die("Error en la preparación: " . $conexion->error);
         }
 
-        $stmt->bind_param("isss",
+        $stmt->bind_param("iss",
             $datos_rol[0], 
             $datos_rol[1], 
-            $datos_rol[2], 
-            $datos_rol[3]);
+            $datos_rol[2]);
 
         $resultado = $stmt->execute();
 
@@ -84,7 +96,7 @@ class ROL
         return $resultado;
     }
 
-    public function ELIMINAR_ROL($id)
+    public function ELIMINAR_ROL($id_rol)
     {
         $con = new CONECTAR();
         $conexion = $con->conexion();
@@ -96,7 +108,7 @@ class ROL
             die("Error en la preparación: " . $conexion->error);
         }
 
-        $stmt->bind_param("i", $id);
+        $stmt->bind_param("i", $id_rol);
 
         $resultado = $stmt->execute();
 

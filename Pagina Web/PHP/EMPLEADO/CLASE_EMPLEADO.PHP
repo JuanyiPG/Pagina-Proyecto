@@ -8,14 +8,14 @@ class EMPLEADO
         $conexion = $con->conexion();
 
         
-        $sql = "CALL insrt_Empleado(?,?,?,?,?,?,?,?,?,?,?,?)";
+        $sql = "CALL insertar_empleado(?,?,?,?,?,?,?,?,?,?,?,?,?)";
         $stmt = $conexion->prepare($sql);
 
         if ($stmt === false) {
             die("Error en la preparación: " . $conexion->error);
         }
 
-        $stmt->bind_param("isssississsi", 
+        $stmt->bind_param("isssssssdsssi", 
             $datos_empleado[0], 
             $datos_empleado[1], 
             $datos_empleado[2], 
@@ -27,7 +27,8 @@ class EMPLEADO
             $datos_empleado[8],
             $datos_empleado[9],
             $datos_empleado[10],
-            $datos_empleado[11]
+            $datos_empleado[11],
+            $datos_empleado[12]
         );
 
         $resultado = $stmt->execute();
@@ -66,14 +67,14 @@ class EMPLEADO
         $con = new CONECTAR();
         $conexion = $con->conexion();
 
-        $sql = "CALL actualizar_Empleado(?,?,?,?,?,?,?,?,?,?,?,?)";
+        $sql = "CALL act_empleado(?,?,?,?,?,?,?,?,?,?,?,?,?)";
         $stmt = $conexion->prepare($sql);
 
         if ($stmt === false) {
             die("Error en la preparación: " . $conexion->error);
         }
 
-        $stmt->bind_param("isssississsi",
+        $stmt->bind_param("isisisiiisssi",
             $datos_empleado[0], 
             $datos_empleado[1], 
             $datos_empleado[2], 
@@ -85,6 +86,7 @@ class EMPLEADO
             $datos_empleado[8],
             $datos_empleado[9],
             $datos_empleado[10],
+            $datos_empleado[11],
             $datos_empleado[11]);
 
         $resultado = $stmt->execute();

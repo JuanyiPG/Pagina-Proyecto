@@ -4,12 +4,11 @@ require_once "../CONFIG.php";
 require_once "CLASE_ROL.php"; 
 
 $id_rol = $_POST['id_rol'];
-$nombre_rol = $_POST['nombre_rol'];
-$descripcion = $_POST['descripcion'];
-$estado = $_POST['estado'];
+$nombre_rol = $_POST['nom_rol'];
+$descripcion = $_POST['desc_rol'];
 
 
-$datos_rol = array($id_rol, $nombre_rol, $descripcion, $estado);
+$datos_rol = array($id_rol, $nombre_rol, $descripcion,);
 
 $obj = new ROL();
 

@@ -16,6 +16,7 @@ require_once "../../Items/header-admin.html"
 ?>
 
 <!DOCTYPE html>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -43,13 +44,10 @@ require_once "../../Items/header-admin.html"
       <form action="INSERTAR_ROL.php" method="post">
         <div class="form-group">
           <input type="text" name="id_rol" placeholder="Código" required>
-          <input type="text" name="nombre_rol" placeholder="Nombre" required>
+          <input type="text" name="nom_rol" placeholder="Nombre" required>
         </div>
         <div class="form-group">
-          <input type="text" name="descripcion" placeholder="Descripcion">
-        </div>
-        <div class="form-group">
-          <input type="text" name="estado" placeholder="Estado">
+          <input type="text" name="desc_rol" placeholder="Descripcion">
         </div>
         <button type="submit" class="save-btn" onclick="" return>Insertar</button>
       </form>
@@ -68,7 +66,6 @@ require_once "../../Items/header-admin.html"
           <th>Código</th>
           <th>Nombre</th>
           <th>Descripcion</th>
-          <th>Estado</th>
           <th>Acciones</th>
         </tr>
       </thead>
@@ -77,13 +74,12 @@ require_once "../../Items/header-admin.html"
         <?php foreach ($datos as $row) { ?>
           <tr>
             <td><?php echo $row['id_rol']; ?></td>
-            <td><?php echo $row['nombre_rol']; ?></td>
-            <td><?php echo $row['descripcion']; ?></td>
-            <td><?php echo $row['estado']; ?></td>
+            <td><?php echo $row['nom_rol']; ?></td>
+            <td><?php echo $row['desc_rol']; ?></td>
             <td>
               <a class="btn-accion" href="EDITAR_ROL.php?id_rol=<?php echo $row['id_rol']; ?>">Actualizar</a>
               <a class="btn-accion" href="ELIMINAR_ROL.php?id_rol=<?php echo $row['id_rol']; ?>"
-              onclick="return confirm('¿Deseas eliminar este rol?')";>Eliminar</a>
+              onclick="confirmarEliminacion(event, this)";>Eliminar</a>
             </td>
           </tr>
         <?php } ?>
@@ -103,6 +99,26 @@ require_once "../../Items/header-admin.html"
         submenu.classList.toggle("show");
       });
     });
+
+function confirmarEliminacion(e, enlace) {
+  e.preventDefault(); // evita que se ejecute de inmediato
+  Swal.fire({
+    title: '¿Eliminar rol?',
+    text: "Esta acción no se puede deshacer.",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#e74c3c',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.location.href = enlace.href;
+    }
+  })
+}
+
+
   </script>
 
 </body>

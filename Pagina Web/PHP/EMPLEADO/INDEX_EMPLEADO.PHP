@@ -30,19 +30,32 @@ require_once "../../Items/header-admin.html"
      
       <form action="INSERTAR_EMPLEADO.php" method="post">
         <div class="form-group">
-          <input type="text" name="id_empleado" placeholder="Código" required>
-          <input type="text" name="nom_empleado" placeholder="Nombre" required>
+          <input type="text" name="id_emple" placeholder="Código" required>
+          <input type="text" name="nom_emple" placeholder="Nombre" required>
         </div>
         <div class="form-group">
-          <input type="text" name="direccion_empleado" placeholder="Direccion">
-          <input type="text" name="tipo_sangre" placeholder="tipo de sangre">
+          <input type="text" name="tel_emple" placeholder="Telefono">
+          <input type="text" name="correo_emple" placeholder="Correo">
         </div>
         <div class="form-group">
-          <input type="text" name="telefono_empleado" placeholder="Telefono">
-          <input type="text" name="correo_empleado" placeholder="Correo">
+          <input type="text" name="dir_emple" placeholder="Direccion">
+          <input type="text" name="rh_emple" placeholder="tipo de sangre">
         </div>
         <div class="form-group">
-          <input type="text" name="Fecha_ing_empleado" placeholder="Fecha ingreso"
+        <input type="date" name="Fecha_nacim_emple" id="Fecha_nacim_emple" required>
+<script>
+  const input = document.getElementById("Fecha_nacim_emple");
+  input.addEventListener("blur", function() {
+    if (!this.value) this.type = "text";
+  });
+  input.addEventListener("focus", function() {
+    this.type = "date";
+  });
+  // Inicialmente mostrar como texto
+  input.type = "text";
+  input.placeholder = "Fecha de Nacimiento";
+</script>
+          <input type="text" name="Fecha_ing_emple" placeholder="Fecha ingreso"
           onfocus="this.type='date'" onblur="if(!this.value) this.type='text'">
           <input type="text" name="salario_empleado" placeholder="Salario">
         </div>
@@ -52,7 +65,7 @@ require_once "../../Items/header-admin.html"
         </div>
         <div class="form-group">
             <input type="text" name="contras" placeholder="Contaseña">
-            <input type="text" name="id_rol_fk_empleado" placeholder="Identificador de rol">
+            <input type="text" name="id_rol_fk_emple" placeholder="Identificador de rol">
         </div>
         <button type="submit" class="save-btn">Insertar</button>
       </form>
@@ -70,10 +83,11 @@ require_once "../../Items/header-admin.html"
         <tr>
           <th>Código</th>
           <th>Nombre</th>
-          <th>Direccion</th>
-          <th>Tipo de sangre</th>
           <th>Telefono</th>
           <th>Correo</th>
+          <th>Direccion</th>
+          <th>Tipo de sangre</th>
+          <th>Fecha de Nacimiento</th>
           <th>Fecha de ingreso</th>
           <th>Salario</th>
           <th>Estado</th>
@@ -87,21 +101,22 @@ require_once "../../Items/header-admin.html"
         <?php if (!empty($datos)) { ?>
         <?php foreach ($datos as $row) { ?>
           <tr>
-            <td><?php echo $row['id_empleado']; ?></td>
-            <td><?php echo $row['nom_empleado']; ?></td>
-            <td><?php echo $row['direccion_empleado']; ?></td>
-            <td><?php echo $row['tipo_sangre']; ?></td>
-            <td><?php echo $row['telefono_empleado']; ?></td>
-            <td><?php echo $row['correo_empleado']; ?></td>
-            <td><?php echo $row['Fecha_ing_empleado']; ?></td>
-            <td><?php echo $row['salario_empleado']; ?></td>
-            <td><?php echo $row['Estado_empleado']; ?></td>
-            <td><?php echo $row['nom_usuario']; ?></td>
-            <td><?php echo $row['contras']; ?></td>
-            <td><?php echo $row['id_rol_fk_empleado']; ?></td>
+            <td><?php echo $row['id_emple']; ?></td>
+            <td><?php echo $row['nom_emple']; ?></td>
+            <td><?php echo $row['tel_emple']; ?></td>
+            <td><?php echo $row['correo_emple']; ?></td>
+            <td><?php echo $row['dir_emple']; ?></td>
+            <td><?php echo $row['rh_emple']; ?></td>
+            <td><?php echo $row['fecha_naci_emple']; ?></td>
+            <td><?php echo $row['fecha_ing_emple']; ?></td>
+            <td><?php echo $row['salari_emple']; ?></td>
+            <td><?php echo $row['estado_emple']; ?></td>
+            <td><?php echo $row['usuario']; ?></td>
+            <td><?php echo $row['contraseña']; ?></td>
+            <td><?php echo $row['id_rol_fk_emple']; ?></td>
             <td>
-              <a class="btn" href="EDITAR_EMPLEADO.php?id_empleado=<?php echo $row['id_empleado']; ?>">Actualizar</a>
-              <a class="btn" href="ELIMINAR_EMPLEADO.php?id_empleado=<?php echo $row['id_empleado']; ?>"
+              <a class="btn" href="EDITAR_EMPLEADO.php?id_empleado=<?php echo $row['id_emple']; ?>">Actualizar</a>
+              <a class="btn" href="ELIMINAR_EMPLEADO.php?id_empleado=<?php echo $row['id_emple']; ?>"
               onclick="return confirm('¿Deseas eliminar este rol?');">Eliminar</a>
             </td>
           </tr>
@@ -124,6 +139,7 @@ require_once "../../Items/header-admin.html"
         submenu.classList.toggle("show");
       });
     });
+
   </script>
 
 </body>

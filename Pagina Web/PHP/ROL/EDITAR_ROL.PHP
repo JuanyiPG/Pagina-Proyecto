@@ -5,7 +5,7 @@ $obj = new CONECTAR();
 $conexion = $obj->conexion();
 
 $id = $_GET['id_rol'];
-$sql = "SELECT id_rol,nombre_rol,descripcion,estado
+$sql = "SELECT id_rol,nom_rol,desc_rol
 FROM Rol 
 WHERE id_rol ='$id'";
 $resultado = mysqli_query($conexion,$sql);
@@ -27,12 +27,10 @@ $data = mysqli_fetch_assoc($resultado);
     <form action="ACTUALIZAR_ROL.php" method="post"> 
        <h1>Actualizar Rol</h1> 
         <input type="hidden" name="id_rol" value="<?php echo $data['id_rol']; ?>"> 
-        <label for="nombre_rol">Nombre: </label> 
-        <input type="text" name="nombre_rol" value="<?php echo $data['nombre_rol']; ?>" required> 
-        <label for="descripcion">Descripcion: </label> 
-        <input type="text" name="descripcion" value="<?php echo $data['descripcion']; ?>" required> 
-        <label for="estado">Estado: </label> 
-        <input type="text" name="estado" value="<?php echo $data['estado']; ?>" required> 
+        <label for="nom_rol">Nombre: </label> 
+        <input type="text" name="nom_rol" value="<?php echo $data['nom_rol']; ?>" required> 
+        <label for="desc_rol">Descripcion: </label> 
+        <input type="text" name="desc_rol" value="<?php echo $data['desc_rol']; ?>" required> 
         <button type="submit">Actualizar</button> 
     </form> 
   </div>
