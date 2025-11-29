@@ -10,7 +10,6 @@ SELECT C.id_cliente, C.nom_cliente, C.direccion_cliente, C.telefono_cliente, C.c
 FROM Cliente C
 JOIN Rol R ON C.id_rol_fk_cliente = R.id_rol;
 
--- . Consultar todos los productos terminados con su producción asociada
 SELECT P.id_producto_t, P.nombre_producto_t, P.descripcion_producto_t, P.categoria_produ_t, P.estado_producto_t, Pr.id_produccion, Pr.fecha_inicio_produccion
 FROM Producto_terminado P
 JOIN Produccion Pr ON P.id_produccion_fk_producto_terminado = Pr.id_produccion;
