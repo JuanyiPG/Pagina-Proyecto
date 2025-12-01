@@ -25,10 +25,12 @@ import java.util.List;
         }
 
         //Es el que maneja las solicitudes, ejecutando el metodo que corresponde.
-        @GetMapping
-        public String listar(Model model) {
-            model.addAttribute("roles", rolService.listar());
-            model.addAttribute("rol", new Rol());
+
+        @GetMapping()
+        public String listarOrdenados(Model model) {
+            List<Rol> roles = rolService.listarRolesOrdenados();
+            model.addAttribute("roles", roles); //La lista
+            model.addAttribute("rol", new Rol()); //Para el formulario
             return "roles/ROL_INDEX";
         }
 
@@ -42,7 +44,7 @@ import java.util.List;
         @PostMapping("/guardar")
         public String guardar(Rol rol) {
             rolService.guardar(rol);
-            return "redirect:/roles";
+            return "redirect:/roles?success=true";
         }
 
         @GetMapping("/editar/{id}")
@@ -52,7 +54,8 @@ import java.util.List;
             if (rol == null){
                 return "redirect:/roles?error=not_found";
             }
-            model.addAttribute("rol", rolService.listar());
+            List<Rol> listarRoles = rolService.listarRolesOrdenados();
+            model.addAttribute("roles", listarRoles);
             model.addAttribute("rol", rol);
             return "roles/EDITAR_ROL"; //<- aqui se direcciona a que html va
         }

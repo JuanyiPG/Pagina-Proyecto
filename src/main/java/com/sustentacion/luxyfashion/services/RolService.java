@@ -4,9 +4,10 @@ import com.sustentacion.luxyfashion.models.Rol;
 
 import java.util.List;
 
+//Solo declara metodos
 //El service va la logica del negicio, resive la peticion del controller
 public interface RolService {
-    List<Rol> listar();
+    List<Rol> listarRolesOrdenados();
     Rol guardar(Rol rol);
     void eliminar(Integer id);
     Rol buscarPorId(Integer id);

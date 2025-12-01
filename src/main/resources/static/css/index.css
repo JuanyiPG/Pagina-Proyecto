@@ -634,7 +634,7 @@ li a {
       font-size: 14px;
     }
 
-    .btn-accion {
+.btn-accion {
       padding: 6px 12px;
       border: none;
       border-radius: 5px;
@@ -644,6 +644,19 @@ li a {
       background-color: #5e0925;
       margin: 2px;
       text-decoration: none;
+    }
+
+    a.btn-eliminar {
+    display: inline-block;
+          padding: 6px 12px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 13px;
+          color: #fff;
+          background-color: #5e0925;
+          margin: 2px;
+          text-decoration: none;
     }
 
     .btn {

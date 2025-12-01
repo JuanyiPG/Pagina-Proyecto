@@ -10,13 +10,16 @@ import java.util.List;
 class RolServiceImpl implements RolService {
     private final RolRepositories rolRepositories;
 
+    //Una inyeccion es darle a la clase un objeto sin que la tenga que crear con new.
+
+    //Inyeccion por Constructor: Se entrega la dependencia al crear el objeto, garantizando que siempre esté lista y no sea null
     public RolServiceImpl(RolRepositories rolRepositories){
         this.rolRepositories = rolRepositories;
     }
 
     @Override
-    public List<Rol> listar(){
-        return rolRepositories.findAll();
+    public List<Rol> listarRolesOrdenados(){
+        return rolRepositories.findAllByOrderByNomRolAsc();
     }
 
     @Override

@@ -83,29 +83,29 @@
 
 <script>
 
-    fetch("Pagina Web/Items/footer.php")
-      .then(res => res.text())
-      .then(data => {
-        document.getElementById("footer").innerHTML = data;
-      });
+    fetch("/items/footer.html")
+     .then(res => res.text())
+     .then(data => {
+       document.getElementById("footer").innerHTML = data;
+     });
 
-    fetch("Pagina Web/Items/header.php")
-      .then(res => res.text())
-      .then(data => {
-        document.getElementById("header").innerHTML = data;
+   fetch("/items/header.html")
+     .then(res => res.text())
+     .then(data => {
+       document.getElementById("header").innerHTML = data;
 
-        const nav = document.getElementById('navegador');
-        const video = document.querySelector('.VPP');
+       const nav = document.getElementById('navegador');
+       const video = document.querySelector('.VPP');
 
-        window.addEventListener('scroll', () => {
-          const rect = video.getBoundingClientRect();
-          if (rect.bottom <= 0) {
-            nav.classList.add('scrolled');
-          } else {
-            nav.classList.remove('scrolled');
-          }
-        });
-      });
+       window.addEventListener('scroll', () => {
+         const rect = video.getBoundingClientRect();
+         if (rect.bottom <= 0) {
+           nav.classList.add('scrolled');
+         } else {
+           nav.classList.remove('scrolled');
+         }
+       });
+     });
 </script>
 <a th:href="@{/roles}">Volver</a>
 </body>

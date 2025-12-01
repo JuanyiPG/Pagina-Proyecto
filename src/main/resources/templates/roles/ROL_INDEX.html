@@ -8,23 +8,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roles</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="../../CSS/index.css">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
 </head>
+<div id="header"></div>
 <body class="body2">
 <div class="main">
     <div class="card">
         <h1 th:text="${rol != null and rol.id_rol != null} ? 'Editar Rol' : 'Gestión de roles'"></h1>
 
-        <form th:action="@{/roles/guardar}" method="post" th:object="${rol}">
+        <form class="formulario-mensaje" th:action="@{/roles/guardar}" method="post" th:object="${rol}">
             <div class="form-group">
                 <input type="hidden" th:field="*{id_rol}">
-                <input type="text" name="nom_rol" placeholder="Nombre persona" th:field="*{nom_rol}" required>
+                <input type="text" name="nom_rol" placeholder="Nombre persona" th:field="*{nomRol}" required>
             </div>
             <div class="form-group">
-                <input type="text" name="desc_rol" placeholder="Nombre del Rol" th:field="*{desc_rol}">
+                <input type="text" name="desc_rol" placeholder="Nombre del Rol" th:field="*{desc_rol}" required>
             </div>
             <button type="submit" class="save-btn" onclick="" return>Insertar</button>
         </form>
+        <div id="mensaje" th:if="${param.success}" style="color:purple; font-weight:bold; margin-bottom:10px;">
+            ¡Se insertó correctamente!
+        </div>
     </div>
 
     <div id="search" class="search">
@@ -46,18 +50,20 @@
         <tbody>
         <tr th:each="r : ${roles}">
             <td th:text="${r.id_rol}"></td>
-            <td th:text="${r.nom_rol}"></td>
+            <td th:text="${r.nomRol}"></td>
             <td th:text="${r.desc_rol}"></td>
             <td>
                 <a class="btn-accion" th:href="@{'/roles/editar/' + ${r.id_rol}}">Actualizar</a>
-                <a class="btn-accion" th:href="@{'/roles/eliminar/' + ${r.id_rol}}"
-                   onclick="confirmarEliminacion(event, this)";>Eliminar</a>
+                <a class="btn-eliminar" th:href="@{'/roles/eliminar/' + ${r.id_rol}}">Eliminar</a>
             </td>
         </tr>
-        <tr><td colspan="5">No se encontraron resultados</td></tr>
+        <tr th:if="${#lists.isEmpty(roles)}"><td colspan="5">No se encontraron resultados</td></tr>
         </tbody>
     </table>
 </div>
+<script src="/js/confirmacion.js"></script>
+<script src="/js/eliminar.js"></script>
+<script src="/js/headerform.js"></script>
 </body>
 </html>
 
