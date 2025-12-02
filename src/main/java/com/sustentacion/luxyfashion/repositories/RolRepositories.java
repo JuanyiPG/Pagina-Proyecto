@@ -10,7 +10,6 @@ import java.util.List;
 
 //JPARepository ya tiene la crud incluida, findAll-> listar, save->guardar, deleteById-> eliminar, findById-> buscar por id
 public interface RolRepositories extends JpaRepository<Rol, Integer> {
-
-    List<Rol> findAllByOrderByNomRolAsc();
+    List<Rol> findByNomRol(String nomRol);
 }
 

@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -27,7 +28,11 @@ public class Empleado {
     private String correo_emple;
     private String dir_emple;
     private String rh_emple;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fecha_naci_emple;
+    private String tipo_identificacion;
+    private String  num_indetificacion;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fecha_ing_emple;
     private BigDecimal salari_emple;
     private String estado_emple;
@@ -35,8 +40,9 @@ public class Empleado {
     private String contraseña;
 
     @ManyToOne
-    @JoinColumn(name = "id_rol")
+    @JoinColumn(name = "id_rol_fk_emple")
     private Rol rol;
+
 
 
 }

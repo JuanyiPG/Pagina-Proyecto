@@ -1,10 +1,5 @@
 
-
-        fetch("items/headeradmin.html")
-             .then(res => res.text())
-             .then(data => {
-               document.getElementById("header").innerHTML = data;
-
+    document.addEventListener("DOMContentLoaded", function() {
       const toggleBtn = document.getElementById("formToggle");
       const submenu = document.getElementById("submenuForm");
 
@@ -13,3 +8,4 @@
         submenu.classList.toggle("show");
       });
     });
+

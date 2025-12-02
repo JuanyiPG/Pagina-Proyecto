@@ -17,20 +17,17 @@ import java.util.List;
     @RequestMapping("/roles")
     public class RolController {
 
-
         private final RolService rolService;
 
+        //Constructor, el cual instancia la inyeccion y la conexion entre capas.
         public RolController(RolService rolService) {
             this.rolService = rolService;
         }
 
-        //Es el que maneja las solicitudes, ejecutando el metodo que corresponde.
-
         @GetMapping()
-        public String listarOrdenados(Model model) {
-            List<Rol> roles = rolService.listarRolesOrdenados();
-            model.addAttribute("roles", roles); //La lista
-            model.addAttribute("rol", new Rol()); //Para el formulario
+        public String index(Model model){ //model sirve para enviar los datos al html
+            model.addAttribute("rol", new Rol()); // ← ESTO HACE FALTA
+            model.addAttribute("roles", rolService.listar()); // si tienes tabla
             return "roles/ROL_INDEX";
         }
 
@@ -47,18 +44,38 @@ import java.util.List;
             return "redirect:/roles?success=true";
         }
 
-        @GetMapping("/editar/{id}")
-        public String editar(@PathVariable Integer id, Model model) {
+        @GetMapping("/editar/{id}") //Path se usa para traer los datos del formulario
+        public String editar(@PathVariable Integer id, Model model) { //el Path ayuda a direccionar el metodo y saber cual se debe de editar
             Rol rol = rolService.buscarPorId(id);
-
-            if (rol == null){
-                return "redirect:/roles?error=not_found";
-            }
-            List<Rol> listarRoles = rolService.listarRolesOrdenados();
-            model.addAttribute("roles", listarRoles);
+             if (rol == null){
+                 return "refirect:/rol?error=not_found";
+             }
             model.addAttribute("rol", rol);
             return "roles/EDITAR_ROL"; //<- aqui se direcciona a que html va
         }
+/*Diferencia simple entre ambos
+        @PathVariable	parte de la URL	/editar/10
+        @RequestParam	parte de los parámetros	/buscar?texto=rol
+ */
+        //Buscar
+        @GetMapping("/buscar")
+        public String buscar(@RequestParam (name = "nomRol", required = false)String nomRol, Model model){
+                                           //El name se usa para indicar el nombre en el formulario
+            List<Rol> roles;
+
+            // Siempre enviar un objeto rol porque la vista lo necesita
+            model.addAttribute("rol", new Rol());
+
+            if (nomRol == null || nomRol.isEmpty()) {
+                roles = rolService.listar();
+            }else {
+                roles = rolService.buscarPorNombre(nomRol);
+            }
+            model.addAttribute("roles", roles);
+            model.addAttribute("rol", new Rol());
+            return "roles/ROL_INDEX";
+        }
+
 
         // Eliminar
         @GetMapping("/eliminar/{id}")
@@ -67,7 +84,7 @@ import java.util.List;
             return "redirect:/roles";
         }
 
-        //Controla las URLs y conecta la vista con el servicio
+       //Controla las URLs y conecta la vista con el servicio
 
         //GET = ver
         //

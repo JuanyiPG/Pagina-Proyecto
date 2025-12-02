@@ -9,9 +9,4 @@ public class HomeController {
     public String MostrarForm(){
         return "index";
     }
-
-    @GetMapping("/cliente")
-    public String indexProductos(){
-        return "cliente/indexcliente";
-    }
 }

@@ -12,10 +12,8 @@
         <form th:action="@{/roles/guardar}" method="post" th:object="${rol}">
             <h1 th:text="${rol != null and rol.id_rol != null} ? 'Editar Rol' : 'Nuevo Rol'"></h1>
             <input type="hidden" name="id_rol" th:field="*{id_rol}">
-            <label >Nombre: </label>
-            <input type="text" name="nom_rol" th:field="*{nomRol}" required>
-            <label >Descripcion: </label>
-            <input type="text" name="desc_rol" th:field="*{desc_rol}" required>
+            <label >Rol: </label>
+            <input type="text" name="desc_rol" th:field="*{nomRol}" required>
             <button type="submit">Actualizar</button>
         </form>
         <div id="mensaje" th:if="${param.success}" style="color:purple; font-weight:bold; margin-bottom:10px;">

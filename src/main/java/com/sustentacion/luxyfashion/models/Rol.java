@@ -18,9 +18,7 @@ public class Rol {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //Genera el ID automaticamente
     private Integer id_rol;
-    @Column(name = "nom_rol")
+    @Column(name = "desc_rol")
     private String nomRol;
-    private String desc_rol;
-
 }
 
