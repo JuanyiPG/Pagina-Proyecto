@@ -17,6 +17,7 @@ import lombok.Setter;
 public class Rol {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //Genera el ID automaticamente
+    //Integer ya que ahorra espacio, tiene mas capacidad y coincide con la BD
     private Integer id_rol;
     @Column(name = "desc_rol")
     private String nomRol;

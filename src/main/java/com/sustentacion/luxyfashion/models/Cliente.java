@@ -15,7 +15,7 @@ import lombok.Setter;
 public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id_clien;
+    private Integer id_clien;
     @Column(name = "nom_clien")
     private String nomClie;
     private String dir_clien;
