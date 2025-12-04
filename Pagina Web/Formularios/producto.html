@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../CSS/index.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <title>Productos Luxy Fashion</title>
+    <style>
+        body{
+            display: flex;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <header id="header"></header>
+    <br>
+    <main style="margin-left: 25%;">
+        <div class="title-prod">
+            <h1>Productos</h1>
+        </div>
+        <div class="Buscador">
+            <i class="bi bi-search"></i>
+            <input type="search" placeholder="Buscar..">
+        </div>
+        <br>
+      <section class="seccion">
+        <h2 class="titulo-seccion">Chaquetas</h2>
+        <div class="contenedor-productos">
+          <div class="producto">
+            <img src="../IMG/Chaquet_de_cuero_hombre.jpeg" alt="Chaqueta cuero">
+            <p>Chaqueta Black Panther</p>
+          </div>
+          <div class="producto">
+            <img src="../IMG/chaqueta_clasica.jpeg" alt="Chaqueta clásica">
+            <p>Chaqueta Clásica</p>
+          </div>
+          <div class="producto">
+            <img src="../IMG/Chaqueta_moderna.jpeg" alt="Chaqueta moderna">
+            <p>Chaqueta Moderna</p>
+          </div>
+        </div>
+        <a href="#" class="ver-mas">Ver más productos</a>
+      </section>
+      <br>
+      <section class="seccion">
+        <h2 class="titulo-seccion">Pantalones</h2>
+        <div class="contenedor-productos">
+          <div class="producto">
+            <img src="../IMG/cargo.jpeg" alt="Chaqueta cuero">
+            <p>Chaqueta Black Panther</p>
+          </div>
+          <div class="producto">
+            <img src="../IMG/Campana.jpeg" alt="Chaqueta clásica">
+            <p>Chaqueta Clásica</p>
+          </div>
+          <div class="producto">
+            <img src="../IMG/Baggy.jpeg" alt="Chaqueta moderna">
+            <p>Chaqueta Moderna</p>
+          </div>
+        </div>
+        <a href="#" class="ver-mas">Ver más productos</a>
+      </section>
+      <button class="ver-mas-final">Ver más</button>
+      <hr>
+      <br>
+  </main>
+</body>
+<script>
+    fetch('../Admin/header-admin.php').then(res => res.text()) 
+    .then(data => { document.getElementById("header").innerHTML = data; }); 
+</script>
+</html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Vista de Producto</title>
+  <link rel="stylesheet" type="text/css" href="../CSS/index.css">
+  <link rel="stylesheet" href="Pagina Web/bootstrap/css/bootstrap.min.css">
+  <script src="Pagina Web/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    #navegador{
+        background-image: linear-gradient(to left, #5c0b26, rgb(255, 255, 255));
+    }
+    /* --- CONTENEDOR PRINCIPAL --- */
+    .contenedor {
+      display: flex;
+      flex: 1;
+      width: 100%;
+    }
+    .imagen {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f4f4f4;
+    }
+    .imagen img {
+      max-width: 80%;
+      max-height: 80%;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .formulario {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      padding: 30px;
+    }
+    form {
+      width: 100%;
+      max-width: 400px;
+    }
+    h2 {
+      margin: 0 0 10px;
+    }
+    p.descripcion {
+      color: #555;
+      margin: 0 0 10px;
+    }
+    p.precio {
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+      margin: 0 0 20px;
+    }
+    .opciones {
+      margin-bottom: 20px;
+    }
+    .opciones label {
+      display: inline-block;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+    .opciones input {
+      display: none;
+    }
+    .opciones span {
+      display: inline-block;
+      padding: 8px 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #f9f9f9;
+      transition: all 0.3s;
+    }
+    .opciones input:checked + span {
+      background: #4CAF50;
+      color: #fff;
+      border-color: #4CAF50;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #4CAF50;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #45a049;
+    }
+
+    /* --- ESTILOS DEL MODAL --- */
+    .modal {
+      display: none; /* Oculto al inicio */
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-contenido {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 350px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .modal-contenido h3 {
+      margin-top: 0;
+    }
+    .modal-contenido label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+    .modal-contenido input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .modal-contenido .acciones {
+      display: flex;
+      justify-content: space-between;
+    }
+    .modal-contenido button {
+      width: 48%;
+      padding: 10px;
+    }
+    /* Botón de cerrar (X) */
+    .cerrar {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 18px;
+      cursor: pointer;
+      color: #888;
+    }
+    .cerrar:hover {
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+  <!-- Menú -->
+  <header id="header"></header>
+
+  <!-- Contenido principal -->
+  <div class="contenedor">
+    <!-- Lado izquierdo: Imagen del producto -->
+    <div class="imagen">
+      <img src="../IMG/camisa_hombro.jpeg" alt="Producto">
+    </div>
+
+    <!-- Lado derecho: Información y formulario -->
+    <div class="formulario">
+      <form id="productoForm">
+        <h2>Camisa Clásica</h2>
+        <p class="descripcion">Camisa de algodón de alta calidad, perfecta para cualquier ocasión.</p>
+        <p class="precio">$49.900</p>
+
+        <!-- Opciones de Talla -->
+        <div class="opciones">
+          <label><input type="radio" name="talla" value="S" required><span>S</span></label>
+          <label><input type="radio" name="talla" value="M"><span>M</span></label>
+          <label><input type="radio" name="talla" value="L"><span>L</span></label>
+          <label><input type="radio" name="talla" value="XL"><span>XL</span></label>
+        </div>
+
+        <!-- Opciones de Color -->
+        <div class="opciones">
+          <label><input type="radio" name="color" value="rojo" required><span>Rojo</span></label>
+          <label><input type="radio" name="color" value="azul"><span>Azul</span></label>
+          <label><input type="radio" name="color" value="negro"><span>Negro</span></label>
+          <label><input type="radio" name="color" value="blanco"><span>Blanco</span></label>
+        </div>
+
+        <button type="button" id="comprarBtn">Comprar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal de datos del comprador -->
+  <div id="modal" class="modal">
+    <div class="modal-contenido">
+      <span class="cerrar" id="cerrarModal">&times;</span>
+      <h3>Datos del Comprador</h3>
+      <form id="compradorForm">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" required>
+
+        <label for="direccion">Dirección:</label>
+        <input type="text" id="direccion" required>
+
+        <label for="celular">Celular:</label>
+        <input type="text" id="celular" required>
+
+        <div class="acciones">
+          <button type="submit">Confirmar</button>
+          <button type="button" id="cancelarBtn">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer id="footer"></footer>
+
+  <script>
+    fetch("../Items/header.php")
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("header").innerHTML = data;
+  });
+
+  fetch("../Items/footer.php")
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("footer").innerHTML = data;
+  });
+
+    const modal = document.getElementById("modal");
+    const comprarBtn = document.getElementById("comprarBtn");
+    const cancelarBtn = document.getElementById("cancelarBtn");
+    const cerrarModal = document.getElementById("cerrarModal");
+    const compradorForm = document.getElementById("compradorForm");
+
+    // Abrir modal solo al dar clic
+    comprarBtn.addEventListener("click", () => {
+      modal.style.display = "flex";
+    });
+
+    // Cerrar modal con cancelar o X
+    cancelarBtn.addEventListener("click", () => {
+      modal.style.display = "none";
+    });
+    cerrarModal.addEventListener("click", () => {
+      modal.style.display = "none";
+    });
+
+    // Validar datos del comprador
+    compradorForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const nombre = document.getElementById("nombre").value.trim();
+      const direccion = document.getElementById("direccion").value.trim();
+      const celular = document.getElementById("celular").value.trim();
+
+      if (nombre === "" || direccion === "" || celular === "") {
+        alert("Por favor complete todos los campos.");
+        return;
+      }
+
+      if (!/^\d{10,}$/.test(celular)) {
+        alert("El número de celular debe contener al menos 10 dígitos y solo números.");
+        return;
+      }
+
+      alert("✅ Compra realizada con éxito.\nGracias por tu compra, " + nombre + "!");
+      modal.style.display = "none";
+      compradorForm.reset();
+    });
+  </script>
+</body>
+</html>

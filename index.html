@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fashion Luxy</title>
+  <link rel="stylesheet" type="text/css" href="Pagina Web/CSS/index.css">
+  <link rel="stylesheet" href="Pagina Web/bootstrap/css/bootstrap.min.css">
+  <script src="Pagina Web/bootstrap/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+  <header id="header"></header>
+  <!--Vista previa -->
+    <main>
+      <section class="p-p">
+        <video autoplay muted loop class="VPP">
+          <source src="Pagina Web/VIDEO/VideoPIndex.mp4" type="video/mp4">
+        </video>
+      </section>
+      <!--productos -->
+      <section class="mosaico">
+          <img src="Pagina Web/IMG/index1.jpg" alt="Imagen 1" class="imagen">
+          <img src="Pagina Web/IMG/index2.jpg" alt="Imagen 2" class="imagen2">
+          <img src="Pagina Web/IMG/index5.jpg" alt="Imagen 3" class="imagen3">
+          <img src="Pagina Web/IMG/index3.jpg" alt="Imagen 4" class="imagen4">
+          <img src="Pagina Web/IMG/index4.jpg" alt="Imagen 5" class="imagen5">
+          <img src="Pagina Web/IMG/index6.jpg" alt="Imagen 5" class="imagen6">
+      </section>
+
+      <button class="ver-mas-final">Ver más</button>
+      <hr>
+      <br>
+      <section id="We">
+        <div id="carouselExampleIndicators" class="carousel slide">
+          <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4" aria-label="Slide 5"></button>
+          </div>
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img src="Pagina Web/IMG/we.jpg" class="d-block w-100" style="height:650px; " alt="img1">
+            </div>
+            <div class="carousel-item">
+              <img src="Pagina Web/IMG/style.jpg" class="d-block w-100" style="height:650px; " alt="img2">
+            </div>
+            <div class="carousel-item">
+              <img src="Pagina Web/IMG/calid.jpg" class="d-block w-100" style="height:650px; " alt="img3">
+            </div>
+            <div class="carousel-item">
+              <img src="Pagina Web/IMG/prec.jpg" class="d-block w-100" style="height:650px; " alt="img4">
+            </div>
+            <div class="carousel-item">
+              <img src="Pagina Web/IMG/envio.jpg" class="d-block w-100" style="height:650px; " alt="img5">
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+          </div>
+      </section>
+      <section>
+      </section>
+  </main>
+  <button id="btn-ayuda">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-circle" viewBox="0 0 16 16">
+      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+      <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286m1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94"/>
+    </svg> 
+    Ayuda
+</button>
+
+  <br>
+  <footer id="footer"></footer>
+
+  <script> 
+
+fetch("Pagina Web/Items/footer.php")
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("footer").innerHTML = data;
+  });
+
+fetch("Pagina Web/Items/header.php")
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("header").innerHTML = data;
+
+    const nav = document.getElementById('navegador');
+    const video = document.querySelector('.VPP');
+
+    window.addEventListener('scroll', () => {
+      const rect = video.getBoundingClientRect();
+      if (rect.bottom <= 0) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

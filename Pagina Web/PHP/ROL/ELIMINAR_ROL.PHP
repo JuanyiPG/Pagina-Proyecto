@@ -1,0 +1,12 @@
+<?php 
+require_once "../CONFIG.php"; 
+require_once "CLASE_ROL.php"; 
+
+$id = $_GET['id_rol']; 
+
+$rol = new ROL(); 
+$rol->ELIMINAR_ROL($id);  
+
+header("Location: INDEX_ROL.php"); 
+exit;
+?>
