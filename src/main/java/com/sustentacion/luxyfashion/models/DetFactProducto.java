@@ -21,7 +21,7 @@ public class DetFactProducto {
 
     @ManyToOne
     @JoinColumn(name = "id_factuv_fk", referencedColumnName = "id_factuv")
-    private FacturaCompra facturaCompra;
+    private FacturaVenta facturaVenta;
 
     @ManyToOne
     @JoinColumn(name = "id_produc_fk", referencedColumnName = "id_produc")

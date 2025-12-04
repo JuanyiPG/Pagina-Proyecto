@@ -17,12 +17,12 @@ import java.math.BigDecimal;
 public class DetFactCompra {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id_fcm;
+    private Integer id_det_fcm;
     private BigDecimal cant;
     private String desc_det;
 
     @ManyToOne
-    @JoinColumn(name = "id_factuv_fk", referencedColumnName = "id_factuv")
+    @JoinColumn(name = "id_factuc_fk", referencedColumnName = "id_factuc")
     private FacturaCompra facturaCompra;
 
     @ManyToOne

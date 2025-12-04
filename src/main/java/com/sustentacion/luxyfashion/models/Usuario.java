@@ -24,7 +24,7 @@ public class Usuario {
     private String rol;
 
     //Conexion de las FK
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = " id_emple_fk_id_usuario", referencedColumnName = "id_emple")
                                                 //Para referenciar una columna en concreto
     private Empleado empleado;

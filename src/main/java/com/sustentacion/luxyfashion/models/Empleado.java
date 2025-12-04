@@ -41,7 +41,7 @@ public class Empleado {
 
     @ManyToOne
     @JoinColumn(name = "id_rol_fk_emple")
-    private Rol rol;
+    private Rol rol;  //Mapear una clase
 
 
 
