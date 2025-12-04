@@ -43,5 +43,35 @@
         "valor": "45000",
         "estado": "pendiente",
         "cliente": "1"
+    },
+    {
+        "id_pedido": "1",
+        "nombre": "BLUSA HOMBRO DESCUBIERTO",
+        "talla": "m",
+        "color": "azul",
+        "categoria": "blusa",
+        "material": "algodon",
+        "cantidad": "2",
+        "descripcion": "blusa en algodon ajustada al cuerpo ",
+        "fecha": "2029-09-25",
+        "subtotal": "45000",
+        "valor": "45000",
+        "estado": "pendiente",
+        "cliente": "1"
+    },
+    {
+        "id_pedido": "5",
+        "nombre": "chaqueta",
+        "talla": "m",
+        "color": "azul",
+        "categoria": "chaquetas",
+        "material": "algodon",
+        "cantidad": "5",
+        "descripcion": "chaqueta con forro",
+        "fecha": "2012-05-15",
+        "subtotal": "50000",
+        "valor": "50000",
+        "estado": "pendiente",
+        "cliente": "1"
     }
 ]
