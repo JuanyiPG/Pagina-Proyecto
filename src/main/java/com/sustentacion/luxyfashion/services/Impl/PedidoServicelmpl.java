@@ -21,7 +21,7 @@ public class PedidoServicelmpl implements PedidoService {
     }
     @Override
     public List<Pedido> listapedidoasc(){
-        return pedidoRepositorio.findAllByOrderByNompedAsc();
+        return pedidoRepositorio.findAllByOrderByNomPedAsc();
     }
     @Override
     public Pedido guardar(Pedido pedido){
@@ -38,7 +38,7 @@ public class PedidoServicelmpl implements PedidoService {
     }
 
     @Override
-    public List<Pedido> findAllByOrderByNomEmpleAsc() {
-        return pedidoRepositorio.findAllByOrderByNompedAsc();
+    public List<Pedido> findAllByOrderByNomPedAsc() {
+        return pedidoRepositorio.findAllByOrderByNomPedAsc();
     }
 }

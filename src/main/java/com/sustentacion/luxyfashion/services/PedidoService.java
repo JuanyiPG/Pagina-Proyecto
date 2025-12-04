@@ -17,5 +17,5 @@ public interface PedidoService {
 
     List<Pedido> buscarVariosCampos(String filtro);
 
-    List<Pedido> findAllByOrderByNomEmpleAsc();
+    List<Pedido> findAllByOrderByNomPedAsc();
 }

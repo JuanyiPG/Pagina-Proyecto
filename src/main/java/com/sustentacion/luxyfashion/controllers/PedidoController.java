@@ -1,8 +1,9 @@
 package com.sustentacion.luxyfashion.controllers;
 
 import com.sustentacion.luxyfashion.models.Pedido;
+import com.sustentacion.luxyfashion.models.Cliente;
 import com.sustentacion.luxyfashion.services.PedidoService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sustentacion.luxyfashion.services.ClienteService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -10,66 +11,89 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/pedidos")
+@RequestMapping("/pedido")
 public class PedidoController {
 
-    @Autowired
-    private PedidoService pedidoService;
+    private final PedidoService pedidoService;
+    private final ClienteService clienteService;
 
-    // ============================
-    // 1. LISTAR TODOS LOS PEDIDOS
-    // ============================
-    @GetMapping("")
-    public String listarPedidos(Model model){
-        List<Pedido> pedidos = pedidoService.listar();
-        model.addAttribute("pedidos", pedidos);
-        return "pedidos/listar"; // tu archivo listar.html
+    public PedidoController(PedidoService pedidoService, ClienteService clienteService) {
+        this.pedidoService = pedidoService;
+        this.clienteService = clienteService;
     }
 
-    // ======================================
-    // 2. LISTAR PEDIDOS ORDENADOS POR NOMBRE
-    // ======================================
-    @GetMapping("/ordenados")
-    public String listarPedidosOrdenados(Model model){
-        List<Pedido> pedidos = pedidoService.findAllByOrderByNomEmpleAsc();
+    // ============================
+    // LISTAR ORDENADOS (A-Z)
+    // ============================
+    @GetMapping()
+    public String listarOrdenados(Model model) {
+        List<Pedido> pedidos = pedidoService.listapedidoasc();
         model.addAttribute("pedidos", pedidos);
-        return "pedidos/listar";
-    }
-
-    // ===========================
-    // 3. FORMULARIO DE REGISTRO
-    // ===========================
-    @GetMapping("/nuevo")
-    public String NuevoPedido(Model model){
         model.addAttribute("pedido", new Pedido());
-        return "pedidos/crear"; // crear.html
+        model.addAttribute("clientes", clienteService.listar());
+        return "pedido/pedido_index";
     }
 
-    // ===========================
-    // 4. GUARDAR PEDIDO
-    // ===========================
+    // ============================
+    // MOSTRAR FORMULARIO NUEVO
+    // ============================
+    @GetMapping("/nuevo")
+    public String nuevo(Model model) {
+        model.addAttribute("pedido", new Pedido());
+        model.addAttribute("clientes", clienteService.listar());
+        return "pedido/pedido_index";
+    }
+
+    // ============================
+    // GUARDAR PEDIDO
+    // ============================
     @PostMapping("/guardar")
-    public String guardarPedido(@ModelAttribute Pedido pedido){
+    public String guardar(Pedido pedido) {
+
+        // Obtener cliente correctamente
+        Cliente clienteSeleccionado = clienteService.buscarPorId(
+                pedido.getCliente().getId_clien()
+        );
+        pedido.setCliente(clienteSeleccionado);
+
         pedidoService.guardar(pedido);
-        return "redirect:/pedidos";
+        return "redirect:/pedido?success=true";
     }
 
-    // ===========================
-    // 5. ELIMINAR PEDIDO
-    // ===========================
-    @GetMapping("/eliminar/{id}")
-    public String eliminarPedido(@PathVariable Integer id){
-        pedidoService.eliminar(id);
-        return "redirect:/pedidos";
+    // ============================
+    // EDITAR PEDIDO
+    // ============================
+    @GetMapping("/editar/{id}")
+    public String editar(@PathVariable Integer id, Model model) {
+        Pedido pedido = pedidoService.buscarPorId(id);
+
+        if (pedido == null) {
+            return "redirect:/pedido?error=not_found";
+        }
+
+        model.addAttribute("pedido", pedido);
+        model.addAttribute("clientes", clienteService.listar());
+        return "pedido/editar_pedido";
     }
 
-    // ===========================
-    // 6. BUSCAR POR VARIOS CAMPOS
-    // ===========================
+    // ============================
+    // BUSCAR EN TODOS LOS CAMPOS
+    // ============================
     @GetMapping("/buscar")
-    public String buscar(@RequestParam("filtro") String filtro, Model model){
-        List<Pedido> resultados = pedidoService.buscarVariosCampos(filtro);
-        model.addAttribute("pedidos", resultados);
-        return "pedidos/listar";
+    public String buscar(@RequestParam(name = "buscar", required = false) String filtro,
+                         Model model) {
+
+        List<Pedido> pedidos;
+
+        if (filtro == null || filtro.trim().isEmpty()) {
+            pedidos = pedidoService.listar();
+        } else {
+            pedidos = pedidoService.buscarVariosCampos(filtro);
+        }
+
+        model.addAttribute("pedidos", pedidos);
+        model.addAttribute("pedido", new Pedido());
+        model.addAttribute("clientes", clienteService.listar());
+        return "pedido/pedido_index";
     }
 }

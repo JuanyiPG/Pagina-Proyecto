@@ -22,8 +22,8 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_pedido;
     private String link_ped;
-    @Column(name= "Nomped")
-    private String nom_ped;
+    @Column(name= "nom_ped")
+    private String nomPed;
     private String talla_ped;
     private String color_ped;
     private String categoria_ped;
