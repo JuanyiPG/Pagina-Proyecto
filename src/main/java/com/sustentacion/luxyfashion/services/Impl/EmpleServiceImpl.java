@@ -21,7 +21,6 @@ public List<Empleado> listar(){
 }
 @Override
     public List<Empleado> listarEmpleadosOrdenados(){
-
     return empleRepositories.findAllByOrderByNomEmpleAsc();
     }
 
