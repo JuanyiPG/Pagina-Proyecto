@@ -15,7 +15,7 @@ public interface PedidoService {
 
     void eliminar(Integer id);
 
-    List<Pedido> buscarVariosCampos(String filtro);
+    List<Pedido> buscarvarioscampos(String filtro);
 
     Pedido buscarPorId(Integer id);
 

@@ -13,7 +13,11 @@ public interface EmpleRepositories extends JpaRepository<Empleado, Integer> {
 
     //El query se usa para hacer consultas personalizadas JPA o MYSQL
     @Query("SELECT r FROM Empleado r WHERE " + //Nombre de la entidad
+<<<<<<< HEAD
             "r.nomEmple LIKE CONCAT('%', :filtro, '%') OR "  +
+=======
+            "r.nomEmple LIKE CONCAT('%', :filtro, '%') OR " +
+>>>>>>> 61912ab6458c57307b941f5f3c47ebf39652a9bf
             "r.tel_emple LIKE CONCAT('%', :filtro, '%') OR " +// el atributo, por ello se coloca r
             "r.correo_emple LIKE CONCAT('%', :filtro, '%') OR " +
             "r.tipo_identificacion LIKE CONCAT('%', :filtro, '%') OR " +

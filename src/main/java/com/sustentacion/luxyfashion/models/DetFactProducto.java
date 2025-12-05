@@ -17,7 +17,11 @@ public class DetFactProducto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_det;
+<<<<<<< HEAD
     @Column(name = "desc_det")
+=======
+    @Column(name="desc_det")
+>>>>>>> 61912ab6458c57307b941f5f3c47ebf39652a9bf
     private String descrDet;
 
     @ManyToOne

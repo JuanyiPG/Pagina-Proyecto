@@ -11,7 +11,10 @@ public interface DetFactProductoRepositories extends JpaRepository<DetFactProduc
 
     // Traer todos los registros ordenados por descripción
     List<DetFactProducto> findAllByOrderByDescrDetAsc();
+<<<<<<< HEAD
 
+=======
+>>>>>>> 61912ab6458c57307b941f5f3c47ebf39652a9bf
 
     // Búsqueda por varios campos
     @Query("SELECT d FROM DetFactProducto d WHERE " +

@@ -10,10 +10,10 @@ import java.util.List;
 
 @Transactional
 @Service
-public class PedidoServicelmpl implements PedidoService {
+public class PedidoServiceImpl implements PedidoService {
     private final PedidoRepositorio pedidoRepositorio;
 
-    public PedidoServicelmpl(PedidoRepositorio pedidoRepositorio){
+    public PedidoServiceImpl(PedidoRepositorio pedidoRepositorio){
         this.pedidoRepositorio = pedidoRepositorio;
     }
 
@@ -28,11 +28,10 @@ public class PedidoServicelmpl implements PedidoService {
     @Override
     public List<Pedido> listar(){
         return pedidoRepositorio.findAll();
-
     }
 
     @Override
-    public List<Pedido> buscarVariosCampos(String filtro) {
+    public List<Pedido> buscarvarioscampos(String filtro) {
         return pedidoRepositorio.buscarvarioscampos(filtro);
     }
 

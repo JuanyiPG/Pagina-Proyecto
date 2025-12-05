@@ -11,11 +11,15 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 @Transactional
 @Service
-public class MateriaPrimaServicelmpl implements MateriaPrimaService {
+public class MateriaPrimaServiceImpl implements MateriaPrimaService {
     private final MateriaPrimaRepositories materiaPrimaRepositorio;
     private final DetMateriaPrimaRepositories detMateriaPrimaRepositorio;
 
+<<<<<<< HEAD:src/main/java/com/sustentacion/luxyfashion/services/Impl/MateriaPrimaServicelmpl.java
     public MateriaPrimaServicelmpl(MateriaPrimaRepositories materiaPrimaRepositorio,  DetMateriaPrimaRepositories detMateriaPrimaRepositorio) {
+=======
+    public MateriaPrimaServiceImpl(MateriaPrimaRepositories materiaPrimaRepositorio) {
+>>>>>>> 61912ab6458c57307b941f5f3c47ebf39652a9bf:src/main/java/com/sustentacion/luxyfashion/services/Impl/MateriaPrimaServiceImpl.java
         this.materiaPrimaRepositorio = materiaPrimaRepositorio;
         this.detMateriaPrimaRepositorio = detMateriaPrimaRepositorio;
     }

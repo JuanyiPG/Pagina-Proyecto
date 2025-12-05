@@ -3,7 +3,6 @@ package com.sustentacion.luxyfashion.controllers;
 import com.sustentacion.luxyfashion.models.Pedido;
 import com.sustentacion.luxyfashion.models.Cliente;
 import com.sustentacion.luxyfashion.services.PedidoService;
-import com.sustentacion.luxyfashion.services.ClienteService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +13,7 @@ import java.util.List;
 @RequestMapping("/pedido")
 public class PedidoController {
 
+<<<<<<< HEAD
     private final PedidoService pedidoService;
     private final ClienteService clienteService;
 
@@ -96,4 +96,6 @@ public class PedidoController {
         model.addAttribute("clientes", clienteService.listar());
         return "pedido/pedido_index";
     }
+=======
+>>>>>>> 61912ab6458c57307b941f5f3c47ebf39652a9bf
 }
