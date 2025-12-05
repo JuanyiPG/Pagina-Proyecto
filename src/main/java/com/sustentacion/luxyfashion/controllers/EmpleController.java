@@ -74,6 +74,11 @@ public class EmpleController {
         return "empleado/emple_index";
     }
 
+        @GetMapping("/eliminar/{id}")
+        public String eliminar(@PathVariable Integer id) {
+            empleService.eliminar(id);
+            return "redirect:/roles";
+        }
 
 
-}
+    }

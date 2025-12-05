@@ -17,6 +17,18 @@ public interface AbonoRepositories extends JpaRepository <Abono, Integer> {
             "LOWER(metodo_pago) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +
             "LOWER(descripcion) LIKE LOWER(CONCAT('%', :filtro, '%'))")
     List<Abono> buscarVariosCampos(@Param("filtro") String filtro);
+
+    interface AbonoRepositories extends JpaRepository <Abono, Integer> {
+        List<Abono> findAllByOrderByFechaabonoAsc();
+
+        @Query("SELECT Ab FROM Abono Ab WHERE " +
+                "CAST(Ab.id_abono AS string) LIKE CONCAT('%', :filtro, '%') OR " +
+                "CAST(Ab.fechaabono AS string) LIKE CONCAT('%', :filtro, '%') OR " +
+                "CAST(Ab.monto_abono AS string) LIKE CONCAT('%', :filtro, '%') OR " +
+                "LOWER(Ab.metodo_pago) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +
+                "LOWER(Ab.descripcion) LIKE LOWER(CONCAT('%', :filtro, '%'))")
+        List<Abono> buscarVariosCampos(@Param("filtro") String filtro);
+    }
 }
 
 

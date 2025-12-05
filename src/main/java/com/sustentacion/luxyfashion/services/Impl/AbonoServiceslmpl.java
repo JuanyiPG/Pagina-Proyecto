@@ -44,4 +44,41 @@ public class AbonoServiceslmpl implements AbonoService {
     }
 
 
+    @Transactional
+    @Service
+    public static class AbonoServiceslmpl implements AbonoService {
+
+        private final AbonoRepositories abonoRepositories;
+
+        public AbonoServiceslmpl(AbonoRepositories abonoRepositories) {
+            this.abonoRepositories = abonoRepositories;
+        }
+
+        @Override
+        public Abono guardar(Abono abono) {
+            return abonoRepositories.save(abono);
+        }
+
+        @Override
+        public void eliminar(Integer id) {
+            abonoRepositories.deleteById(id);
+        }
+
+        @Override
+        public List<Abono> listar() {
+            return abonoRepositories.findAll();
+        }
+
+        @Override
+        public List<Abono> findAllByOrderAsc() {
+            return abonoRepositories.findAllByOrderByFechaabonoAsc();
+        }
+
+        @Override
+        public List<Abono> buscarvarioscampos(String filtro) {
+            return abonoRepositories.buscarVariosCampos(filtro);
+        }
+
+
+    }
 }
