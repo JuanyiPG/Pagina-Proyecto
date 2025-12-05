@@ -10,7 +10,7 @@ import java.util.List;
 
 @Transactional
 @Service
-public class DetFactCompraServiceslmpl implements DetFactCompraRepositories{
+public class DetFactCompraServiceslmpl implements DetFactCompraService{
 
     private final DetFactCompraRepositories detFactCompraRepositories;
 
