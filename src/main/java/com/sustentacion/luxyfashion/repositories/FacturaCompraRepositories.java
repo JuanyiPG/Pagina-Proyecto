@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface FacturaCompraRepositories extends JpaRepository<FacturaCompra, Integer> {
-    List<FacturaCompra> findAllByOrderByFechaFactuAsc();
+    List<FacturaCompra> findAllByOrderByFechafactucAsc();
 
     @Query("SELECT fc FROM FacturaCompra fc WHERE " +
     "CAST(fc.id_factuc AS string) LIKE CONCAT('%', :filtro, '%') OR " +

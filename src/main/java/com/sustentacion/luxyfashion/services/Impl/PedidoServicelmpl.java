@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Transactional
 @Service
 public class PedidoServicelmpl implements PedidoService {
@@ -38,5 +39,14 @@ public class PedidoServicelmpl implements PedidoService {
     @Override
     public List<Pedido> findAllByOrderAsc() {
         return pedidoRepositorio.findAllByOrderByNomPedAsc();
+    }
+    @Override
+    public Pedido buscarPorId(Integer id){
+        return pedidoRepositorio.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<Pedido> findAllByOrderByNomPedAsc() {
+        return List.of();
     }
 }

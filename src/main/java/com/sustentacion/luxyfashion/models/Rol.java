@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
+
 //El model es un OBJETO en su totalidad, ya que se usa en todas las capas, siendo la principal referencia dentro del proyecto.
 //Creacion directa entre la tabla Rol y Java
 @Entity //Conexion con la BD, se guarda en la BD.

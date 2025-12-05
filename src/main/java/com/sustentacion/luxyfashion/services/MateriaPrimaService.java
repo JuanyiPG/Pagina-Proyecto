@@ -2,6 +2,7 @@ package com.sustentacion.luxyfashion.services;
 
 import com.sustentacion.luxyfashion.models.DetMateriaPrima;
 import com.sustentacion.luxyfashion.models.MateriaPrima;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 

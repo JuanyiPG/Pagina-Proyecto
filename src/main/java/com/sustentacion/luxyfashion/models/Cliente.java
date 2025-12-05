@@ -17,13 +17,15 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_clien;
     @Column(name = "nom_clien")
-    private String nomClie;
+    private String nomClien;
     private String dir_clien;
     private String tel_clien;
-    private String correo_clien;
+    @Column(name="correo_clien", unique = true )
+    private String correo;
     private String usuario_clien;
     private String contra_clien;
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL) //Cascade:relaciona las operaciones en las dos entidades, es decir que trabajan en conjunto.
+    // CascadeType.All, es para indicar que todo lo que se opere en esat entidad tambien se ejecute en la otra, en este caso seria Usuario.
     @JoinColumn(name = "id_rol_fk_clien")
     private Rol rol;
 

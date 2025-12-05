@@ -11,13 +11,13 @@ public interface ProduccionRepositories extends JpaRepository<Produccion, Intege
     List<Produccion> findAllByOrderByFechaIniProduccAsc();
 
     @Query("SELECT prc FROM Produccion prc WHERE " +
-    "CAST(prc.id_producc AS string) LIKE CONCAT('%', :filtro, '%') OR" +
-    "CAST(prc.fechaIniProducc AS string) LIKE CONCAT('%', :filtro, '%') OR" +
-    "CAST(prc.cant_producc AS string) LIKE CONCAT('%', :filtro, '%') OR" +
-    "CAST(prc.costo_mano_obra_producc AS string) LIKE CONCAT('%', :filtro, '%') OR" +
-    "CAST(prc.costo_mat_producc AS string) LIKE CONCAT('%', :filtro, '%') OR" +
-    "CAST(prc.costo_iva_producc AS string) LIKE CONCAT('%', :filtro, '%') OR" +
-    "CAST(prc.costo_total_producc AS string) LIKE CONCAT('%', :filtro, '%') OR" +
+    "CAST(prc.id_producc AS string) LIKE CONCAT('%', :filtro, '%') OR " +
+    "CAST(prc.fechaIniProducc AS string) LIKE CONCAT('%', :filtro, '%') OR " +
+    "CAST(prc.cant_producc AS string) LIKE CONCAT('%', :filtro, '%') OR " +
+    "CAST(prc.costo_mano_obra_producc AS string) LIKE CONCAT('%', :filtro, '%') OR " +
+    "CAST(prc.costo_mat_producc AS string) LIKE CONCAT('%', :filtro, '%') OR " +
+    "CAST(prc.costo_iva_producc AS string) LIKE CONCAT('%', :filtro, '%') OR " +
+    "CAST(prc.costo_total_producc AS string) LIKE CONCAT('%', :filtro, '%') OR " +
     "CAST(prc.fecha_fin_producc AS string) LIKE CONCAT('%', :filtro, '%')"
     )
 

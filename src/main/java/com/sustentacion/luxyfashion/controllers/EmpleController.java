@@ -33,7 +33,7 @@ public class EmpleController {
         return "empleado/emple_index";
     }
 
-    @GetMapping("/nuevo")
+    @GetMapping("/nuevo") //mostrar el formulario vacio
     public String nuevo(Model model){
         model.addAttribute("empleado", new Empleado());
         return "empleado/emple_index";

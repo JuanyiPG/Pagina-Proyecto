@@ -27,7 +27,7 @@ public class PedidoController {
     // ============================
     @GetMapping()
     public String listarOrdenados(Model model) {
-        List<Pedido> pedidos = pedidoService.listapedidoasc();
+        List<Pedido> pedidos = pedidoService.findAllByOrderAsc();
         model.addAttribute("pedidos", pedidos);
         model.addAttribute("pedido", new Pedido());
         model.addAttribute("clientes", clienteService.listar());
@@ -51,7 +51,7 @@ public class PedidoController {
     public String guardar(Pedido pedido) {
 
         // Obtener cliente correctamente
-        Cliente clienteSeleccionado = clienteService.buscarPorId(
+        Cliente clienteSeleccionado = clienteService.BuscarPorId(
                 pedido.getCliente().getId_clien()
         );
         pedido.setCliente(clienteSeleccionado);

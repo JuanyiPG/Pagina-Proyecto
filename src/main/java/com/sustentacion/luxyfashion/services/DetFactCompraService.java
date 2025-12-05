@@ -1,6 +1,7 @@
 package com.sustentacion.luxyfashion.services;
 
 import com.sustentacion.luxyfashion.models.DetFactCompra;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 

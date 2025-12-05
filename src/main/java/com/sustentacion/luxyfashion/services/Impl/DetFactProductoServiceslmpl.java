@@ -35,7 +35,7 @@ public class DetFactProductoServiceslmpl implements DetFactProductoService {
 
     @Override
     public List<DetFactProducto> findAllByOrderAsc() {
-        return detFactProductoRepositories.findAllByOrderByDescDetAsc();
+        return detFactProductoRepositories.findAllByOrderByDescrDetAsc();
     }
 
     @Override

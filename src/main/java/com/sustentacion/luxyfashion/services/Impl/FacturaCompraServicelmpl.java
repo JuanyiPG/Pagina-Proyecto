@@ -37,7 +37,7 @@ public class FacturaCompraServicelmpl implements FacturaCompraService{
 
     @Override
     public List<FacturaCompra> findAllByOrderAsc(){
-        return facturacomprarepositories.findAllByOrderByFechaFactuAsc();
+        return facturacomprarepositories.findAllByOrderByFechafactucAsc();
     }
 
 

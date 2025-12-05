@@ -10,11 +10,11 @@ import java.util.List;
 
 @Transactional
 @Service
-public class AbonoServicelmpl implements AbonoService {
+public class AbonoServiceslmpl implements AbonoService {
 
     private final AbonoRepositories abonoRepositories;
 
-    public AbonoServicelmpl(AbonoRepositories abonoRepositories) {
+    public AbonoServiceslmpl(AbonoRepositories abonoRepositories) {
         this.abonoRepositories = abonoRepositories;
     }
 
@@ -35,11 +35,11 @@ public class AbonoServicelmpl implements AbonoService {
 
     @Override
     public List<Abono> findAllByOrderAsc() {
-        return abonoRepositories.findAllByOrderByFechaAbonoAsc();
+        return abonoRepositories.findAllByOrderByFechaabonoAsc();
     }
 
     @Override
     public List<Abono> buscarvarioscampos(String filtro) {
-        return abonoRepositories.buscarvarioscampos(filtro);
+        return abonoRepositories.buscarVariosCampos(filtro);
     }
 }

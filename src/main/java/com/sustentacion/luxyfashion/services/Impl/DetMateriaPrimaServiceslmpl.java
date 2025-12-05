@@ -37,7 +37,7 @@ private final DetMateriaPrimaRepositories detmateriaprimarepositories;
 
     @Override
     public List<DetMateriaPrima> finAllByOrderAsc(){
-        return detmateriaprimarepositories.findAllByOrderByDescDetAsc();
+        return detmateriaprimarepositories.findAllByOrderByDescrDetAsc();
     }
 
 
