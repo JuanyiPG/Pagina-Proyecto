@@ -3,10 +3,11 @@ package com.sustentacion.luxyfashion.services.Impl;
 import com.sustentacion.luxyfashion.models.Empleado;
 import com.sustentacion.luxyfashion.repositories.EmpleRepositories;
 import com.sustentacion.luxyfashion.services.EmpleService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Transactional
 @Service
 public class EmpleServiceImpl implements EmpleService {
 private final EmpleRepositories empleRepositories;

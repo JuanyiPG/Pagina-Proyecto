@@ -4,7 +4,6 @@ import com.sustentacion.luxyfashion.models.Pedido;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-@Service
 public interface PedidoService {
 
     List<Pedido> listar();
@@ -17,5 +16,5 @@ public interface PedidoService {
 
     List<Pedido> buscarVariosCampos(String filtro);
 
-    List<Pedido> findAllByOrderByNomPedAsc();
+    List<Pedido> findAllByOrderAsc();
 }
