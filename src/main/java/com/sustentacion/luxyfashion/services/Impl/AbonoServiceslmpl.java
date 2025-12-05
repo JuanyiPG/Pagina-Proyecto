@@ -1,5 +1,8 @@
 package com.sustentacion.luxyfashion.services.Impl;
 
+import com.sustentacion.luxyfashion.models.Abono;
+import com.sustentacion.luxyfashion.repositories.AbonoRepositories;
+import com.sustentacion.luxyfashion.services.AbonoService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -7,25 +10,36 @@ import java.util.List;
 
 @Transactional
 @Service
-public class AbonoServiceslmpl {
+public class AbonoServicelmpl implements AbonoService {
 
+    private final AbonoRepositories abonoRepositories;
 
-    @Override
-    public
-
-
-    @Override
-    public
-
+    public AbonoServicelmpl(AbonoRepositories abonoRepositories) {
+        this.abonoRepositories = abonoRepositories;
+    }
 
     @Override
-    public List<>
-
-
-    @Override
-    public List<>
-
+    public Abono guardar(Abono abono) {
+        return abonoRepositories.save(abono);
+    }
 
     @Override
-    public List<>
+    public void eliminar(Integer id) {
+        abonoRepositories.deleteById(id);
+    }
+
+    @Override
+    public List<Abono> listar() {
+        return abonoRepositories.findAll();
+    }
+
+    @Override
+    public List<Abono> findAllByOrderAsc() {
+        return abonoRepositories.findAllByOrderByFechaAbonoAsc();
+    }
+
+    @Override
+    public List<Abono> buscarvarioscampos(String filtro) {
+        return abonoRepositories.buscarvarioscampos(filtro);
+    }
 }
