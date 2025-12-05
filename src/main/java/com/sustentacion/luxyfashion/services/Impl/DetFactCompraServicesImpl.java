@@ -10,11 +10,11 @@ import java.util.List;
 
 @Transactional
 @Service
-public class DetFactCompraServiceslmpl implements DetFactCompraService{
+public class DetFactCompraServicesImpl implements DetFactCompraService{
 
     private final DetFactCompraRepositories detFactCompraRepositories;
 
-    public DetFactCompraServiceslmpl(DetFactCompraRepositories detFactCompraRepositories) {
+    public DetFactCompraServicesImpl(DetFactCompraRepositories detFactCompraRepositories) {
         this.detFactCompraRepositories = detFactCompraRepositories;
     }
 

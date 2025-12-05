@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 @Transactional
 @Service
-public class MateriaPrimaServicelmpl implements MateriaPrimaService {
+public class MateriaPrimaServiceImpl implements MateriaPrimaService {
     private final MateriaPrimaRepositories materiaPrimaRepositorio;
 
-    public MateriaPrimaServicelmpl(MateriaPrimaRepositories materiaPrimaRepositorio) {
+    public MateriaPrimaServiceImpl(MateriaPrimaRepositories materiaPrimaRepositorio) {
         this.materiaPrimaRepositorio = materiaPrimaRepositorio;
     }
 

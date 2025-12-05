@@ -6,15 +6,12 @@ import com.sustentacion.luxyfashion.models.MateriaPrima;
 import java.util.List;
 
 public interface MateriaPrimaService {
-    MateriaPrima guardar(MateriaPrima materiaprima);
 
-    DetMateriaPrima guardar(DetMateriaPrima detmateriaprima);
+    MateriaPrima guardar(MateriaPrima materiaprima);
 
     void eliminar(Integer id);
 
     List<MateriaPrima> findAllByOrderAsc();
-
-    List<DetMateriaPrima> finAllByOrderAsc();
 
     List<MateriaPrima> buscarvarioscampos(String filtro);
 

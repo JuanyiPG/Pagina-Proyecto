@@ -8,13 +8,11 @@ public interface PedidoService {
 
     List<Pedido> listar();
 
-    List<Pedido> listapedidoasc();
-
     Pedido guardar(Pedido pedido);
 
     void eliminar(Integer id);
 
-    List<Pedido> buscarVariosCampos(String filtro);
+    List<Pedido> buscarvarioscampos(String filtro);
 
     List<Pedido> findAllByOrderAsc();
 }

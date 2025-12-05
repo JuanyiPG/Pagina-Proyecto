@@ -10,10 +10,10 @@ import java.util.List;
 
 @Transactional
 @Service
-public class ProductoServicelmpl implements ProductoService {
+public class ProductoServiceImpl implements ProductoService {
     private final ProductoRepositories productorepositorio;
 
-    public ProductoServicelmpl(ProductoRepositories productorepositorio) {
+    public ProductoServiceImpl(ProductoRepositories productorepositorio) {
         this.productorepositorio = productorepositorio;
     }
 

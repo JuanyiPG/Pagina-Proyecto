@@ -10,36 +10,36 @@ import java.util.List;
 
 @Transactional
 @Service
-public class AbonoServicelmpl implements AbonoService {
+public class AbonoServicesImpl implements AbonoService {
 
-    private final AbonoRepositories abonoRepositories;
+    private final AbonoRepositories abonorepositorio;
 
-    public AbonoServicelmpl(AbonoRepositories abonoRepositories) {
-        this.abonoRepositories = abonoRepositories;
+    public AbonoServicesImpl(AbonoRepositories abonorepositorio) {
+        this.abonorepositorio = abonorepositorio;
     }
 
     @Override
     public Abono guardar(Abono abono) {
-        return abonoRepositories.save(abono);
+        return abonorepositorio.save(abono);
     }
 
     @Override
     public void eliminar(Integer id) {
-        abonoRepositories.deleteById(id);
+        abonorepositorio.deleteById(id);
     }
 
     @Override
     public List<Abono> listar() {
-        return abonoRepositories.findAll();
+        return abonorepositorio.findAll();
     }
 
     @Override
     public List<Abono> findAllByOrderAsc() {
-        return abonoRepositories.findAllByOrderByFechaAbonoAsc();
+        return abonorepositorio.findAllByOrderByFechaAbonoAsc();
     }
 
     @Override
     public List<Abono> buscarvarioscampos(String filtro) {
-        return abonoRepositories.buscarvarioscampos(filtro);
+        return abonorepositorio.buscarvarioscampos(filtro);
     }
 }

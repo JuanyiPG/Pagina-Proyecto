@@ -10,10 +10,10 @@ import java.util.List;
 
 @Transactional
 @Service
-public class FacturaCompraServicelmpl implements FacturaCompraService{
+public class FacturaCompraServiceImpl implements FacturaCompraService{
     private final FacturaCompraRepositories facturacomprarepositories;
 
-    public FacturaCompraServicelmpl(FacturaCompraRepositories facturacomprarepositories) {
+    public FacturaCompraServiceImpl(FacturaCompraRepositories facturacomprarepositories) {
         this.facturacomprarepositories = facturacomprarepositories;
     }
 
