@@ -47,4 +47,8 @@ public class FacturaVentaServicelmpl implements FacturaVentaService {
         return  facturaventarepositories.buscarvarioscampos(filtro);
     }
 
+    @Override
+    public FacturaVenta buscarPorId(Integer id){
+        return facturaventarepositories.findById(id).orElse(null);
+    }
 }
