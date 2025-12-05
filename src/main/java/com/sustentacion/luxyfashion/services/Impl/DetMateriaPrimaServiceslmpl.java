@@ -1,9 +1,8 @@
 package com.sustentacion.luxyfashion.services.Impl;
 
 import com.sustentacion.luxyfashion.models.DetMateriaPrima;
-import com.sustentacion.luxyfashion.models.MateriaPrima;
 import com.sustentacion.luxyfashion.repositories.DetMateriaPrimaRepositories;
-import com.sustentacion.luxyfashion.services.MateriaPrimaService;
+import com.sustentacion.luxyfashion.services.DetMateriaPrimaService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +10,7 @@ import java.util.List;
 
 @Transactional
 @Service
-public class DetMateriaPrimaServiceslmpl implements MateriaPrimaService {
+public class DetMateriaPrimaServiceslmpl implements DetMateriaPrimaService {
 private final DetMateriaPrimaRepositories detmateriaprimarepositories;
 
     public DetMateriaPrimaServiceslmpl(DetMateriaPrimaRepositories detmateriaprimarepositories) {
