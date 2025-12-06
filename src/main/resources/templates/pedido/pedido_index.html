@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pedidos</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<h1>Gestión de Pedidos</h1>
+
+<!-- ========================= -->
+<!-- FORMULARIO PARA NUEVO PEDIDO -->
+<!-- ========================= -->
+<h2>Agregar / Editar Pedido</h2>
+<form th:action="@{/pedido/guardar}" th:object="${pedido}" method="post">
+    <label>Fecha del Pedido:</label>
+    <input type="date" th:field="*{fecha_ped}" required><br>
+
+    <label>Cliente:</label>
+    <select th:field="*{cliente.id_clien}" required>
+        <option value="" disabled selected>Seleccione un cliente</option>
+        <th:block th:each="cliente : ${clientes}">
+            <option th:value="${cliente.id_clien}" th:text="${cliente.nomClien}"></option>
+        </th:block>
+    </select><br><br>
+
+    <button type="submit">Guardar Pedido</button>
+</form>
+
+<!-- ========================= -->
+<!-- BUSCADOR -->
+<!-- ========================= -->
+<h2>Buscar Pedidos</h2>
+<form th:action="@{/pedido/buscar}" method="get">
+    <input type="text" name="buscar" placeholder="Buscar por cualquier campo">
+    <button type="submit">Buscar</button>
+</form>
+
+<!-- ========================= -->
+<!-- LISTADO DE PEDIDOS -->
+<!-- ========================= -->
+<h2>Listado de Pedidos</h2>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Fecha</th>
+        <th>Cliente</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="pedido : ${pedidos}">
+        <td th:text="${pedido.id_pedido}"></td>
+        <td th:text="${#dates.format(pedido.fechaPedido, 'yyyy-MM-dd')}"></td>
+        <td th:text="${pedido.cliente != null ? pedido.cliente.nombre : 'N/A'}"></td>
+        <td>
+            <a th:href="@{/pedido/editar/{id}(id=${pedido.id_pedido})}">Editar</a>
+            &nbsp;|&nbsp;
+            <a th:href="@{/pedido/eliminar/{id}(id=${pedido.id_pedido})}"
+               onclick="return confirm('¿Desea eliminar este pedido?')">Eliminar</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
