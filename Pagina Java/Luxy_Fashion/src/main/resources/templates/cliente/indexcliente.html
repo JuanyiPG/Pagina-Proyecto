@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Fashion Luxy</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/cliente.css}">
+    <link rel="stylesheet" href="Pagina Web/bootstrap/css/bootstrap.min.css">
+    <script src="Pagina Web/bootstrap/js/bootstrap.bundle.min.js" defer></script>
+</head>
+<body>
+<header id="header-cliente"></header>
+<video autoplay muted loop class="VPP">
+    <source src="../VIDEO/VideoPClien.mp4" type="video/mp4">
+</video>
+
+<!-- SLIDER -->
+<div class="slider-container">
+    <button class="arrow left">&#10094;</button>
+    <div class="slider">
+        <div class="item">
+            <img src="../IMG/camisa_overzise.jpeg" alt="Camisa Overzise">
+            <div class="overlay">Camisa Overzise - $50.000</div>
+        </div>
+        <div class="item">
+            <img src="../IMG/buso-camisa-gris.jpg" alt="Buso Gris">
+            <div class="overlay">Buso Gris - $65.000</div>
+        </div>
+        <div class="item">
+            <img src="../IMG/buso-negro.jpg" alt="Buso Negro">
+            <div class="overlay">Buso Negro - $60.000</div>
+        </div>
+        <div class="item">
+            <img src="../IMG/blusa-cuello-vinotinto.jpg" alt="Blusa Cuello Vinotinto">
+            <div class="overlay">Blusa Vinotinto - $55.000</div>
+        </div>
+        <div class="item">
+            <img src="../IMG/chaqueta-amarilla.jpg" alt="Chaqueta Amarilla">
+            <div class="overlay">Chaqueta Amarilla - $120.000</div>
+        </div>
+        <div class="item">
+            <img src="../IMG/frontchaquetabeige.jpg" alt="Chaqueta Beige">
+            <div class="overlay">Chaqueta Beige - $115.000</div>
+        </div>
+        <div class="item">
+            <a href="../Cliente/producto-cliente.php">
+                <img src="../IMG/blusa-hombro-negro.jpeg" alt="Camisa Hombro">
+            </a>
+            <div class="overlay">Camisa Hombro - $70.000</div>
+        </div>
+        <div class="item">
+            <img src="../IMG/camisa_beisbolera.jpeg" alt="Camisa Beisbolera">
+            <div class="overlay">Camisa Beisbolera - $80.000</div>
+        </div>
+    </div>
+    <button class="arrow right">&#10095;</button>
+</div>
+
+<!-- BANNER -->
+<section class="banner-promo">
+    <h2>Ofertas Exclusivas para Clientes</h2>
+    <p>Disfruta de descuentos especiales solo por ser parte de Fashion Luxy</p>
+    <a href="../Cliente/producto-cliente.php" class="btn-promo">Ver Productos</a>
+</section>
+
+<!-- DESTACADOS -->
+<section class="destacados">
+    <h2>Productos Destacados</h2>
+    <div class="grid">
+        <img src="../IMG/blusa-cuello-vinotinto.jpg" alt="Blusa Vinotinto">
+        <img src="../IMG/frontchaquetabeige.jpg" alt="Chaqueta Beige">
+        <img src="../IMG/camisa_beisbolera.jpeg" alt="Camisa Beisbolera">
+        <img src="../IMG/blusa-hombro-gris.jpg" alt="Camisa Hombro">
+    </div>
+</section>
+
+<!-- TESTIMONIOS -->
+<section class="testimonios">
+    <h2>Lo que dicen nuestros clientes</h2>
+    <div class="testi-grid">
+        <div class="card-testi">
+            <p>"La calidad es excelente, quedé feliz con mi compra"</p>
+            <strong>- Camila R.</strong>
+        </div>
+        <div class="card-testi">
+            <p>"La atención al cliente es increíble, muy atentos"</p>
+            <strong>- Andrés G.</strong>
+        </div>
+        <div class="card-testi">
+            <p>"Los precios son justos y la ropa está de moda"</p>
+            <strong>- Valentina M.</strong>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2025 Fashion Luxy - Todos los derechos reservados</p>
+</footer>
+
+<script src="/js/cliente.js" defer></script>
+</body>
+</html>

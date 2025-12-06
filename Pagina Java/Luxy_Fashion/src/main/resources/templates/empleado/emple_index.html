@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>Producto terminado</title>
+    <link rel="stylesheet" th:href="@{/CSS/index.css}">
+<body class="body2">
+<!-- Aquí se inserta el header -->
+<div th:replace="~{itemss/headeradmin :: miHeader}"></div>
+<div class="main">
+    <div class="card">
+        <h1 th:text="${empleado != null and empleado.id_emple != null} ? 'Editar Empleado' : 'Gestión de Empleados'"></h1>
+
+        <form class="formulario-mensaje" th:action="@{/empleado/guardar}" method="post" th:object="${empleado}">
+            <div class="form-group">
+                <input type="text" name="nom_empleado" placeholder="Nombre" th:field="*{nomEmple}" required>
+                <input type="text" name="telefono_empleado" placeholder="Telefono" th:field="*{tel_emple}">
+            </div>
+            <div class="form-group">
+                <input type="text" name="correo_empleado" placeholder="Correo" th:field="*{correo_emple}">
+                <input type="text" name="direccion_empleado" placeholder="Direccion" th:field="*{dir_emple}">
+            </div>
+            <div class="form-group">
+                <input type="text" name="tipo_sangre" placeholder="tipo de sangre" th:field="*{rh_emple}">
+                <input type="date" name="Fecha_naci_empleado" placeholder="Fecha nacimiento"
+                       onfocus="this.type='date'" onblur="if(!this.value) this.type='text'" th:field="*{fecha_naci_emple}">
+            </div>
+            <div class="form-group">
+                <input type="date" name="Fecha_ing_empleado" placeholder="Fecha ingreso"
+                       onfocus="this.type='date'" onblur="if(!this.value) this.type='text'" th:field="*{fecha_ing_emple}">
+                <select name="tipo_identificacion" th:field="*{tipo_identificacion}" style="border-radius: 8px">
+                    <option value="CC"> Cedula de Ciudadania</option>
+                    <option value="CE">Cedula Extranjera</option>
+                    <option value="PEP">Permiso Especial de Permanencia</option>
+                </select>
+
+            </div>
+
+            <div class="form-group">
+            <input type="text" name="num_indetificacion" placeholder="Numero ID" th:field="*{num_indetificacion}">
+            <input type="text" name="salari_emple" placeholder="Salario" th:field="*{salari_emple}">
+            </div>
+
+            <div class="form-group">
+                <input type="text" name="estado_emple" placeholder="Estado" th:field="*{estado_emple}">
+                <input type="text" name="usuario" placeholder="Nombre de usuario" th:field="*{usuario}">
+            </div>
+            <div class="form-group">
+                <input type="text" name="contraseña" placeholder="Contaseña" th:field="*{contraseña}">
+                <select name="rol" th:field="*{rol.id_rol}" required style="border-radius:8px">
+                    <option th:each="r : ${roles}"
+                            th:value="${r.id_rol}"
+                            th:text="${r.nomRol}">
+                    </option>
+                </select>
+            </div>
+            <button type="submit" class="save-btn">Insertar</button>
+        </form>
+        <div id="mensaje" th:if="${param.success}" style="color:purple; font-weight:bold; margin-bottom:10px;">
+            ¡Se insertó correctamente!
+        </div>
+    </div>
+
+    <div id="search" class="search">
+        <form th:action="@{/empleado/buscar}" method="get">
+            <input type="text" name="buscar" placeholder="Escribe lo que quieras consultar" id="searchInput">
+            <input type="submit" value="Buscar" id="btnSearch">
+        </form>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Teléfono</th>
+            <th>Correo</th>
+            <th>Dirección</th>
+            <th>Rh</th>
+            <th>Fecha de nacimiento</th>
+            <th>Tipo ID</th>
+            <th>Numero ID</th>
+            <th>Fecha de ingreso</th>
+            <th>Salario</th>
+            <th>Estado</th>
+            <th>Usuario</th>
+            <th>Contraseña</th>
+            <th>Accioness</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="r: ${empleados}">
+            <td th:text="${r.id_emple}"></td>
+            <td th:text="${r.nomEmple}"></td>
+            <td th:text="${r.tel_emple}"></td>
+            <td th:text="${r.correo_emple}"></td>
+            <td th:text="${r.dir_emple}"></td>
+            <td th:text="${r.rh_emple}"></td>
+            <td th:text="${r.fecha_naci_emple}"></td>
+            <td th:text="${r.tipo_identificacion}"></td>
+            <td th:text="${r.num_indetificacion}"></td>
+            <td th:text="${r.fecha_ing_emple}"></td>
+            <td th:text="${r.salari_emple}"></td>
+            <td th:text="${r.estado_emple}"></td>
+            <td th:text="${r.usuario}"></td>
+            <td th:text="${r.contraseña}"></td>
+            <td>
+                <a class="btn-accion" th:href="@{'/empleado/editar/' + ${r.id_emple}}">Actualizar</a>
+                <a class="btn-eliminar" th:href="@{'/empleado/eliminar/' + ${r.id_emple}}" style="margin-top: 10px">Eliminar</a>
+            </td>
+        </tr>
+        <tr th:if="${empleados != null and #lists.isEmpty(empleados)}">
+            <td colspan="3">No se encontraron resultados</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!---------JAVA SCRIPT--------->
+<script src="/js/confirmacion.js"></script>
+<script src="/js/eliminar.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const toggleBtn = document.getElementById("formToggle");
+      const submenu = document.getElementById("submenuForm");
+
+      toggleBtn.addEventListener("click", function(e) {
+        e.preventDefault();
+        submenu.classList.toggle("show");
+      });
+    });
+</script>
+
+</body>
+</html>
