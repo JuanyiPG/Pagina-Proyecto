@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ecc2154e-7f54-4e87-8623-03e0c98826bd" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HELP.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/LuxyfashionApplication.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/config/SecurityConfig.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/controllers/AbonoController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/controllers/ClienteController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/controllers/DetFactCompraController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/controllers/DetFactProductoController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/controllers/DetMateriaPrimaController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/controllers/EmpleController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/controllers/FacturaCompraController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/controllers/FacturaVentaController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/controllers/HomeController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/controllers/MateriaPrimaController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/controllers/PedidoController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/controllers/ProduccionController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/controllers/ProductoController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/controllers/RolController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/controllers/UsuarioController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/models/Abono.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/models/Cliente.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/models/DetFactCompra.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/models/DetFactProducto.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/models/DetMateriaPrima.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/models/Empleado.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/models/FacturaCompra.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/models/FacturaVenta.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/models/MateriaPrima.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/models/Pedido.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/models/Produccion.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/models/Producto.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/models/Rol.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/models/Usuario.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/repositories/AbonoRepositories.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/repositories/ClienteRepositories.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/repositories/DetFactCompraRepositories.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/repositories/DetFactProductoRepositories.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/repositories/DetMateriaPrimaRepositories.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/repositories/EmpleRepositories.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/repositories/FacturaCompraRepositories.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/repositories/FacturaVentaRepositories.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/repositories/MateriaPrimaRepositories.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/repositories/PedidoRepositorio.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/repositories/ProduccionRepositories.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/repositories/ProductoRepositories.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/repositories/RolRepositories.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/repositories/UsuarioRepositories.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/AbonoService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/ClienteService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/DetFactCompraService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/DetFactProductoService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/DetMateriaPrimaService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/EmpleService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/FacturaCompraService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/FacturaVentaService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/Impl/AbonoServiceslmpl.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/Impl/ClienteServiceImpl.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/Impl/DetFactCompraServicesImpl.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/Impl/DetFactProductoServicesImpl.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/Impl/DetMateriaPrimaServicesImpl.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/Impl/EmpleServiceImpl.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/Impl/FacturaCompraServiceImpl.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/Impl/FacturaVentaServiceImpl.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/Impl/MateriaPrimaServiceImpl.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/Impl/PedidoServiceImpl.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/Impl/ProduccionServiceImpl.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/Impl/ProductoServiceImpl.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/Impl/RolServiceImpl.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/Impl/UsuarioServiceImpl.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/MateriaPrimaService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/PedidoService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/ProduccionService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/ProductoService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/RolService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/sustentacion/luxyfashion/services/UsuarioService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/Baggy.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/Busos-camisa.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/Campana.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/Chaquet_de_cuero_hombre.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/Chaqueta_moderna.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/Logo.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/Logo_Luxy_Fashion.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/Luxy LL.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/Ropa modelaje 1.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/Ropa modelaje.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/backchaquetabeige.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/backchaquetagris.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/blusa-cuello-beige.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/blusa-cuello-gris.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/blusa-cuello-plateado.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/blusa-cuello-vinotinto.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/blusa-hombro-blanco.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/blusa-hombro-gris.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/blusa-hombro-negro.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/blusa-hombro-rojo.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/buso-camisa-gris.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/buso-camisa-negra.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/buso-gris.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/buso-negro.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/buso-verde.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/calid.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/camisa_beisbolera.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/camisa_overzise.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/cargo.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/cero.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/chaqueta-amarilla.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/chaqueta-gris.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/chaqueta-roja.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/chaqueta_clasica.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/envio.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/frontchaquetaamarilla.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/frontchaquetabeige.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/frontchaquetagris.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/index1.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/index2.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/index3.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/index4.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/index5.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/index6.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/logoB.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/moda.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/otherfrontchaquetabeige.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/prec.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/rightchaquetaamarilla.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/style.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/v-ropa.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/IMG/we.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/VIDEO/VideoPClien.mp4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/VIDEO/VideoPIndex.mp4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/css/cliente.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/css/estilo.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/css/index.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/items/footer.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/items/header-cliente.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/js/cliente.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/js/confirmacion.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/js/eliminar.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/js/headerform.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/static/js/login.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/abono/abono_index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/admin/detfacturacompra/detcompra.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/admin/detfacturacompra/editardetallecompra.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/admin/empleado/editar_emple.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/admin/empleado/emple_index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/admin/facturacompra/editarcompra.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/admin/facturacompra/indexcompra.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/admin/facturaventa/editarventa.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/admin/facturaventa/listventa.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/admin/indexadmin.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/admin/listabono/editarabono.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/admin/listabono/listaAbono.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/admin/listcliente/listcliente.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/admin/listpedido/listaPedido.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/admin/listproduccion/indexproduccion.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/admin/materiaprima/editarmatp.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/admin/materiaprima/indexmatp.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/admin/producto/indexproducto.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/admin/roles/EDITAR_ROL.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/admin/roles/ROL_INDEX.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/cliente/editar.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/cliente/indexcliente.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/cliente/pedido.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/empleado/factventa/editarventa.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/empleado/factventa/indexfacventa.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/empleado/indexemple.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/empleado/listcliente/listcliente.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/empleado/pedido/editarpedido.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/empleado/pedido/listpedido.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/empleado/produccion/indexproduccion.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/itemss/header.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/itemss/headeradmin.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/login/LoginRegistro.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/login/editar.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/templates/login/listaLogin.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/sustentacion/luxyfashion/LuxyfashionApplicationTests.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="36O7r9isOk4SChKAAl3k6QNHfK2" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.LuxyfashionApplication.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "#1 on Java",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/xampp/htdocs/Pagina-Proyecto",
+    "settings.editor.selected.configurable": "inlay.hints"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Pagina-Proyecto\src\main\java\com\sustentacion\luxyfashion\services" />
+    </key>
+    <key name="ExtractSuperBase.RECENT_KEYS">
+      <recent name="com.sustentacion.luxyfashion.services.Impl" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ecc2154e-7f54-4e87-8623-03e0c98826bd" name="Changes" comment="" />
+      <created>1764865959407</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1764865959407</updated>
+    </task>
+    <servers />
+  </component>
+</project>
