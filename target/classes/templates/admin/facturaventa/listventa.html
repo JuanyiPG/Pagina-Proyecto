@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>Gestión de Empleados</title>
+    <link rel="stylesheet" th:href="@{../CSS/index.css}">
+</head>
+<!-- Header admin -->
+<div th:replace="~{itemss/headeradmin :: miHeader}"></div>
+<table xmlns:th="http://www.w3.org/1999/xhtml">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Fecha</th>
+        <th>Total</th>
+        <th>Metodo Pago</th>
+        <th>Estado</th>
+        <th>Nombre Empleado</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="r : ${facturaVenta}">
+        <td th:text="${r.id_factuc}"></td>
+        <td th:text="${r.fechafactuc}"></td>
+        <td th:text="${r.total}"></td>
+        <td th:text="${r.metodo_pago}"></td>
+        <td th:text="${r. estado}"></td>
+        <td th:text="${r.empleado.nomEmple}"></td>
+
+        <td>
+            <a class="btn-accion" th:href="@{'/facturaventa/editar/' + ${r.id_emple}}">Actualizar</a>
+            <a class="btn-eliminar" th:href="@{'/facturaventa/eliminar/' + ${r.id_emple}}" style="margin-top: 10px">Eliminar</a>
+        </td>
+    </tr>
+    <tr th:if="${facturaventa!= null and #lists.isEmpty(facturaventa)}">
+        <td colspan="15">No se encontraron resultados</td>
+    </tr>
+    </tbody>
+</table>
+</div>
+
+<!---------JAVA SCRIPT----->
+<!------HEADER----------------->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const toggleBtn = document.getElementById("formToggle");
+      const submenu = document.getElementById("submenuForm");
+
+      toggleBtn.addEventListener("click", function(e) {
+        e.preventDefault();
+        submenu.classList.toggle("show");
+      });
+    });
+</script>
+
+</body>
+</html>

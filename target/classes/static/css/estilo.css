@@ -1,0 +1,14 @@
+body {
+    font-family: Arial;
+    margin: 40px;
+}
+
+input {
+    display: block;
+    margin-bottom: 10px;
+}
+
+table {
+    margin-top: 20px;
+    width: 500px;
+}
