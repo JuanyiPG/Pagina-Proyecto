@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>Gestión de Empleados</title>
+    <link rel="stylesheet" th:href="@{/CSS/index.css}">
+</head>
+<tbody class="body2">
+
+<!-- Header admin -->
+<div th:replace="~{itemss/headeradmin :: miHeader}"></div>
+
+<div class="main">
+    <div class="card">
+        <h1>DETALLE FACTURA COMPRA</h1>
+        <tbody class="formulario-mensaje" th:action="@{/facturacompra/form}" method="post" th:object="${facturacompra}">
+        <div class="form-group">
+            <input type="date" placeholder="Cantidad" th:field="*{fechafactuc}" required>
+            <input type="text" placeholder="descripcion" th:field="*{total}">
+        </div>
+        <div class="form-group">
+            <input type="text" placeholder="Cantidad" th:field="*{metodo_pago}" required>
+            <input type="text" placeholder="descripcion" th:field="*{estado}">
+        </div>
+        <div class="form-group">
+            <!-- en el controller ya se inyecto el materiaprima -->
+            <select th:field="*{empleado.id_emple}" required>
+                <option value="" disabled selected>Seleccione materia prima</option>
+                <!-- each para que pueda seleccionary declaramos la m cada objeto de la lista -->
+                <th:block th:each="m : ${empleados}"> <!-- materias es la lista de matp -->
+                    <!-- lo que se va a mostrar al empleado -->
+                    <option th:value="${m.id_emple}" th:text="${m.nomEmple}"></option>
+
+                </th:block>
+            </select>
+        </div>
+        <div id="mensaje" th:if="${param.success}" style="color:purple; font-weight:bold; margin-bottom:10px;">
+            ¡Se insertó correctamente!
+        </div>
+
+        <!-- BUSCADOR -->
+        <div id="search" class="search">
+            <form th:action="@{/facturacompra/buscar}" method="get">
+                <input type="text" name="buscar" placeholder="Escribe lo que quieras consultar" id="searchInput">
+                <input type="submit" value="Buscar" id="btnSearch">
+            </form>
+        </div>
+
+        <!-- TABLA DE EMPLEADOS -->
+        <table>
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Fecha</th>
+                <th>Total</th>
+                <th>Metodo Pago</th>
+                <th>Estado</th>
+                <th>Nombre Empleado</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="r : ${facturaCompra}">
+                <td th:text="${r.id_factuc}"></td>
+                <td th:text="${r.fechafactuc}"></td>
+                <td th:text="${r.total}"></td>
+                <td th:text="${r.metodo_pago}"></td>
+                <td th:text="${r. estado}"></td>
+                <td th:text="${r.empleado.nomEmple}"></td>
+
+                <td>
+                    <a class="btn-accion" th:href="@{'/facturacompra/editar/' + ${r.id_emple}}">Actualizar</a>
+                    <a class="btn-eliminar" th:href="@{'/facturacompra/eliminar/' + ${r.id_emple}}" style="margin-top: 10px">Eliminar</a>
+                </td>
+            </tr>
+            <tr th:if="${facturacompra != null and #lists.isEmpty(facturacompra)}">
+                <td colspan="15">No se encontraron resultados</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- Scripts -->
+<script src="/js/confirmacion.js"></script>
+<script src="/js/eliminar.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const toggleBtn = document.getElementById("formToggle");
+      const submenu = document.getElementById("submenuForm");
+
+      toggleBtn?.addEventListener("click", function(e) {
+        e.preventDefault();
+        submenu?.classList.toggle("show");
+      });
+    });
+</script>
+</html>
