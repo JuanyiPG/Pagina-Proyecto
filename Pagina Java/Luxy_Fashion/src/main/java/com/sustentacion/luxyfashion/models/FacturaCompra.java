@@ -21,7 +21,7 @@ public class FacturaCompra {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_factuc;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date fecha_factuc;
+    private Date fechafactuc;
     private BigDecimal total;
     private String metodo_pago;
     private String estado;

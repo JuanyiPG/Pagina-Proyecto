@@ -1,33 +1,65 @@
 package com.sustentacion.luxyfashion.services.Impl;
 
 import com.sustentacion.luxyfashion.models.Empleado;
+import com.sustentacion.luxyfashion.models.Rol;
+import com.sustentacion.luxyfashion.models.Usuario;
 import com.sustentacion.luxyfashion.repositories.EmpleRepositories;
+import com.sustentacion.luxyfashion.repositories.UsuarioRepositories;
 import com.sustentacion.luxyfashion.services.EmpleService;
+import com.sustentacion.luxyfashion.services.RolService;
+import jakarta.transaction.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
 @Service
+@Transactional
 public class EmpleServiceImpl implements EmpleService {
-private final EmpleRepositories empleRepositories;
 
-public EmpleServiceImpl (EmpleRepositories empleRepositories){
-    this.empleRepositories = empleRepositories;
-}
+    private final EmpleRepositories empleRepositories;
+    private final UsuarioRepositories usuarioRepositories;
+    private final PasswordEncoder passwordEncoder;
+    private final RolService rolService;
 
+    public EmpleServiceImpl(EmpleRepositories empleRepositories,
+                            UsuarioRepositories usuarioRepositories,
+                            PasswordEncoder passwordEncoder,
+                            RolService rolService) {
+        this.empleRepositories = empleRepositories;
+        this.usuarioRepositories = usuarioRepositories;
+        this.passwordEncoder = passwordEncoder;
+        this.rolService = rolService;
+    }
+
+    @Override
+    public Empleado guardar(Empleado empleado) {
+        if (empleRepositories.existsByUsuario(empleado.getUsuario()))
+            throw new IllegalArgumentException("Usuario ya en uso");
+
+        if (empleRepositories.existsByCorreo(empleado.getCorreo()))
+            throw new IllegalArgumentException("Correo ya registrado");
+
+        Rol rol = rolService.buscarPorNombre("Empleado").get(0);
+        empleado.setRol(rol);
+        empleado.setContraseña(passwordEncoder.encode(empleado.getContraseña()));
+        Empleado empleadoGuardado = empleRepositories.save(empleado);
+
+        Usuario usuario = new Usuario();
+        usuario.setUsername(empleado.getUsuario());
+        usuario.setContraseña(empleado.getContraseña());
+        usuario.setRol("EMPLEADO");
+        usuario.setEmpleado(empleadoGuardado);
+        usuarioRepositories.save(usuario);
+
+        return empleadoGuardado;
+    }
 @Override
 public List<Empleado> listar(){
     return empleRepositories.findAll();
 }
 @Override
     public List<Empleado> listarEmpleadosOrdenados(){
-
     return empleRepositories.findAllByOrderByNomEmpleAsc();
-    }
-
-    @Override
-    public Empleado guardar(Empleado empleado){
-    return empleRepositories.save(empleado);
     }
 
     @Override

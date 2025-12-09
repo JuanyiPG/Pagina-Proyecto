@@ -378,7 +378,7 @@ footer p {
       flex-direction: column;
     }
 
-    .list_sidebar{
+    .list_sidebar_a{
       list-style: none;
       padding: 0;
       margin: 0;
@@ -426,7 +426,7 @@ footer p {
 
     .sidebar_icon_avatar {
       width: 30px;
-      height: 30px;
+      height: 3 0px;
       object-fit: cover;
       object-position: center;
     }
@@ -584,15 +584,6 @@ li a {
       font-size: 14px;
     }
 
-    form .form-group select {
-          flex: 1;
-          padding: 12px;
-          border-radius: 8px;
-          border: 1px solid #ddd;
-          outline: none;
-          font-size: 14px;
-        }
-
     form .form-group input:focus {
       border-color: rgb(104, 10, 41);
     }
@@ -643,7 +634,7 @@ li a {
       font-size: 14px;
     }
 
-.btn-accion {
+    .btn-accion {
       padding: 6px 12px;
       border: none;
       border-radius: 5px;
@@ -653,19 +644,6 @@ li a {
       background-color: #5e0925;
       margin: 2px;
       text-decoration: none;
-    }
-
-    a.btn-eliminar {
-    display: inline-block;
-          padding: 6px 12px;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          font-size: 13px;
-          color: #fff;
-          background-color: #5e0925;
-          margin: 2px;
-          text-decoration: none;
     }
 
     .btn {

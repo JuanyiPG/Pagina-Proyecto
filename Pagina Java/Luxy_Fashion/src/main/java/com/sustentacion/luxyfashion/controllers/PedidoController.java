@@ -1,13 +1,99 @@
 package com.sustentacion.luxyfashion.controllers;
 
+import com.sustentacion.luxyfashion.models.Pedido;
+import com.sustentacion.luxyfashion.models.Cliente;
+import com.sustentacion.luxyfashion.services.ClienteService;
+import com.sustentacion.luxyfashion.services.PedidoService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
-public class PedidoController {
-    @GetMapping("/Pedido")
-    public String pedido() {
+@RequestMapping("/pedido")
+public class  PedidoController {
 
-        return "";
+    private final PedidoService pedidoService;
+    private final ClienteService clienteService;
+
+    public PedidoController(PedidoService pedidoService, ClienteService clienteService) {
+        this.pedidoService = pedidoService;
+        this.clienteService = clienteService;
+    }
+
+    // ============================
+    // LISTAR ORDENADOS (A-Z)
+    // ============================
+    @GetMapping()
+    public String listarOrdenados(Model model) {
+        List<Pedido> pedidos = pedidoService.findAllByOrderAsc();
+        model.addAttribute("pedidos", pedidos);
+        model.addAttribute("pedido", new Pedido());
+        model.addAttribute("clientes", clienteService.listar());
+        return "pedido/pedido_index";
+    }
+
+    // ============================
+    // MOSTRAR FORMULARIO NUEVO
+    // ============================
+    @GetMapping("/nuevo")
+    public String nuevo(Model model) {
+        model.addAttribute("pedido", new Pedido());
+        model.addAttribute("clientes", clienteService.listar());
+        return "pedido/pedido_index";
+    }
+
+    // ============================
+    // GUARDAR PEDIDO
+    // ============================
+    @PostMapping("/guardar")
+    public String guardar(Pedido pedido) {
+
+        // Obtener cliente correctamente
+        Cliente clienteSeleccionado = clienteService.BuscarPorId(
+                pedido.getCliente().getId_clien()
+        );
+        pedido.setCliente(clienteSeleccionado);
+
+        pedidoService.guardar(pedido);
+        return "redirect:/pedido?success=true";
+    }
+
+    // ============================
+    // EDITAR PEDIDO
+    // ============================
+    @GetMapping("/editar/{id}")
+    public String editar(@PathVariable Integer id, Model model) {
+        Pedido pedido = pedidoService.buscarPorId(id);
+
+        if (pedido == null) {
+            return "redirect:/pedido?error=not_found";
+        }
+
+        model.addAttribute("pedido", pedido);
+        model.addAttribute("clientes", clienteService.listar());
+        return "pedido/editar_pedido";
+    }
+
+    // ============================
+    // BUSCAR EN TODOS LOS CAMPOS
+    // ============================
+    @GetMapping("/buscar")
+    public String buscar(@RequestParam(name = "buscar", required = false) String filtro,
+                         Model model) {
+
+        List<Pedido> pedidos;
+
+        if (filtro == null || filtro.trim().isEmpty()) {
+            pedidos = pedidoService.listar();
+        } else {
+            pedidos = pedidoService.buscarvarioscampos(filtro);
+        }
+
+        model.addAttribute("pedidos", pedidos);
+        model.addAttribute("pedido", new Pedido());
+        model.addAttribute("clientes", clienteService.listar());
+        return "pedido/pedido_index";
     }
 }

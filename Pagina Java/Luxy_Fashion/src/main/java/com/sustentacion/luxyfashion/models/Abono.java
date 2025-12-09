@@ -20,8 +20,9 @@ public class Abono {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_abono;
+    @Column(name = "fecha_abono")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date fecha_abono;
+    private Date fechaAbono;
     private BigDecimal monto_abono;
     private String metodo_pago;
     private String descripcion;

@@ -30,13 +30,13 @@ public class EmpleController {
         model.addAttribute("empleado", new Empleado());
         model.addAttribute("roles", rolService.listar());
 
-        return "empleado/emple_index";
+        return "admin/empleado/emple_index";
     }
 
-    @GetMapping("/nuevo")
+    @GetMapping("/nuevo") //mostrar el formulario vacio
     public String nuevo(Model model){
         model.addAttribute("empleado", new Empleado());
-        return "empleado/emple_index";
+        return "admin/empleado/emple_index";
     }
 
     @PostMapping("/guardar")
@@ -45,7 +45,7 @@ public class EmpleController {
         Rol rolSeleccionado = rolService.buscarPorId(empleado.getRol().getId_rol());
         empleado.setRol(rolSeleccionado);
         empleService.guardar(empleado);
-        return "redirect:/empleado?success=true";
+        return "redirect:empleado?success=true";
     }
 
     @GetMapping("/editar/{id}")
@@ -55,7 +55,7 @@ public class EmpleController {
             return "redirect:/empleado?error=not_found";
         }
         model.addAttribute("empleado", empleado);
-        return "empleado/editar_emple";
+        return "admin/empleado/editar_emple";
     }
 
     @GetMapping("/buscar")
@@ -71,9 +71,14 @@ public class EmpleController {
         }
         model.addAttribute("empleado", new Empleado());
         model.addAttribute("roles", rolService.listar());
-        return "empleado/emple_index";
+        return "admin/empleado/emple_index";
     }
 
+        @GetMapping("/eliminar/{id}")
+        public String eliminar(@PathVariable Integer id) {
+            empleService.eliminar(id);
+            return "redirect:/empleado?error=not_found";
+        }
 
 
-}
+    }
