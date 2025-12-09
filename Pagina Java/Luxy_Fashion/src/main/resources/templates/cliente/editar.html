@@ -1,0 +1,53 @@
+<?php
+require_once "../CONFIG.php";
+
+$obj = new CONECTAR();
+$conexion = $obj->conexion();
+
+$id = $_GET['id_cliente'];
+$sql = "SELECT id_cliente,nom_cliente,direccion_cliente,telefono_cliente,correo_cliente,nombre_usuari,contra,id_rol_fk_cliente
+FROM Cliente
+WHERE id_cliente ='$id'";
+$resultado = mysqli_query($conexion,$sql);
+$data = mysqli_fetch_assoc($resultado);
+
+?>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar producto terminado</title>
+    <link rel="stylesheet" href="../../CSS/index.css">
+    <img src="" height="50PX">
+</head>
+<body>
+<div class="container-1">
+    <div class="formulario-1">
+        <form action="ACTUALIZAR_CLIENTE.php" method="post">
+            <h1>Actualizar producto terminado</h1>
+            <input type="hidden" name="id_cliente" value="<?php echo $data['id_cliente']; ?>">
+            <label for="nom_cliente">Nombre: </label>
+            <input type="text" name="nom_cliente" value="<?php echo $data['nom_cliente']; ?>" required>
+            <label for="direccion_cliente">Direccion: </label>
+            <input type="text" name="direccion_cliente" value="<?php echo $data['direccion_cliente']; ?>" required>
+            <label for="telefono_cliente">Telefono: </label>
+            <input type="text" name="telefono_cliente" value="<?php echo $data['telefono_cliente']; ?>" required>
+            <label for="correo_cliente">Unidad de medida:</label>
+            <input type="text" name="correo_cliente" value="<?php echo $data['correo_cliente']; ?>" required>
+            <label for="nombre_usuari">Nombre de usuario:</label>
+            <input type="text" name="nombre_usuari" value="<?php echo $data['nombre_usuari']; ?>" required>
+            <label for="contra">Contraseña:</label>
+            <input type="text" name="contra" value="<?php echo $data['contra']; ?>" required>
+            <label for="id_rol_fk_cliente">numero de produccion:</label>
+            <input type="text" name="id_rol_fk_cliente" value="<?php echo $data['id_rol_fk_cliente']; ?>" required>
+
+            <button type="submit">Actualizar</button>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>
+
+

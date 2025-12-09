@@ -1,0 +1,65 @@
+<?php
+require_once "../CONFIG.PHP";
+
+$obj = new CONECTAR();
+$conexion = $obj->conexion();
+
+$id = $_GET['id_pedido'];
+$sql = "SELECT id_pedido,nom_p_edido,talla_p_pedido,color_p_pedido,categoria_p_pedido,material_p_pedido,cant_producto,descripcion_p_pedido,fecha_pedido,sub_total_pedido,valor_pedido,estado_pedido,id_cliente_fk_pedido
+FROM Pedido
+WHERE id_pedido ='$id'";
+$resultado = mysqli_query($conexion,$sql);
+$data = mysqli_fetch_assoc($resultado);
+
+?>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Pedido</title>
+    <link rel="stylesheet" href="../../CSS/index.css">
+    <img src="" height="50PX">
+
+</head>
+<body>
+<div class="container-1">
+    <div class="formulario-1">
+        <form action="ACTUALIZAR_PEDIDO.php" method="post">
+            <h1>Actualizar pedido</h1>
+            <input type="hidden" name="id_pedido" value="<?php echo $data['id_pedido']; ?>">
+            <label for="nom_p_edido">nombre: </label>
+            <input type="text" name="nom_p_edido" value="<?php echo $data['nom_p_edido']; ?>" required>
+            <label for="talla_p_pedido">talla: </label>
+            <input type="text" name="talla_p_pedido" value="<?php echo $data['talla_p_pedido']; ?>" required>
+            <label for="color_p_pedido">Color: </label>
+            <input type="text" name="color_p_pedido" value="<?php echo $data['color_p_pedido']; ?>" required>
+            <label for="categoria_p_pedido">Categoria: </label>
+            <input type="text" name="categoria_p_pedido" value="<?php echo $data['categoria_p_pedido']; ?>" required>
+            <label for="material_p_pedido">Material:</label>
+            <input type="text" name="material_p_pedido" value="<?php echo $data['material_p_pedido']; ?>" required>
+            <label for="cant_producto">Cantidad:</label>
+            <input type="text" name="cant_producto" value="<?php echo $data['cant_producto']; ?>" required>
+            <label for="descripcion_p_pedido">Descripcion:</label>
+            <input type="text" name="descripcion_p_pedido" value="<?php echo $data['descripcion_p_pedido']; ?>" required>
+            <label for="fecha_pedido">Fecha:</label>
+            <input type="date" name="fecha_pedido" value="<?php echo $data['fecha_pedido']; ?>" required>
+            <label for="sub_total_pedido">sub total:</label>
+            <input type="text" name="sub_total_pedido" value="<?php echo $data['sub_total_pedido']; ?>" required>
+            <label for="valor_pedido">valor:</label>
+            <input type="text" name="valor_pedido" value="<?php echo $data['valor_pedido']; ?>" required>
+            <label for="estado_pedido">valor:</label>
+            <input type="text" name="estado_pedido" value="<?php echo $data['estado_pedido']; ?>" required>
+            <label for="id_cliente_fk_pedido">identificador de el cliente que realizo el pedido:</label>
+            <input type="text" name="id_cliente_fk_pedido" value="<?php echo $data['id_cliente_fk_pedido']; ?>" required>
+
+
+            <button type="submit">Actualizar</button>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>
+
+

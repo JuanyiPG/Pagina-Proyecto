@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:Correo="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar empleado</title>
+    <link rel="stylesheet" href="../../CSS/index.css">
+    <img src="../IMG/logoB.png" height="100PX" style = "margin-left: 48%;">
+</head>
+<body>
+<div class="container-1">
+    <div class="formulario-1">
+        <form th:action="@{/detfactcompra/guardar}" method="post" th:object="${detFactCompraList}">
+            <h1>Actualizar Detalle Factura Compra</h1>
+            <input type="hidden" name="id_emple" th:field="*{id_det_fcm}">
+            <label for="nom_empleado">Cantidad: </label>
+            <input type="text" id="nom_empleado" name="nomEmple" th:field="*{cant}" >
+            <label for="direccion_empleado">Descripcion: </label>
+            <input type="text" id="direccion_empleado" name="dir_emple" th:field="*{desc_det}"  >
+            <label for="tipo_sangre">Factura Compra: </label>
+            <input type="text" id="tipo_sangre" name="rh_emple" th:field="*{facturaCompra.id_factuc}" >
+            <label>Materia Prima:</label>
+            <input type="text" name="tel_emple"  th:field="*{materiaPrima.id_matp}" >
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button type="submit">Actualizar</button>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>
