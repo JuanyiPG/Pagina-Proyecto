@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+
 public interface EmpleService {
     List<Empleado> listarEmpleadosOrdenados();
     Empleado guardar(Empleado empleado);

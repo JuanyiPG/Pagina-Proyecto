@@ -10,7 +10,8 @@
     <link rel="stylesheet" th:href="@{/css/estilos.css}">
 </head>
 <body>
-<header id="header"></header>
+<div th:replace="~{itemss/header :: miHeader}"></div>
+
 <!--Vista previa -->
 <main>
     <section class="p-p">
@@ -89,7 +90,7 @@
        document.getElementById("footer").innerHTML = data;
      });
 
-   fetch("/items/header.html")
+   fetch("/itemss/header.html")
      .then(res => res.text())
      .then(data => {
        document.getElementById("header").innerHTML = data;
@@ -108,6 +109,10 @@
      });
 </script>
 <a th:href="@{/roles}">Volver</a>
-<a th:href="@{/empleado}">Volver</a>
+Volver</a>
+<a th:href="@{/abono}">Abono</a>
+<a th:href="@{/pedido}">Pedido</a>
+<a th:href="@{/empleado}">Empleado</a>
+
 </body>
 </html>

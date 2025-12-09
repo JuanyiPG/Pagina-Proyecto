@@ -28,13 +28,13 @@ import java.util.List;
         public String index(Model model){ //model sirve para enviar los datos al html
             model.addAttribute("rol", new Rol()); // ← ESTO HACE FALTA
             model.addAttribute("roles", rolService.listar()); // si tienes tabla
-            return "roles/ROL_INDEX";
+            return "admin/roles/ROL_INDEX";
         }
 
         @GetMapping("/nuevo")
         public String nuevo(Model model) {
             model.addAttribute("rol", new Rol());
-            return "roles/ROL_INDEX";
+            return "admin/roles/ROL_INDEX";
         }
 
         //responder petidiones post, para formularios o crear registros
@@ -51,7 +51,7 @@ import java.util.List;
                  return "refirect:/rol?error=not_found";
              }
             model.addAttribute("rol", rol);
-            return "roles/EDITAR_ROL"; //<- aqui se direcciona a que html va
+            return "admin/roles/EDITAR_ROL"; //<- aqui se direcciona a que html va
         }
 /*Diferencia simple entre ambos
         @PathVariable	parte de la URL	/editar/10
@@ -73,7 +73,7 @@ import java.util.List;
             }
             model.addAttribute("roles", roles);
             model.addAttribute("rol", new Rol());
-            return "roles/ROL_INDEX";
+            return "admin/roles/ROL_INDEX";
         }
 
 
@@ -81,7 +81,7 @@ import java.util.List;
         @GetMapping("/eliminar/{id}")
         public String eliminar(@PathVariable Integer id) {
             rolService.eliminar(id);
-            return "redirect:/roles";
+            return "redirect:/roles?error=not_found";
         }
 
        //Controla las URLs y conecta la vista con el servicio

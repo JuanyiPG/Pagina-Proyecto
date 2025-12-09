@@ -15,7 +15,8 @@ public class DetMateriaPrima {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_det_pm;
-    private String desc_det;
+    @Column(name = "desc_det")
+    private String descrDet;
 
     @ManyToOne
     @JoinColumn(name = "id_matp_fk", referencedColumnName = "id_matp")

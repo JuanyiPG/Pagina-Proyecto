@@ -5,8 +5,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class HomeController {
-    @GetMapping ("/index")
-    public String MostrarForm(){
-        return "index";
+    @GetMapping("/")
+    public String home() {
+        return "index"; // plantilla en templates
+    }
+    @GetMapping("/admin")
+    public String admin(){
+        return "admin/indexadmin";
     }
 }

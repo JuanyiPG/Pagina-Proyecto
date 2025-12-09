@@ -17,7 +17,8 @@ public class DetFactProducto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_det;
-    private String desc_det;
+    @Column(name="desc_det")
+    private String descrDet;
 
     @ManyToOne
     @JoinColumn(name = "id_factuv_fk", referencedColumnName = "id_factuv")

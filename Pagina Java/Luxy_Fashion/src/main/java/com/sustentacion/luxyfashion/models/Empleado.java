@@ -20,20 +20,26 @@ import java.util.Date;
 @Table(name = "Empleado")
 public class Empleado {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //Genera el ID automaticamente
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_emple;
+
     @Column(name = "nom_emple")
     private String nomEmple;
     private String tel_emple;
-    private String correo_emple;
+    @Column(name = "correo_emple")
+    private String correo;
     private String dir_emple;
     private String rh_emple;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fecha_naci_emple;
+
     private String tipo_identificacion;
-    private String  num_indetificacion;
+    private String num_indetificacion;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fecha_ing_emple;
+
     private BigDecimal salari_emple;
     private String estado_emple;
     private String usuario;
@@ -41,8 +47,7 @@ public class Empleado {
 
     @ManyToOne
     @JoinColumn(name = "id_rol_fk_emple")
-    private Rol rol;  //Mapear una clase
-
-
+    private Rol rol;
 
 }
+

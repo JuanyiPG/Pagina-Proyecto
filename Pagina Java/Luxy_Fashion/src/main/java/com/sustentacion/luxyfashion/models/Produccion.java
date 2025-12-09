@@ -21,7 +21,7 @@ public class Produccion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_producc;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date fecha_ini_producc;
+    private Date fechaIniProducc;
     private BigDecimal cant_producc;
     private BigDecimal costo_mano_obra_producc;
     private BigDecimal costo_mat_producc;

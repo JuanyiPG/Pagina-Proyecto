@@ -21,7 +21,7 @@ public class FacturaVenta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_factuv;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date fecha_factuv;
+    private Date fechafactuv;
     private BigDecimal subtotal_factuv;
     private BigDecimal iva_factuv;
     private BigDecimal total_factuv;

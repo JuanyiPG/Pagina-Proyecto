@@ -2,7 +2,7 @@
   // ---------------- cargar header ----------------
   async function loadHeader() {
     try {
-      const res = await fetch('Items/header-cliente.html');
+      const res = await fetch('../Items/header-indexcliente.php');
       if (!res.ok) throw new Error('No se pudo cargar header: ' + res.status);
       const html = await res.text();
       const container = document.getElementById('header-cliente');
