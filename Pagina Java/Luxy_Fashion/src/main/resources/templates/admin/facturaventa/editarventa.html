@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:Correo="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar empleado</title>
+    <link rel="stylesheet" href="../../CSS/index.css">
+    <img src="../IMG/logoB.png" height="100PX" style = "margin-left: 48%;">
+</head>
+<body>
+<div class="container-1">
+    <div class="formulario-1">
+        <form th:action="@{/facturacompra/guardar}" method="post" th:object="${facturacompra}">
+            <h1>Actualizar Factura Compra</h1>
+            <input type="hidden" name="id_emple" th:field="*{id_factuc}">
+            <label for="nom_empleado">Fecha: </label>
+            <input type="date" id="nom_empleado" name="nomEmple" th:field="*{fechafactuc}" >
+            <label for="direccion_empleado">Total: </label>
+            <input type="text" id="direccion_empleado" name="dir_emple" th:field="*{total}"  >
+            <label for="tipo_sangre">Metodo Pago: </label>
+            <input type="text" id="tipo_sangre" name="rh_emple" th:field="*{ metodo_pago}" >
+            <label for="tipo_sangre">Estado: </label>
+            <input type="text" id="estado" name="rh_emple" th:field="*{estado}" >
+            <label>Nombre Empleado:</label>
+            <input type="text" name="tel_emple"  th:field="*{empleado.nomEmple}" >
+            <button type="submit">Actualizar</button>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>
