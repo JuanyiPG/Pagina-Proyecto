@@ -1,58 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html><!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" type="text/css" href="../css/index.css">
-    <title>Gestión de Empleados</title>
-    <link rel="stylesheet" th:href="@{../CSS/index.css}">
-</head>
-<!-- Header admin -->
+    <title>Fctura Venta</title>
+    <link rel="stylesheet" href="../../CSS/index.css">
+
+    <!-- Header admin -->
 <div th:replace="~{itemss/headeradmin :: miHeader}"></div>
-<table xmlns:th="http://www.w3.org/1999/xhtml">
+<table>
     <thead>
     <tr>
-        <th>Id</th>
+        <th>Código</th>
         <th>Fecha</th>
+        <th>Sub total</th>
+        <th>IVA</th>
         <th>Total</th>
-        <th>Metodo Pago</th>
-        <th>Estado</th>
-        <th>Nombre Empleado</th>
+        <th>metodo de pago</th>
+        <th>Descuento</th>
+        <th>estado</th>
+        <th>Numero de empleado que a registro</th>
         <th>Acciones</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="r : ${facturaVenta}">
-        <td th:text="${r.id_factuc}"></td>
-        <td th:text="${r.fechafactuc}"></td>
-        <td th:text="${r.total}"></td>
-        <td th:text="${r.metodo_pago}"></td>
-        <td th:text="${r. estado}"></td>
-        <td th:text="${r.empleado.nomEmple}"></td>
-
-        <td>
-            <a class="btn-accion" th:href="@{'/facturaventa/editar/' + ${r.id_emple}}">Actualizar</a>
-            <a class="btn-eliminar" th:href="@{'/facturaventa/eliminar/' + ${r.id_emple}}" style="margin-top: 10px">Eliminar</a>
-        </td>
+    <tr th:each="r : ${facturas}">
+    <td th:text="${r.id_factuv}"></td>
+        <td th:text="${r.fechafactuv}"></td>
+    <td th:text="${r.subtotal_factuv}"></td>
+        <td th:text="${r.iva_factuv}"></td>
+        <td th:text="${r.total_factuv}"></td>
+    <td th:text=" ${r.metodo_pago}"></td>
+        <td th:text="${r.descu_factuv}"></td>
+        <td th:text="${r.estado_factuv}"></td>
+    <td th:text=" ${r.empleado.id_empl}"></td>
+        <td th:text="${r.cliente.id_clien}"></td>
+        <td th:text="${r.pedido.id_pedido}"></td>
     </tr>
-    <tr th:if="${facturaventa!= null and #lists.isEmpty(facturaventa)}">
-        <td colspan="15">No se encontraron resultados</td>
+        <td>
+            <a class="btn-accion"  th:href="@{'/admin/facturas/editar/' + ${r.facturaVenta}}">Actualizar</a>
+            <a class="btn-accion"  th:href="@{'/admin/facturas/eliminar/' + ${r.facturaVenta}}">Eliminar</a>
+        </td>
+    </td>
+    <tr th:if="${#lists.isEmpty(roles)}">
+        <td colspan="3">No se encontraron resultados</td>
     </tr>
     </tbody>
 </table>
-</div>
+</head>
 
 <!---------JAVA SCRIPT----->
+<script src="/js/confirmacion.js"></script>
+<script src="/js/eliminar.js"></script>
+<!----------CALCULO-------------->
+<script>
+    const subTotal = document.getElementById("SubTotal");
+    const iva = document.getElementById("Iva");
+    const total = document.getElementById("Total");
+
+    function calcularTotal() {
+    const sub = parseFloat(subTotal.value) || 0;
+    const ivaPct = parseFloat(iva.value) || 0;
+
+    const tot = sub + (sub * ivaPct / 100);
+
+    total.value = tot.toFixed(2); // 2 decimales
+    }
+
+
+    subTotal.addEventListener("input", calcularTotal);
+    iva.addEventListener("input", calcularTotal);
+</script>
 <!------HEADER----------------->
 <script>
     document.addEventListener("DOMContentLoaded", function() {

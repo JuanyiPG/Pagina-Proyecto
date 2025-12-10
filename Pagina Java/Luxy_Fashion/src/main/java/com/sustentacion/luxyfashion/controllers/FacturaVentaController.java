@@ -31,36 +31,22 @@ public class FacturaVentaController {
         this.pedidoService = pedidoService;
     }
 
+    // =====================
+    // LISTAR FACTURAS
+    // =====================
     @GetMapping()
     public String listar(Model model, @RequestParam(required = false) String filtro) {
-
-        List<FacturaVenta> lista;
+        List<FacturaVenta> facturas;
 
         if (filtro != null && !filtro.isEmpty()) {
-            lista = facturaVentaService.buscarvarioscampos(filtro);
+            facturas = facturaVentaService.buscarvarioscampos(filtro);
         } else {
-            lista = facturaVentaService.listar();
+            facturas = facturaVentaService.listar();
         }
 
-        model.addAttribute("facturas", lista);
+        model.addAttribute("facturas", facturas);
         model.addAttribute("filtro", filtro);
-
-        return "admin/facturaventa/listventa"; // Ajusta según tu HTML
-    }
-
-    // ===========================
-    // FORMULARIO CREAR / EDITAR
-    // ===========================
-    @GetMapping("/form")
-    public String mostrarFormulario(@RequestParam(required = false) Integer id, Model model) {
-
-        FacturaVenta factura = (id != null)
-                ? facturaVentaService.buscarPorId(id)
-                : new FacturaVenta();
-
-        model.addAttribute("facturaVenta", factura);
-
-        // Selects
+        model.addAttribute("facturaVenta", new FacturaVenta());
         model.addAttribute("empleados", empleadoService.listar());
         model.addAttribute("clientes", clienteService.listar());
         model.addAttribute("pedidos", pedidoService.listar());
@@ -68,34 +54,64 @@ public class FacturaVentaController {
         return "admin/facturaventa/listventa";
     }
 
-    // GUARDAR
+    // =====================
+    // NUEVA / EDITAR FACTURA
+    // =====================
+    @GetMapping("/form")
+    public String mostrarFormulario(@RequestParam(required = false) Integer id, Model model) {
+        FacturaVenta factura = (id != null)
+                ? facturaVentaService.buscarPorId(id)
+                : new FacturaVenta();
+
+        model.addAttribute("facturaVenta", factura);
+        model.addAttribute("empleados", empleadoService.listar());
+        model.addAttribute("clientes", clienteService.listar());
+        model.addAttribute("pedidos", pedidoService.listar());
+
+        return "admin/facturaventa/form_venta"; // Vista específica para el formulario
+    }
 
     @PostMapping("/guardar")
     public String guardar(@ModelAttribute FacturaVenta facturaVenta) {
         facturaVentaService.guardar(facturaVenta);
-        return "redirect:/admin/facturaventa/editarventa";
+        return "redirect:/admin/facturaventa?success=true";
     }
 
-
-    // ELIMINAR
-    @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id) {
-        facturaVentaService.eliminar(id);
-        return "redirect:/admin/facturaventa/listventa";
-    }
-
-    // EDITAR
+    // =====================
+    // EDITAR FACTURA
+    // =====================
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Integer id, Model model) {
         return mostrarFormulario(id, model);
     }
 
-    // BUSCAR
-    @GetMapping("/buscar")
-    public String buscar(@RequestParam String filtro, Model model) {
-        List<FacturaVenta> lista = facturaVentaService.buscarvarioscampos(filtro);
+    // =====================
+    // ELIMINAR FACTURA
+    // =====================
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Integer id) {
+        facturaVentaService.eliminar(id);
+        return "redirect:/admin/facturaventa?deleted=true";
+    }
 
-        model.addAttribute("facturas", lista);
+    // =====================
+    // BUSCAR FACTURA
+    // =====================
+    @GetMapping("/buscar")
+    public String buscar(@RequestParam(name="buscar", required = false) String filtro, Model model) {
+        List<FacturaVenta> facturas;
+
+        if (filtro == null || filtro.isEmpty()) {
+            facturas = facturaVentaService.listar();
+        } else {
+            facturas = facturaVentaService.buscarvarioscampos(filtro);
+        }
+
+        model.addAttribute("facturas", facturas);
+        model.addAttribute("facturaVenta", new FacturaVenta());
+        model.addAttribute("empleados", empleadoService.listar());
+        model.addAttribute("clientes", clienteService.listar());
+        model.addAttribute("pedidos", pedidoService.listar());
         model.addAttribute("filtro", filtro);
 
         return "admin/facturaventa/listventa";

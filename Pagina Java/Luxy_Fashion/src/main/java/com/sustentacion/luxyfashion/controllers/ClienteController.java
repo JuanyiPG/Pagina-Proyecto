@@ -30,7 +30,6 @@ public class ClienteController {
     }
 
     @GetMapping("/index")
-
     public String clienteIndex(HttpSession session) {
         Usuario u = (Usuario) session.getAttribute("usuarioLogueado");
 

@@ -45,7 +45,7 @@ public class UsuarioController {
                     return "redirect:/admin/empleado/index"; // home empleado
 
                 case "CLIENTE":
-                    return "redirect:/admin/admin"; // home cliente
+                    return "redirect:/admin/cliente/index"; // home cliente
 
                 default:
                     model.addAttribute("error", "Rol no reconocido");
