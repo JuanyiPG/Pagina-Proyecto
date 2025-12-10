@@ -1,24 +1,10 @@
-<?php
-require_once "../CONFIG.PHP";
-
-$obj = new CONECTAR();
-$conexion = $obj->conexion();
-
-$id = $_GET['id_pedido'];
-$sql = "SELECT id_pedido,nom_p_edido,talla_p_pedido,color_p_pedido,categoria_p_pedido,material_p_pedido,cant_producto,descripcion_p_pedido,fecha_pedido,sub_total_pedido,valor_pedido,estado_pedido,id_cliente_fk_pedido
-FROM Pedido
-WHERE id_pedido ='$id'";
-$resultado = mysqli_query($conexion,$sql);
-$data = mysqli_fetch_assoc($resultado);
-
-?>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Editar Pedido</title>
-    <link rel="stylesheet" href="../../CSS/index.css">
+    <link rel="stylesheet" href="../../css/index.css">
     <img src="" height="50PX">
 
 </head>

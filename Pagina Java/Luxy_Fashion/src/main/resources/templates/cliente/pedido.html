@@ -1,106 +1,97 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../CSS/cliente.css">
-    <title>Document</title>
+    <link rel="stylesheet" th:href="@{../css/cliente.css}">
+    <title th:text="${pedido.nomPed}">Producto</title>
 </head>
+
 <body>
+
 <div class="prod-cli-header">
     <header id="header-cliente"></header>
 </div>
+
 <div class="con-pro-cli">
+
+    <!-- IMÁGENES MINIATURA -->
     <div class="imgs-of-produc">
-        <img id="img1" src="../IMG/blusa-hombro-rojo.jpg" class="imgs-of-produc" alt="hji">
-        <img id="img2" src="../IMG/blusa-hombro-rojo.jpg" class="imgs-of-produc" alt="s">
-        <img id="img3" src="../IMG/blusa-hombro-rojo.jpg" class="imgs-of-produc" alt="si">
+        <img th:src="@{/IMG/blusa-hombro-rojo.jpg}" class="imgs-of-produc">
+        <img th:src="@{/IMG/blusa-hombro-rojo.jpg}" class="imgs-of-produc">
+        <img th:src="@{/IMG/blusa-hombro-rojo.jpg}" class="imgs-of-produc">
     </div>
+
+    <!-- IMAGEN PRINCIPAL -->
     <div class="img-prin-pro">
-        <img id="imgprin" src="../IMG/blusa-hombro-rojo.jpg" class="img" alt="Producto">
+        <img th:src="@{/IMG/blusa-hombro-rojo.jpg}" class="img" alt="Producto">
     </div>
+
+    <!-- FORMULARIO -->
     <div class="form-pro">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
-            <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-        </svg>
-        <form action="insertar_cliente.php" method="post">
-            <pre class="readonly"><input type="text" class="nombre" name="nomPedido" value="BLUSA HOMBRO DESCUBIERTO" readonly style="font-size: 25px; width: 70%; font-family:Georgia, 'Times New Roman', Times, serif;"></pre>
+
+        <form th:action="@{/pedido/guardar}" th:object="${pedido}" method="post">
+
+            <!-- Nombre -->
+            <label>Nombre:</label>
+            <input type="text" th:field="*{nomPed}" readonly class="nombre">
+
+            <!-- Material -->
+            <label>Material:</label>
+            <input type="text" th:field="*{material_ped}" readonly>
+
+            <!-- Valor -->
+            <label>Valor:</label>
+            <input type="text" th:field="*{valor_ped}" readonly>
+
+            <!-- TALLAS -->
+            <label>Talla:</label>
             <div>
-                <!--Material-->
-                <label for="categoria" class="subinfo" style="font-family: Georgia, 'Times New Roman', Times, serif;">Material:</label>
-                <pre class="readonly"><input type="text" class="categoria" name="material" value="Algodon" readonly style="margin: 6px ; font-family: Georgia, 'Times New Roman', Times, serif;"></pre>
+                <label><input type="radio" th:field="*{talla_ped}" value="S"> S</label>
+                <label><input type="radio" th:field="*{talla_ped}" value="M"> M</label>
+                <label><input type="radio" th:field="*{talla_ped}" value="L"> L</label>
+                <label><input type="radio" th:field="*{talla_ped}" value="XL"> XL</label>
+                <label><input type="radio" th:field="*{talla_ped}" value="XXL"> XXL</label>
             </div>
-            <br>
-            <!--el valor-->
-            <label for="valor" class="subinfo" style="font-family: Georgia, 'Times New Roman', Times, serif;">Valor:</label>
-            <pre class="readonly">$<input type="text" id="valor" class="valor" name="valor" value="45.000" readonly style="font-family: Georgia, 'Times New Roman', Times, serif;"></pre>
-            <br>
-            <!--Tala-->
-            <label for="talla" class="sec-for-pro subinfo" style="font-family: Georgia, 'Times New Roman', Times, serif;">Talla:</label>
 
-            <input type="radio" id="talla" name="talla" id="talla-s" value="S">
-            <label for="talla-s" class="btn-talla">S</label>
+            <!-- COLORES -->
+            <label>Color:</label>
+            <div class="color-picker">
+                <label><input type="radio" th:field="*{color_ped}" value="Rojo"> Rojo</label>
+                <label><input type="radio" th:field="*{color_ped}" value="Gris"> Gris</label>
+                <label><input type="radio" th:field="*{color_ped}" value="Blanco"> Blanco</label>
+                <label><input type="radio" th:field="*{color_ped}" value="Negro"> Negro</label>
+            </div>
 
-            <input type="radio" name="talla" id="talla-m" value="M">
-            <label for="talla-m" class="btn-talla">M</label>
+            <!-- CATEGORÍA -->
+            <label>Categoría:</label>
+            <input type="text" th:field="*{categoria_ped}" readonly>
 
-            <input type="radio" name="talla" id="talla-l" value="L">
-            <label for="talla-l" class="btn-talla">L</label>
+            <!-- CANTIDAD -->
+            <label>Cantidad:</label>
+            <input type="number" th:field="*{cant_ped}">
 
-            <input type="radio" name="talla" id="talla-xl" value="XL">
-            <label for="talla-xl" class="btn-talla">XL</label>
+            <!-- DESCRIPCIÓN -->
+            <label>Descripción:</label>
+            <textarea th:field="*{desc_ped}" readonly></textarea>
 
-            <input type="radio" name="talla" id="talla-xxl" value="XXL">
-            <label for="talla-xxl" class="btn-talla">XXL</label>
+            <!-- CLIENTE -->
+            <label>Cliente:</label>
+            <select th:field="*{cliente.id_clien}">
+                <option th:each="c : ${clientes}"
+                        th:value="${c.id_clien}"
+                        th:text="${c.nomClien}">
+                </option>
+            </select>
+
             <br><br>
-            <div class="color-picker subinfo">
-                <!-- aqui esta  los colores -->
-                <p class="sec-for-pro" style="font-family: Georgia, 'Times New Roman', Times, serif;">Elige un color:</p>
 
-                <input type="radio" name="color" id="color-rojo" value="Rojo">
-                <label for="color-rojo" class="color-option rojo"></label>
-
-                <input type="radio" name="color" id="color-gris" value="gris">
-                <label for="color-gris" class="color-option gris"></label>
-
-                <input type="radio" name="color" id="color-blanco" value="Blanco">
-                <label for="color-blanco" class="color-option blanco"></label>
-
-                <input type="radio" name="color" id="color-negro" value="Negro">
-                <label for="color-negro" class="color-option negro"></label>
-            </div>
-            <div>
-                <!--categoria-->
-                <label for="categoria" class="subinfo">Categoria:</label>
-                <pre class="readonly"><input type="text" id="categoria" class="categoria "name="categoria" value="Blusa" readonly></pre>
-                <br><br>
-                <label for="cantidad" class="subinfo">Cantidad:</label>
-                <input type="text" name="cantidad" id="cantidad">
-            </div>
-
-            <br>
-            <button type="button" class="btn" id="add-car-shop">Comprar</button>
-            <br>
-            <div class="descripcion-container">
-                <div class="descripcion-header">
-                    <label for="descrip-produc" class="titulo-desc">Descripción</label>
-                    <span class="arrow-desc">▶</span>
-                </div>
-                <input type=""  readonly id="descrip-produc" name="descipcion" class="hidden" value="camisa de algodon ajustada al cuerpo">
-            </div>
+            <button type="submit" class="btn">Comprar</button>
         </form>
-        <br>
-
 
     </div>
 </div>
-<br>
-<hr>
-<br>
-<div>
-</div>
-<script src="/js/cliente.js">
 
-</script>
+<script th:src=@{"../js/cliente.js}"></script>
 </body>
 </html>

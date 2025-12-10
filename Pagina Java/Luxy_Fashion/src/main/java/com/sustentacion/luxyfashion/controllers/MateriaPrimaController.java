@@ -19,87 +19,72 @@ public class MateriaPrimaController {
         this.materiaPrimaService = materiaPrimaService;
     }
 
-    // ===========================
-    // LISTAR + FILTRO
-    // ===========================
-    @GetMapping("/empleado")
+    // ============================================
+    // LISTAR + FORMULARIO + BUSCAR
+    // ============================================
+    @GetMapping("")
     public String listar(Model model, @RequestParam(required = false) String filtro) {
 
-        List<MateriaPrima> lista;
-
-        if (filtro != null && !filtro.isEmpty()) {
-            lista = materiaPrimaService.buscarvarioscampos(filtro);
-        } else {
-            lista = materiaPrimaService.listar();
-        }
+        List<MateriaPrima> lista =
+                (filtro != null && !filtro.trim().isEmpty())
+                        ? materiaPrimaService.buscarvarioscampos(filtro)
+                        : materiaPrimaService.listar();
 
         model.addAttribute("materias", lista);
+        model.addAttribute("materiaprima", new MateriaPrima()); // formulario vacío
         model.addAttribute("filtro", filtro);
 
-        return "empleado/materiaprima-index"; // Cambia según tu HTML
+        return "admin/materiaprima/indexmatp";
     }
 
-    // ===========================
-    // FORM CREAR / EDITAR
-    // ===========================
-    @GetMapping("/form")
-    public String form(@RequestParam(required = false) Integer id, Model model) {
-
-        MateriaPrima mp = (id != null)
-                ? materiaPrimaService.listar().stream()
-                .filter(m -> m.getId_matp().equals(id))
-                .findFirst().orElse(new MateriaPrima())
-                : new MateriaPrima();
-
-        model.addAttribute("materiaprima", mp);
-
-        return "empleado/materiaprima-form";
-    }
-
-    // ===========================
-    // GUARDAR
-    // ===========================
-    @PostMapping("/guardar")
-    public String guardar(@ModelAttribute MateriaPrima materiaPrima) {
-        materiaPrimaService.guardar(materiaPrima);
-        return "redirect:/materiaprima/empleado";
-    }
-
-    // ===========================
-    // ELIMINAR
-    // ===========================
-    @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id) {
-        materiaPrimaService.eliminar(id);
-        return "redirect:/materiaprima/empleado";
-    }
-
-    // ===========================
-    // EDITAR
-    // ===========================
+    // ============================================
+    // EDITAR (CARGAR DATOS EN EL FORMULARIO)
+    // ============================================
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Integer id, Model model) {
+
+        // Como NO tienes findById, se busca manualmente en la lista
         MateriaPrima materia = materiaPrimaService.listar().stream()
                 .filter(mp -> mp.getId_matp().equals(id))
                 .findFirst()
-                .orElse(null);
+                .orElse(new MateriaPrima());
 
         model.addAttribute("materiaprima", materia);
+        model.addAttribute("materias", materiaPrimaService.listar());
 
-        return "empleado/materiaprima-form";
+        return "admin/materiaprima/indexmatp";
     }
 
-    // ===========================
+    // ============================================
+    // GUARDAR
+    // ============================================
+    @PostMapping("/guardar")
+    public String guardar(@ModelAttribute MateriaPrima materiaPrima) {
+        materiaPrimaService.guardar(materiaPrima);
+        return "redirect:/admin/materiaprima";
+    }
+
+    // ============================================
+    // ELIMINAR
+    // ============================================
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Integer id) {
+        materiaPrimaService.eliminar(id);
+        return "redirect:/admin/materiaprima";
+    }
+
+    // ============================================
     // BUSCAR
-    // ===========================
+    // ============================================
     @GetMapping("/buscar")
     public String buscar(@RequestParam String filtro, Model model) {
 
         List<MateriaPrima> lista = materiaPrimaService.buscarvarioscampos(filtro);
 
         model.addAttribute("materias", lista);
+        model.addAttribute("materiaprima", new MateriaPrima());
         model.addAttribute("filtro", filtro);
 
-        return "empleado/materiaprima-index";
+        return "admin/materiaprima/indexmatp";
     }
 }

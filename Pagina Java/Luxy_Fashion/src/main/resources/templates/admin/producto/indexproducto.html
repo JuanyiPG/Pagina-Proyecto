@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,6 +16,7 @@
     <div class="card">
         <h1>Gestión de Productos Terminados</h1>
 
+        <!-- FORMULARIO -->
         <form class="formulario-mensaje"
               th:action="@{/admin/producto/guardar}"
               method="post"
@@ -27,15 +28,15 @@
             </div>
 
             <div class="form-group">
-                <input type="text" placeholder="Descripción" th:field="*{descri_produc}">
+                <input type="text" placeholder="Descripción" th:field="*{desc_produc}">
             </div>
 
             <div class="form-group">
-                <input type="text" placeholder="Categoría" th:field="*{categ_produc}">
+                <input type="text" placeholder="Categoría" th:field="*{categoria_produc}">
             </div>
 
             <div class="form-group">
-                <input type="text" placeholder="Unidad medida" th:field="*{und_med_produc}">
+                <input type="text" placeholder="Unidad medida" th:field="*{unid_med_produc}">
                 <input type="text" placeholder="Estado" th:field="*{estado_produc}">
             </div>
 
@@ -44,7 +45,7 @@
                     <option value="">Seleccione producción</option>
                     <option th:each="p : ${producciones}"
                             th:value="${p.id_producc}"
-                            th:text="${p.id_producc + ' - ' + p.nom_produc}">
+                            th:text="${p.id_producc} + ' - ' + ${p.nom_produc}">
                     </option>
                 </select>
             </div>
@@ -53,6 +54,7 @@
         </form>
     </div>
 
+    <!-- BUSCADOR -->
     <div id="search" class="search">
         <form th:action="@{/admin/producto/buscar}" method="get">
             <input type="text" name="filtro" th:value="${filtro}"
@@ -61,6 +63,7 @@
         </form>
     </div>
 
+    <!-- TABLA -->
     <table>
         <thead>
         <tr>
@@ -86,10 +89,17 @@
             <td th:text="${p.produccion != null ? p.produccion.id_producc : 'Sin asignar'}"></td>
 
             <td>
-                <a class="btn-accion" th:href="@{'/admin/producto/editar/' + ${p.id_produc}}">Actualizar</a>
+                <!-- Rutas corregidas -->
+                <a class="btn-accion"
+                   th:href="@{/admin/producto/editar/{id}(id=${p.id_produc})}">
+                    Actualizar
+                </a>
+
                 <a class="btn-eliminar"
-                   th:href="@{'/admin/producto/eliminar/' + ${p.id_produc}}"
-                   onclick="return confirm('¿Deseas eliminar este producto?');">Eliminar</a>
+                   th:href="@{/admin/producto/eliminar/{id}(id=${p.id_produc})}"
+                   onclick="return confirm('¿Deseas eliminar este producto?');">
+                    Eliminar
+                </a>
             </td>
         </tr>
 
