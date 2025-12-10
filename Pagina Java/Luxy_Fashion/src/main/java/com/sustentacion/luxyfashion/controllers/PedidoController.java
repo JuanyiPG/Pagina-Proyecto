@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin/pedido")
+@RequestMapping("/pedido")
 public class  PedidoController {
 
     private final PedidoService pedidoService;
@@ -31,7 +31,7 @@ public class  PedidoController {
         model.addAttribute("pedidos", pedidos);
         model.addAttribute("pedido", new Pedido());
         model.addAttribute("clientes", clienteService.listar());
-        return "pedido/pedido_index";
+        return "/cliente/pedido";
     }
 
     // ============================
@@ -41,7 +41,7 @@ public class  PedidoController {
     public String nuevo(Model model) {
         model.addAttribute("pedido", new Pedido());
         model.addAttribute("clientes", clienteService.listar());
-        return "pedido/pedido_index";
+        return "/cliente/pedido";
     }
 
     // ============================

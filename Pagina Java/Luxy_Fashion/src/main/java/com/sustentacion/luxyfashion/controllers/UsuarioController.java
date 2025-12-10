@@ -20,7 +20,7 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    @GetMapping
+    @GetMapping()
     public String mostrarLogin() {
         return "login/loginRegistro"; // tu vista login.html
     }
