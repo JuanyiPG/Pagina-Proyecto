@@ -39,9 +39,7 @@ public class EmpleController {
 
     @GetMapping("/index")
     public String empleadoIndex(HttpSession session) {
-
         Usuario u = (Usuario) session.getAttribute("usuarioLogueado");
-
         if (u == null || !u.getRol().equals("EMPLEADO")) {
             return "redirect:/login"; // Si no es empleado o no está logueado
         }

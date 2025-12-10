@@ -1,29 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html<?php
-require_once "../CONFIG.php";
-require_once "CLASE_FACTURAV.PHP";
-
-$datos = [];
-$obj = new FACTURA_V();
-
-$search = (isset($_GET['search'])) ? $_GET['search'] : "";
-    $datos = $obj->CONSULTAR_FACTURA_V($search);
-        ?>
-
-        <?php
-require_once "../../Items/header-admin.html"
-?>
-
-        <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,36 +10,52 @@ require_once "../../Items/header-admin.html"
 <div class="main">
     <div class="card">
         <h1>Gestión de factura venta</h1>
-
-
-        <form action="INSERTAR_FACRURAV.PHP" method="post">
+        <form th:action="@{/admin/facturaventa/guardar}" method="post" th:object="${facturaVenta}">
             <div class="form-group">
-                <input type="text" name="cod_factura_v" placeholder="Código" required>
-                <input type="text" name="fecha_factura_v" = "text" placeholder="Fecha" required
+                <input type="text" name="fecha_factura_v" placeholder="Fecha" th:field="*{fechafactuv}" required
                 onfocus="this.type='date'" onblur="if(!this.value) this.type='text'">
             </div>
             <div class="form-group">
-                <input type="text" name="sub_total_factura_v" id="SubTotal" placeholder=" Sub total de la factura"required>
-                <input type="text" name="iva_factura_v" id = "Iva" placeholder="IVA"required>
+                <input type="text" name="sub_total_factura_v" id="SubTotal" placeholder=" Sub total de la factura" th:field="*{subtotal_factuv}" required>
+                <input type="text" name="iva_factura_v" id = "Iva" placeholder="IVA" th:field="*{iva_factuv}" required>
             </div>
             <div class="form-group">
-                <input type="text" name="total_factura_v" id= "Total" placeholder="Total"required readonly >
-                <input type="text" name="metodo_pago" placeholder="Metodo de pago"required>
+                <input type="text" name="total_factura_v" id= "Total" placeholder="Total" th:field="*{total_factuv}" required readonly >
+                <input type="text" name="metodo_pago" placeholder="Metodo de pago" th:field="*{metodo_pago}" required>
             </div>
             <div class="form-group">
-                <input type="text" name="descuento" placeholder="Descuento"required>
-                <input type="text" name="estado_factura_venta" placeholder="Estado"required>
+                <input type="text" name="descuento" placeholder="Descuento" th:field="*{descu_factuv}" required>
+                <input type="text" name="estado_factura_venta" placeholder="Estado" th:field="*{estado_factuv}" required>
             </div>
             <div class="form-group">
-                <input type="text" name="id_empleado_fk_factura" placeholder="id_empleado_fk_factura"required>
+                <label for="empleado">Empleado</label>
+                <select th:field="*{empleado.id_empl}" class="form-control" required>
+                    <option th:each="e : ${empleados}" th:value="${e.id_empl}" th:text="${e.nomEmple}">Empleado</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="cliente">Cliente</label>
+                <select th:field="*{cliente.id_clien}" class="form-control" required>
+                    <option th:each="c : ${clientes}" th:value="${c.id_clien}" th:text="${c.nomClien}">Cliente</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="pedido">Pedido</label>
+                <select th:field="*{pedido.id_pedido}" class="form-control" required>
+                    <option th:each="p : ${pedidos}" th:value="${p.id_pedido}" th:text="${p.descripcion}">Pedido</option>
+                </select>
+            </div>
+            <div id="mensaje" th:if="${param.success}" style="color:purple; font-weight:bold; margin-bottom:10px;">
+                ¡Se insertó correctamente!
             </div>
             <button type="submit" class="save-btn">Insertar</button>
         </form>
     </div>
 
     <div id="search" class="search">
-        <form action="" method="get">
-            <input type="text" name="search" placeholder="Escribe una palabara" id="searchInput">
+        <form th:action="@{/admin/facturaventabuscar}" method="get">
+            <input type="text" name="buscar" placeholder="Escribe una palabara" id="searchInput">
             <input type="submit" value="Buscar" id="btnSearch">
         </form>
     </div>
@@ -84,33 +76,33 @@ require_once "../../Items/header-admin.html"
         </tr>
         </thead>
         <tbody>
-        <?php if (!empty($datos)) { ?>
-        <?php foreach ($datos as $row) { ?>
-        <tr>
-            <td><?php echo $row['cod_factura_v']; ?></td>
-            <td><?php echo $row['fecha_factura_v']; ?></td>
-            <td><?php echo $row['sub_total_factura_v']; ?></td>
-            <td><?php echo $row['iva_factura_v']; ?></td>
-            <td><?php echo $row['total_factura_v']; ?></td>
-            <td><?php echo $row['metodo_pago']; ?></td>
-            <td><?php echo $row['descuento']; ?></td>
-            <td><?php echo $row['estado_factura_venta']; ?></td>
-            <td><?php echo $row['id_empleado_fk_factura']; ?></td>
+        <tr th:each="r : ${facturas}">
+            <td th:text="${r.id_factuv}"></td>
+            <td th:text="${r.fechafactuv}"></td>
+        <tr th:text="${r.subtotal_factuv}">
+            <td th:text="${r.iva_factuv}"></td>
+            <td th:text="${r.total_factuv}"></td>
+        <tr th:text=" ${r.metodo_pago}">
+            <td th:text="${r.descu_factuv}"></td>
+            <td th:text="${r.estado_factuv}"></td>
+        <tr th:text=" ${r.empleado.id_empl}">
+            <td th:text="${r.cliente.id_clien}"></td>
+            <td th:text="${r.pedido.id_pedido}"></td>
             <td>
-                <a class="btn-accion" href="EDITAR_FACTURAV.php?cod_factura_v=<?php echo $row['cod_factura_v']; ?>">Actualizar</a>
-                <a class="btn-accion" href="ELIMINAR_FACTURAV.php?cod_factura_v=<?php echo $row['cod_factura_v']; ?>"
-                   onclick="return confirm('¿Deseas eliminar este rol?');">Eliminar</a>
+                <a class="btn-accion"  th:href="@{'/admin/facturas/editar/' + ${r.facturaVenta}}">Actualizar</a>
+                <a class="btn-accion"  th:href="@{'/admin/facturas/eliminar/' + ${r.facturaVenta}}">Eliminar</a>
             </td>
         </tr>
-        <?php } ?>
-        <?php } else { ?>
-        <tr><td colspan="5">No se encontraron resultados</td></tr>
-        <?php } ?>
+        <tr th:if="${#lists.isEmpty(roles)}">
+            <td colspan="3">No se encontraron resultados</td>
+        </tr>
         </tbody>
     </table>
 </div>
 
 <!---------JAVA SCRIPT----->
+<script src="/js/confirmacion.js"></script>
+<script src="/js/eliminar.js"></script>
 <!----------CALCULO-------------->
 <script>
     const subTotal = document.getElementById("SubTotal");
