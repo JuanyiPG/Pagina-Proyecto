@@ -5,6 +5,8 @@ import com.sustentacion.luxyfashion.models.Usuario;
 import com.sustentacion.luxyfashion.services.EmpleService;
 import com.sustentacion.luxyfashion.services.RolService;
 import com.sustentacion.luxyfashion.services.UsuarioService;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,31 +17,57 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/login")
 public class UsuarioController {
+    @Autowired
+    private UsuarioService usuarioService;
 
-    // GET para mostrar login + registro
-    @GetMapping
-    public String mostrarLogin(Model model) {
-        model.addAttribute("cliente", new Cliente()); // Para el registro
-        return "Login/LoginRegistro"; // Vista que combina login y registro
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
     }
 
-    // GET para redirigir después del login según rol
-    //usamos el seguriti para comprobar sus roles, con esto nos ayuda a reducir el codigo
-    @GetMapping("/default")
-    public String redirectAfterLogin(org.springframework.security.core.Authentication authentication) {
-        String role = authentication.getAuthorities().iterator().next().getAuthority();
+    @GetMapping("/login")
+    public String formLogin() {
+        return "login"; // tu página de login
+    }
 
-        switch (role) {
-            case "ROLE_ADMIN":
-                return "redirect:/admin/dashboard";
-            case "ROLE_EMPLEADO":
-                return "redirect:/empleado/dashboard";
-            case "ROLE_CLIENTE":
-                return "redirect:/cliente";
-            default:
-                return "redirect:/login?error";
+    @PostMapping("/login")
+    public String login(@RequestParam String username,
+                        @RequestParam String contraseña,
+                        HttpSession session,
+                        Model model) {
+
+        try {
+            Usuario u = usuarioService.autenticar(username, contraseña);
+
+            session.setAttribute("usuarioLogueado", u);
+
+            switch (u.getRol()) {
+
+                case "ADMIN":
+                    return "redirect:/admin/index";
+
+                case "EMPLEADO":
+                    return "redirect:/empleado/index";
+
+                case "CLIENTE":
+                    return "redirect:/cliente/index";
+
+                default:
+                    model.addAttribute("error", "Rol no reconocido");
+                    return "login";
+            }
+
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+            return "login";
         }
     }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/auth/login";
+    }
+
 }
 
 

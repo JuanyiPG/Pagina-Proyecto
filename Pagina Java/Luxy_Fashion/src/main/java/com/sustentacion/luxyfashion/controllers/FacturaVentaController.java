@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/facturaventa")
+@RequestMapping("/admin/facturaventa")
 public class FacturaVentaController {
 
     private final FacturaVentaService facturaVentaService;

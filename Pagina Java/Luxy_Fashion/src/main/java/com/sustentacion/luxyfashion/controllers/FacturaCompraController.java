@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/facturacompra")
+@RequestMapping("/admin/facturacompra")
 public class FacturaCompraController {
 
     private final FacturaCompraService facturaCompraService;

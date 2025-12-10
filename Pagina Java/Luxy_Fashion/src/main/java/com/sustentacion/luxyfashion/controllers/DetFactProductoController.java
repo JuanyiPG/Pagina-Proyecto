@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/detfactproducto")
+@RequestMapping("/admin/detfactproducto")
 public class DetFactProductoController {
 
     private final DetFactProductoService detFactProductoService;

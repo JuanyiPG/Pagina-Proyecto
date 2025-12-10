@@ -14,7 +14,7 @@ import java.util.List;
 
     //@RestController, sirve para devolver en Json
     @Controller //Nos sirve para devolver un Documento html
-    @RequestMapping("/roles")
+    @RequestMapping("/admin/roles")
     public class RolController {
 
         private final RolService rolService;
@@ -41,14 +41,14 @@ import java.util.List;
         @PostMapping("/guardar")
         public String guardar(Rol rol) {
             rolService.guardar(rol);
-            return "redirect:/roles?success=true";
+            return "redirect:/admin/roles?success=true";
         }
 
         @GetMapping("/editar/{id}") //Path se usa para traer los datos del formulario
         public String editar(@PathVariable Integer id, Model model) { //el Path ayuda a direccionar el metodo y saber cual se debe de editar
             Rol rol = rolService.buscarPorId(id);
              if (rol == null){
-                 return "refirect:/rol?error=not_found";
+                 return "redirect:/rol?error=not_found";
              }
             model.addAttribute("rol", rol);
             return "admin/roles/EDITAR_ROL"; //<- aqui se direcciona a que html va
@@ -81,7 +81,7 @@ import java.util.List;
         @GetMapping("/eliminar/{id}")
         public String eliminar(@PathVariable Integer id) {
             rolService.eliminar(id);
-            return "redirect:/roles?error=not_found";
+            return "redirect:/admin/roles?error=not_found";
         }
 
        //Controla las URLs y conecta la vista con el servicio

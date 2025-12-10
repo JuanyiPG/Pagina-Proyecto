@@ -12,7 +12,7 @@ import java.util.List;
 
 
 @Controller
-@RequestMapping("/empleado")
+@RequestMapping("/admin/empleado")
 public class EmpleController {
 
     private final RolService rolService;
@@ -33,26 +33,33 @@ public class EmpleController {
         return "admin/empleado/emple_index";
     }
 
-    @GetMapping("/nuevo") //mostrar el formulario vacio
+    @GetMapping("/admin/nuevo")
     public String nuevo(Model model){
-        model.addAttribute("empleado", new Empleado());
+        Empleado empleado = new Empleado();
+        empleado.setRol(new Rol()); // <-- Aquí está la magia
+
+        model.addAttribute("empleado", empleado);
+        model.addAttribute("roles", rolService.listar()); // <-- Lo necesitas para llenar el select
         return "admin/empleado/emple_index";
     }
 
     @PostMapping("/guardar")
     public String guardar(Empleado empleado){
         //Asignar el rol
+        System.out.println("Rol enviado:");
+        System.out.println("objeto rol: " + empleado.getRol());
+        System.out.println("id del rol: " + empleado.getRol().getId_rol());
         Rol rolSeleccionado = rolService.buscarPorId(empleado.getRol().getId_rol());
         empleado.setRol(rolSeleccionado);
         empleService.guardar(empleado);
-        return "redirect:empleado?success=true";
+        return "redirect:/admin/empleado?success=true";
     }
 
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Integer id, Model model){
         Empleado empleado = empleService.buscarPorId(id);
         if (empleado == null){
-            return "redirect:/empleado?error=not_found";
+            return "redirect:empleado?error=not_found";
         }
         model.addAttribute("empleado", empleado);
         return "admin/empleado/editar_emple";
@@ -77,7 +84,7 @@ public class EmpleController {
         @GetMapping("/eliminar/{id}")
         public String eliminar(@PathVariable Integer id) {
             empleService.eliminar(id);
-            return "redirect:/empleado?error=not_found";
+            return "redirect:/admin/empleado?error=not_found";
         }
 
 

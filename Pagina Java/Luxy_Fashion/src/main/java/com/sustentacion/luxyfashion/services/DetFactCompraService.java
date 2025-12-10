@@ -1,5 +1,6 @@
 package com.sustentacion.luxyfashion.services;
 
+import com.sustentacion.luxyfashion.models.Abono;
 import com.sustentacion.luxyfashion.models.DetFactCompra;
 import org.springframework.stereotype.Service;
 
@@ -15,4 +16,6 @@ public interface DetFactCompraService {
     List<DetFactCompra> findAllByOrderAsc();
 
     List<DetFactCompra> buscarvarioscampos(String filtro);
+
+    DetFactCompra buscarPorId(Integer id);
 }

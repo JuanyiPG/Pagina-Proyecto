@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <title>Editar empleado</title>
     <link rel="stylesheet" href="../../CSS/index.css">
+    <link rel="stylesheet" th:href="@{../CSS/index.css}">
     <img src="../IMG/logoB.png" height="100PX" style = "margin-left: 48%;">
 </head>
 <body>
 <div class="container-1">
     <div class="formulario-1">
-        <form th:action="@{/empleado/guardar}" method="post" th:object="${empleado}">
+        <form th:action="@{/admin/empleado/guardar}" method="post" th:object="${empleado}">
             <h1>Actualizar producto terminado</h1>
             <input type="hidden" name="id_emple" th:field="*{id_emple}">
             <label for="nom_empleado">Nombre: </label>

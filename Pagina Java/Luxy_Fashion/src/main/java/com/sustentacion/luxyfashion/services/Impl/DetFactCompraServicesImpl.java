@@ -42,4 +42,9 @@ public class DetFactCompraServicesImpl implements DetFactCompraService{
     public List<DetFactCompra> buscarvarioscampos(String filtro) {
         return detFactCompraRepositories.buscarvarioscampos(filtro);
     }
+
+    @Override
+    public DetFactCompra buscarPorId(Integer id) {
+        return detFactCompraRepositories.findById(id).orElse(null);
+    }
 }

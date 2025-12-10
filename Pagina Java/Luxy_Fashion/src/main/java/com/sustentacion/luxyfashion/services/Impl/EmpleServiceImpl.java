@@ -8,7 +8,6 @@ import com.sustentacion.luxyfashion.repositories.UsuarioRepositories;
 import com.sustentacion.luxyfashion.services.EmpleService;
 import com.sustentacion.luxyfashion.services.RolService;
 import jakarta.transaction.Transactional;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,16 +17,13 @@ public class EmpleServiceImpl implements EmpleService {
 
     private final EmpleRepositories empleRepositories;
     private final UsuarioRepositories usuarioRepositories;
-    private final PasswordEncoder passwordEncoder;
     private final RolService rolService;
 
     public EmpleServiceImpl(EmpleRepositories empleRepositories,
                             UsuarioRepositories usuarioRepositories,
-                            PasswordEncoder passwordEncoder,
                             RolService rolService) {
         this.empleRepositories = empleRepositories;
         this.usuarioRepositories = usuarioRepositories;
-        this.passwordEncoder = passwordEncoder;
         this.rolService = rolService;
     }
 
@@ -41,7 +37,6 @@ public class EmpleServiceImpl implements EmpleService {
 
         Rol rol = rolService.buscarPorNombre("Empleado").get(0);
         empleado.setRol(rol);
-        empleado.setContraseña(passwordEncoder.encode(empleado.getContraseña()));
         Empleado empleadoGuardado = empleRepositories.save(empleado);
 
         Usuario usuario = new Usuario();
