@@ -4,23 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ecc2154e-7f54-4e87-8623-03e0c98826bd" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Pagina Java/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Pagina Java/BD/ACTUALIZAR_LUXI_FASHON.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Pagina Java/BD/CONSULTAS_LUXI_FASHON.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Pagina Java/BD/Diccionario de datos/Diccionario_De_datos.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Pagina Java/BD/ELIMINAR_LUXI_FASHON.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Pagina Java/BD/Historial.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Pagina Java/BD/INSERTAR_LUXI_FASHON.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Pagina Java/BD/LUXY_FASHION.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Pagina Java/BD/PROCEDIMIENTO_CONSULTAR1_LLUXI_FASHON.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Pagina Java/BD/TRIGGERS_LUXI_FASHION.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Pagina Java/BD/diagrana de clase.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pagina Java/Luxy_Fashion/src/main/java/com/sustentacion/luxyfashion/controllers/ProductoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Pagina Java/Luxy_Fashion/src/main/java/com/sustentacion/luxyfashion/controllers/ProductoController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pagina Java/Luxy_Fashion/src/main/resources/templates/admin/producto/indexproducto.html" beforeDir="false" afterPath="$PROJECT_DIR$/Pagina Java/Luxy_Fashion/src/main/resources/templates/admin/producto/indexproducto.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pagina Web/BASE_DE_DATOS/LUXI_FASHON_BD.sql" beforeDir="false" />
-    </list>
+    <list default="true" id="ecc2154e-7f54-4e87-8623-03e0c98826bd" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
