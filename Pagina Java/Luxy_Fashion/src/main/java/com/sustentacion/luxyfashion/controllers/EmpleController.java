@@ -25,16 +25,7 @@ public class EmpleController {
         this.rolService = rolService;
     }
 
-    @GetMapping("/index")
-    public String empleadoIndex(HttpSession session) {
 
-        Usuario u = (Usuario) session.getAttribute("usuarioLogueado");
-
-        if (u == null || !u.getRol().equals("EMPLEADO")) {
-            return "redirect:/login"; // Si no es empleado o no está logueado
-        }
-        return "empleadopage/indexemple"; // Vista de empleado
-    }
 
     @GetMapping()
     public String listarOrdenados(Model model){
@@ -44,6 +35,17 @@ public class EmpleController {
         model.addAttribute("roles", rolService.listar());
 
         return "admin/empleado/emple_index";
+    }
+
+    @GetMapping("/index")
+    public String empleadoIndex(HttpSession session) {
+
+        Usuario u = (Usuario) session.getAttribute("usuarioLogueado");
+
+        if (u == null || !u.getRol().equals("EMPLEADO")) {
+            return "redirect:/login"; // Si no es empleado o no está logueado
+        }
+        return "empleado/indexemple"; // Vista de empleado
     }
 
     @GetMapping("/admin/nuevo")

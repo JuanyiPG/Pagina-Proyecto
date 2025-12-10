@@ -22,7 +22,7 @@ public class UsuarioController {
 
     @GetMapping()
     public String mostrarLogin() {
-        return "login/loginRegistro"; // tu vista login.html
+        return "/admin/cliente"; // tu vista login.html
     }
 
     @PostMapping
@@ -42,10 +42,10 @@ public class UsuarioController {
                     return "redirect:/admin/admin";  // tu home de admin
 
                 case "EMPLEADO":
-                    return "redirect:/admin/cliente/index"; // home empleado
+                    return "redirect:/admin/empleado/index"; // home empleado
 
                 case "CLIENTE":
-                    return "redirect:/admin/cliente/index"; // home cliente
+                    return "redirect:/admin/admin"; // home cliente
 
                 default:
                     model.addAttribute("error", "Rol no reconocido");
