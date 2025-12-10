@@ -51,7 +51,7 @@
 <div class="nav">
     <ul>
         <a th:href="@{/}">
-            <img src="../IMG/Logo_Luxy_Fashion.png" alt="Logo">
+            <img th:src="@{/IMG/Logo_Luxy_Fashion.png}" alt="Logo">
         </a>
     </ul>
 </div>
@@ -65,10 +65,10 @@
             <h2>Iniciar sesión</h2>
             <span>Use su usuario y contraseña</span>
             <div class="container-input">
-                <input type="text" name="username" placeholder="Usuario" required/>
+                <input type="text" name="username" placeholder="Usuario" required>
             </div>
             <div class="container-input">
-                <input type="password" name="contrasena" placeholder="Contraseña" required/>
+                <input type="password" name="contrasena" placeholder="Contraseña" required>
             </div>
             <a href="#">¿Olvidaste tu contraseña?</a>
             <button type="submit" class="button-ingre">Ingresar</button>
@@ -79,7 +79,7 @@
     <!-- REGISTRO CLIENTE -->
     <div class="container-l-f">
         <form th:action="@{/admin/cliente/guardar}" th:object="${cliente}" method="post">
-            <h2>Registrarse como Cliente</h2>
+            <h2>Registro</h2>
             <span>Ingrese sus datos personales</span>
             <div class="container-input">
                 <input type="text" placeholder="Nombre Completo" th:field="*{nomClien}" required>

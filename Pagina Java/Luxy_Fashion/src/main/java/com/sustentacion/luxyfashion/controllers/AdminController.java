@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-    @GetMapping("/admin")//el httpsesion es para comprobar el registro
+
+    @GetMapping("/index")//el httpsesion es para comprobar el registro
     public String adminIndex(HttpSession session) {
 
         Usuario u = (Usuario) session.getAttribute("usuarioLogueado");
