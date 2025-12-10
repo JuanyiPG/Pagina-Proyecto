@@ -6,6 +6,73 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>Producción</title>
     <link rel="stylesheet" th:href="@{/CSS/index.css}">
+    <style>
+        /* Centrar toda la tabla en la página */
+body {
+    background-color: #ffffff; /* Fondo blanco general */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Para que ocupe toda la altura y esté centrada verticalmente */
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Estilo de la tabla */
+table {
+    border-collapse: collapse;
+    width: 90%; /* Ajusta al tamaño que quieras */
+    max-width: 1200px;
+    background-color: #fff; /* Fondo blanco de la tabla */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    margin: 20px auto;
+    text-align: center;
+}
+
+/* Encabezado */
+table thead th {
+    background-color: #5a1f2b; /* burdeos oscuro */
+    color: #fff;
+    padding: 10px;
+    font-weight: bold;
+    border: 1px solid #4a1520;
+}
+
+/* Filas de la tabla */
+table tbody td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+/* Alternar colores de filas opcional */
+table tbody tr:nth-child(even) {
+    background-color: #f8f8f8;
+}
+
+/* Botones de acción */
+.btn-accion {
+    background-color: #5a1f2b;
+    color: white;
+    padding: 5px 10px;
+    text-decoration: none;
+    border-radius: 4px;
+    margin: 2px;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+
+.btn-accion:hover {
+    background-color: #7c2840;
+}
+
+/* Mensaje de “No se encontraron resultados” */
+tbody tr td[colspan] {
+    text-align: center;
+    font-style: italic;
+    color: #5a1f2b;
+    padding: 15px;
+}
+    </style>
 </head>
 
 <div th:replace="~{itemss/headeradmin :: miHeader}"></div>

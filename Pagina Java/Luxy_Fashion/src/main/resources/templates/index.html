@@ -7,18 +7,171 @@
     <link rel="stylesheet" type="text/css" href="/css/index.css">
     <link rel="stylesheet" href="Pagina Web/bootstrap/css/bootstrap.min.css">
     <script src="Pagina Web/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" th:href="@{/css/estilos.css}">
 </head>
 <body>
 <div th:replace="~{itemss/header :: miHeader}"></div>
 
 <!--Vista previa -->
+<style>
+    .diferencia {
+        text-align: center;
+        padding: 140px 20px;
+        font-family: 'Arial', sans-serif;
+        color: #2c2c2c;
+    }
+
+    .diferencia h4 {
+        font-size: 22px;
+        color: #888;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+        letter-spacing: 3px;
+    }
+
+    .diferencia h2 {
+        font-size: 55px;
+        font-weight: 800;
+        margin-bottom: 90px;
+        color: #5e0925;
+        letter-spacing: 1px;
+    }
+
+
+    .contenedor-cards {
+        display: flex;
+        justify-content: center;
+        gap: 120px;
+        flex-wrap: wrap;
+    }
+
+
+    .card-dif {
+        position: relative;
+        width: 380px;
+        padding: 25px;
+    }
+
+    .card-dif h3 {
+        font-size: 24px;
+        font-weight: 800;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        color: #5e0925;
+        letter-spacing: 1px;
+    }
+
+    .card-dif p {
+        font-size: 18px;
+        color: #555;
+        line-height: 1.7;
+    }
+
+    /* NÚMERO FONDO */
+    .num-fondo {
+        position: absolute;
+        font-size: 150px;
+        font-weight: 900;
+        color: rgba(0, 0, 0, 0.05);
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        pointer-events: none;
+    }
+
+    /* Contenedor general */
+    .mosaico {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+        gap: 25px;
+        padding: 40px 5%;
+        background-color: #ffffff;
+        justify-items: center;
+    }
+
+    /* Cada tarjeta */
+    .mosaico .item {
+        text-align: center;
+        cursor: pointer;
+        transition: transform .3s ease, box-shadow .3s ease;
+    }
+
+    /* Estilo de las imágenes */
+    .mosaico img {
+        width: 100%;
+        height: 350px;
+        object-fit: cover;
+        border-radius: 5px;
+        transition: transform .4s ease, filter .4s ease;
+    }
+
+    /* Efecto de hover para lujo */
+    .mosaico .item:hover img {
+        transform: scale(1.05);
+        filter: brightness(1.15);
+        box-shadow: 0px 15px 30px rgba(0,0,0,0.2);
+    }
+
+    /* Texto debajo de cada imagen */
+    .mosaico p {
+        margin-top: 15px;
+        font-size: 18px;
+        font-family: 'Times New Roman', serif;
+        letter-spacing: 1px;
+        color: #2c2c2c;
+        font-weight: 500;
+        transition: color .3s ease;
+        text-transform: capitalize;
+    }
+
+    .mosaico .item:hover p {
+        color: #000;
+    }
+
+
+</style>
+<body>
+<div th:replace="~{itemss/header :: miHeader}"></div>
+<!--Vista previa -->
 <main>
     <section class="p-p">
         <video autoplay muted loop class="VPP">
-            <source th:src="@{/VIDEO/VideoPIndex.mp4}" type="video/mp4">
+            <source th:src="@{VIDEO/VideoPIndex.mp4}" type="video/mp4">
         </video>
     </section>
+
+
+    <section class="diferencia">
+        <h4>Diseño y confección exclusiva</h4>
+        <h2>ASÍ TRABAJAMOS EN LUXY FASHION</h2>
+
+        <div class="contenedor-cards">
+            <div class="card-dif">
+                <span class="num-fondo">1</span>
+                <h3>Nosotros</h3>
+                <p>En nuestra empresa, sabemos que la moda no tiene por que ser un lujo.Por eso te traemos accessorios de calidad
+                    y tendencia a precios que te encantaran. Nacimos de la pasion por asercar productos unicos y asequibles, para que
+                    pueda encontrar ese toque especial que complementa tu estilo.
+                </p>
+            </div>
+
+            <div class="card-dif">
+                <span class="num-fondo">2</span>
+                <h3>CALIDAD GARANTIZADA</h3>
+                <p>Cada uno de nuestros productos pasa por un riguroso control de calidad antes de ser enviados.
+                    Nos aseguramos de que cada pieza este impecable para que la recibas en perfectas condiciones..</p>
+            </div>
+
+            <div class="card-dif">
+                <span class="num-fondo">3</span>
+                <h3>SEGURIDAD EN TU ENVIO</h3>
+                <p>Creemos que la calidad no debe ser un lujo. Nuestros precios estan diseñados para ser acccequibles,
+                    reflejando el valor real de cada pieza, desde los materiales hasta el trabajo artesanal. Asi, puedes
+                    consentirte sin preocupaciones.</p>
+            </div>
+        </div>
+    </section>
+
     <!--productos -->
     <section class="mosaico">
         <img th:src="@{/IMG/index1.jpg}" alt="Imagen 1" class="imagen">
@@ -26,50 +179,16 @@
         <img th:src="@{/IMG/index5.jpg}" alt="Imagen 3" class="imagen3">
         <img th:src="@{/IMG/index3.jpg}" alt="Imagen 4" class="imagen4">
         <img th:src="@{/IMG/index4.jpg}" alt="Imagen 5" class="imagen5">
-        <img th:src="@{/IMG/index6.jpg}" alt="Imagen 5" class="imagen6">
+        <img th:src="@{/IMG/index6.jpg}" alt="imagen 6" class="imagen6">
+        <img th:src="@{/IMG/index7.jpeg}" alt="Imagen 7" class="imagen7">
+        <img th:src="@{/IMG/index8.jpeg}" alt="Imagen 8" class="imagen8">
+        <img th:src="@{/IMG/index9.jpg}" alt="Imagen 9" class="imagen9">
+        <img th:src="@{/IMG/index10.jpg}" alt="Imagen 10" class="imagen10">
     </section>
-
-    <button class="ver-mas-final">Ver más</button>
+@{
+    <button class="ver-m}as-final">Ver más</button>
     <hr>
     <br>
-    <section id="We">
-        <div id="carouselExampleIndicators" class="carousel slide">
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4" aria-label="Slide 5"></button>
-            </div>
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <img src="Pagina Web/IMG/we.jpg" class="d-block w-100" style="height:650px; " alt="img1">
-                </div>
-                <div class="carousel-item">
-                    <img src="Pagina Web/IMG/style.jpg" class="d-block w-100" style="height:650px; " alt="img2">
-                </div>
-                <div class="carousel-item">
-                    <img src="Pagina Web/IMG/calid.jpg" class="d-block w-100" style="height:650px; " alt="img3">
-                </div>
-                <div class="carousel-item">
-                    <img src="Pagina Web/IMG/prec.jpg" class="d-block w-100" style="height:650px; " alt="img4">
-                </div>
-                <div class="carousel-item">
-                    <img src="Pagina Web/IMG/envio.jpg" class="d-block w-100" style="height:650px; " alt="img5">
-                </div>
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
-        </div>
-    </section>
-    <section>
-    </section>
 </main>
 <button id="btn-ayuda">
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-circle" viewBox="0 0 16 16">
@@ -80,39 +199,34 @@
 </button>
 
 <br>
-<footer id="footer"></footer>
+<footer id="/items/footer"></footer>
 
 <script>
 
-    fetch("/items/footer.html")
-     .then(res => res.text())
-     .then(data => {
-       document.getElementById("footer").innerHTML = data;
-     });
+    fetch("Pagina Web/Items/footer.php")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("footer").innerHTML = data;
+      });
 
-   fetch("/itemss/header.html")
-     .then(res => res.text())
-     .then(data => {
-       document.getElementById("header").innerHTML = data;
+    fetch("Pagina Web/Items/header.php")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("header").innerHTML = data;
 
-       const nav = document.getElementById('navegador');
-       const video = document.querySelector('.VPP');
+        const nav = document.getElementById('navegador');
+        const video = document.querySelector('.VPP');
 
-       window.addEventListener('scroll', () => {
-         const rect = video.getBoundingClientRect();
-         if (rect.bottom <= 0) {
-           nav.classList.add('scrolled');
-         } else {
-           nav.classList.remove('scrolled');
-         }
-       });
-     });
+        window.addEventListener('scroll', () => {
+          const rect = video.getBoundingClientRect();
+          if (rect.bottom <= 0) {
+            nav.classList.add('scrolled');
+          } else {
+            nav.classList.remove('scrolled');
+          }
+        });
+      });
 </script>
-<a th:href="@{/roles}">Volver</a>
-Volver</a>
-<a th:href="@{/abono}">Abono</a>
-<a th:href="@{/pedido}">Pedido</a>
-<a th:href="@{/empleado}">Empleado</a>
 
 </body>
 </html>
