@@ -54,7 +54,7 @@
     </div>
 
     <div id="search" class="search">
-        <form th:action="@{/admin/facturaventabuscar}" method="get">
+        <form th:action="@{/admin/facturaventa/buscar}" method="get">
             <input type="text" name="buscar" placeholder="Escribe una palabara" id="searchInput">
             <input type="submit" value="Buscar" id="btnSearch">
         </form>
@@ -79,18 +79,18 @@
         <tr th:each="r : ${facturas}">
             <td th:text="${r.id_factuv}"></td>
             <td th:text="${r.fechafactuv}"></td>
-        <tr th:text="${r.subtotal_factuv}">
+            <td th:text="${r.subtotal_factuv}"></td>
             <td th:text="${r.iva_factuv}"></td>
             <td th:text="${r.total_factuv}"></td>
-        <tr th:text=" ${r.metodo_pago}">
+            <td th:text="${r.metodo_pago}"></td>
             <td th:text="${r.descu_factuv}"></td>
             <td th:text="${r.estado_factuv}"></td>
-        <tr th:text=" ${r.empleado.id_empl}">
+            <td th:text="${r.empleado.id_empl}"></td>
             <td th:text="${r.cliente.id_clien}"></td>
             <td th:text="${r.pedido.id_pedido}"></td>
             <td>
-                <a class="btn-accion"  th:href="@{'/admin/facturas/editar/' + ${r.facturaVenta}}">Actualizar</a>
-                <a class="btn-accion"  th:href="@{'/admin/facturas/eliminar/' + ${r.facturaVenta}}">Eliminar</a>
+                <a class="btn-accion" th:href="@{'/admin/facturaventa/editar/' + ${r.id_factuv}}">Actualizar</a>
+                <a class="btn-accion" th:href="@{'/admin/facturaventa/eliminar/' + ${r.id_factuv}}">Eliminar</a>
             </td>
         </tr>
         <tr th:if="${#lists.isEmpty(roles)}">

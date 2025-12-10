@@ -5,10 +5,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fctura Venta</title>
     <link rel="stylesheet" href="../../CSS/index.css">
+    <style>
+        /* Centrar toda la tabla en la página */
+body {
+    background-color: #ffffff; /* Fondo blanco general */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Para que ocupe toda la altura y esté centrada verticalmente */
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Estilo de la tabla */
+table {
+    border-collapse: collapse;
+    width: 90%; /* Ajusta al tamaño que quieras */
+    max-width: 1200px;
+    background-color: #fff; /* Fondo blanco de la tabla */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    margin: 20px auto;
+    text-align: center;
+}
+
+/* Encabezado */
+table thead th {
+    background-color: #5a1f2b; /* burdeos oscuro */
+    color: #fff;
+    padding: 10px;
+    font-weight: bold;
+    border: 1px solid #4a1520;
+}
+
+/* Filas de la tabla */
+table tbody td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+/* Alternar colores de filas opcional */
+table tbody tr:nth-child(even) {
+    background-color: #f8f8f8;
+}
+
+/* Botones de acción */
+.btn-accion {
+    background-color: #5a1f2b;
+    color: white;
+    padding: 5px 10px;
+    text-decoration: none;
+    border-radius: 4px;
+    margin: 2px;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+
+.btn-accion:hover {
+    background-color: #7c2840;
+}
+
+/* Mensaje de “No se encontraron resultados” */
+tbody tr td[colspan] {
+    text-align: center;
+    font-style: italic;
+    color: #5a1f2b;
+    padding: 15px;
+}
+    </style>
 
     <!-- Header admin -->
 <div th:replace="~{itemss/headeradmin :: miHeader}"></div>
-<table>
+    <table>
     <thead>
     <tr>
         <th>Código</th>
@@ -25,25 +92,25 @@
     </thead>
     <tbody>
     <tr th:each="r : ${facturas}">
-    <td th:text="${r.id_factuv}"></td>
+        <td th:text="${r.id_factuv}"></td>
         <td th:text="${r.fechafactuv}"></td>
-    <td th:text="${r.subtotal_factuv}"></td>
+        <td th:text="${r.subtotal_factuv}"></td>
         <td th:text="${r.iva_factuv}"></td>
         <td th:text="${r.total_factuv}"></td>
-    <td th:text=" ${r.metodo_pago}"></td>
+        <td th:text="${r.metodo_pago}"></td>
         <td th:text="${r.descu_factuv}"></td>
         <td th:text="${r.estado_factuv}"></td>
-    <td th:text=" ${r.empleado.id_empl}"></td>
+        <td th:text="${r.empleado.id_empl}"></td>
         <td th:text="${r.cliente.id_clien}"></td>
         <td th:text="${r.pedido.id_pedido}"></td>
-    </tr>
         <td>
-            <a class="btn-accion"  th:href="@{'/admin/facturas/editar/' + ${r.facturaVenta}}">Actualizar</a>
-            <a class="btn-accion"  th:href="@{'/admin/facturas/eliminar/' + ${r.facturaVenta}}">Eliminar</a>
+            <a class="btn-accion" th:href="@{'/admin/facturaventa/editar/' + ${r.id_factuv}}">Actualizar</a>
+            <a class="btn-accion" th:href="@{'/admin/facturaventa/eliminar/' + ${r.id_factuv}}">Eliminar</a>
         </td>
+    </tr>
     </td>
     <tr th:if="${#lists.isEmpty(roles)}">
-        <td colspan="3">No se encontraron resultados</td>
+        <td colspan="3"></td>
     </tr>
     </tbody>
 </table>

@@ -1,6 +1,7 @@
 package com.sustentacion.luxyfashion.controllers;
 
 import com.sustentacion.luxyfashion.models.FacturaCompra;
+import com.sustentacion.luxyfashion.models.FacturaVenta;
 import com.sustentacion.luxyfashion.services.FacturaCompraService;
 import com.sustentacion.luxyfashion.services.EmpleService;
 import org.springframework.stereotype.Controller;
@@ -32,6 +33,7 @@ public class FacturaCompraController {
             lista = facturaCompraService.listar();
         }
         model.addAttribute("facturas", lista);
+        model.addAttribute("facturaCompra", new FacturaCompra());
         model.addAttribute("filtro", filtro);
         return "admin/facturacompra/indexcompra";
     }
