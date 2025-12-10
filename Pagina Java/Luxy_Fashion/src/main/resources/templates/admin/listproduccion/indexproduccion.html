@@ -1,83 +1,114 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html><!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html><!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <title>Gestión de Empleados</title>
+    <title>Producción</title>
     <link rel="stylesheet" th:href="@{/CSS/index.css}">
 </head>
-<!-- Header admin -->
+
 <div th:replace="~{itemss/headeradmin :: miHeader}"></div>
-<table xmlns:th="http://www.w3.org/1999/xhtml">
+
+<body>
+
+<h2>Gestión de Producción</h2>
+
+<!-- ========================= FORMULARIO ========================= -->
+<form th:action="@{/emple/produccion/guardar}" th:object="${produccion}" method="post">
+
+    <input type="hidden" th:field="*{id_producc}">
+
+    <label>Fecha Inicial:</label>
+    <input type="date" th:field="*{fechaIniProducc}">
+
+    <label>Cantidad:</label>
+    <input type="number" th:field="*{cant_producc}">
+
+    <label>Costo Mano Obra:</label>
+    <input type="number" th:field="*{costo_mano_obra_producc}">
+
+    <label>Costo Material:</label>
+    <input type="number" th:field="*{costo_mat_producc}">
+
+    <label>Costo IVA:</label>
+    <input type="number" th:field="*{costo_iva_producc}">
+
+    <label>Costo Total:</label>
+    <input type="number" th:field="*{costo_total_producc}">
+
+    <label>Fecha Fin:</label>
+    <input type="date" th:field="*{fecha_fin_producc}">
+
+    <label>Estado:</label>
+    <input type="text" th:field="*{estado_producc}">
+
+    <label>Empleado:</label>
+    <select th:field="*{empleado}">
+        <option value="">Seleccione...</option>
+        <option th:each="emp:${empleados}" th:value="${emp.id_emple}" th:text="${emp.nombre_emple}"></option>
+    </select>
+
+    <label>Pedido:</label>
+    <select th:field="*{pedido}">
+        <option value="">Seleccione...</option>
+        <option th:each="ped:${pedidos}" th:value="${ped.id_pedido}" th:text="${ped.id_pedido}"></option>
+    </select>
+
+    <label>Materia Prima:</label>
+    <select th:field="*{materiaPrima}">
+        <option value="">Seleccione...</option>
+        <option th:each="mat:${materias}" th:value="${mat.id_matp}" th:text="${mat.nomMatp}"></option>
+    </select>
+
+    <button type="submit">Guardar</button>
+</form>
+
+<br>
+
+<!-- ========================= TABLA ========================= -->
+<table>
     <thead>
     <tr>
-        <th>Id</th>
+        <th>ID</th>
         <th>Fecha Inicial</th>
         <th>Cantidad</th>
-        <th>Costo Mano Obra</th>
-        <th>Costo Material</th>
-        <th>Costo iva</th>
-        <th>Costo Total</th>
-        <th>Fecha fin</th>
+        <th>Mano Obra</th>
+        <th>Material</th>
+        <th>IVA</th>
+        <th>Total</th>
+        <th>Fecha Fin</th>
         <th>Estado</th>
+        <th>Acciones</th>
     </tr>
     </thead>
+
     <tbody>
-    <tr th:each="r : ${producciones}">
-        <td th:text="${r.id_producc}"></td>
-        <td th:text="${r.fechaIniProducc}"></td>
-        <td th:text="${r.cant_producc}"></td>
-        <td th:text="${r.costo_mano_obra_producc}"></td>
-        <td th:text="${r.costo_mat_producc}"></td>
-        <td th:text="${r.costo_iva_producc}"></td>
-        <td th:text="${r.costo_total_producc}"></td>
-        <td th:text="${r.fecha_fin_producc}"></td>
-        <td th:text="${r.estado_producc}"></td>
+
+    <tr th:each="prc : ${producciones}">
+        <td th:text="${prc.id_producc}"></td>
+        <td th:text="${prc.fechaIniProducc}"></td>
+        <td th:text="${prc.cant_producc}"></td>
+        <td th:text="${prc.costo_mano_obra_producc}"></td>
+        <td th:text="${prc.costo_mat_producc}"></td>
+        <td th:text="${prc.costo_iva_producc}"></td>
+        <td th:text="${prc.costo_total_producc}"></td>
+        <td th:text="${prc.fecha_fin_producc}"></td>
+        <td th:text="${prc.estado_producc}"></td>
 
         <td>
-            <a class="btn-accion" th:href="@{'/cliente/editar/' + ${r.id_clien}}">Actualizar</a>
-            <a class="btn-eliminar" th:href="@{'/cliente/eliminar/' + ${r.id_clien}}" style="margin-top: 10px">Eliminar</a>
+            <a th:href="@{'/emple/produccion/editar/' + ${prc.id_producc}}">Editar</a>
+            <a th:href="@{'/emple/produccion/eliminar/' + ${prc.id_producc}}"
+               onclick="return confirm('¿Seguro que deseas eliminar?')">Eliminar</a>
         </td>
     </tr>
-    <tr th:if="${cliente!= null and #lists.isEmpty(cliente)}">
-        <td colspan="15">No se encontraron resultados</td>
+
+    <tr th:if="${#lists.isEmpty(producciones)}">
+        <td colspan="10">No hay registros</td>
     </tr>
+
     </tbody>
 </table>
-</div>
-
-<!---------JAVA SCRIPT----->
-<!------HEADER----------------->
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-      const toggleBtn = document.getElementById("formToggle");
-      const submenu = document.getElementById("submenuForm");
-
-      toggleBtn.addEventListener("click", function(e) {
-        e.preventDefault();
-        submenu.classList.toggle("show");
-      });
-    });
-</script>
 
 </body>
 </html>
