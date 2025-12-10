@@ -33,8 +33,7 @@ public class EmpleController {
         if (u == null || !u.getRol().equals("EMPLEADO")) {
             return "redirect:/login"; // Si no es empleado o no está logueado
         }
-
-        return "empleadopage/indexempleado"; // Vista de empleado
+        return "empleadopage/indexemple"; // Vista de empleado
     }
 
     @GetMapping()

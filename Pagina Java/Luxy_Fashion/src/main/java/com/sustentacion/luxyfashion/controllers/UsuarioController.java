@@ -27,25 +27,25 @@ public class UsuarioController {
 
     @PostMapping
     public String login(@RequestParam String username,
-                        @RequestParam String contraseña,
+                        @RequestParam String contrasena,
                         HttpSession session,
                         Model model) {
 
         try {
-            Usuario u = usuarioService.autenticar(username, contraseña);
+            Usuario u = usuarioService.autenticar(username, contrasena);
 
             session.setAttribute("usuarioLogueado", u);
 
             switch (u.getRol()) {
 
                 case "ADMIN":
-                    return "redirect:/admin";  // tu home de admin
+                    return "redirect:/admin/admin";  // tu home de admin
 
                 case "EMPLEADO":
-                    return "redirect:/empleado"; // home empleado
+                    return "redirect:/admin/cliente/index"; // home empleado
 
                 case "CLIENTE":
-                    return "redirect:/cliente"; // home cliente
+                    return "redirect:/admin/cliente/index"; // home cliente
 
                 default:
                     model.addAttribute("error", "Rol no reconocido");

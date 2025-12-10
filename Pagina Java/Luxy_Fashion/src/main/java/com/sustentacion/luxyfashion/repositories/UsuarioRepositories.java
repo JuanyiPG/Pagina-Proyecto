@@ -15,7 +15,7 @@ public interface UsuarioRepositories extends JpaRepository<Usuario, Integer> {
 
     @Query("SELECT u FROM Usuario u WHERE " +
             "LOWER(u.username) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +
-            "LOWER(u.contraseña) LIKE LOWER(CONCAT('%', :filtro, '%'))")
+            "LOWER(u.contrasena) LIKE LOWER(CONCAT('%', :filtro, '%'))")
     List<Usuario> buscarVariosCampos(@Param("filtro") String filtro);
 
     List<Usuario> findAllByOrderByUsername();

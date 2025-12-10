@@ -24,5 +24,9 @@ public class Rol {
     private Integer id_rol;
     @Column(name = "desc_rol")
     private String nomRol;
+
+    public String getNomRol() {
+        return nomRol;
+    }
 }
 

@@ -62,7 +62,7 @@ public class UsuarioServiceImpl implements UsuarioService {
             throw new IllegalArgumentException("El usuario no existe");
         }
 
-        if (!usuario.getContraseña().equals(contraseña)) {
+        if (!usuario.getContrasena().equals(contraseña)) {
             throw new IllegalArgumentException("Contraseña incorrecta");
         }
 

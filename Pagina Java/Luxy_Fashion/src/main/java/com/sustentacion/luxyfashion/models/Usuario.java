@@ -19,7 +19,7 @@ public class Usuario {
     @Column(unique = true, nullable = false)
     private String username;
     @Column(nullable = false)
-    private String contraseña;
+    private String contrasena;
     @Column(nullable = false)
     private String rol;
 
@@ -32,4 +32,8 @@ public class Usuario {
     @ManyToOne
     @JoinColumn(name = "id_clien_fk_usuario", referencedColumnName = "id_clien")
     private Cliente cliente;
+
+    public String getRol() {
+        return rol;
+    }
 }

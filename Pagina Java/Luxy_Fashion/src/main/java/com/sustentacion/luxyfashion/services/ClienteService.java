@@ -25,7 +25,5 @@ public interface ClienteService {
     Cliente BuscarPorId(Integer id);
 
 
-
-
-
+    void guardar(Cliente cliente);
 }

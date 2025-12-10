@@ -41,7 +41,7 @@ public class EmpleServiceImpl implements EmpleService {
 
         Usuario usuario = new Usuario();
         usuario.setUsername(empleado.getUsuario());
-        usuario.setContraseña(empleado.getContraseña());
+        usuario.setContrasena(empleado.getContraseña());
         usuario.setRol("EMPLEADO");
         usuario.setEmpleado(empleadoGuardado);
         usuarioRepositories.save(usuario);

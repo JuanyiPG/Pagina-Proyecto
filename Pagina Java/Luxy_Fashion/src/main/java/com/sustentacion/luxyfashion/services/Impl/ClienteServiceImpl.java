@@ -46,7 +46,7 @@ public class ClienteServiceImpl implements ClienteService {
             // Crear usuario para Spring Security
             Usuario usuario = new Usuario();
             usuario.setUsername(cliente.getUsuario());
-            usuario.setContraseña(cliente.getContra_clien());
+            usuario.setContrasena(cliente.getContra_clien());
             usuario.setRol("CLIENTE");
             usuario.setCliente(clienteGuardado);
             usuarioRepositories.save(usuario);
@@ -92,5 +92,10 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public Cliente BuscarPorId(Integer id){
          return clienteRepositories.findById(id).orElse(null);
+    }
+
+    @Override
+    public void guardar(Cliente cliente) {
+        clienteRepositories.save(cliente);
     }
 }
