@@ -14,7 +14,7 @@
     <div class="card">
         <h1 th:text="${rol != null and rol.id_rol != null} ? 'Editar Rol' : 'Gestión de roles'"></h1>
 
-        <form class="formulario-mensaje" th:action="@{/roles/guardar}" method="post" th:object="${rol}">
+        <form class="formulario-mensaje" th:action="@{/admin/roles/guardar}" method="post" th:object="${rol}">
             <div class="form-group">
                 <input type="text" name="desc_rol" placeholder="Nombre del Rol" th:field="*{nomRol}" required>
             </div>
@@ -27,7 +27,7 @@
     </div>
 
     <div id="search" class="search">
-        <form th:action="@{/roles/buscar}" method="get">
+        <form th:action="@{/admin/roles/buscar}" method="get">
             <input type="text" name="nomRol" placeholder="Ingrese el nombre del rol" id="searchInput">
             <input type="submit" value="Buscar" id="btnSearch">
         </form>
@@ -46,8 +46,8 @@
             <td th:text="${r.id_rol}"></td>
             <td th:text="${r.nomRol}"></td>
             <td>
-                <a class="btn-accion" th:href="@{'/roles/editar/' + ${r.id_rol}}">Actualizar</a>
-                <a class="btn-eliminar" th:href="@{'/roles/eliminar/' + ${r.id_rol}}">Eliminar</a>
+                <a class="btn-accion" th:href="@{'/admin/roles/editar/' + ${r.id_rol}}">Actualizar</a>
+                <a class="btn-eliminar" th:href="@{'/admin/roles/eliminar/' + ${r.id_rol}}">Eliminar</a>
             </td>
         </tr>
         <tr th:if="${#lists.isEmpty(roles)}">

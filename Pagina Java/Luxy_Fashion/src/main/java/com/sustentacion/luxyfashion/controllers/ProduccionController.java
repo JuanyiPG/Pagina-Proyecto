@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/produccion")
+@RequestMapping("/admin/produccion")
 public class ProduccionController {
 
     private final ProduccionService produccionService;

@@ -5,24 +5,17 @@ import com.sustentacion.luxyfashion.repositories.UsuarioRepositories;
 import com.sustentacion.luxyfashion.services.UsuarioService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 @Transactional
 @Service
-public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
+public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepositories usuarioRepositories;
-    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioServiceImpl(UsuarioRepositories usuarioRepositories, PasswordEncoder passwordEncoder) {
+    public UsuarioServiceImpl(UsuarioRepositories usuarioRepositories) {
         this.usuarioRepositories = usuarioRepositories;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -42,7 +35,6 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
     @Override
     public Usuario guardar(Usuario usuario) {
-        usuario.setContraseña(passwordEncoder.encode(usuario.getContraseña()));
         return usuarioRepositories.save(usuario);
     }
 
@@ -62,25 +54,19 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
             throw new IllegalArgumentException("Ese nombre de usuario ya existe");
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Usuario usuario = usuarioRepositories.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
-
-        return User.builder()
-                .username(usuario.getUsername())
-                .password(usuario.getContraseña())
-                .roles(usuario.getRol())
-                .build();
-    }
-
     public Usuario autenticar(String username, String contraseña) {
         Usuario usuario = usuarioRepositories.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("El usuario no existe"));
+                .orElse(null);
 
-        if (!passwordEncoder.matches(contraseña, usuario.getContraseña())) {
+        if (usuario == null) {
+            throw new IllegalArgumentException("El usuario no existe");
+        }
+
+        if (!usuario.getContraseña().equals(contraseña)) {
             throw new IllegalArgumentException("Contraseña incorrecta");
         }
+
         return usuario;
     }
+
 }

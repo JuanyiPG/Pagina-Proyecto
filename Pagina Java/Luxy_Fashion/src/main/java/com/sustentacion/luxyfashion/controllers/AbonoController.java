@@ -1,6 +1,7 @@
 package com.sustentacion.luxyfashion.controllers;
 
 import com.sustentacion.luxyfashion.models.Abono;
+import com.sustentacion.luxyfashion.models.Empleado;
 import com.sustentacion.luxyfashion.models.FacturaVenta;
 import com.sustentacion.luxyfashion.services.AbonoService;
 import com.sustentacion.luxyfashion.services.FacturaVentaService;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/abono")
+@RequestMapping("/admin/abono")
 public class AbonoController {
 
     private final AbonoService abonoService;
@@ -45,14 +46,14 @@ public class AbonoController {
             abonoService.guardar(abono);    // guardar el abono en la BD
         }
 
-        return "admin/listabono/editarabono";
+        return "redirect:empleado?success=true";
     }
 
     // Eliminar un abono
     @GetMapping("/eliminar/{id}")
     public String eliminarAbono(@PathVariable("id") Integer id) {
         abonoService.eliminar(id);
-        return "admin/listabono/listaAbono";
+        return "redirect:empleado?success=true";
     }
 
     // Buscar abonos (por varios campos)
@@ -69,5 +70,15 @@ public class AbonoController {
         model.addAttribute("facturas", facturas);
         model.addAttribute("abono", new Abono());
         return "admin/listabono/listaAbono";
+    }
+
+    @GetMapping("/editar/{id}")
+    public String editar(@PathVariable Integer id, Model model){
+        Abono abono = abonoService.buscarPorId(id);
+        if (abono == null){
+            return "redirect:/empleado?error=not_found";
+        }
+        model.addAttribute("abono", abono);
+        return "admin/empleado/editar_emple";
     }
 }

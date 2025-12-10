@@ -41,4 +41,9 @@ public class AbonoServiceslmpl implements AbonoService {
     public List<Abono> buscarvarioscampos(String filtro) {
         return abonoRepositories.buscarVariosCampos(filtro);
     }
+
+    @Override
+    public Abono buscarPorId(Integer id) {
+        return abonoRepositories.findById(id).orElse(null);
+    }
 }

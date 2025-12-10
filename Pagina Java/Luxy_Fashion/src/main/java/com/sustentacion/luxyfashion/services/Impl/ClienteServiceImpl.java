@@ -8,7 +8,6 @@ import com.sustentacion.luxyfashion.repositories.UsuarioRepositories;
 import com.sustentacion.luxyfashion.services.ClienteService;
 import com.sustentacion.luxyfashion.services.RolService;
 import jakarta.transaction.Transactional;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,16 +17,13 @@ public class ClienteServiceImpl implements ClienteService {
 
         private final ClienteRepositories clienteRepositories;
         private final UsuarioRepositories usuarioRepositories;
-        private final PasswordEncoder passwordEncoder;
         private final RolService rolService;
 
         public ClienteServiceImpl(ClienteRepositories clienteRepositories,
                                   UsuarioRepositories usuarioRepositories,
-                                  PasswordEncoder passwordEncoder,
                                   RolService rolService) {
             this.clienteRepositories = clienteRepositories;
             this.usuarioRepositories = usuarioRepositories;
-            this.passwordEncoder = passwordEncoder;
             this.rolService = rolService;
         }
 
@@ -43,9 +39,6 @@ public class ClienteServiceImpl implements ClienteService {
             // Buscar rol CLIENTE
             Rol rol = rolService.buscarPorNombre("Cliente").get(0);
             cliente.setRol(rol);
-
-            // Encriptar contraseña
-            cliente.setContra_clien(passwordEncoder.encode(cliente.getContra_clien()));
 
             // Guardar cliente
             Cliente clienteGuardado = clienteRepositories.save(cliente);

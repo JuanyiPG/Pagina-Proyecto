@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/materiaprima")
+@RequestMapping("/admin/materiaprima")
 public class MateriaPrimaController {
 
     private final MateriaPrimaService materiaPrimaService;

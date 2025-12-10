@@ -8,22 +8,19 @@ import com.sustentacion.luxyfashion.services.RolService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
 @Controller
-@RequestMapping("/cliente")
+@RequestMapping("/admin/cliente")
 public class ClienteController {
 
     private final ClienteService clienteService;
     private final RolService rolService;
-    private final PasswordEncoder passwordEncoder;
 
-    public ClienteController(RolService rolService, ClienteService clienteService,PasswordEncoder passwordEncoder ){
+    public ClienteController(RolService rolService, ClienteService clienteService ){
         this.clienteService = clienteService;
         this.rolService = rolService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     // LISTA DE CLIENTES (esta NO es la vista de registro)
