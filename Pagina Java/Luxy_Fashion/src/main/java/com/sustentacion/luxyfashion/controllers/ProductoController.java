@@ -22,11 +22,11 @@ public class  ProductoController {
     }
 
     // LISTAR
-    @GetMapping
+    @GetMapping()
     public String listar(Model model) {
         List<Producto> productos = productoService.listaproductoasc();
         model.addAttribute("productos", productos);
-        return "producto/lista"; // Cambia al HTML real cuando lo agregues
+        return "/admin/producto/indexproducto"; // Cambia al HTML real cuando lo agregues
     }
 
     // FORMULARIO NUEVO
@@ -34,7 +34,7 @@ public class  ProductoController {
     public String nuevo(Model model) {
         model.addAttribute("producto", new Producto());
         model.addAttribute("producciones", produccionService.findAllByOrderAsc());
-        return "producto/form";
+        return "/admin/producto/indexproducto";
     }
 
     // GUARDAR
@@ -80,6 +80,6 @@ public class  ProductoController {
         model.addAttribute("productos", productos);
         model.addAttribute("filtro", filtro);
 
-        return "producto/lista"; // Cambia al HTML correcto luego
+        return "/admin/producto/indexproducto"; // Cambia al HTML correcto luego
     }
 }
