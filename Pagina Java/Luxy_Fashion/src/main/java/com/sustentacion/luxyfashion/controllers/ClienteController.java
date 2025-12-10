@@ -3,8 +3,11 @@ package com.sustentacion.luxyfashion.controllers;
 import com.sustentacion.luxyfashion.models.Cliente;
 import com.sustentacion.luxyfashion.models.Empleado;
 import com.sustentacion.luxyfashion.models.Rol;
+import com.sustentacion.luxyfashion.models.Usuario;
 import com.sustentacion.luxyfashion.services.ClienteService;
 import com.sustentacion.luxyfashion.services.RolService;
+import com.sustentacion.luxyfashion.services.UsuarioService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,10 +20,25 @@ public class ClienteController {
 
     private final ClienteService clienteService;
     private final RolService rolService;
+    private final UsuarioService usuarioService;
 
-    public ClienteController(RolService rolService, ClienteService clienteService ){
+    public ClienteController(RolService rolService, ClienteService clienteService, UsuarioService usuarioService ){
         this.clienteService = clienteService;
         this.rolService = rolService;
+        this.usuarioService = usuarioService;
+    }
+
+    //proteger pagina
+    @GetMapping("/cliente/index")
+    public String clienteIndex(HttpSession session) {
+
+        Usuario u = (Usuario) session.getAttribute("usuarioLogueado");
+
+        if (u == null || !u.getRol().equals("CLIENTE")) {
+            return "redirect:/login";
+        }
+
+        return "cliente/indexcliente";
     }
 
     // LISTA DE CLIENTES (esta NO es la vista de registro)
@@ -28,6 +46,7 @@ public class ClienteController {
     public String index(Model model){
         List<Cliente> clientes = clienteService.listarOrdenAsc();
         model.addAttribute("clientes", clientes);
+        model.addAttribute("cliente", new Cliente());
         return "cliente/indexcliente"; // Vista correcta para listar
     }
 
@@ -35,7 +54,7 @@ public class ClienteController {
     @GetMapping("/nuevo")
     public String mostrarFormulario(Model model) {
         model.addAttribute("cliente", new Cliente());
-        return "login/LoginRegistro";
+        return "login/loginRegistro";
     }
 
     @PostMapping("/registrar")
@@ -46,7 +65,7 @@ public class ClienteController {
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("cliente", cliente);
-            return "login/LoginRegistro";
+            return "login/loginRegistro";
         }
     }
 
@@ -75,4 +94,14 @@ public class ClienteController {
         model.addAttribute("clientes", clientes);
         return "cliente/indexcliente";
     }
+
+    @PostMapping("/registro")
+    public String registrar(Usuario usuario) {
+
+        usuario.setRol("CLIENTE");  // aquí asignas el rol
+        usuarioService.guardar(usuario);
+
+        return "redirect:/login";  // ruta donde tienes tu login actual
+    }
+
 }

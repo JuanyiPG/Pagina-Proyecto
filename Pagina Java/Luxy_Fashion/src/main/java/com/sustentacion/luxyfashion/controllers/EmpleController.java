@@ -2,8 +2,10 @@ package com.sustentacion.luxyfashion.controllers;
 
 import com.sustentacion.luxyfashion.models.Empleado;
 import com.sustentacion.luxyfashion.models.Rol;
+import com.sustentacion.luxyfashion.models.Usuario;
 import com.sustentacion.luxyfashion.services.EmpleService;
 import com.sustentacion.luxyfashion.services.RolService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,18 @@ public class EmpleController {
     public EmpleController ( RolService rolService,EmpleService empleService){
         this.empleService = empleService;
         this.rolService = rolService;
+    }
+
+    @GetMapping("/index")
+    public String empleadoIndex(HttpSession session) {
+
+        Usuario u = (Usuario) session.getAttribute("usuarioLogueado");
+
+        if (u == null || !u.getRol().equals("EMPLEADO")) {
+            return "redirect:/login"; // Si no es empleado o no está logueado
+        }
+
+        return "empleadopage/indexempleado"; // Vista de empleado
     }
 
     @GetMapping()

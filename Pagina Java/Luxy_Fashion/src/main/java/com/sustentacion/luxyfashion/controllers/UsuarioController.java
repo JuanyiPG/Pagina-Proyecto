@@ -1,12 +1,8 @@
 package com.sustentacion.luxyfashion.controllers;
 
-import com.sustentacion.luxyfashion.models.Cliente;
 import com.sustentacion.luxyfashion.models.Usuario;
-import com.sustentacion.luxyfashion.services.EmpleService;
-import com.sustentacion.luxyfashion.services.RolService;
 import com.sustentacion.luxyfashion.services.UsuarioService;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,19 +13,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/login")
 public class UsuarioController {
-    @Autowired
-    private UsuarioService usuarioService;
+
+    private final UsuarioService usuarioService;
 
     public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
 
-    @GetMapping("/login")
-    public String formLogin() {
-        return "login"; // tu página de login
+    @GetMapping
+    public String mostrarLogin() {
+        return "login/loginRegistro"; // tu vista login.html
     }
 
-    @PostMapping("/login")
+    @PostMapping
     public String login(@RequestParam String username,
                         @RequestParam String contraseña,
                         HttpSession session,
@@ -43,32 +39,22 @@ public class UsuarioController {
             switch (u.getRol()) {
 
                 case "ADMIN":
-                    return "redirect:/admin/index";
+                    return "redirect:/admin";  // tu home de admin
 
                 case "EMPLEADO":
-                    return "redirect:/empleado/index";
+                    return "redirect:/empleado"; // home empleado
 
                 case "CLIENTE":
-                    return "redirect:/cliente/index";
+                    return "redirect:/cliente"; // home cliente
 
                 default:
                     model.addAttribute("error", "Rol no reconocido");
-                    return "login";
+                    return "login/loginRegistro";
             }
 
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
-            return "login";
+            return "login/loginRegistro";
         }
     }
-
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/auth/login";
-    }
-
 }
-
-
-
