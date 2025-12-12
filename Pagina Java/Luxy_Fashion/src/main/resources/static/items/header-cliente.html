@@ -1,6 +1,5 @@
-
-<div class="navbar-cliente">
-    <nav id="mainNav" class="main-nav">
+<div class="navbar-cliente" xmlns:th="http://www.w3.org/1999/xhtml">
+    <nav id="mainNav"  th:fragment="Headercliente" class="main-nav">
         <div class="menu">
             <div class="menu-l">
                 <button id="btnHamburguesa" class="btn-hamburger" aria-label="Menú">
@@ -8,7 +7,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
                          class="bi bi-list" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/></svg>
                 </button>
-                <a href="../Cliente/index-cliente.html">
+                <a th:href="@{/Cliente/index-cliente.html}">
                     <img src="../IMG/Logo_Luxy_Fashion.png" alt="Logo" class="logo">
                 </a>
             </div>
