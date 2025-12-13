@@ -51,7 +51,7 @@
             <div class="form-group">
                 <input type="password" placeholder="Contraseña" th:field="*{contrasena}">
                 <select th:field="*{rol.id_rol}" required style="border-radius:8px">
-                    <option value="" disabled selected>-- Seleccione un rol --</option>
+                    <option value="" disabled >-- Seleccione un rol --</option>
                     <option th:each="r : ${roles}"
                             th:value="${r.id_rol}"
                             th:text="${r.nomRol}">

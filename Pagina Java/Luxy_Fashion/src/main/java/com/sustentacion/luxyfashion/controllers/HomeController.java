@@ -14,6 +14,13 @@ public class HomeController {
 
     @GetMapping("/admin")//el httpsesion es para comprobar el registro
     public String adminIndex(HttpSession session) {
+
+        Usuario u = (Usuario) session.getAttribute("usuarioLogueado");
+
+        if (u == null || !u.getRol().equals("ADMIN")) {
+            return "redirect:/admin/cliente";
+        }
+
         return "admin/indexadmin"; // tu vista admin
     }
 

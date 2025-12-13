@@ -46,23 +46,9 @@ public class EmpleController {
         return "empleado/indexemple"; // Vista de empleado
     }
 
-    @GetMapping("/admin")//el httpsesion es para comprobar el registro
-    public String adminIndex(HttpSession session) {
-
-        Usuario u = (Usuario) session.getAttribute("usuarioLogueado");
-
-        if (u == null || !u.getRol().equals("ADMIN")) {
-            return "redirect:/admin/cliente";
-        }
-
-        return "admin/indexadmin"; // tu vista admin
-    }
-
     @GetMapping("/nuevo")
     public String nuevo(Model model){
         Empleado empleado = new Empleado();
-        empleado.setRol(new Rol()); // <-- Aquí está la magia
-
         model.addAttribute("empleado", empleado);
         model.addAttribute("roles", rolService.listar()); // <-- Lo necesitas para llenar el select
         return "admin/empleado/emple_index";
@@ -71,9 +57,6 @@ public class EmpleController {
     @PostMapping("/guardar")
     public String guardar(Empleado empleado){
         //Asignar el rol
-        System.out.println("Rol enviado:");
-        System.out.println("objeto rol: " + empleado.getRol());
-        System.out.println("id del rol: " + empleado.getRol().getId_rol());
         Rol rolSeleccionado = rolService.buscarPorId(empleado.getRol().getId_rol());
         empleado.setRol(rolSeleccionado);
         empleService.guardar(empleado);
