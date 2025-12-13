@@ -35,19 +35,19 @@ public class EmpleServiceImpl implements EmpleService {
         if (empleRepositories.existsByCorreo(empleado.getCorreo()))
             throw new IllegalArgumentException("Correo ya registrado");
 
-        Rol rol = rolService.buscarPorNombre("Empleado").get(0);
-        empleado.setRol(rol);
         Empleado empleadoGuardado = empleRepositories.save(empleado);
 
         Usuario usuario = new Usuario();
         usuario.setUsername(empleado.getUsuario());
         usuario.setContrasena(empleado.getContrasena());
-        usuario.setRol("EMPLEADO");
+        usuario.setRol(empleado.getRol().getNomRol().toUpperCase());
         usuario.setEmpleado(empleadoGuardado);
         usuarioRepositories.save(usuario);
 
         return empleadoGuardado;
     }
+
+
 @Override
 public List<Empleado> listar(){
     return empleRepositories.findAll();
