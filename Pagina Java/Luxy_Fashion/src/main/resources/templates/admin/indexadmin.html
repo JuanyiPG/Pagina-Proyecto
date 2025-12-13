@@ -278,29 +278,6 @@
     });
 </script>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-      function actualizarNotificaciones() {
-        fetch("../PHP/NOTIFICACIONES/contar_notis.php")
-          .then(response => response.text())
-          .then(data => {
-            const noti = document.getElementById("notiCount");
-            if (noti) {
-              noti.textContent = data;
-              if (parseInt(data) === 0) {
-                noti.style.display = "none";
-              } else {
-                noti.style.display = "inline-block";
-              }
-            }
-          })
-          .catch(error => console.error("Error cargando notificaciones:", error));
-      }
-      actualizarNotificaciones();
-      setInterval(actualizarNotificaciones, 10000);
-    });
-</script>
-
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>

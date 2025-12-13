@@ -41,12 +41,24 @@ public class EmpleController {
     public String empleadoIndex(HttpSession session) {
         Usuario u = (Usuario) session.getAttribute("usuarioLogueado");
         if (u == null || !u.getRol().equals("EMPLEADO")) {
-            return "redirect:/login"; // Si no es empleado o no está logueado
+            return "redirect:/admin/cliente"; // Si no es empleado o no está logueado
         }
         return "empleado/indexemple"; // Vista de empleado
     }
 
-    @GetMapping("/admin/nuevo")
+    @GetMapping("/admin")//el httpsesion es para comprobar el registro
+    public String adminIndex(HttpSession session) {
+
+        Usuario u = (Usuario) session.getAttribute("usuarioLogueado");
+
+        if (u == null || !u.getRol().equals("ADMIN")) {
+            return "redirect:/admin/cliente";
+        }
+
+        return "admin/indexadmin"; // tu vista admin
+    }
+
+    @GetMapping("/nuevo")
     public String nuevo(Model model){
         Empleado empleado = new Empleado();
         empleado.setRol(new Rol()); // <-- Aquí está la magia

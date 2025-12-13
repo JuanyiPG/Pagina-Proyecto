@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Editar empleado</title>
     <link rel="stylesheet" href="../../CSS/index.css">
-    <link rel="stylesheet" th:href="@{../CSS/index.css}">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
     <img src="../IMG/logoB.png" height="100PX" style = "margin-left: 48%;">
 </head>
 <body>
@@ -28,7 +28,7 @@
             <label >Tipo Identificacion:</label>
             <input type="text" name="tipo_identificacion" th:field="*{tipo_identificacion}"  >
             <label >Numero Identificacion:</label>
-            <input type="date" name="num_indetificacion" th:field="*{num_indetificacion}"  >
+            <input type="text" name="num_indetificacion" th:field="*{num_indetificacion}"  >
             <label >Salario:</label>
             <input type="text" name="salari_emple" th:field="*{salari_emple}" >
             <label >Estado:</label>
@@ -36,7 +36,7 @@
             <label >Nombre de usuario:</label>
             <input type="text" name="usuario"  th:field="*{usuario}" >
             <label >Contraseña:</label>
-            <input type="text" name="contraseña" th:field="*{contraseña}"  >
+            <input type="text" name="contraseña" th:field="*{contrasena}"  >
             <label>nombre rol:</label>
             <input type="text" name="id_rol_fk_emple" th:field="*{rol}"  >
 

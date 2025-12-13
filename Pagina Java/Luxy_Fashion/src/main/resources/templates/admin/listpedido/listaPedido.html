@@ -3,124 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <title>Gestión de Empleados</title>
-    <link rel="stylesheet" th:href="@{../css/index.css}">
-    <style>
-        /* Centrar toda la tabla en la página */
-body {
-    background-color: #ffffff; /* Fondo blanco general */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh; /* Para que ocupe toda la altura y esté centrada verticalmente */
-    margin: 0;
-    font-family: Arial, sans-serif;
-}
-
-/* Estilo de la tabla */
-table {
-    border-collapse: collapse;
-    width: 90%; /* Ajusta al tamaño que quieras */
-    max-width: 1200px;
-    background-color: #fff; /* Fondo blanco de la tabla */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    margin: 20px auto;
-    text-align: center;
-}
-
-/* Encabezado */
-table thead th {
-    background-color: #5a1f2b; /* burdeos oscuro */
-    color: #fff;
-    padding: 10px;
-    font-weight: bold;
-    border: 1px solid #4a1520;
-}
-
-/* Filas de la tabla */
-table tbody td {
-    padding: 10px;
-    border: 1px solid #ddd;
-}
-
-/* Alternar colores de filas opcional */
-table tbody tr:nth-child(even) {
-    background-color: #f8f8f8;
-}
-
-/* Botones de acción */
-.btn-accion {
-    background-color: #5a1f2b;
-    color: white;
-    padding: 5px 10px;
-    text-decoration: none;
-    border-radius: 4px;
-    margin: 2px;
-    display: inline-block;
-    transition: background-color 0.3s;
-}
-
-.btn-accion:hover {
-    background-color: #7c2840;
-}
-
-/* Mensaje de “No se encontraron resultados” */
-tbody tr td[colspan] {
-    text-align: center;
-    font-style: italic;
-    color: #5a1f2b;
-    padding: 15px;
-}
-    </style>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/sweetalert2@11}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}">
+    <title>Gestión de Pedidos</title>
 </head>
-<!-- Header admin -->
+<body class="body2">
+
 <div th:replace="~{itemss/headeradmin :: miHeader}"></div>
-<table xmlns:th="http://www.w3.org/1999/xhtml">
-    <thead>
-    <tr>
-        <th>Id</th>
-        <th>Nombre</th>
-        <th>direccion</th>
-        <th>Telefono</th>
-        <th>Telefono</th>
-        <th>Correo</th>
-        <th>Acciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="r : ${cliente}">
-        <td th:text="${r.id_pedido}"></td>
-        <td th:text="${r.nomPed}"></td>
-        <td th:text="${r.dir_clien}"></td>
-        <td th:text="${r.tel_clien}"></td>
-        <td th:text="${r.correo}"></td>
 
-        <td>
-            <a class="btn-accion" th:href="@{'/cliente/editar/' + ${r.id_clien}}">Actualizar</a>
-            <a class="btn-eliminar" th:href="@{'/cliente/eliminar/' + ${r.id_clien}}" style="margin-top: 10px">Eliminar</a>
-        </td>
-    </tr>
-    <tr th:if="${cliente!= null and #lists.isEmpty(cliente)}">
-        <td colspan="15">No se encontraron resultados</td>
-    </tr>
-    </tbody>
-</table>
-</div>
+<div class="main">
+    <div class="card">
+        <h1>INSERTAR PEDIDO</h1>
+        <form th:action="@{/pedido/guardar}" th:object="${pedido}" method="post">
 
-<!---------JAVA SCRIPT----->
-<!------HEADER----------------->
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-      const toggleBtn = document.getElementById("formToggle");
-      const submenu = document.getElementById("submenuForm");
+            <!-- Campos readonly -->
+            <div>
+                <label>Link:</label>
+                <input type="text" th:field="*{link_ped}" value="luxyfashion/index/..." readonly>
+            </div>
 
-      toggleBtn.addEventListener("click", function(e) {
-        e.preventDefault();
-        submenu.classList.toggle("show");
-      });
-    });
-</script>
+            <div>
+                <label>Nombre:</label>
+                <input type="text" th:field="*{nomPed}" value="BLUSA HOMBRO DESCUBIERTO" readonly>
+            </div>
 
-</body>
-</html>
+            <div>
+                <label>Material:</label>
+                <input type="text" th:field="*{material_ped}" value="Algodon" readonly>
+            </div>
+
+            <div>
+                <label>Valor:</label>
+                <input type="text" th:field="*{valor_ped}" value="45000" readonly>
+            </div>
+
+            <!-- Talla -->
+            <div>
+                <label>Talla:</label>
+                <input type="radio" th:field="*{talla_ped}" value="S"> S
+                <input type="radio" th:field="*{talla_ped}" value="M"> M
+                <input type="radio" th:field="*{talla_ped}" value="L"> L
+                <input type="radio" th:field="*{talla_ped}" value="XL"> XL
+                <input type="radio" th:field="*{talla_ped}" value="XXL"> XXL
+            </div>
+
+            <!-- Color -->
+            <div>
+                <label>Color:</label>
+                <input type="radio" th:field="*{color_ped}" value="Rojo"> Rojo
+                <input type="radio" th:field="*{color_ped}" value="Gris"> Gris
+                <input type="radio" th:field="*{color_ped}" value="Blanco"> Blanco
+                <input type="radio" th:field="*{color_ped}" value="Negro"> Negro
+            </div>
+
+            <!-- Categoría -->
+            <div>
+                <label>Categoría:</label>
+                <input type="text" th:field="*{categoria_ped}" value="Blusa" readonly>
+            </div>
+
+            <div>
+                <label for="cantidad">Cantidad:</label>
+                <input type="number" th:field="*{cant_ped}">
+            </div>
+
+            <div>
+                <label>Descripción:</label>
+                <input type="text" th:field="*{desc_ped}" value="camisa de algodon ajustada al cuerpo" readonly>
+            </div>
+
+            <!-- Cliente / Materia Prima -->
+            <div>
+                <label>Materia Prima:</label>
+                <select th:field="*{cliente.id_clien}">
+                    <option value="">Seleccione...</option>
+                    <option th:each="mat : ${clientes}"
+                            th:value="${mat.id_clien}"
+                            th:text="${mat.nomClien}"></option>
+                </select>
+            </div>
+
+            <button type="submit">Comprar</button>
+        </form>
+
+        <div id="mensaje" th:if="${param.success}" style="color:purple; font-weight:bold; margin-bottom:10px;">
+            ¡Se insertó correctamente!
+        </div>
+    </div>
+
+    <!-- BUSCADOR -->
+    <div id="search" class="search">
+        <form th:action="@{/pedido/buscar}" method="get">
+            <input type="text" name="buscar" placeholder="Escribe lo que quieras consultar" id="searchInput">
+            <input type="submit" value="Buscar" id="btnSearch">
+        </form>
+    </div>
+
+    <!-- TABLA DE PEDIDOS -->
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Talla</th>

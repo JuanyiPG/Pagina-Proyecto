@@ -10,7 +10,7 @@
 <body class= "body">
 <div class="container-1">
     <div class="formulario-1">
-        <form th:action="@{/roles/guardar}" method="post" th:object="${rol}">
+        <form th:action="@{/admin/roles/guardar}" method="post" th:object="${rol}">
             <h1 th:text="${rol != null and rol.id_rol != null} ? 'Editar Rol' : 'Nuevo Rol'"></h1>
             <input type="hidden" name="id_rol" th:field="*{id_rol}">
             <label >Rol: </label>

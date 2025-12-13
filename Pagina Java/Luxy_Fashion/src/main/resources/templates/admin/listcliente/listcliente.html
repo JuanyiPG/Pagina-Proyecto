@@ -89,29 +89,21 @@ tbody tr td[colspan] {
     <thead>
     <tr>
         <th>Id</th>
-        <th>Fecha</th>
-        <th>Total</th>
-        <th>Metodo Pago</th>
-        <th>Estado</th>
-        <th>Nombre Empleado</th>
-        <th>Acciones</th>
+        <th>Nombre</th>
+        <th>Dirección</th>
+        <th>Teléfono</th>
+        <th>Correo</th>
+        <th>Usuario</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="r : ${cliente}">
+    <tr th:each="r : ${clientes}">
         <td th:text="${r.id_clien}"></td>
         <td th:text="${r.nomClien}"></td>
         <td th:text="${r.dir_clien}"></td>
         <td th:text="${r.tel_clien}"></td>
         <td th:text="${r.correo}"></td>
         <td th:text="${r.usuario}"></td>
-        <td th:text="${r.usuario}"></td>
-        <td th:text="${r.usuario}"></td>
-
-        <td>
-            <a class="btn-accion" th:href="@{'/cliente/editar/' + ${r.id_clien}}">Actualizar</a>
-            <a class="btn-eliminar" th:href="@{'/cliente/eliminar/' + ${r.id_clien}}" style="margin-top: 10px">Eliminar</a>
-        </td>
     </tr>
     <tr th:if="${cliente!= null and #lists.isEmpty(cliente)}">
         <td colspan="15">No se encontraron resultados</td>

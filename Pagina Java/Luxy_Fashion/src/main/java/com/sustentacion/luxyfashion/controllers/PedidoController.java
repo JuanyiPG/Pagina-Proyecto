@@ -31,7 +31,7 @@ public class  PedidoController {
         model.addAttribute("pedidos", pedidos);
         model.addAttribute("pedido", new Pedido());
         model.addAttribute("clientes", clienteService.listar());
-        return "/cliente/pedido";
+        return "admin/listpedido/listaPedido";
     }
 
     // ============================
@@ -41,7 +41,7 @@ public class  PedidoController {
     public String nuevo(Model model) {
         model.addAttribute("pedido", new Pedido());
         model.addAttribute("clientes", clienteService.listar());
-        return "/cliente/pedido";
+        return "admin/listpedido/listaPedido";
     }
 
     // ============================
@@ -73,7 +73,7 @@ public class  PedidoController {
 
         model.addAttribute("pedido", pedido);
         model.addAttribute("clientes", clienteService.listar());
-        return "pedido/editar_pedido";
+        return "admin/listpedido/listaPedido";
     }
 
     // ============================
@@ -94,6 +94,6 @@ public class  PedidoController {
         model.addAttribute("pedidos", pedidos);
         model.addAttribute("pedido", new Pedido());
         model.addAttribute("clientes", clienteService.listar());
-        return "pedido/pedido_index";
+        return "/admin/listpedido/listaPedido";
     }
 }
