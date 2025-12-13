@@ -16,4 +16,9 @@ public class HomeController {
     public String adminIndex(HttpSession session) {
         return "admin/indexadmin"; // tu vista admin
     }
+
+    @GetMapping("/productoCliente")
+    public String producto(){
+        return "cliente/pedido";
+    }
 }

@@ -33,11 +33,12 @@
             </div>
             <div class="form-group">
                 <label for="empleado">Empleado:</label>
-                <select id="empleado" th:field="*{empleado.id_emple}" required>
-                    <option value="" disabled selected>Seleccione empleado</option>
-                    <th:block th:each="m : ${empleados}">
-                        <option th:value="${m.id_emple}" th:text="${m.nomEmple}"></option>
-                    </th:block>
+                <select th:field="*{empleado.id_emple}" required style="border-radius:8px">
+                    <option value="" disabled selected>-- Seleccione un empleado --</option>
+                    <option th:each="e : ${empleados}"
+                            th:value="${e.id_emple}"
+                            th:text="${e.nombre}">
+                    </option>
                 </select>
 
                 <button type="submit" class="save-btn">Insertar</button>

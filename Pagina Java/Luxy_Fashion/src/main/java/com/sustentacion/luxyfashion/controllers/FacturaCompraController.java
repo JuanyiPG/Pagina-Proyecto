@@ -1,7 +1,7 @@
 package com.sustentacion.luxyfashion.controllers;
 
+import com.sustentacion.luxyfashion.models.Empleado;
 import com.sustentacion.luxyfashion.models.FacturaCompra;
-import com.sustentacion.luxyfashion.models.FacturaVenta;
 import com.sustentacion.luxyfashion.services.FacturaCompraService;
 import com.sustentacion.luxyfashion.services.EmpleService;
 import org.springframework.stereotype.Controller;
@@ -23,7 +23,6 @@ public class FacturaCompraController {
         this.empleadoService = empleadoService;
     }
 
-    // Listar todas las facturas (con filtro opcional)
     @GetMapping()
     public String listarParaEmpleado(Model model, @RequestParam(required = false) String filtro) {
         List<FacturaCompra> lista;
@@ -33,12 +32,10 @@ public class FacturaCompraController {
             lista = facturaCompraService.listar();
         }
         model.addAttribute("facturas", lista);
-        model.addAttribute("facturaCompra", new FacturaCompra());
         model.addAttribute("filtro", filtro);
         return "admin/facturacompra/indexcompra";
     }
 
-    // Mostrar formulario para crear o editar
     @GetMapping("/form")
     public String mostrarFormulario(@RequestParam(required = false) Integer id, Model model) {
         FacturaCompra facturaCompra = (id != null)
@@ -50,23 +47,27 @@ public class FacturaCompraController {
         model.addAttribute("facturaCompra", facturaCompra);
 
         // Lista de empleados para el select
-        model.addAttribute("empleados", empleadoService.listar());
+        List<Empleado> empleados = empleadoService.listar();
+        model.addAttribute("empleados", empleados);
 
-        return "admin/facturacompra/indexcompra";
+        return "admin/facturacompra/formcompra"; // mejor un template dedicado al formulario
     }
 
-    // Guardar o actualizar
     @PostMapping("/guardar")
-    public String guardar(@ModelAttribute FacturaCompra facturaCompra) {
+    public String guardar(@ModelAttribute FacturaCompra facturaCompra, @RequestParam Integer id_emple_fk) {
+        // Asignar el empleado seleccionado
+        Empleado empleado = empleadoService.buscarPorId(id_emple_fk);
+        facturaCompra.setEmpleado(empleado);
+
         facturaCompraService.guardar(facturaCompra);
-        return "redirect:/admin/facturacompra/editarcompra";
+        return "redirect:/admin/facturacompra";
     }
 
-    // Eliminar factura
+
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Integer id) {
         facturaCompraService.eliminar(id);
-        return "redirect:/admin/facturacompra/indexcompra";
+        return "redirect:/admin/facturacompra";
     }
 
     // Buscar por filtro

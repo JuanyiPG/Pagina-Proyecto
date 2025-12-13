@@ -48,7 +48,7 @@ import java.util.List;
         public String editar(@PathVariable Integer id, Model model) { //el Path ayuda a direccionar el metodo y saber cual se debe de editar
             Rol rol = rolService.buscarPorId(id);
              if (rol == null){
-                 return "redirect:/rol?error=not_found";
+                 return "redirect:/admin/roles?error=not_found";
              }
             model.addAttribute("rol", rol);
             return "admin/roles/EDITAR_ROL"; //<- aqui se direcciona a que html va

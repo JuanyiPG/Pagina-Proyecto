@@ -38,16 +38,19 @@ public class UsuarioController {
 
             switch (u.getRol()) {
 
-                case "ADMIN":
-                    return "redirect:admin/index";  // tu home de admin
+                case "ADMINN":
+                    return "redirect:/administrador/index";  // tu home de admin
 
                 case "EMPLEADO":
 // home empleado
-                    return "redirect:admin/empleado/index"; // home empleado
+                    return "redirect:/admin/empleado/admin"; // home empleado
 
 
                 case "CLIENTE":
                     return "redirect:/admin/cliente/index"; // home cliente
+
+                case "ADMIN":
+                    return "redirect:/administrador/index";
 
                 default:
                     model.addAttribute("error", "Rol no reconocido");

@@ -43,7 +43,7 @@ public class Empleado {
     private BigDecimal salari_emple;
     private String estado_emple;
     private String usuario;
-    private String contraseña;
+    private String contrasena;
 
     @ManyToOne
     @JoinColumn(name = "id_rol_fk_emple")

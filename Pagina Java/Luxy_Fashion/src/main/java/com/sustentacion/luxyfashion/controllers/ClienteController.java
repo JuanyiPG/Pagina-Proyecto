@@ -29,6 +29,14 @@ public class ClienteController {
         return "login/loginRegistro"; // tu plantilla Thymeleaf
     }
 
+    @GetMapping("/listar")
+    public String listar(Model model) {
+        List<Cliente> clientes = clienteService.listar();
+        model.addAttribute("clientes", clientes);
+        model.addAttribute("cliente", new Cliente());
+        return "admin/listcliente/listcliente"; // tu plantilla Thymeleaf
+    }
+
     @GetMapping("/index")
     public String clienteIndex(HttpSession session) {
         Usuario u = (Usuario) session.getAttribute("usuarioLogueado");
@@ -78,7 +86,7 @@ public class ClienteController {
     @GetMapping("/eliminar/{id}")
     public String eliminarCliente(@PathVariable Integer id) {
         clienteService.eliminarClienteUsuario(id);
-        return "redirect:/admin/cliente";
+        return "redirect:/admin/cliente/listar";
     }
 
     // Buscar clientes por filtro (opcional)
@@ -86,6 +94,6 @@ public class ClienteController {
     public String buscarClientes(@RequestParam String filtro, Model model) {
         List<Cliente> clientes = clienteService.buscarVariosCampos(filtro);
         model.addAttribute("clientes", clientes);
-        return "login/loginRegistro";
+        return "ladmin/listcliente/listcliente";
     }
 }

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script th:src="@{https://cdn.jsdelivr.net/npm/sweetalert2@11}"></script>
-    <link rel="stylesheet" type="text/css" th:href="@{../css/index.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}">
     <title>Gestión de Empleados</title>
 </head>
 <body class="body2">
@@ -49,7 +49,7 @@
                 <input type="text" placeholder="Usuario" th:field="*{usuario}">
             </div>
             <div class="form-group">
-                <input type="password" placeholder="Contraseña" th:field="*{contraseña}">
+                <input type="password" placeholder="Contraseña" th:field="*{contrasena}">
                 <select th:field="*{rol.id_rol}" required style="border-radius:8px">
                     <option value="" disabled selected>-- Seleccione un rol --</option>
                     <option th:each="r : ${roles}"
@@ -116,8 +116,8 @@
                 <a class="btn-eliminar" th:href="@{'/admin/empleado/eliminar/' + ${r.id_emple}}" style="margin-top: 10px">Eliminar</a>
             </td>
         </tr>
-        <tr>
-            <td colspan="15">No se encontraron resultados</td>
+        <tr th:if="${#lists.isEmpty(roles)}">
+            <td colspan="3">No se encontraron resultados</td>
         </tr>
         </tbody>
     </table>

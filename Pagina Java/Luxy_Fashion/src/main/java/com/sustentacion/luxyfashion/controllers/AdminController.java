@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/administrador")
 public class AdminController {
 
     @GetMapping("/index")//el httpsesion es para comprobar el registro
@@ -16,9 +16,9 @@ public class AdminController {
         Usuario u = (Usuario) session.getAttribute("usuarioLogueado");
 
         if (u == null || !u.getRol().equals("ADMIN")) {
-            return "redirect:/login";
+            return "redirect:/administrador";
         }
 
-        return "admin/indexadmin"; // tu vista admin
+        return "/admin/indexadmin"; // tu vista admin
     }
 }
