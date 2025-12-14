@@ -24,7 +24,8 @@ public interface PedidoRepositorio extends JpaRepository<Pedido, Integer> {
             "LOWER(p.desc_ped) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +
             "LOWER(CAST(p.fecha_ped AS string)) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +
             "LOWER(CAST(p.subtotal_ped AS string)) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +
-            "LOWER(CAST(p.valor_ped AS string)) LIKE LOWER(CONCAT('%', :filtro, '%'))")
+            "LOWER(CAST(p.valor_ped AS string)) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +
+            "LOWER(CAST(p.metodo_pago AS string)) LIKE LOWER(CONCAT('%', :filtro, '%'))")
     List<Pedido> buscarvarioscampos(@Param("filtro") String filtro);
 }
 

@@ -17,19 +17,19 @@
 <div class="form-group">
     <input type="date" placeholder="Fecha inicio"
            onfocus="this.type='date'" onblur="if(!this.value) this.type='text'" th:field="*{fechaIniProducc}">
-    <input type="number" th:field="*{cant_producc}" placeholder="Cantidad">
+    <input type="number" th:field="*{cant_producc}" id="cantidad" placeholder="Cantidad">
  </div>
 
     <div class="form-group">
-    <input type="number" th:field="*{costo_mano_obra_producc}" placeholder="Costo Mano de Obra">
+    <input type="number" th:field="*{costo_mano_obra_producc}" id="manoObra" placeholder="Costo Mano de Obra">
 
-    <input type="number" th:field="*{costo_mat_producc}" placeholder="Costo Material">
+    <input type="number" th:field="*{costo_mat_producc}" id="SubTotal" placeholder="Costo Material">
     </div>
 
         <div class="form-group">
-    <input type="number" th:field="*{costo_iva_producc}" placeholder="Costo IVA">
+    <input type="number" th:field="*{costo_iva_producc}" id="Iva" placeholder="Costo IVA">
 
-    <input type="number" th:field="*{costo_total_producc}" placeholder="Costo Total">
+    <input type="number" th:field="*{costo_total_producc}" id="Total" placeholder="Costo Total">
         </div>
 
     <div class="form-group">
@@ -123,6 +123,27 @@
       });
     });
 </script>
+<!--calculo-->
+<script>
+const subTotal = document.getElementById("SubTotal");
+const iva = document.getElementById("Iva");
+const total = document.getElementById("Total");
+const manoObra = document.getElementById("manoObra");
+const cant = document.getElementById("cantidad")
 
+function calcularTotal() {
+const sub = parseFloat(subTotal.value) || 0;
+const ivaPct = parseFloat(iva.value) || 0;
+const mano = parseFloat(manoObra.value) || 0;
+
+const tot = mano + sub + (sub * ivaPct / 100);
+
+total.value = tot.toFixed(2); // 2 decimales
+
+}
+
+subTotal.addEventListener("input", calcularTotal);
+iva.addEventListener("input", calcularTotal);
+</script>
 </body>
 </html>
