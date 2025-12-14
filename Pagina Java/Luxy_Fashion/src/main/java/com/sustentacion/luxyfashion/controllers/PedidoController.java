@@ -22,9 +22,6 @@ public class  PedidoController {
         this.clienteService = clienteService;
     }
 
-    // ============================
-    // LISTAR ORDENADOS (A-Z)
-    // ============================
     @GetMapping()
     public String listarOrdenados(Model model) {
         List<Pedido> pedidos = pedidoService.findAllByOrderAsc();
@@ -34,19 +31,22 @@ public class  PedidoController {
         return "admin/listpedido/listaPedido";
     }
 
-    // ============================
-    // MOSTRAR FORMULARIO NUEVO
-    // ============================
+    @GetMapping("/listemple")
+    public String listarOrden(Model model) {
+        List<Pedido> pedidos = pedidoService.findAllByOrderAsc();
+        model.addAttribute("pedidos", pedidos);
+        model.addAttribute("pedido", new Pedido());
+        model.addAttribute("clientes", clienteService.listar());
+        return "empleado/pedido/listpedido";
+    }
+
     @GetMapping("/nuevo")
     public String nuevo(Model model) {
         model.addAttribute("pedido", new Pedido());
         model.addAttribute("clientes", clienteService.listar());
-        return "admin/listpedido/listaPedido";
+        return "empleado/pedido/listpedido";
     }
 
-    // ============================
-    // GUARDAR PEDIDO
-    // ============================
     @PostMapping("/guardar")
     public String guardar(Pedido pedido) {
 
@@ -60,9 +60,7 @@ public class  PedidoController {
         return "redirect:/pedido?success=true";
     }
 
-    // ============================
-    // EDITAR PEDIDO
-    // ============================
+
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Integer id, Model model) {
         Pedido pedido = pedidoService.buscarPorId(id);
@@ -76,9 +74,7 @@ public class  PedidoController {
         return "admin/listpedido/listaPedido";
     }
 
-    // ============================
-    // BUSCAR EN TODOS LOS CAMPOS
-    // ============================
+
     @GetMapping("/buscar")
     public String buscar(@RequestParam(name = "buscar", required = false) String filtro,
                          Model model) {

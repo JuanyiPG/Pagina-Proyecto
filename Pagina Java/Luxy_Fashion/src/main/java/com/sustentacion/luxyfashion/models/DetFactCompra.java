@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DetFactCompra {
+public class  DetFactCompra {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_det_fcm;

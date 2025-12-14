@@ -6,7 +6,7 @@
     <title>Fctura Venta</title>
     <link rel="stylesheet" href="../../CSS/index.css">
 <body class="body2">
-
+<div th:replace="~{itemss/headeremple :: miHeader}"></div>
 <div class="main">
     <div class="card">
         <h1>Gestión de factura venta</h1>
@@ -28,22 +28,21 @@
                 <input type="text" name="estado_factura_venta" placeholder="Estado" th:field="*{estado_factuv}" required>
             </div>
             <div class="form-group">
-                <label for="empleado">Empleado</label>
-                <select th:field="*{empleado.id_empl}" class="form-control" required>
-                    <option th:each="e : ${empleados}" th:value="${e.id_empl}" th:text="${e.nomEmple}">Empleado</option>
+
+                <select th:field="*{empleado.id_emple}" class="form-control" required>
+                    <option value="">Empleado</option>
+                    <option th:each="e : ${empleados}" th:value="${e.id_emple}" th:text="${e.nomEmple}">Empleado</option>
                 </select>
-            </div>
-            <div class="form-group">
-                <label for="cliente">Cliente</label>
+
                 <select th:field="*{cliente.id_clien}" class="form-control" required>
+                    <option value="">Cliente</option>
                     <option th:each="c : ${clientes}" th:value="${c.id_clien}" th:text="${c.nomClien}">Cliente</option>
                 </select>
-            </div>
 
-            <div class="form-group">
-                <label for="pedido">Pedido</label>
                 <select th:field="*{pedido.id_pedido}" class="form-control" required>
-                    <option th:each="p : ${pedidos}" th:value="${p.id_pedido}" th:text="${p.descripcion}">Pedido</option>
+
+                    <option value="">Pedido</option>
+                    <option th:each="p : ${pedidos}" th:value="${p.id_pedido}" th:text="${p.descripcion}"></option>
                 </select>
             </div>
             <div id="mensaje" th:if="${param.success}" style="color:purple; font-weight:bold; margin-bottom:10px;">

@@ -1,96 +1,323 @@
-/* Centrar toda la tabla en la página */
-body {
-    background-color: #ffffff; /* Fondo blanco general */
-    display: flex;
-    justify-content: center;
+/*----Menu Lateral-----*/
+
+
+
+.sidebar {
+      background-image: linear-gradient(to bottom, rgb(255, 255, 255), #5c0b26);
+      width: max-content;
+      height: 100vh;
+      border: #50061f solid 1px;
+      border-radius: 10px;
+      padding: 2rem 1rem;
+      overflow: scroll;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .list_sidebar_a{
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+    }
+
+    .element_sidebar {
+      padding: .8rem 1.3rem;
+      border-radius: 3px;
+      display: grid;
+      align-items: center;
+      grid-template-columns: 50px 0fr;
+      color: #50061f;
+      fill: #5c0b26;
+      transition: grid-template-columns .4s;
+    }
+
+    .sidebar:hover .element_sidebar {
+      grid-template-columns: 40px 1fr;
+    }
+
+    .element_sidebar:not(:has(.sidebar_icon_logo)):hover {
+      background-color: #5e092593;
+      color: #fff;
+      fill: #fff;
+      cursor: pointer;
+    }
+
+    .element_sidebar:has(.sidebar_icon_logo) {
+      margin-bottom: 1rem;
+    }
+
+    .sidebar-icon {
+      width: 100%;
+      overflow: hidden;
+      justify-self: center;
+    }
+
+    .sidebar_icon_logo {
+      max-width: 50px;
+    }
+
+    .sidebar_icon_avatar {
+      width: 30px;
+      height: 3 0px;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .sidebar_element_avatar {
+      margin-top: auto;
+      text-wrap: nowrap;
+      text-align: left;
+      color: #fff;
+    }
+
+    .sidebar_Title {
+      padding-left: 1.3rem;
+    }
+
+    .sidebar-logo,
+    .sidebar_text {
+      padding-left: 1.3rem;
+    }
+
+    .sidebar_hide {
+      overflow: hidden;
+    }
+
+    .sidebar_hide_a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .sidebar_hide_a:hover {
+      color: #fff;
+    }
+
+
+  .submenu {
+      display: none;
+      flex-direction: column;
+      padding-left: 2rem;
+      margin: 0;
+      list-style: none;
+      gap: .3rem;
+    }
+
+    .submenu.show {
+      display: flex;
+    }
+
+    .submenu li {
+      padding: .5rem .8rem;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 5px;
+      transition: background 0.3s, color 0.3s;
+      color: #50061f;
+    }
+
+    .submenu li:hover {
+      background: #5c0b26;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .submenu li a {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+.sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+li a {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+/*-----------FORMULARIOS ADMIN-----------------------------------------------------------------*/
+
+    .body2 {
+      display: flex;
+      height: 100vh;
+      background-color: #f5f6fa;
+      box-sizing: border-box;
+      justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Para que ocupe toda la altura y esté centrada verticalmente */
-    margin: 0;
-    font-family: Arial, sans-serif;
+    }
+
+
+    form .form-group {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    form .form-group input {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      outline: none;
+      font-size: 14px;
+    }
+
+    form .form-group input:focus {
+      border-color: rgb(104, 10, 41);
+    }
+
+    .save-btn {
+      margin-top: 10px;
+      background: rgb(104, 10, 41);
+      color: #fff;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: bold;
+      transition: 0.3s;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .save-btn:hover {
+      background: #8c1238;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 200px 20px  20px -70%;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    table th, table td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    table th {
+      background: #5e0925;
+      color: white;
+      font-size: 14px;
+    }
+
+    table td {
+      font-size: 14px;
+    }
+
+    .btn-accion {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #fff;
+      background-color: #5e0925;
+      margin: 2px;
+      text-decoration: none;
+    }
+
+    a.btn-eliminar {
+          padding: 6px 12px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 13px;
+          color: #fff;
+          background-color: #5e0925;
+          margin: 2px;
+          text-decoration: none;
+        }
+
+    .btn {
+      display: inline-block;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #fff;
+      background-color: #5e0925;
+      margin: 2px;
+      text-decoration: none;
+    }
+
+    .btn-accion:hover {
+      background-color: #8c1238;
+    }
+
+        /*-------buscador-----*/
+.search{
+    width: 50%;
+    background: #f5f6fa;
+    margin: 20px 20px 20px 30%;
 }
 
-/* Estilo de la tabla */
-table {
-    border-collapse: collapse;
-    width: 90%; /* Ajusta al tamaño que quieras */
-    max-width: 1200px;
-    background-color: #fff; /* Fondo blanco de la tabla */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    margin: 20px auto;
-    text-align: center;
-}
-
-/* Encabezado */
-table thead th {
-    background-color: #5a1f2b; /* burdeos oscuro */
-    color: #fff;
-    padding: 10px;
-    font-weight: bold;
-    border: 1px solid #4a1520;
-}
-
-/* Filas de la tabla */
-table tbody td {
-    padding: 10px;
-    border: 1px solid #ddd;
-}
-
-/* Alternar colores de filas opcional */
-table tbody tr:nth-child(even) {
-    background-color: #f8f8f8;
-}
-
-/* Botones de acción */
-.btn-accion {
-    background-color: #5a1f2b;
-    color: white;
-    padding: 5px 10px;
-    text-decoration: none;
-    border-radius: 4px;
-    margin: 2px;
-    display: inline-block;
-    transition: background-color 0.3s;
-}
-
-.btn-accion:hover {
-    background-color: #7c2840;
-}
-
-/* Mensaje de “No se encontraron resultados” */
-tbody tr td[colspan] {
-    text-align: center;
-    font-style: italic;
-    color: #5a1f2b;
-    padding: 15px;
-}
-        /* Contenedor del buscador */
-#search {
-    width: 90%;
-    max-width: 1200px;
-    margin: 20px auto; /* separación de la tabla y centrado */
-    text-align: center;
-}
-
-/* Input y botón */
-#search input[type="text"] {
-    padding: 8px 12px;
-    width: 60%;
-    max-width: 400px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-#search input[type="submit"] {
-    padding: 8px 16px;
+.search input{
+    width: 65%;
+    height: 35px;
+    padding: 5px;
     border: none;
-    background-color: #5a1f2b;
-    color: white;
-    border-radius: 4px;
-    margin-left: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
 }
 
-#search input[type="submit"]:hover {
-    background-color: #7c2840;
+.search input[type="text"]{
+margin-left: 20px;
+border: 2px solid #5e0925 ;
+border-radius: 20px;
+}
+
+.search input[type="submit"]{
+    width: 20%;
+    height: 40px;
+    background-color: #5e0925;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 5px 5px 5px 0px;
+    border-radius: 20px;
+}
+
+.results {
+    width: 80%;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.items {
+    background-color: gray;
+    padding: 15px;
+    border-radius: 4px;
+    transition: all 0.5s ease;
+    cursor: pointer;
+}
+
+.items hover {
+    transform: scale(1.05);
 }

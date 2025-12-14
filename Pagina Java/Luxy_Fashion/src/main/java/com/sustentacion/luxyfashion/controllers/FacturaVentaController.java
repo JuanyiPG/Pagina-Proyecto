@@ -31,9 +31,6 @@ public class FacturaVentaController {
         this.pedidoService = pedidoService;
     }
 
-    // =====================
-    // LISTAR FACTURAS
-    // =====================
     @GetMapping()
     public String listar(Model model, @RequestParam(required = false) String filtro) {
         List<FacturaVenta> facturas;
@@ -51,12 +48,9 @@ public class FacturaVentaController {
         model.addAttribute("clientes", clienteService.listar());
         model.addAttribute("pedidos", pedidoService.listar());
 
-        return "admin/facturaventa/listventa";
+        return "empleado/factventa/indexfacventa";
     }
 
-    // =====================
-    // NUEVA / EDITAR FACTURA
-    // =====================
     @GetMapping("/form")
     public String mostrarFormulario(@RequestParam(required = false) Integer id, Model model) {
         FacturaVenta factura = (id != null)
@@ -68,7 +62,7 @@ public class FacturaVentaController {
         model.addAttribute("clientes", clienteService.listar());
         model.addAttribute("pedidos", pedidoService.listar());
 
-        return "admin/facturaventa/form_venta"; // Vista específica para el formulario
+        return "empleado/factventa/indexfacventa"; // Vista específica para el formulario
     }
 
     @PostMapping("/guardar")
@@ -77,26 +71,18 @@ public class FacturaVentaController {
         return "redirect:/admin/facturaventa?success=true";
     }
 
-    // =====================
-    // EDITAR FACTURA
-    // =====================
+
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Integer id, Model model) {
         return mostrarFormulario(id, model);
     }
 
-    // =====================
-    // ELIMINAR FACTURA
-    // =====================
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Integer id) {
         facturaVentaService.eliminar(id);
         return "redirect:/admin/facturaventa?deleted=true";
     }
 
-    // =====================
-    // BUSCAR FACTURA
-    // =====================
     @GetMapping("/buscar")
     public String buscar(@RequestParam(name="buscar", required = false) String filtro, Model model) {
         List<FacturaVenta> facturas;
