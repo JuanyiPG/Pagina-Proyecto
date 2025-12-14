@@ -37,6 +37,14 @@ public class ClienteController {
         return "admin/listcliente/listcliente"; // tu plantilla Thymeleaf
     }
 
+    @GetMapping("/listaremple")
+    public String listaremple(Model model) {
+        List<Cliente> clientes = clienteService.listar();
+        model.addAttribute("clientes", clientes);
+        model.addAttribute("cliente", new Cliente());
+        return "empleado/listcliente/listcliente"; // tu plantilla Thymeleaf
+    }
+
     @GetMapping("/index")
     public String clienteIndex(HttpSession session) {
         Usuario u = (Usuario) session.getAttribute("usuarioLogueado");

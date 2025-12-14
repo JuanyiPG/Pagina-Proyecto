@@ -39,7 +39,6 @@ public class UsuarioController {
             switch (u.getRol()) {
 
                 case "EMPLEADO":
-// home empleado
                     return "redirect:/admin/empleado/index"; // home empleado
 
                 case "CLIENTE":
