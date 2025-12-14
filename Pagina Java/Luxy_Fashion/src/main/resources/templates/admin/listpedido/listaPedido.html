@@ -1,45 +1,56 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script th:src="@{https://cdn.jsdelivr.net/npm/sweetalert2@11}"></script>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}">
-    <title>Gestión de Pedidos</title>
+    <title>Pedidos</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
 </head>
+
 <body class="body2">
 
 <div th:replace="~{itemss/headeradmin :: miHeader}"></div>
 
 <div class="main">
     <div class="card">
-        <h1>INSERTAR PEDIDO</h1>
-        <form th:action="@{/pedido/guardar}" th:object="${pedido}" method="post">
+        <h1>GESTIÓN DE PEDIDOS</h1>
 
-            <!-- Campos readonly -->
-            <div>
-                <label>Link:</label>
-                <input type="text" th:field="*{link_ped}" value="luxyfashion/index/..." readonly>
+        <!-- FORMULARIO -->
+        <form th:action="@{/pedido/guardar}"
+              method="post"
+              th:object="${pedido}"
+              class="formulario-mensaje">
+
+            <div class="form-group">
+                <input type="text" placeholder="Link"
+                       th:field="*{link_ped}" readonly>
+                <input type="text" placeholder="Nombre"
+                       th:field="*{nomPed}" readonly>
             </div>
 
-            <div>
-                <label>Nombre:</label>
-                <input type="text" th:field="*{nomPed}" value="BLUSA HOMBRO DESCUBIERTO" readonly>
+            <div class="form-group">
+                <input type="text" placeholder="Material"
+                       th:field="*{material_ped}" readonly>
+                <input type="number" placeholder="Valor"
+                       th:field="*{valor_ped}" readonly>
             </div>
 
-            <div>
-                <label>Material:</label>
-                <input type="text" th:field="*{material_ped}" value="Algodon" readonly>
+            <div class="form-group">
+                <input type="text" placeholder="Categoría"
+                       th:field="*{categoria_ped}" readonly>
+                <input type="number" placeholder="Cantidad"
+                       th:field="*{cant_ped}" required>
             </div>
 
-            <div>
-                <label>Valor:</label>
-                <input type="text" th:field="*{valor_ped}" value="45000" readonly>
+            <div class="form-group">
+                <input type="text" placeholder="Descripción"
+                       th:field="*{desc_ped}" readonly>
             </div>
 
-            <!-- Talla -->
-            <div>
-                <label>Talla:</label>
+            <!-- TALLA -->
+            <div class="form-group">
+                <label>Talla:</label><br>
                 <input type="radio" th:field="*{talla_ped}" value="S"> S
                 <input type="radio" th:field="*{talla_ped}" value="M"> M
                 <input type="radio" th:field="*{talla_ped}" value="L"> L
@@ -47,62 +58,91 @@
                 <input type="radio" th:field="*{talla_ped}" value="XXL"> XXL
             </div>
 
-            <!-- Color -->
-            <div>
-                <label>Color:</label>
+            <!-- COLOR -->
+            <div class="form-group">
+                <label>Color:</label><br>
                 <input type="radio" th:field="*{color_ped}" value="Rojo"> Rojo
                 <input type="radio" th:field="*{color_ped}" value="Gris"> Gris
                 <input type="radio" th:field="*{color_ped}" value="Blanco"> Blanco
                 <input type="radio" th:field="*{color_ped}" value="Negro"> Negro
             </div>
 
-            <!-- Categoría -->
-            <div>
-                <label>Categoría:</label>
-                <input type="text" th:field="*{categoria_ped}" value="Blusa" readonly>
-            </div>
-
-            <div>
-                <label for="cantidad">Cantidad:</label>
-                <input type="number" th:field="*{cant_ped}">
-            </div>
-
-            <div>
-                <label>Descripción:</label>
-                <input type="text" th:field="*{desc_ped}" value="camisa de algodon ajustada al cuerpo" readonly>
-            </div>
-
-            <!-- Cliente / Materia Prima -->
-            <div>
-                <label>Materia Prima:</label>
-                <select th:field="*{cliente.id_clien}">
-                    <option value="">Seleccione...</option>
-                    <option th:each="mat : ${clientes}"
-                            th:value="${mat.id_clien}"
-                            th:text="${mat.nomClien}"></option>
+            <!-- CLIENTE -->
+            <div class="form-group">
+                <select th:field="*{cliente.id_clien}" required>
+                    <option value="">Seleccione cliente</option>
+                    <option th:each="c : ${clientes}"
+                            th:value="${c.id_clien}"
+                            th:text="${c.nomClien}">
+                    </option>
                 </select>
             </div>
 
-            <button type="submit">Comprar</button>
+            <button type="submit" class="save-btn">Guardar</button>
         </form>
-
-        <div id="mensaje" th:if="${param.success}" style="color:purple; font-weight:bold; margin-bottom:10px;">
-            ¡Se insertó correctamente!
-        </div>
     </div>
 
     <!-- BUSCADOR -->
-    <div id="search" class="search">
+    <div class="search">
         <form th:action="@{/pedido/buscar}" method="get">
-            <input type="text" name="buscar" placeholder="Escribe lo que quieras consultar" id="searchInput">
-            <input type="submit" value="Buscar" id="btnSearch">
+            <input type="text" name="filtro" placeholder="Buscar...">
+            <input type="submit" value="Buscar">
         </form>
     </div>
 
-    <!-- TABLA DE PEDIDOS -->
+    <!-- TABLA -->
     <table>
         <thead>
         <tr>
             <th>ID</th>
             <th>Nombre</th>
             <th>Talla</th>
+            <th>Color</th>
+            <th>Cantidad</th>
+            <th>Valor</th>
+            <th>Cliente</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="p : ${pedidos}">
+            <td th:text="${p.id_ped}"></td>
+            <td th:text="${p.nomPed}"></td>
+            <td th:text="${p.talla_ped}"></td>
+            <td th:text="${p.color_ped}"></td>
+            <td th:text="${p.cant_ped}"></td>
+            <td th:text="${p.valor_ped}"></td>
+            <td th:text="${p.cliente != null ? p.cliente.nomClien : 'Sin cliente'}"></td>
+
+            <td>
+                <a class="btn-accion"
+                   th:href="@{'/pedido/editar/' + ${p.id_ped}}">Editar</a>
+                <a class="btn-eliminar"
+                   th:href="@{'/pedido/eliminar/' + ${p.id_ped}}">Eliminar</a>
+            </td>
+        </tr>
+
+        <tr th:if="${#lists.isEmpty(pedidos)}">
+            <td colspan="8">No se encontraron resultados.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Scripts -->
+<script th:src="@{/js/confirmacion.js}"></script>
+<script th:src="@{/js/eliminar.js}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const toggleBtn = document.getElementById("formToggle");
+      const submenu = document.getElementById("submenuForm");
+
+      toggleBtn?.addEventListener("click", function(e) {
+        e.preventDefault();
+        submenu?.classList.toggle("show");
+      });
+    });
+</script>
+</body>
+</html>

@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script th:src="@{https://cdn.jsdelivr.net/npm/sweetalert2@11}"></script>
     <title>Materia Prima</title>
-    <link rel="stylesheet" th:href="@{/CSS/index.css}">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
 </head>
 
 <body class="body2">
@@ -94,5 +95,19 @@
         </table>
 </div>
 
+<!-- Scripts -->
+<script th:src="@{/js/confirmacion.js}"></script>
+<script th:src="@{/js/eliminar.js}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const toggleBtn = document.getElementById("formToggle");
+      const submenu = document.getElementById("submenuForm");
+
+      toggleBtn?.addEventListener("click", function(e) {
+        e.preventDefault();
+        submenu?.classList.toggle("show");
+      });
+    });
+</script>
 </body>
 </html>
