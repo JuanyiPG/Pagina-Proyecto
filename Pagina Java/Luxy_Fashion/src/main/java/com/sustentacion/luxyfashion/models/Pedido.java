@@ -35,6 +35,7 @@ public class Pedido {
     private BigDecimal subtotal_ped;
     private BigDecimal valor_ped;
     private boolean estado_ped;
+    private String metodo_pago;
 
     @ManyToOne
     @JoinColumn(name="id_clien_fk_ped", referencedColumnName = "id_clien")
