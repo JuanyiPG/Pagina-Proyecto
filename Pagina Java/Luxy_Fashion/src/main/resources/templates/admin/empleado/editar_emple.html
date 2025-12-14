@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Editar empleado</title>
-    <link rel="stylesheet" href="../../CSS/index.css">
     <link rel="stylesheet" th:href="@{/css/index.css}">
-    <img src="../IMG/logoB.png" height="100PX" style = "margin-left: 48%;">
+    <img th:src="@{/IMG/logoB.png}" height="100PX" style = "margin-left: 48%;">
 </head>
 <body>
 <div class="container-1">
@@ -37,8 +36,8 @@
             <input type="text" name="usuario"  th:field="*{usuario}" >
             <label >Contraseña:</label>
             <input type="text" name="contraseña" th:field="*{contrasena}"  >
-            <label>nombre rol:</label>
-            <input type="text" name="id_rol_fk_emple" th:field="*{rol}"  >
+            <select type="text" name="id_rol_fk_emple" th:field="*{rol.nomRol}">
+            </select>
 
             <button type="submit">Actualizar</button>
         </form>
