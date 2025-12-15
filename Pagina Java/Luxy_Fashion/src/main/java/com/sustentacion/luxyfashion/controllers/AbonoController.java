@@ -3,8 +3,10 @@ package com.sustentacion.luxyfashion.controllers;
 import com.sustentacion.luxyfashion.models.Abono;
 import com.sustentacion.luxyfashion.models.Empleado;
 import com.sustentacion.luxyfashion.models.FacturaVenta;
+import com.sustentacion.luxyfashion.models.Pedido;
 import com.sustentacion.luxyfashion.services.AbonoService;
 import com.sustentacion.luxyfashion.services.FacturaVentaService;
+import com.sustentacion.luxyfashion.services.PedidoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,37 +18,49 @@ import java.util.List;
 public class AbonoController {
 
     private final AbonoService abonoService;
-    private final FacturaVentaService facturaVentaService;
+    private final PedidoService pedidoService;
 
-    public AbonoController(AbonoService abonoService, FacturaVentaService facturaVentaService) {
+    public AbonoController(AbonoService abonoService, PedidoService pedidoService) {
         this.abonoService = abonoService;
-        this.facturaVentaService = facturaVentaService;
+        this.pedidoService = pedidoService;
     }
 
     // Mostrar la lista de abonos
     @GetMapping()
     public String listarAbonos(Model model) {
         List<Abono> abonos = abonoService.listar();
-        List<FacturaVenta> facturas = facturaVentaService.listar(); // para el select
+        List<Pedido> pedidos = pedidoService.listar(); // para el select
         model.addAttribute("abonos", abonos);
-        model.addAttribute("facturas", facturas);
+        model.addAttribute("pedidos", pedidos);
         model.addAttribute("abono", new Abono()); // para el formulario
-        return "admin/listabono/listaAbono"; // tu HTML de listado/registro
+        return "cliente/abono"; // tu HTML de listado/registro
+    }
+
+    @GetMapping("/lista/admin")
+    public String listarAdmin(Model model) {
+        List<Abono> abonos = abonoService.listar();
+        List<Pedido> pedidos = pedidoService.listar(); // para el select
+        model.addAttribute("abonos", abonos);
+        model.addAttribute("pedidos", pedidos);
+        model.addAttribute("abono", new Abono()); // para el formulario
+        return "admin/listabono/abono"; // tu HTML de listado/registro
+    }
+
+    @GetMapping("/lista/emple")
+    public String listarEmple(Model model) {
+        List<Abono> abonos = abonoService.listar();
+        List<Pedido> pedidos = pedidoService.listar(); // para el select
+        model.addAttribute("abonos", abonos);
+        model.addAttribute("pedidos", pedidos);
+        model.addAttribute("abono", new Abono()); // para el formulario
+        return "empleado/listabono/abono"; // tu HTML de listado/registro
     }
 
     // Guardar un abono
     @PostMapping("/guardar")
-    public String guardarAbono(@ModelAttribute("abono") Abono abono,
-                               @RequestParam("facturaId") Integer facturaId) {
-
-        FacturaVenta factura = facturaVentaService.buscarPorId(facturaId);
-
-        if (factura != null) {
-            abono.setFacturaVenta(factura); // asignar la factura al abono
-            abonoService.guardar(abono);    // guardar el abono en la BD
-        }
-
-        return "redirect:empleado?success=true";
+    public String guardarAbono(@ModelAttribute Abono abono) {
+        abonoService.guardar(abono);
+        return "redirect:/pedido/confirmacion";
     }
 
     // Eliminar un abono
@@ -65,11 +79,11 @@ public class AbonoController {
         } else {
             abonos = abonoService.listar();
         }
-        List<FacturaVenta> facturas = facturaVentaService.listar(); // para el select
+        List<Pedido> pedidos = pedidoService.listar();// para el select
         model.addAttribute("abonos", abonos);
-        model.addAttribute("facturas", facturas);
+        model.addAttribute("pedidos", pedidos);
         model.addAttribute("abono", new Abono());
-        return "admin/listabono/listaAbono";
+        return "cliente/abono";
     }
 
     @GetMapping("/editar/{id}")
@@ -81,4 +95,19 @@ public class AbonoController {
         model.addAttribute("abono", abono);
         return "admin/empleado/editar_emple";
     }
+
+    @GetMapping("/abono/nuevo/{idPedido}")
+    public String nuevoAbono(@PathVariable Integer idPedido, Model model) {
+
+        Pedido pedido = pedidoService.buscarPorId(idPedido);
+
+        Abono abono = new Abono();
+        abono.setPedido(pedido);
+
+        model.addAttribute("abono", abono);
+        model.addAttribute("pedido", pedido);
+
+        return "cliente/abono";
+    }
+
 }

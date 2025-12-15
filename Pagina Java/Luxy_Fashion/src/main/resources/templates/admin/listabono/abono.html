@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>Gestión de Empleados</title>
+    <link rel="stylesheet" th:href="@{/CSS/listas.css}">
+</head>
+<body class="body2">
+<!-- Header admin -->
+<div th:replace="~{itemss/headeremple :: miHeader}"></div>
+
+<div id="search" class="search">
+    <form th:action="@{/abono/buscar}" method="get">
+        <input type="text" name="buscar" placeholder="Escribe lo que quieras consultar" id="searchInput">
+        <input type="submit" value="Buscar" id="btnSearch">
+    </form>
+</div>
+<thead>
+<tr>
+    <th>ID</th>
+    <th>Fecha</th>
+    <th>Monto</th>
+    <th>Método de pago</th>
+    <th>Descripción</th>
+    <th>Factura</th>
+    <th>Acciones</th>
+</tr>
+</thead>
+<tbody>
+<tr th:each="abono : ${abonos}">
+    <td th:text="${abono.id_abono}"></td>
+    <td th:text="${#dates.format(abono.fechaabono, 'yyyy-MM-dd')}"></td>
+    <td th:text="${abono.monto_abono}"></td>
+    <td th:text="${abono.metodo_pago}"></td>
+    <td th:text="${abono.descripcion}"></td>
+    <td th:text="${abono.facturaVenta != null ? 'ID: ' + abono.facturaVenta.id_factuv : 'N/A'}"></td>
+    <td>
+        <a th:href="@{/abono/eliminar/{id}(id=${abono.id_abono})}"
+           onclick="return confirm('¿Desea eliminar este abono?')">Eliminar</a>
+    </td>
+</tr>
+<tr th:if="${abonos != null and #lists.isEmpty(abonos)}">
+    <td colspan="3">No se encontraron resultados</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!---------JAVA SCRIPT--------->
+<script src="/js/confirmacion.js"></script>
+<script src="/js/eliminar.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const toggleBtn = document.getElementById("formToggle");
+      const submenu = document.getElementById("submenuForm");
+
+      toggleBtn.addEventListener("click", function(e) {
+        e.preventDefault();
+        submenu.classList.toggle("show");
+      });
+    });
+</script>
+</body>
+</html>

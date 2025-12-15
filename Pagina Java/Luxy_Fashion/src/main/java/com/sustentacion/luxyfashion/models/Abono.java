@@ -28,7 +28,7 @@ public class Abono {
     private String descripcion;
 
     @ManyToOne
-    @JoinColumn(name = "id_factuv_fk_abono", referencedColumnName = "id_factuv")
-    private FacturaVenta facturaVenta;
+    @JoinColumn(name = "id_pedido_fk_abono", referencedColumnName = "id_pedido")
+    private Pedido pedido;
 
 }
