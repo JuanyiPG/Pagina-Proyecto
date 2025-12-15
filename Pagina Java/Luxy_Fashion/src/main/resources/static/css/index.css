@@ -323,7 +323,7 @@ footer p {
       border-radius: 10px;
       padding: 2rem 1rem;
       overflow: scroll;
-      display: flex;
+      display: fixed;
       flex-direction: column;
     }
 
@@ -332,24 +332,24 @@ footer p {
       padding: 0;
       margin: 0;
       flex: 1;
-      display: flex;
+      display: fixed;
       flex-direction: column;
       gap: .4rem;
     }
 
     .element_sidebar {
-      padding: .8rem 1.3rem;
+      padding: 0.8rem 0.3rem;
       border-radius: 3px;
       display: grid;
       align-items: center;
-      grid-template-columns: 50px 0fr;
+      grid-template-columns: 20px 0fr;
       color: #50061f;
       fill: #5c0b26;
       transition: grid-template-columns .4s;
     }
 
     .sidebar:hover .element_sidebar {
-      grid-template-columns: 40px 1fr;
+      grid-template-columns: 20px 1fr;
     }
 
     .element_sidebar:not(:has(.sidebar_icon_logo)):hover {
@@ -360,7 +360,7 @@ footer p {
     }
 
     .element_sidebar:has(.sidebar_icon_logo) {
-      margin-bottom: 1rem;
+      margin-bottom: 3rem;
     }
 
     .sidebar-icon {
@@ -575,7 +575,7 @@ li a {
     }
 
     table th, table td {
-      padding: 12px;
+      padding: 10px;
       text-align: center;
       border-bottom: 1px solid #ddd;
     }
@@ -583,7 +583,7 @@ li a {
     table th {
       background: #5e0925;
       color: white;
-      font-size: 14px;
+      font-size: 12px;
     }
 
     table td {

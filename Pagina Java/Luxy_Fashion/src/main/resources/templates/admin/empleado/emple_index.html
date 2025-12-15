@@ -28,11 +28,11 @@
             </div>
             <div class="form-group">
                 <input type="text" placeholder="Tipo de sangre" th:field="*{rh_emple}">
-                <input type="date" placeholder="Fecha nacimiento"
+                <input type="text" placeholder="Fecha nacimiento"
                        onfocus="this.type='date'" onblur="if(!this.value) this.type='text'" th:field="*{fecha_naci_emple}">
             </div>
             <div class="form-group">
-                <input type="date" placeholder="Fecha ingreso"
+                <input type="text" placeholder="Fecha ingreso"
                        onfocus="this.type='date'" onblur="if(!this.value) this.type='text'" th:field="*{fecha_ing_emple}">
                 <select th:field="*{tipo_identificacion}" style="border-radius: 8px">
                     <option value="CC">Cédula de Ciudadanía</option>
@@ -78,7 +78,6 @@
     <table>
         <thead>
         <tr>
-            <th>Código</th>
             <th>Nombre</th>
             <th>Teléfono</th>
             <th>Correo</th>
@@ -97,7 +96,6 @@
         </thead>
         <tbody>
         <tr th:each="r : ${empleados}">
-            <td th:text="${r.id_emple}"></td>
             <td th:text="${r.nomEmple}"></td>
             <td th:text="${r.tel_emple}"></td>
             <td th:text="${r.correo}"></td>
@@ -113,6 +111,8 @@
             <td th:text="${r.rol.nomRol}"></td>
             <td>
                 <a class="btn-accion" th:href="@{'/admin/empleado/editar/' + ${r.id_emple}}">Actualizar</a>
+                <br>
+                <br>
                 <a class="btn-eliminar" th:href="@{'/admin/empleado/eliminar/' + ${r.id_emple}}" style="margin-top: 10px">Eliminar</a>
             </td>
         </tr>
