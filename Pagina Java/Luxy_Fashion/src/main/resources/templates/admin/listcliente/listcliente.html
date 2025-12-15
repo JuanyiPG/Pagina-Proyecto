@@ -7,8 +7,17 @@
     <title>Gestión de Empleados</title>
     <link rel="stylesheet" th:href="@{/CSS/listas.css}">
 </head>
+<body class="body2">
 <!-- Header admin -->
 <div th:replace="~{itemss/headeradmin :: miHeader}"></div>
+
+<div id="search" class="search">
+    <form th:action="@{/admin/cliente/buscar}" method="get">
+        <input type="text" name="buscar" placeholder="Escribe una palabara" id="searchInput">
+        <input type="submit" value="Buscar" id="btnSearch">
+    </form>
+</div>
+
 <table xmlns:th="http://www.w3.org/1999/xhtml">
     <thead>
     <tr>

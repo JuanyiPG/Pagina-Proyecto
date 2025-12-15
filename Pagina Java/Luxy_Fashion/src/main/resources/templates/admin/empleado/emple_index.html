@@ -14,7 +14,7 @@
 
 <div class="main">
     <div class="card">
-        <h1 th:text="${empleado != null and empleado.id_emple != null} ? 'Editar Empleado' : 'Gestión de Empleados'"></h1>
+        <h1 th:text="${empleado != null and empleado.idEmple != null} ? 'Editar Empleado' : 'Gestión de Empleados'"></h1>
 
         <form class="formulario-mensaje" th:action="@{/admin/empleado/guardar}" method="post" th:object="${empleado}">
 
@@ -110,10 +110,10 @@
             <td th:text="${r.usuario}"></td>
             <td th:text="${r.rol.nomRol}"></td>
             <td>
-                <a class="btn-accion" th:href="@{'/admin/empleado/editar/' + ${r.id_emple}}">Actualizar</a>
+                <a class="btn-accion" th:href="@{'/admin/empleado/editar/' + ${r.idEmple}}">Actualizar</a>
                 <br>
                 <br>
-                <a class="btn-eliminar" th:href="@{'/admin/empleado/eliminar/' + ${r.id_emple}}" style="margin-top: 10px">Eliminar</a>
+                <a class="btn-eliminar" th:href="@{'/admin/empleado/eliminar/' + ${r.idEmple}}" style="margin-top: 10px">Eliminar</a>
             </td>
         </tr>
         <tr th:if="${#lists.isEmpty(roles)}">

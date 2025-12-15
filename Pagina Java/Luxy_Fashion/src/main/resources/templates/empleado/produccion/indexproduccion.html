@@ -40,7 +40,7 @@
     <div class="form-group">
     <select th:field="*{empleado}">
         <option value="">Empleado</option>
-        <option th:each="emp:${empleados}" th:value="${emp.id_emple}" th:text="${emp.nomEmple}"></option>
+        <option th:each="emp:${empleados}" th:value="${emp.idEmple}" th:text="${emp.nomEmple}"></option>
     </select>
     <select th:field="*{pedido}">
         <option value="">Pedido</option>

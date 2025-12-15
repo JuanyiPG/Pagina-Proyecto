@@ -34,7 +34,7 @@ public class ProduccionController {
     // ===========================
     // LISTAR + FILTRO
     // ===========================
-    @GetMapping("")
+    @GetMapping()
     public String listar(Model model, @RequestParam(required = false) String filtro) {
 
         List<Produccion> lista;
@@ -59,6 +59,30 @@ public class ProduccionController {
         return "empleado/produccion/indexproduccion";
     }
 
+    @GetMapping("/admin")
+    public String listarOrden(Model model, @RequestParam(required = false) String filtro) {
+
+        List<Produccion> lista;
+
+        if (filtro != null && !filtro.isEmpty()) {
+            lista = produccionService.buscarvarioscampos(filtro);
+        } else {
+            lista = produccionService.listar();
+        }
+
+        model.addAttribute("producciones", lista);
+        model.addAttribute("filtro", filtro);
+
+        // Para el formulario
+        model.addAttribute("produccion", new Produccion());
+
+        // Selects
+        model.addAttribute("empleados", empleadoService.listar());
+        model.addAttribute("pedidos", pedidoService.listar());
+        model.addAttribute("materias", materiaPrimaService.listar());
+
+        return "admin/listproduccion/indexproduccion";
+    }
     // ===========================
     // GUARDAR
     // ===========================

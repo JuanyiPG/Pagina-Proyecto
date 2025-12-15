@@ -32,21 +32,22 @@
             </div>
             <div class="form-group">
                 <label for="empleado">Empleado:</label>
-                <select th:field="*{empleado.id_emple}" required style="border-radius:8px">
+                <select th:field="*{empleado.idEmple}" required style="border-radius:8px">
                     <option value="" disabled selected>-- Seleccione un empleado --</option>
                     <option th:each="e : ${empleados}"
-                            th:value="${e.id_emple}"
-                            th:text="${e.nombre}">
+                            th:value="${e.idEmple}"
+                            th:text="${e.nomEmple}">
                     </option>
                 </select>
+                </div>
 
                 <button type="submit" class="save-btn">Insertar</button>
-            </div>
         </form>
 
         <div id="mensaje" th:if="${param.success}" style="color:purple; font-weight:bold; margin-bottom:10px;">
             ¡Se insertó correctamente!
         </div>
+    </div>
 
         <!-- BUSCADOR -->
         <div id="search" class="search">
@@ -87,7 +88,6 @@
             </tr>
             </tbody>
         </table>
-    </div>
 </div>
 
 <!-- Scripts -->

@@ -3,135 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <title>Producción</title>
-    <link rel="stylesheet" th:href="@{/CSS/index.css}">
-    <style>
-        /* Centrar toda la tabla en la página */
-body {
-    background-color: #ffffff; /* Fondo blanco general */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh; /* Para que ocupe toda la altura y esté centrada verticalmente */
-    margin: 0;
-    font-family: Arial, sans-serif;
-}
-
-/* Estilo de la tabla */
-table {
-    border-collapse: collapse;
-    width: 90%; /* Ajusta al tamaño que quieras */
-    max-width: 1200px;
-    background-color: #fff; /* Fondo blanco de la tabla */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    margin: 20px auto;
-    text-align: center;
-}
-
-/* Encabezado */
-table thead th {
-    background-color: #5a1f2b; /* burdeos oscuro */
-    color: #fff;
-    padding: 10px;
-    font-weight: bold;
-    border: 1px solid #4a1520;
-}
-
-/* Filas de la tabla */
-table tbody td {
-    padding: 10px;
-    border: 1px solid #ddd;
-}
-
-/* Alternar colores de filas opcional */
-table tbody tr:nth-child(even) {
-    background-color: #f8f8f8;
-}
-
-/* Botones de acción */
-.btn-accion {
-    background-color: #5a1f2b;
-    color: white;
-    padding: 5px 10px;
-    text-decoration: none;
-    border-radius: 4px;
-    margin: 2px;
-    display: inline-block;
-    transition: background-color 0.3s;
-}
-
-.btn-accion:hover {
-    background-color: #7c2840;
-}
-
-/* Mensaje de “No se encontraron resultados” */
-tbody tr td[colspan] {
-    text-align: center;
-    font-style: italic;
-    color: #5a1f2b;
-    padding: 15px;
-}
-    </style>
+    <title>Fctura Venta</title>
+    <link rel="stylesheet" href="../../CSS/listas.css">
 </head>
+<body class="body2">
 
 <div th:replace="~{itemss/headeradmin :: miHeader}"></div>
 
-<body>
-
-<h2>Gestión de Producción</h2>
-
 <!-- ========================= FORMULARIO ========================= -->
-<form th:action="@{/emple/produccion/guardar}" th:object="${produccion}" method="post">
-
-    <input type="hidden" th:field="*{id_producc}">
-
-    <label>Fecha Inicial:</label>
-    <input type="date" th:field="*{fechaIniProducc}">
-
-    <label>Cantidad:</label>
-    <input type="number" th:field="*{cant_producc}">
-
-    <label>Costo Mano Obra:</label>
-    <input type="number" th:field="*{costo_mano_obra_producc}">
-
-    <label>Costo Material:</label>
-    <input type="number" th:field="*{costo_mat_producc}">
-
-    <label>Costo IVA:</label>
-    <input type="number" th:field="*{costo_iva_producc}">
-
-    <label>Costo Total:</label>
-    <input type="number" th:field="*{costo_total_producc}">
-
-    <label>Fecha Fin:</label>
-    <input type="date" th:field="*{fecha_fin_producc}">
-
-    <label>Estado:</label>
-    <input type="text" th:field="*{estado_producc}">
-
-    <label>Empleado:</label>
-    <select th:field="*{empleado}">
-        <option value="">Seleccione...</option>
-        <option th:each="emp:${empleados}" th:value="${emp.id_emple}" th:text="${emp.nombre_emple}"></option>
-    </select>
-
-    <label>Pedido:</label>
-    <select th:field="*{pedido}">
-        <option value="">Seleccione...</option>
-        <option th:each="ped:${pedidos}" th:value="${ped.id_pedido}" th:text="${ped.id_pedido}"></option>
-    </select>
-
-    <label>Materia Prima:</label>
-    <select th:field="*{materiaPrima}">
-        <option value="">Seleccione...</option>
-        <option th:each="mat:${materias}" th:value="${mat.id_matp}" th:text="${mat.nomMatp}"></option>
-    </select>
-
-    <button type="submit">Guardar</button>
-</form>
-
-<br>
+<div id="search" class="search">
+    <form th:action="@{/admin/facturacompra/buscar}" method="get">
+        <input type="text" name="buscar" placeholder="Escribe lo que quieras consultar" id="searchInput">
+        <input type="submit" value="Buscar" id="btnSearch">
+    </form>
+</div>
 
 <!-- ========================= TABLA ========================= -->
 <table>
@@ -176,6 +61,41 @@ tbody tr td[colspan] {
 
     </tbody>
 </table>
+</div>
+<script th:src="@{/js/confirmacion.js}"></script>
+<script th:src="@{/js/eliminar.js}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const toggleBtn = document.getElementById("formToggle");
+      const submenu = document.getElementById("submenuForm");
 
+      toggleBtn?.addEventListener("click", function(e) {
+        e.preventDefault();
+        submenu?.classList.toggle("show");
+      });
+    });
+</script>
+<!--calculo-->
+<script>
+    const subTotal = document.getElementById("SubTotal");
+    const iva = document.getElementById("Iva");
+    const total = document.getElementById("Total");
+    const manoObra = document.getElementById("manoObra");
+    const cant = document.getElementById("cantidad")
+
+    function calcularTotal() {
+    const sub = parseFloat(subTotal.value) || 0;
+    const ivaPct = parseFloat(iva.value) || 0;
+    const mano = parseFloat(manoObra.value) || 0;
+
+    const tot = mano + sub + (sub * ivaPct / 100);
+
+    total.value = tot.toFixed(2); // 2 decimales
+
+    }
+
+    subTotal.addEventListener("input", calcularTotal);
+    iva.addEventListener("input", calcularTotal);
+</script>
 </body>
 </html>

@@ -26,29 +26,17 @@
         </div>
     </div>
 
-    <div id="search" class="search">
-        <form th:action="@{/admin/roles/buscar}" method="get">
-            <input type="text" name="nomRol" placeholder="Ingrese el nombre del rol" id="searchInput">
-            <input type="submit" value="Buscar" id="btnSearch">
-        </form>
-    </div>
-
     <table>
         <thead>
         <tr>
             <th>Código</th>
             <th>Rol</th>
-            <th>Acciones</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="r : ${roles}">
             <td th:text="${r.id_rol}"></td>
             <td th:text="${r.nomRol}"></td>
-            <td>
-                <a class="btn-accion" th:href="@{'/admin/roles/editar/' + ${r.id_rol}}">Actualizar</a>
-                <a class="btn-eliminar" th:href="@{'/admin/roles/eliminar/' + ${r.id_rol}}">Eliminar</a>
-            </td>
         </tr>
         <tr th:if="${#lists.isEmpty(roles)}">
             <td colspan="3">No se encontraron resultados</td>

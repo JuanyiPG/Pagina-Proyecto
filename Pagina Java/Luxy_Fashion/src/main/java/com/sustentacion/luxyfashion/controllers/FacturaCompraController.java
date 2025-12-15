@@ -33,6 +33,8 @@ public class FacturaCompraController {
         }
         model.addAttribute("facturas", lista);
         model.addAttribute("filtro", filtro);
+        model.addAttribute("facturaCompra", new FacturaCompra());
+        model.addAttribute("empleados", empleadoService.listar());
         return "admin/facturacompra/indexcompra";
     }
 
@@ -54,14 +56,17 @@ public class FacturaCompraController {
     }
 
     @PostMapping("/guardar")
-    public String guardar(@ModelAttribute FacturaCompra facturaCompra, @RequestParam Integer id_emple_fk) {
-        // Asignar el empleado seleccionado
-        Empleado empleado = empleadoService.buscarPorId(id_emple_fk);
-        facturaCompra.setEmpleado(empleado);
+    public String guardar(@ModelAttribute FacturaCompra facturaCompra) {
 
+        Integer idEmple = facturaCompra.getEmpleado().getIdEmple();
+        Empleado empleado = empleadoService.buscarPorId(idEmple);
+
+        facturaCompra.setEmpleado(empleado);
         facturaCompraService.guardar(facturaCompra);
+
         return "redirect:/admin/facturacompra";
     }
+
 
 
     @GetMapping("/eliminar/{id}")

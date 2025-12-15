@@ -11,32 +11,31 @@
     <div class="formulario-1">
         <form th:action="@{/admin/empleado/guardar}" method="post" th:object="${empleado}">
             <h1>Actualizar producto terminado</h1>
-            <input type="hidden" name="id_emple" th:field="*{id_emple}">
-            <label for="nom_empleado">Nombre: </label>
-            <input type="text" id="nom_empleado" name="nomEmple" th:field="*{nomEmple}" >
+            <input type="hidden" name="id_emple" th:field="*{idEmple}">
+            <input type="hidden" id="nom_empleado" name="nomEmple" th:field="*{nomEmple}" >
             <label for="direccion_empleado">Direccion: </label>
             <input type="text" id="direccion_empleado" name="dir_emple" th:field="*{dir_emple}"  >
-            <label for="tipo_sangre">Tipo de sangre: </label>
-            <input type="text" id="tipo_sangre" name="rh_emple" th:field="*{rh_emple}" >
+            <input type="hidden" id="tipo_sangre" name="rh_emple" th:field="*{rh_emple}" >
             <label>Telefono:</label>
             <input type="text" name="tel_emple"  th:field="*{tel_emple}" >
             <label> Correo:</label>
             <input type="text" name="correo_emple" th:field="*{correo}"  >
-            <label >Fecha de ingreso:</label>
-            <input type="date" name="fecha_ing_emple" th:field="*{fecha_ing_emple}"  >
-            <label >Tipo Identificacion:</label>
-            <input type="text" name="tipo_identificacion" th:field="*{tipo_identificacion}"  >
-            <label >Numero Identificacion:</label>
-            <input type="text" name="num_indetificacion" th:field="*{num_indetificacion}"  >
+            <input type="hidden" name="fecha_ing_emple" th:field="*{fecha_ing_emple}"  >
+            <input type="hidden" name="fecha_naci_emple" th:field="*{fecha_naci_emple}">
+            <input type="hidden" name="tipo_identificacion" th:field="*{tipo_identificacion}"  >
+            <input type="hidden" name="num_indetificacion" th:field="*{num_indetificacion}"  >
             <label >Salario:</label>
             <input type="text" name="salari_emple" th:field="*{salari_emple}" >
             <label >Estado:</label>
             <input type="text" name="estado_emple" th:field="*{estado_emple}" >
-            <label >Nombre de usuario:</label>
-            <input type="text" name="usuario"  th:field="*{usuario}" >
-            <label >Contraseña:</label>
-            <input type="text" name="contraseña" th:field="*{contrasena}"  >
-            <select type="text" name="id_rol_fk_emple" th:field="*{rol.nomRol}">
+            <input type="hidden" name="usuario"  th:field="*{usuario}" >
+            <input type="hidden" name="contraseña" th:field="*{contrasena}"  >
+            <select th:field="*{rol.id_rol}" required style="border-radius:8px">
+                <option value="" disabled >-- Seleccione un rol --</option>
+                <option th:each="r : ${roles}"
+                        th:value="${r.id_rol}"
+                        th:text="${r.nomRol}">
+                </option>
             </select>
 
             <button type="submit">Actualizar</button>

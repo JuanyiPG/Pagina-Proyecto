@@ -11,7 +11,7 @@
     <div class="formulario-1">
         <form th:action="@{/facturacompra/guardar}" method="post" th:object="${facturacompra}">
             <h1>Actualizar Factura Compra</h1>
-            <input type="hidden" name="id_emple" th:field="*{id_factuc}">
+            <input type="hidden" name="idEmple" th:field="*{id_factuc}">
             <label for="nom_empleado">Fecha: </label>
             <input type="date" id="nom_empleado" name="nomEmple" th:field="*{fechafactuc}" >
             <label for="direccion_empleado">Total: </label>

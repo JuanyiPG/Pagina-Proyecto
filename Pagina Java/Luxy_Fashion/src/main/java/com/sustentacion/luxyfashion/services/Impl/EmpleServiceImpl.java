@@ -29,26 +29,46 @@ public class EmpleServiceImpl implements EmpleService {
 
     @Override
     public Empleado guardar(Empleado empleado) {
-        if (empleRepositories.existsByUsuario(empleado.getUsuario()))
-            throw new IllegalArgumentException("Usuario ya en uso");
+        System.out.println("ID EMPLEADO RECIBIDO => " + empleado.getIdEmple());
 
-        if (empleRepositories.existsByCorreo(empleado.getCorreo()))
-            throw new IllegalArgumentException("Correo ya registrado");
+        if (empleado.getIdEmple() == null) {
+            // ----- CREAR -----
+            if (empleRepositories.existsByUsuario(empleado.getUsuario()))
+                throw new IllegalArgumentException("Usuario ya en uso");
 
-        Empleado empleadoGuardado = empleRepositories.save(empleado);
+            if (empleRepositories.existsByCorreo(empleado.getCorreo()))
+                throw new IllegalArgumentException("Correo ya registrado");
 
-        Usuario usuario = new Usuario();
-        usuario.setUsername(empleado.getUsuario());
-        usuario.setContrasena(empleado.getContrasena());
-        usuario.setRol(empleado.getRol().getNomRol().toUpperCase());
-        usuario.setEmpleado(empleadoGuardado);
-        usuarioRepositories.save(usuario);
+            Empleado empleadoGuardado = empleRepositories.save(empleado);
 
-        return empleadoGuardado;
+            Usuario usuario = new Usuario();
+            usuario.setUsername(empleado.getUsuario());
+            usuario.setContrasena(empleado.getContrasena());
+            usuario.setRol(empleado.getRol().getNomRol().toUpperCase());
+            usuario.setEmpleado(empleadoGuardado);
+            usuarioRepositories.save(usuario);
+
+            return empleadoGuardado;
+
+        } else {
+            // ===== EDITAR =====
+            Empleado original = empleRepositories
+                    .findById(empleado.getIdEmple())
+                    .orElseThrow();
+
+            // Mantener credenciales
+            empleado.setUsuario(original.getUsuario());
+            empleado.setCorreo(original.getCorreo());
+            empleado.setContrasena(original.getContrasena());
+
+
+            return empleRepositories.save(empleado);
+        }
     }
 
 
-@Override
+
+    @Override
 public List<Empleado> listar(){
     return empleRepositories.findAll();
 }

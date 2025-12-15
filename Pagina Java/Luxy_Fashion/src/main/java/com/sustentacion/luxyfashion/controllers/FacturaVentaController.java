@@ -51,6 +51,26 @@ public class FacturaVentaController {
         return "empleado/factventa/indexfacventa";
     }
 
+    @GetMapping("/lista/admin")
+    public String listaradmin(Model model, @RequestParam(required = false) String filtro) {
+        List<FacturaVenta> facturas;
+
+        if (filtro != null && !filtro.isEmpty()) {
+            facturas = facturaVentaService.buscarvarioscampos(filtro);
+        } else {
+            facturas = facturaVentaService.listar();
+        }
+
+        model.addAttribute("facturas", facturas);
+        model.addAttribute("filtro", filtro);
+        model.addAttribute("facturaVenta", new FacturaVenta());
+        model.addAttribute("empleados", empleadoService.listar());
+        model.addAttribute("clientes", clienteService.listar());
+        model.addAttribute("pedidos", pedidoService.listar());
+
+        return "admin/facturaventa/listventa";
+    }
+
     @GetMapping("/form")
     public String mostrarFormulario(@RequestParam(required = false) Integer id, Model model) {
         FacturaVenta factura = (id != null)

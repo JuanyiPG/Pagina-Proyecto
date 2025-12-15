@@ -1,148 +1,101 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script th:src="@{https://cdn.jsdelivr.net/npm/sweetalert2@11}"></script>
-    <title>Pedidos</title>
-    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <title>Fctura Venta</title>
+    <link rel="stylesheet" href="../../CSS/listas.css">
 </head>
-
 <body class="body2">
-
 <div th:replace="~{itemss/headeradmin :: miHeader}"></div>
 
-<div class="main">
-    <div class="card">
-        <h1>GESTIÓN DE PEDIDOS</h1>
-
-        <!-- FORMULARIO -->
-        <form th:action="@{/pedido/guardar}"
-              method="post"
-              th:object="${pedido}"
-              class="formulario-mensaje">
-
-            <div class="form-group">
-                <input type="text" placeholder="Link"
-                       th:field="*{link_ped}" readonly>
-                <input type="text" placeholder="Nombre"
-                       th:field="*{nomPed}" readonly>
-            </div>
-
-            <div class="form-group">
-                <input type="text" placeholder="Material"
-                       th:field="*{material_ped}" readonly>
-                <input type="number" placeholder="Valor"
-                       th:field="*{valor_ped}" readonly>
-            </div>
-
-            <div class="form-group">
-                <input type="text" placeholder="Categoría"
-                       th:field="*{categoria_ped}" readonly>
-                <input type="number" placeholder="Cantidad"
-                       th:field="*{cant_ped}" required>
-            </div>
-
-            <div class="form-group">
-                <input type="text" placeholder="Descripción"
-                       th:field="*{desc_ped}" readonly>
-            </div>
-
-            <!-- TALLA -->
-            <div class="form-group">
-                <label>Talla:</label><br>
-                <input type="radio" th:field="*{talla_ped}" value="S"> S
-                <input type="radio" th:field="*{talla_ped}" value="M"> M
-                <input type="radio" th:field="*{talla_ped}" value="L"> L
-                <input type="radio" th:field="*{talla_ped}" value="XL"> XL
-                <input type="radio" th:field="*{talla_ped}" value="XXL"> XXL
-            </div>
-
-            <!-- COLOR -->
-            <div class="form-group">
-                <label>Color:</label><br>
-                <input type="radio" th:field="*{color_ped}" value="Rojo"> Rojo
-                <input type="radio" th:field="*{color_ped}" value="Gris"> Gris
-                <input type="radio" th:field="*{color_ped}" value="Blanco"> Blanco
-                <input type="radio" th:field="*{color_ped}" value="Negro"> Negro
-            </div>
-
-            <!-- CLIENTE -->
-            <div class="form-group">
-                <select th:field="*{cliente.id_clien}" required>
-                    <option value="">Seleccione cliente</option>
-                    <option th:each="c : ${clientes}"
-                            th:value="${c.id_clien}"
-                            th:text="${c.nomClien}">
-                    </option>
-                </select>
-            </div>
-
-            <button type="submit" class="save-btn">Guardar</button>
-        </form>
-    </div>
-
-    <!-- BUSCADOR -->
-    <div class="search">
-        <form th:action="@{/pedido/buscar}" method="get">
-            <input type="text" name="filtro" placeholder="Buscar...">
-            <input type="submit" value="Buscar">
-        </form>
-    </div>
-
-    <!-- TABLA -->
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Talla</th>
-            <th>Color</th>
-            <th>Cantidad</th>
-            <th>Valor</th>
-            <th>Cliente</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <tr th:each="p : ${pedidos}">
-            <td th:text="${p.id_ped}"></td>
-            <td th:text="${p.nomPed}"></td>
-            <td th:text="${p.talla_ped}"></td>
-            <td th:text="${p.color_ped}"></td>
-            <td th:text="${p.cant_ped}"></td>
-            <td th:text="${p.valor_ped}"></td>
-            <td th:text="${p.cliente != null ? p.cliente.nomClien : 'Sin cliente'}"></td>
-
-            <td>
-                <a class="btn-accion"
-                   th:href="@{'/pedido/editar/' + ${p.id_ped}}">Editar</a>
-                <a class="btn-eliminar"
-                   th:href="@{'/pedido/eliminar/' + ${p.id_ped}}">Eliminar</a>
-            </td>
-        </tr>
-
-        <tr th:if="${#lists.isEmpty(pedidos)}">
-            <td colspan="8">No se encontraron resultados.</td>
-        </tr>
-        </tbody>
-    </table>
+<div id="search" class="search">
+    <form th:action="@{/admin/facturaventa/buscar}" method="get">
+        <input type="text" name="buscar" placeholder="Escribe una palabara" id="searchInput">
+        <input type="submit" value="Buscar" id="btnSearch">
+    </form>
 </div>
 
-<!-- Scripts -->
-<script th:src="@{/js/confirmacion.js}"></script>
-<script th:src="@{/js/eliminar.js}"></script>
+<table>
+    <thead>
+    <tr>
+        <th>Código</th>
+        <th>Link</th>
+        <th>Nombre</th>
+        <th>Talla</th>
+        <th>Color</th>
+        <th>Categoria</th>
+        <th>Material</th>
+        <th>Cantidad</th>
+        <th>Descripción</th>
+        <th>Fecha Pedido</th>
+        <th>Subtotal</th>
+        <th>Valor total</th>
+        <th>Estado</th>
+        <th>Cliente</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="r : ${pedidos}">
+        <td th:text="${r.id_pedido}"></td>
+        <td th:text="${r.link_ped}"></td>
+        <td th:text="${r.nomPed}"></td>
+        <td th:text="${r.talla_ped}"></td>
+        <td th:text="${r.color_ped}"></td>
+        <td th:text="${r.categoria_ped}"></td>
+        <td th:text="${r.material_ped}"></td>
+        <td th:text="${r.cant_ped}"></td>
+        <td th:text="${r.fecha_ped}"></td>
+        <td th:text="${r.subtotal_ped}"></td>
+        <td th:text="${r.valor_ped}"></td>
+        <td th:text="${r.estado_ped}"></td>
+        <td th:text="${r.cliente}"></td>
+        <td>
+            <a class="btn-accion" th:href="@{'/admin/facturaventa/editar/' + ${r.id_factuv}}">Actualizar</a>
+            <a class="btn-accion" th:href="@{'/admin/facturaventa/eliminar/' + ${r.id_factuv}}">Eliminar</a>
+        </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(roles)}">
+        <td colspan="3">No se encontraron resultados</td>
+    </tr>
+    </tbody>
+</table>
+</div>
+
+<!---------JAVA SCRIPT----->
+<script src="/js/confirmacion.js"></script>
+<script src="/js/eliminar.js"></script>
+<!----------CALCULO-------------->
+<script>
+    const subTotal = document.getElementById("SubTotal");
+    const iva = document.getElementById("Iva");
+    const total = document.getElementById("Total");
+
+    function calcularTotal() {
+    const sub = parseFloat(subTotal.value) || 0;
+    const ivaPct = parseFloat(iva.value) || 0;
+
+    const tot = sub + (sub * ivaPct / 100);
+
+    total.value = tot.toFixed(2); // 2 decimales
+    }
+
+
+    subTotal.addEventListener("input", calcularTotal);
+    iva.addEventListener("input", calcularTotal);
+</script>
+<!------HEADER----------------->
 <script>
     document.addEventListener("DOMContentLoaded", function() {
       const toggleBtn = document.getElementById("formToggle");
       const submenu = document.getElementById("submenuForm");
 
-      toggleBtn?.addEventListener("click", function(e) {
+      toggleBtn.addEventListener("click", function(e) {
         e.preventDefault();
-        submenu?.classList.toggle("show");
+        submenu.classList.toggle("show");
       });
     });
 </script>
+
 </body>
 </html>

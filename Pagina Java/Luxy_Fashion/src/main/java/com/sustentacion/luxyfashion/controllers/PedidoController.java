@@ -40,6 +40,15 @@ public class  PedidoController {
         return "empleado/pedido/listpedido";
     }
 
+    @GetMapping("/listadmin")
+    public String listar(Model model) {
+        List<Pedido> pedidos = pedidoService.findAllByOrderAsc();
+        model.addAttribute("pedidos", pedidos);
+        model.addAttribute("pedido", new Pedido());
+        model.addAttribute("clientes", clienteService.listar());
+        return "admin/listpedido/listaPedido";
+    }
+
     @GetMapping("/nuevo")
     public String nuevo(Model model) {
         model.addAttribute("pedido", new Pedido());

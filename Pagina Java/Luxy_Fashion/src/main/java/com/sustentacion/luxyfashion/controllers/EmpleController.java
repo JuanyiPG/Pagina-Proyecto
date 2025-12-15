@@ -66,6 +66,7 @@ public class EmpleController {
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Integer id, Model model){
         Empleado empleado = empleService.buscarPorId(id);
+        model.addAttribute("roles", rolService.listar());
         if (empleado == null){
             return "redirect:empleado?error=not_found";
         }

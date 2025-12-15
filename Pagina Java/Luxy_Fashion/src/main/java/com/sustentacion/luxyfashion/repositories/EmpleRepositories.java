@@ -23,4 +23,8 @@ public interface EmpleRepositories extends JpaRepository<Empleado, Integer> {
 
     boolean existsByUsuario(String usuario);
     boolean existsByCorreo(String correo);
+
+    boolean existsByUsuarioAndIdEmpleNot(String usuario, Integer idEmple);
+    boolean existsByCorreoAndIdEmpleNot(String correo, Integer idEmple);
+
 }
