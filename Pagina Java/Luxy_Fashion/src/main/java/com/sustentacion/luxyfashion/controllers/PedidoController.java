@@ -50,6 +50,11 @@ public class  PedidoController {
     @PostMapping("/guardar")
     public String guardar(Pedido pedido) {
 
+        Pedido pedidoGuardado = pedidoService.guardar(pedido);
+
+        if ("ABONO".equalsIgnoreCase(pedido.getMetodo_pago())) {
+            return "redirect:/admin/abono/nuevo/" + pedidoGuardado.getId_pedido();
+        }
         // Obtener cliente correctamente
         Cliente clienteSeleccionado = clienteService.BuscarPorId(
                 pedido.getCliente().getId_clien()
