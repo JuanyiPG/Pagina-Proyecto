@@ -84,7 +84,6 @@
                 <div class="form-derecha">
 
                     <div class="form-group">
-                        <input type="text" placeholder="Código" th:field="*{id_produc}" required>
                         <input type="text" placeholder="Nombre" th:field="*{nomProduc}" required>
                     </div>
 
@@ -102,7 +101,7 @@
                     </div>
 
                     <div class="form-group">
-                        <select th:field="*{Produccion}">
+                        <select th:field="*{produccion}">
                             <option value="">Produccion</option>
                             <option th:each="p : ${producciones}" th:value="${p.id_producc}" th:text="${p.id_producc}"></option>
                         </select>
@@ -123,12 +122,12 @@
             <input type="submit" value="Buscar" id="btnSearch">
         </form>
     </div>
-
     <!-- TABLA -->
     <table>
         <thead>
         <tr>
             <th>Código</th>
+            <th>Producto</th>
             <th>Nombre</th>
             <th>Descripción</th>
             <th>Categoría</th>
@@ -138,31 +137,27 @@
             <th>Acciones</th>
         </tr>
         </thead>
-
         <tbody>
         <tr th:each="p : ${productos}">
             <td th:text="${p.id_produc}"></td>
+            <td>
+                <img th:if="${p.link_produc != null}"
+                     th:src="${p.link_produc}"
+                     alt="Producto"
+                     style="width:80px; height:80px; object-fit:cover; border-radius:8px;">
+            </td>
             <td th:text="${p.nomProduc}"></td>
-            <td th:text="${p.descri_produc}"></td>
-            <td th:text="${p.categ_produc}"></td>
-            <td th:text="${p.und_med_produc}"></td>
+            <td th:text="${p.desc_produc}"></td>
+            <td th:text="${p.categoria_produc}"></td>
+            <td th:text="${p.unid_med_produc}"></td>
             <td th:text="${p.estado_produc}"></td>
             <td th:text="${p.produccion != null ? p.produccion.id_producc : 'Sin asignar'}"></td>
-
             <td>
-                <a class="btn-accion"
-                   th:href="@{/admin/producto/editar/{id}(id=${p.id_produc})}">
-                    Actualizar
-                </a>
-
-                <a class="btn-eliminar"
-                   th:href="@{/admin/producto/eliminar/{id}(id=${p.id_produc})}"
-                   onclick="return confirm('¿Deseas eliminar este producto?');">
-                    Eliminar
-                </a>
+                <!-- Rutas corregidas -->
+                <a class="btn-accion" th:href="@{/admin/producto/editar/{id}(id=${p.id_produc})}"> Actualizar </a>
+                <a class="btn-eliminar" th:href="@{/admin/producto/eliminar/{id}(id=${p.id_produc})}" onclick="return confirm('¿Deseas eliminar este producto?');"> Eliminar </a>
             </td>
         </tr>
-
         <tr th:if="${productos != null and #lists.isEmpty(productos)}">
             <td colspan="8">No se encontraron resultados</td>
         </tr>

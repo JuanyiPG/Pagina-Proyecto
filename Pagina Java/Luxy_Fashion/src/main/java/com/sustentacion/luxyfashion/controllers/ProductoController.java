@@ -15,7 +15,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/admin/producto")
-public class  ProductoController {
+public class ProductoController {
 
     private final ProductoService productoService;
     private final ProduccionService produccionService;
@@ -25,24 +25,18 @@ public class  ProductoController {
         this.produccionService = produccionService;
     }
 
-    // LISTAR
-    @GetMapping()
+    // ================= LISTAR =================
+    @GetMapping
     public String listar(Model model) {
-        List<Producto> productos = productoService.listaproductoasc();
-        model.addAttribute("productos", productos);
+
+        model.addAttribute("productos", productoService.listaproductoasc());
         model.addAttribute("producto", new Producto());
         model.addAttribute("producciones", produccionService.listar());
-        return "admin/producto/indexproducto"; // Cambia al HTML real cuando lo agregues
-    }
 
-    // FORMULARIO NUEVO
-    @GetMapping("/nuevo")
-    public String nuevo(Model model) {
-        model.addAttribute("producto", new Producto());
-        model.addAttribute("producciones", produccionService.findAllByOrderAsc());
         return "admin/producto/indexproducto";
     }
 
+    // ================= GUARDAR =================
     @PostMapping("/guardar")
     public String guardar(
             @ModelAttribute Producto producto,
@@ -52,23 +46,23 @@ public class  ProductoController {
         try {
             if (imagen != null && !imagen.isEmpty()) {
 
-                // 📁 Ruta de la carpeta
-                String carpeta = "src/main/resources/static/uploads/productos/";
+                // 📁 carpeta REAL (fuera de resources)
+                String carpeta = "uploads/productos/";
 
-                // Crear carpeta si no existe
+                // crear carpeta si no existe
                 Files.createDirectories(Paths.get(carpeta));
 
-                // 🖼️ Nombre limpio y único
+                // nombre único
                 String nombreArchivo = System.currentTimeMillis() + "_" +
                         imagen.getOriginalFilename().replaceAll("\\s+", "");
 
-                // 📌 Ruta final
+                // ruta completa
                 Path ruta = Paths.get(carpeta + nombreArchivo);
 
-                // 💾 Guardar archivo
+                // guardar imagen
                 Files.write(ruta, imagen.getBytes());
 
-                // 🔗 Guardar SOLO el link en BD
+                // guardar SOLO el link en BD
                 producto.setLink_produc("/uploads/productos/" + nombreArchivo);
             }
 
@@ -81,30 +75,14 @@ public class  ProductoController {
         return "redirect:/admin/producto";
     }
 
-
-
-    // EDITAR
-    @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Integer id, Model model) {
-        Producto producto = productoService.listar()
-                .stream()
-                .filter(p -> p.getId_produc().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-
-        model.addAttribute("producto", producto);
-        model.addAttribute("producciones", produccionService.findAllByOrderAsc());
-        return "producto/form";
-    }
-
-    // ELIMINAR
+    // ================= ELIMINAR =================
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Integer id) {
         productoService.eliminar(id);
-        return "redirect:/producto";
+        return "redirect:/admin/producto";
     }
 
-    // BUSCAR
+    // ================= BUSCAR =================
     @GetMapping("/buscar")
     public String buscar(@RequestParam(required = false) String filtro, Model model) {
 
@@ -119,6 +97,6 @@ public class  ProductoController {
         model.addAttribute("productos", productos);
         model.addAttribute("filtro", filtro);
 
-        return "admin/producto/indexproducto"; // Cambia al HTML correcto luego
+        return "admin/producto/indexproducto";
     }
 }
