@@ -53,7 +53,7 @@ public class  PedidoController {
     public String nuevo(Model model) {
         model.addAttribute("pedido", new Pedido());
         model.addAttribute("clientes", clienteService.listar());
-        return "empleado/pedido/listpedido";
+        return "cliente/pedido";
     }
 
     @PostMapping("/guardar")

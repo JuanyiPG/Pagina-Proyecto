@@ -43,7 +43,7 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
-    public List<Producto>  findAllByorderAsc(){
-        return productorepositorio.findByOrderByNomProducAsc();
+    public Producto obtenerProductoPorId(Integer productoId) {
+        return productorepositorio.findById(productoId).orElse(null);
     }
 }

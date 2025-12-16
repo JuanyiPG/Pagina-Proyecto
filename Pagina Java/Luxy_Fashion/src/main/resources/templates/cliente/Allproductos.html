@@ -22,6 +22,11 @@
             <h3 th:text="${p.nomProduc}"></h3>
             <p class="categoria" th:text="${p.categoria_produc}"></p>
             <p class="descripcion" th:text="${p.desc_produc}"></p>
+
+            <!-- BOTÓN AGREGADO PARA HACER PEDIDO -->
+            <a th:href="@{/pedido/nuevo(productoId=${p.id_produc})}">
+                <button>Hacer Pedido</button>
+            </a>
         </div>
 
     </div>
