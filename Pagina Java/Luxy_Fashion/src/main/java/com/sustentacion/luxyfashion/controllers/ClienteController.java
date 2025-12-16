@@ -50,7 +50,7 @@ public class ClienteController {
         Usuario u = (Usuario) session.getAttribute("usuarioLogueado");
 
         if (u == null || !u.getRol().equals("CLIENTE")) {
-            return "redirect:/login";
+            return "redirect:/admin/cliente";
         }
         return "cliente/indexcliente";
     }
@@ -87,7 +87,7 @@ public class ClienteController {
             return "redirect:/admin/cliente";
         }
         model.addAttribute("cliente", cliente);
-        return "login/loginRegistro";
+        return "cliente/editar";
     }
 
     // Eliminar cliente

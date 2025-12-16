@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Fashion Luxy</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/cliente.css}">
-    <link rel="stylesheet" th:href="@{Pagina Web/bootstrap/css/bootstrap.min.css}">
-    <script th:src="@{Pagina Web/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}" defer></script>
+    <link rel="stylesheet" href="/css/cliente.css?v=1">
+
 </head>
 <body>
-<header id="header-cliente"></header>
+<div th:replace="~{itemss/headerCliente :: Headercliente}"></div>
 <video autoplay muted loop class="VPP">
     <source th:src="@{/VIDEO/VideoPClien.mp4}" type="video/mp4">
 </video>
@@ -43,7 +44,7 @@
             <div class="overlay">Chaqueta Beige - $115.000</div>
         </div>
         <div class="item">
-            <a href="cliente/pedido">
+            <a th:href="@{/pedido}">
                 <img th:src="@{/IMG/blusa-hombro-negro.jpeg}" alt="Camisa Hombro">
             </a>
             <div class="overlay">Camisa Hombro - $70.000</div>
@@ -97,6 +98,6 @@
     <p>&copy; 2025 Fashion Luxy - Todos los derechos reservados</p>
 </footer>
 
-<script th:src="@{/js/cliente.js}"></script>
+<script th:src="@{/js/cliente.js?v=2}" defer></script>
 </body>
 </html>

@@ -31,6 +31,7 @@ public class  ProductoController {
         List<Producto> productos = productoService.listaproductoasc();
         model.addAttribute("productos", productos);
         model.addAttribute("producto", new Producto());
+        model.addAttribute("producciones", produccionService.listar());
         return "admin/producto/indexproducto"; // Cambia al HTML real cuando lo agregues
     }
 

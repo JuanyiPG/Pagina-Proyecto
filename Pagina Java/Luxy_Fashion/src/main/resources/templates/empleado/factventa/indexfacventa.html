@@ -42,7 +42,7 @@
                 <select th:field="*{pedido.id_pedido}" class="form-control" required>
 
                     <option value="">Pedido</option>
-                    <option th:each="p : ${pedidos}" th:value="${p.id_pedido}" th:text="${p.descripcion}"></option>
+                    <option th:each="p : ${pedidos}" th:value="${p.id_pedido}" th:text="${p.desc_ped}"></option>
                 </select>
             </div>
             <div id="mensaje" th:if="${param.success}" style="color:purple; font-weight:bold; margin-bottom:10px;">

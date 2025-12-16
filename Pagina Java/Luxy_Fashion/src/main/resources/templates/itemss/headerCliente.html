@@ -8,7 +8,7 @@
                          class="bi bi-list" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/></svg>
                 </button>
                 <a th:href="@{/Cliente/index-cliente.html}">
-                    <img src="../IMG/Logo_Luxy_Fashion.png" alt="Logo" class="logo">
+                    <img th:src="@{/IMG/Logo_Luxy_Fashion.png}" alt="Logo" class="logo">
                 </a>
             </div>
 
@@ -20,12 +20,10 @@
 
                 <div id="menuUsuario" class="menu-usuario-dropdown hidden">
                     <button id="btnCerrarSesion">Cerrar sesión</button>
+                    <button id="btnEditar">Configuración</button>
                 </div>
             </div>
         </div>
-</div>
-
-
 <div id="hamburgerMenu" class="hamburger-menu hidden" aria-hidden="true">
     <div class="hamburger-inner">
     </div>

@@ -102,12 +102,9 @@
                     </div>
 
                     <div class="form-group">
-                        <select th:field="*{produccion.id_producc}" required style="border-radius:8px">
-                            <option value="">Seleccione producción</option>
-                            <option th:each="p : ${produccion}"
-                                    th:value="${p.id_producc}"
-                                    th:text="${p.id_producc} + ' - ' + ${p.nom_produc}">
-                            </option>
+                        <select th:field="*{Produccion}">
+                            <option value="">Produccion</option>
+                            <option th:each="p : ${producciones}" th:value="${p.id_producc}" th:text="${p.id_producc}"></option>
                         </select>
                     </div>
 

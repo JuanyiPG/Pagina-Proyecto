@@ -1,43 +1,35 @@
-(async function () {
-  // ---------------- cargar header ----------------
-  async function loadHeader() {
-    try {
-      const res = await fetch('../Items/header-indexcliente.php');
-      if (!res.ok) throw new Error('No se pudo cargar header: ' + res.status);
-      const html = await res.text();
-      const container = document.getElementById('header-cliente');
-      if (container) container.innerHTML = html;
-      return true;
-    } catch (err) {
-      console.warn('loadHeader falló:', err);
-      return false;
-    }
-  }
+(async function () { //una funsion auto-ejecutable
 
   // ---------------- inicializadores del header ----------------
-  function initHeaderInteractions() {
+  function initHeaderInteractions() { //maneja todo lo que esta en el header
     const btnHamb = document.getElementById('btnHamburguesa');
     const hambMenu = document.getElementById('hamburgerMenu');
     const mainNav = document.getElementById('mainNav');
 
     if (btnHamb && hambMenu) {
+    //si existe evita el error
       btnHamb.addEventListener('click', (ev) => {
         ev.stopPropagation();
+        //evita que al haer click suba al documento
         hambMenu.classList.toggle('hidden');
         hambMenu.setAttribute('aria-hidden', hambMenu.classList.contains('hidden') ? 'true' : 'false');
       });
 
       document.addEventListener('click', (e) => {
+      //cerrar el menu al dar click afuera
         if (!hambMenu.contains(e.target) && e.target !== btnHamb) {
           if (!hambMenu.classList.contains('hidden')) hambMenu.classList.add('hidden');
+          //si el click no fuen en el menu ni boton, cierra
         }
       });
     }
 
     if (mainNav) {
+    //cambia al hacer scroll
       const onScroll = () => {
         if (window.scrollY > 650) mainNav.classList.add('scrolled');
         else mainNav.classList.remove('scrolled');
+        //agrega una clase para cambiar de estilo
       };
       window.addEventListener('scroll', onScroll, { passive: true });
       onScroll();
@@ -46,6 +38,7 @@
     const btnUsuario = document.getElementById('btnUsuario');
     const menuUsuario = document.getElementById('menuUsuario');
     const btnCerrar = document.getElementById('btnCerrarSesion');
+    const btnEditar = document.getElementById('btnEditar');
 
     if (btnUsuario && menuUsuario) {
       btnUsuario.addEventListener('click', (ev) => {
@@ -60,8 +53,17 @@
     }
     if (btnCerrar) {
       btnCerrar.addEventListener('click', () => {
-        try { localStorage.removeItem('userToken'); } catch (e) {}
-        window.location.href = '../../index.html';
+        try {
+          localStorage.removeItem('userToken');
+        } catch (e) {}
+
+        window.location.href = '/';
+      });
+    }
+
+    if (btnEditar) {
+      btnEditar.addEventListener('click', () => {
+        window.location.href = '/admin/cliente/editar';
       });
     }
   }
@@ -122,15 +124,18 @@
     }
   }
 
-  const headerLoaded = await loadHeader();
+ /* const headerLoaded = await loadHeader();
   if (headerLoaded) {
     initHeaderInteractions();
   } else {
     console.warn('Header no cargado: algunos controles del header no funcionarán.');
   }
 
-  initSlider();
+  initSlider();*/
+  initHeaderInteractions();
 })();
+
+//traer el header echo con th
 
 // ---------------- Add to cart ----------------
 try {

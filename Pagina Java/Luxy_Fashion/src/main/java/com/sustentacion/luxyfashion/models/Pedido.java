@@ -34,7 +34,7 @@ public class Pedido {
     private Date fecha_ped;
     private BigDecimal subtotal_ped;
     private BigDecimal valor_ped;
-    private boolean estado_ped;
+    private String estado_ped;
     private String metodo_pago;
 
     @ManyToOne

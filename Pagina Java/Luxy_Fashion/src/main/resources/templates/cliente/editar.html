@@ -1,17 +1,3 @@
-<?php
-require_once "../CONFIG.php";
-
-$obj = new CONECTAR();
-$conexion = $obj->conexion();
-
-$id = $_GET['id_cliente'];
-$sql = "SELECT id_cliente,nom_cliente,direccion_cliente,telefono_cliente,correo_cliente,nombre_usuari,contra,id_rol_fk_cliente
-FROM Cliente
-WHERE id_cliente ='$id'";
-$resultado = mysqli_query($conexion,$sql);
-$data = mysqli_fetch_assoc($resultado);
-
-?>
 
 <!DOCTYPE html>
 <html lang="es">

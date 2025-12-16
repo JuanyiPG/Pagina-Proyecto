@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Fashion Luxy</title>
     <link rel="stylesheet" type="text/css" href="/css/index.css">
-    <link rel="stylesheet" href="Pagina Web/bootstrap/css/bootstrap.min.css">
-    <script src="Pagina Web/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
 </head>
 <body>
 <div th:replace="~{itemss/header :: miHeader}"></div>
@@ -185,7 +185,7 @@
         <img th:src="@{/IMG/index9.jpg}" alt="Imagen 9" class="imagen9">
         <img th:src="@{/IMG/index10.jpg}" alt="Imagen 10" class="imagen10">
     </section>
-@{
+
     <button class="ver-m}as-final">Ver más</button>
     <hr>
     <br>
