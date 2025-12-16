@@ -63,7 +63,7 @@
 
     if (btnEditar) {
       btnEditar.addEventListener('click', () => {
-        window.location.href = '/admin/cliente/editar';
+        window.location.href = '/error';
       });
     }
   }

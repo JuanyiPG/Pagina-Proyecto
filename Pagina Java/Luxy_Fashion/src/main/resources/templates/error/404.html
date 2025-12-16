@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: 0;
+        }
+
+        body{
+            background-image: url(IMG/4.jpeg);
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        video{
+            width: 50%;
+            height: 50%;
+            position: center;
+            margin: 70px 20% 50px 25%;
+            border-radius: 50%;
+        }
+
+        a{
+            text-decoration: none;
+            display: flex;
+        }
+
+        .btn-volver {
+    font-size: 24px;
+    height: 70px;
+    width: 160px;
+    padding: 18px;
+
+    margin: -90px 50px 0 46%;
+    border-radius: 22px;
+
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    letter-spacing: 2px;
+
+    color: aliceblue;
+    text-align: center;
+    line-height: 32px;
+
+    background-image: url("IMG/3.jpeg");
+    background-size: cover;
+    background-position: center;
+
+    border: 1px solid rgba(255,255,255,0.25);
+    box-shadow:
+        0 10px 25px rgba(0,0,0,0.45),
+        inset 0 0 20px rgba(255,255,255,0.08);
+
+    backdrop-filter: blur(4px);
+    cursor: pointer;
+
+    transition: all 0.3s ease;
+}
+
+.btn-volver:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+    background-image: none;
+
+    color: #000;
+
+    box-shadow:
+        0 0 20px rgba(255, 255, 255, 0.8),
+        0 0 45px rgba(255, 255, 255, 0.6);
+
+    transform: translateY(-3px);
+}
+
+
+    </style>
+</head>
+<body>
+<video autoplay muted loop class="VPP">
+    <source src="VIDEO/error.mp4" type="video/mp4">
+</video>
+
+<a href=""><button class="btn-volver">VOLVER</button></a>
+</body>
+</html>

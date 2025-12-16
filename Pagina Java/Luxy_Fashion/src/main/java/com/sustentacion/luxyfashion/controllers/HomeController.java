@@ -28,4 +28,9 @@ public class HomeController {
     public String producto(){
         return "cliente/pedido";
     }
+
+    @GetMapping("/err")
+    public String err(){
+        return "error/404";
+    }
 }

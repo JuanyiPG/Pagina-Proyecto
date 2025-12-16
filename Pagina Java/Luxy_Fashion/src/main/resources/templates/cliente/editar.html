@@ -1,39 +1,40 @@
-
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:Correo="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Editar producto terminado</title>
+    <title>Editar empleado</title>
     <link rel="stylesheet" href="../../CSS/index.css">
-    <img src="" height="50PX">
+    <img th:src="@{/IMG/logoB.png}" height="100PX" style = "margin-left: 48%;">
 </head>
 <body>
 <div class="container-1">
     <div class="formulario-1">
-        <form action="ACTUALIZAR_CLIENTE.php" method="post">
-            <h1>Actualizar producto terminado</h1>
-            <input type="hidden" name="id_cliente" value="<?php echo $data['id_cliente']; ?>">
-            <label for="nom_cliente">Nombre: </label>
-            <input type="text" name="nom_cliente" value="<?php echo $data['nom_cliente']; ?>" required>
-            <label for="direccion_cliente">Direccion: </label>
-            <input type="text" name="direccion_cliente" value="<?php echo $data['direccion_cliente']; ?>" required>
-            <label for="telefono_cliente">Telefono: </label>
-            <input type="text" name="telefono_cliente" value="<?php echo $data['telefono_cliente']; ?>" required>
-            <label for="correo_cliente">Unidad de medida:</label>
-            <input type="text" name="correo_cliente" value="<?php echo $data['correo_cliente']; ?>" required>
-            <label for="nombre_usuari">Nombre de usuario:</label>
-            <input type="text" name="nombre_usuari" value="<?php echo $data['nombre_usuari']; ?>" required>
-            <label for="contra">Contraseña:</label>
-            <input type="text" name="contra" value="<?php echo $data['contra']; ?>" required>
-            <label for="id_rol_fk_cliente">numero de produccion:</label>
-            <input type="text" name="id_rol_fk_cliente" value="<?php echo $data['id_rol_fk_cliente']; ?>" required>
-
-            <button type="submit">Actualizar</button>
+        <form th:action="@{/admin/cliente/guardar}" th:object="${cliente}" method="post">
+            <h2>Registro</h2>
+            <span>Actualizar</span>
+            <div class="container-input">
+                <input type="hiden" placeholder="Nombre Completo" th:field="*{nomClien}" required>
+            </div>
+            <div class="container-input">
+                <input type="text" placeholder="Dirección" th:field="*{dir_clien}" required>
+            </div>
+            <div class="container-input">
+                <input type="text" placeholder="Teléfono" th:field="*{tel_clien}" required>
+            </div>
+            <div class="container-input">
+                <input type="email" placeholder="Correo" th:field="*{correo}" required>
+            </div>
+            <div class="container-input">
+                <input type="hidden" placeholder="Usuario" th:field="*{usuario}" required>
+            </div>
+            <div class="container-input">
+                <input type="password" placeholder="Contraseña" th:field="*{contra_clien}" required>
+            </div>
+            <div th:if="${error}" th:text="${error}" style="color:red;"></div>
+            <button type="submit" class="button-ingre">Actualizar</button>
         </form>
     </div>
 
 </div>
 </body>
 </html>
-
-
