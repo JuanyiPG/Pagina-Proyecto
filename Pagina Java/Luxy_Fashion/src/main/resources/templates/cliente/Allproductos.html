@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Productos</title>
+    <link rel="stylesheet" th:href="@{/css/clienteProducto.css}">
+</head>
+
+<body>
+
+<div th:replace="~{itemss/headerClienteProducto :: headerClienteProducto}"></div>
+
+<div class="productos-container">
+
+    <div class="producto-card" th:each="p : ${productos}">
+
+        <div class="imagen-producto">
+            <img th:src="@{${p.link_produc}}" alt="Producto">
+        </div>
+
+        <div class="info-producto">
+            <h3 th:text="${p.nomProduc}"></h3>
+            <p class="categoria" th:text="${p.categoria_produc}"></p>
+            <p class="descripcion" th:text="${p.desc_produc}"></p>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

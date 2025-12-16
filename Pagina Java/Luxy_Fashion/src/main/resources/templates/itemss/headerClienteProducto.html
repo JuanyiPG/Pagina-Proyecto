@@ -1,0 +1,39 @@
+<div class="navbav-cliente" xmlns:th="http://www.w3.org/1999/xhtml"
+     th:fragment="headerClienteProducto">
+
+    <nav class="header-cliente">
+        <div class="menu">
+
+            <!-- IZQUIERDA -->
+            <div class="menu-l">
+                <button class="btn-hamburger" aria-label="Menú">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         width="30" height="30" viewBox="0 0 16 16">
+                        <path fill="currentColor"
+                              d="M2.5 12h11M2.5 8h11M2.5 4h11"/>
+                    </svg>
+                </button>
+
+                <a th:href="@{/Cliente/index-cliente.html}">
+                    <img th:src="@{/IMG/Logo_Luxy_Fashion.png}"
+                         class="logo" alt="Logo">
+                </a>
+            </div>
+
+            <!-- DERECHA -->
+            <div class="menu-usuario">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="26" height="26" viewBox="0 0 16 16">
+                    <path fill="currentColor"
+                          d="M8 8a3 3 0 1 0-3-3 3 3 0 0 0 3 3zm0 1c-3 0-5 1.5-5 3v1h10v-1c0-1.5-2-3-5-3z"/>
+                </svg>
+
+                <div class="menu-usuario-dropdown hidden">
+                    <button>Configuración</button>
+                    <button>Cerrar sesión</button>
+                </div>
+            </div>
+
+        </div>
+    </nav>
+</div>
