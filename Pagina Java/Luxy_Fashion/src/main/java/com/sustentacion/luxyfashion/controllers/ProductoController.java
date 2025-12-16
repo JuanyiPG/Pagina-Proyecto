@@ -36,6 +36,15 @@ public class ProductoController {
         return "admin/producto/indexproducto";
     }
 
+    @GetMapping("/cliente")
+    public String listarcliente(Model model) {
+        model.addAttribute("productos", productoService.listar());
+        model.addAttribute("producto", new Producto());
+        model.addAttribute("producciones", produccionService.listar());
+
+        return "cliente/Allproductos";
+    }
+
     // ================= GUARDAR =================
     @PostMapping("/guardar")
     public String guardar(
