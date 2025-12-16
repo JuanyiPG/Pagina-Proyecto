@@ -45,4 +45,8 @@ public class FacturaCompraServiceImpl implements FacturaCompraService{
     public List<FacturaCompra> buscarvarioscampos(String filtro){
         return facturacomprarepositories.buscarvarioscampos(filtro);
     }
+    @Override
+    public FacturaCompra buscarPorId(Integer id){
+        return facturacomprarepositories.findById(id).orElse(null);
+    }
 }

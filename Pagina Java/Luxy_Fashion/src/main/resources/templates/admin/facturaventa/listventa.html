@@ -28,8 +28,10 @@
         <th>Total</th>
         <th>metodo de pago</th>
         <th>Descuento</th>
-        <th>estado</th>
+        <th>Estado</th>
         <th>Numero de empleado que a registro</th>
+        <th>Numero del cliente</th>
+        <th>Numero del pedido</th>
         <th>Acciones</th>
     </tr>
     </thead>
@@ -43,7 +45,7 @@
         <td th:text="${r.metodo_pago}"></td>
         <td th:text="${r.descu_factuv}"></td>
         <td th:text="${r.estado_factuv}"></td>
-        <td th:text="${r.empleado.id_empl}"></td>
+        <td th:text="${r.empleado.idEmple}"></td>
         <td th:text="${r.cliente.id_clien}"></td>
         <td th:text="${r.pedido.id_pedido}"></td>
         <td>
@@ -51,7 +53,7 @@
             <a class="btn-accion" th:href="@{'/admin/facturaventa/eliminar/' + ${r.id_factuv}}">Eliminar</a>
         </td>
     </tr>
-    <tr th:if="${#lists.isEmpty(roles)}">
+    <tr th:if="${#lists.isEmpty(facturas)}">
         <td colspan="3">No se encontraron resultados</td>
     </tr>
     </tbody>

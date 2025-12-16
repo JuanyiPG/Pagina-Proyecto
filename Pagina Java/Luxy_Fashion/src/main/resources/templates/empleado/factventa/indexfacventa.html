@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fctura Venta</title>
-    <link rel="stylesheet" href="../../CSS/index.css">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
 <body class="body2">
 <div th:replace="~{itemss/headeremple :: miHeader}"></div>
 <div class="main">
@@ -69,8 +69,10 @@
             <th>Total</th>
             <th>metodo de pago</th>
             <th>Descuento</th>
-            <th>estado</th>
+            <th>Estado</th>
             <th>Numero de empleado que a registro</th>
+            <th>Numero del cliente</th>
+            <th>Numero del pedido</th>
             <th>Acciones</th>
         </tr>
         </thead>
@@ -84,7 +86,7 @@
             <td th:text="${r.metodo_pago}"></td>
             <td th:text="${r.descu_factuv}"></td>
             <td th:text="${r.estado_factuv}"></td>
-            <td th:text="${r.empleado.id_empl}"></td>
+            <td th:text="${r.empleado.idEmple}"></td>
             <td th:text="${r.cliente.id_clien}"></td>
             <td th:text="${r.pedido.id_pedido}"></td>
             <td>

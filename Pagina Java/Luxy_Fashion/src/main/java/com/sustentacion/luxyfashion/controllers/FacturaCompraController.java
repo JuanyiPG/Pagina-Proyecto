@@ -40,20 +40,24 @@ public class FacturaCompraController {
 
     @GetMapping("/form")
     public String mostrarFormulario(@RequestParam(required = false) Integer id, Model model) {
-        FacturaCompra facturaCompra = (id != null)
-                ? facturaCompraService.listar().stream()
-                .filter(f -> f.getId_factuc().equals(id))
-                .findFirst().orElse(new FacturaCompra())
-                : new FacturaCompra();
+
+        FacturaCompra facturaCompra;
+
+        if (id != null) {
+            facturaCompra = facturaCompraService.buscarPorId(id);
+            if (facturaCompra == null) {
+                return "redirect:/admin/facturacompra";
+            }
+        } else {
+            facturaCompra = new FacturaCompra();
+        }
 
         model.addAttribute("facturaCompra", facturaCompra);
+        model.addAttribute("empleados", empleadoService.listar());
 
-        // Lista de empleados para el select
-        List<Empleado> empleados = empleadoService.listar();
-        model.addAttribute("empleados", empleados);
-
-        return "admin/facturacompra/formcompra"; // mejor un template dedicado al formulario
+        return "admin/facturacompra/indexcompra";
     }
+
 
     @PostMapping("/guardar")
     public String guardar(@ModelAttribute FacturaCompra facturaCompra) {
@@ -86,7 +90,8 @@ public class FacturaCompraController {
 
     // Mostrar formulario de edición (alias de /form con id)
     @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Integer id, Model model) {
-        return mostrarFormulario(id, model);
+    public String editar(@PathVariable Integer id) {
+        return "redirect:/admin/facturacompra/form?id=" + id;
     }
+
 }

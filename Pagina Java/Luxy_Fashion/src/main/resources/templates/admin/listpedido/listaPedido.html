@@ -55,7 +55,7 @@
             <a class="btn-accion" th:href="@{'/admin/facturaventa/eliminar/' + ${r.id_pedido}}">Eliminar</a>
         </td>
     </tr>
-    <tr th:if="${#lists.isEmpty(roles)}">
+    <tr th:if="${#lists.isEmpty(pedidos)}">
         <td colspan="3">No se encontraron resultados</td>
     </tr>
     </tbody>

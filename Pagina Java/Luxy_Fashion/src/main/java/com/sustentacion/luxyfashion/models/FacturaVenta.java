@@ -23,8 +23,10 @@ public class FacturaVenta {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fechafactuv;
     private BigDecimal subtotal_factuv;
+    @Column(name = "fecha_factuv")
     private BigDecimal iva_factuv;
     private BigDecimal total_factuv;
+    @Column(name = "metodo_pago_factuv")
     private String metodo_pago;
     private BigDecimal descu_factuv;
     private String estado_factuv;

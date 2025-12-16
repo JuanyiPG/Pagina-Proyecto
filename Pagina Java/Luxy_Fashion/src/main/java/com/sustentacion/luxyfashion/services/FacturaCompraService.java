@@ -15,4 +15,6 @@ public interface FacturaCompraService {
     List<FacturaCompra> findAllByOrderAsc();
 
     List<FacturaCompra> buscarvarioscampos(String filtro);
+
+    FacturaCompra buscarPorId(Integer id);
 }

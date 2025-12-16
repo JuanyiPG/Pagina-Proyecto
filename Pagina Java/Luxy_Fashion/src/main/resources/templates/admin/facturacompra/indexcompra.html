@@ -79,7 +79,10 @@
                 <td th:text="${r.estado}"></td>
                 <td th:text="${r.empleado.nomEmple}"></td>
                 <td>
-                    <a class="btn-accion" th:href="@{'/admin/facturacompraa/editar/' + ${r.id_factuc}}">Actualizar</a>
+                    <a class="btn-accion" th:href="@{/admin/facturacompra/form(id=${r.id_factuc})}">
+                        Editar
+                    </a>
+
                     <a class="btn-eliminar" th:href="@{'/admin/facturacompra/eliminar/' + ${r.id_factuc}}" style="margin-top: 10px">Eliminar</a>
                 </td>
             </tr>
