@@ -12,6 +12,7 @@ public interface ProductoRepositories extends JpaRepository<Producto, Integer> {
 
     @Query("SELECT prd FROM Producto prd WHERE " +
             "CAST(prd.id_produc AS string) LIKE CONCAT('%', :filtro, '%') OR " +
+            "LOWER(prd.link_produc) LIKE CONCAT('%', :filtro, '%') OR " +
             "LOWER(prd.nomProduc) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +
             "LOWER(prd.desc_produc) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +
             "LOWER(prd.categoria_produc) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +

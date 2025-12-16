@@ -7,12 +7,52 @@
 
     <link rel="stylesheet" th:href="@{/css/index.css}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- ESTILOS SOLO PARA ESTE FORMULARIO -->
+    <style>
+        .contenedor-form {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        /* CUADRO DE IMAGEN */
+        .image-box {
+            width: 280px;
+            height: 280px;
+            border: 2px dashed #aaa;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            background: #f9f9f9;
+        }
+
+        .image-box span {
+            font-size: 60px;
+            color: #aaa;
+        }
+
+        .image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .form-derecha {
+            flex: 1;
+        }
+    </style>
 </head>
 
 <body class="body2">
 <div th:replace="~{itemss/headeradmin :: miHeader}"></div>
-<div class="main">
 
+<div class="main">
     <div class="card">
         <h1>Gestión de Productos Terminados</h1>
 
@@ -20,37 +60,61 @@
         <form class="formulario-mensaje"
               th:action="@{/admin/producto/guardar}"
               method="post"
+              enctype="multipart/form-data"
               th:object="${producto}">
 
-            <div class="form-group">
-                <input type="text" placeholder="Código" th:field="*{id_produc}" required>
-                <input type="text" placeholder="Nombre" th:field="*{nomProduc}" required>
-            </div>
+            <div class="contenedor-form">
 
-            <div class="form-group">
-                <input type="text" placeholder="Descripción" th:field="*{desc_produc}">
-            </div>
+                <!--imagen left-->
+                <div class="image-box" onclick="document.getElementById('imagen').click()">
+                    <span id="iconoMas">+</span>
+                    <img id="preview">
+                </div>
 
-            <div class="form-group">
-                <input type="text" placeholder="Categoría" th:field="*{categoria_produc}">
-            </div>
+                <input type="file"
+                       id="imagen"
+                       name="imagen"
+                       accept="image/*"
+                       onchange="mostrarImagen(event)"
+                       hidden
+                       required
+                >
 
-            <div class="form-group">
-                <input type="text" placeholder="Unidad medida" th:field="*{unid_med_produc}">
-                <input type="text" placeholder="Estado" th:field="*{estado_produc}">
-            </div>
+                <!--formulario right -->
+                <div class="form-derecha">
 
-            <div class="form-group">
-                <select th:field="*{produccion.id_producc}" required style="border-radius:8px">
-                    <option value="">Seleccione producción</option>
-                    <option th:each="p : ${producciones}"
-                            th:value="${p.id_producc}"
-                            th:text="${p.id_producc} + ' - ' + ${p.nom_produc}">
-                    </option>
-                </select>
-            </div>
+                    <div class="form-group">
+                        <input type="text" placeholder="Código" th:field="*{id_produc}" required>
+                        <input type="text" placeholder="Nombre" th:field="*{nomProduc}" required>
+                    </div>
 
-            <button type="submit" class="save-btn">Guardar</button>
+                    <div class="form-group">
+                        <input type="text" placeholder="Descripción" th:field="*{desc_produc}">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" placeholder="Categoría" th:field="*{categoria_produc}">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" placeholder="Unidad medida" th:field="*{unid_med_produc}">
+                        <input type="text" placeholder="Estado" th:field="*{estado_produc}">
+                    </div>
+
+                    <div class="form-group">
+                        <select th:field="*{produccion.id_producc}" required style="border-radius:8px">
+                            <option value="">Seleccione producción</option>
+                            <option th:each="p : ${produccion}"
+                                    th:value="${p.id_producc}"
+                                    th:text="${p.id_producc} + ' - ' + ${p.nom_produc}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="save-btn">Guardar</button>
+                </div>
+
+            </div>
         </form>
     </div>
 
@@ -89,7 +153,6 @@
             <td th:text="${p.produccion != null ? p.produccion.id_producc : 'Sin asignar'}"></td>
 
             <td>
-                <!-- Rutas corregidas -->
                 <a class="btn-accion"
                    th:href="@{/admin/producto/editar/{id}(id=${p.id_produc})}">
                     Actualizar
@@ -111,6 +174,31 @@
 </div>
 
 <script>
+    function mostrarImagen(event) {
+        const input = event.target;
+        const preview = document.getElementById("preview");
+        const iconoMas = document.getElementById("iconoMas");
+
+        if (input.files && input.files[0]) {
+
+            if (!input.files[0].type.startsWith("image/")) {
+                alert("Solo se permiten imágenes");
+                input.value = "";
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = "block";
+                iconoMas.style.display = "none";
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
         const toggleBtn = document.getElementById("formToggle");
         const submenu = document.getElementById("submenuForm");
