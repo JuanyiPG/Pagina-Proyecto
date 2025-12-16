@@ -6,7 +6,11 @@ import com.sustentacion.luxyfashion.services.ProduccionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Controller
@@ -38,12 +42,45 @@ public class  ProductoController {
         return "admin/producto/indexproducto";
     }
 
-    // GUARDAR
     @PostMapping("/guardar")
-    public String guardar(@ModelAttribute Producto producto) {
-        productoService.guardar(producto);
-        return "redirect:/producto";
+    public String guardar(
+            @ModelAttribute Producto producto,
+            @RequestParam("imagen") MultipartFile imagen
+    ) {
+
+        try {
+            if (imagen != null && !imagen.isEmpty()) {
+
+                // 📁 Ruta de la carpeta
+                String carpeta = "src/main/resources/static/uploads/productos/";
+
+                // Crear carpeta si no existe
+                Files.createDirectories(Paths.get(carpeta));
+
+                // 🖼️ Nombre limpio y único
+                String nombreArchivo = System.currentTimeMillis() + "_" +
+                        imagen.getOriginalFilename().replaceAll("\\s+", "");
+
+                // 📌 Ruta final
+                Path ruta = Paths.get(carpeta + nombreArchivo);
+
+                // 💾 Guardar archivo
+                Files.write(ruta, imagen.getBytes());
+
+                // 🔗 Guardar SOLO el link en BD
+                producto.setLink_produc("/uploads/productos/" + nombreArchivo);
+            }
+
+            productoService.guardar(producto);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "redirect:/admin/producto";
     }
+
+
 
     // EDITAR
     @GetMapping("/editar/{id}")

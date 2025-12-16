@@ -25,7 +25,7 @@ CREATE TABLE Empleado (
   salari_emple FLOAT NOT NULL,
   estado_emple VARCHAR(50) NOT NULL,
   usuario VARCHAR(50) NOT NULL,
-  contraseña VARCHAR(100) NOT NULL,
+  contrasena VARCHAR(100) NOT NULL,
   id_rol_fk_emple INT NOT NULL,
   CONSTRAINT fk_emple_rol FOREIGN KEY (id_rol_fk_emple) REFERENCES Rol(id_rol)
 );
@@ -51,7 +51,7 @@ DELIMITER //
 CREATE TABLE usuarios (
     id_usuario INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
-    contraseña VARCHAR(255) NOT NULL,
+    contrasena VARCHAR(255) NOT NULL,
     rol VARCHAR(20) NOT NULL,  
     id_emple_fk_id_usuario INT, 
     id_clien_fk_usuario INT,
@@ -76,6 +76,7 @@ CREATE TABLE Pedido (
   subtotal_ped BIGINT NOT NULL,
   valor_ped BIGINT NOT NULL,
   estado_ped VARCHAR(50) NOT NULL,
+  metodo_pago VARCHAR(50) NOT NULL,
   id_clien_fk_ped INT NOT NULL,
   CONSTRAINT fk_pedido_clien FOREIGN KEY (id_clien_fk_ped) REFERENCES Cliente(id_clien)
 );
@@ -113,8 +114,8 @@ CREATE TABLE Abono (
   metodo_pago VARCHAR(50) NOT NULL,
   descripcion VARCHAR(200),
 
-  id_factuv_fk_abono INT NOT NULL,
-  CONSTRAINT fk_abono_factuv FOREIGN KEY (id_factuv_fk_abono) REFERENCES Factura_venta(id_factuv)
+  id_pedido_fk_abono INT NOT NULL,
+  CONSTRAINT fk_abono_pedido FOREIGN KEY (id_pedido_fk_abono) REFERENCES Pedido( id_pedido)
 );
 //
 
@@ -219,13 +220,12 @@ CREATE TABLE Det_factuc_matp (
 --     DETALLE MATERIA PRIMA EN PRODUCCION, no
 DELIMITER //
 CREATE TABLE Det_producc_matp (
-  id_det_pm INT PRIMARY KEY AUTO_INCREMENT,
+  id_det_pm INT AUTO_INCREMENT PRIMARY KEY,
   id_matp_fk INT NOT NULL,
-  CONSTRAINT fk_detpm_matp FOREIGN KEY (id_matp_fk) REFERENCES Materia_prima(id_matp),
-
   id_producc_fk INT NOT NULL,
-  CONSTRAINT fk_detpm_producc FOREIGN KEY (id_producc_fk) REFERENCES Produccion(id_producc),
-
-  desc_det VARCHAR(200) NOT NULL
+  desc_det VARCHAR(200) NOT NULL,
+  CONSTRAINT fk_detpm_matp FOREIGN KEY (id_matp_fk) REFERENCES Materia_prima(id_matp),
+  CONSTRAINT fk_detpm_producc FOREIGN KEY (id_producc_fk) REFERENCES Produccion(id_producc)
 );
 //
+DELIMITER ;

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fashion Luxy</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/cliente.css}">
-    <link rel="stylesheet" href="Pagina Web/bootstrap/css/bootstrap.min.css">
-    <script src="Pagina Web/bootstrap/js/bootstrap.bundle.min.js" defer></script>
+    <link rel="stylesheet" th:href="@{Pagina Web/bootstrap/css/bootstrap.min.css}">
+    <script th:src="@{Pagina Web/bootstrap/js/bootstrap.bundle.min.js}"></script>
 </head>
 <body>
 <header id="header-cliente"></header>
@@ -97,6 +97,6 @@
     <p>&copy; 2025 Fashion Luxy - Todos los derechos reservados</p>
 </footer>
 
-<script src="/js/cliente.js" defer></script>
+<script th:src="@{/js/cliente.js}"></script>
 </body>
 </html>
