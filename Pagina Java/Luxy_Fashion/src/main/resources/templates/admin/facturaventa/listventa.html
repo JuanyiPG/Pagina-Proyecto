@@ -49,8 +49,8 @@
         <td th:text="${r.cliente.id_clien}"></td>
         <td th:text="${r.pedido.id_pedido}"></td>
         <td>
-            <a class="btn-accion" th:href="@{'/admin/facturaventa/editar/' + ${r.id_factuv}}">Actualizar</a>
-            <a class="btn-accion" th:href="@{'/admin/facturaventa/eliminar/' + ${r.id_factuv}}">Eliminar</a>
+            <a class="btn-accion" th:href="@{'/admin/facturaventa/editarAdmin/' + ${r.id_factuv}}" style="margin: 20px">Actualizar</a>
+            <a class="btn-eliminar" th:href="@{'/admin/facturaventa/eliminarAdmin/' + ${r.id_factuv}}">Eliminar</a>
         </td>
     </tr>
     <tr th:if="${#lists.isEmpty(facturas)}">

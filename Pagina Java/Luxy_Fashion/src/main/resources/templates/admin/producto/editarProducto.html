@@ -82,18 +82,21 @@
 
                 <!--formulario right -->
                 <div class="form-derecha">
+                    <input type="hidden" name="id_produc" th:field="*{id_produc}">
 
                     <div class="form-group">
+                        <label for="nombre">Nombre</label>
                         <input type="text" placeholder="Nombre" th:field="*{nomProduc}" required>
                     </div>
 
                     <div class="form-group">
+                        <label for="nombre">Descripción</label>
                         <input type="text" placeholder="Descripción" th:field="*{desc_produc}">
                     </div>
 
                     <div class="form-group">
+                        <label for="nombre">Categoria</label>
                         <select th:field="*{categoria_produc}" style="border-radius:8px">
-                            <option value=""> Categoria </option>
                             <option value="Pantalon"> Pantalon </option>
                             <option value="Jean">Jean</option>
                             <option value="Vestidos">Vestidos</option>
@@ -104,9 +107,11 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="nombre">Unidad medida</label>
                         <input type="text" placeholder="Unidad medida" th:field="*{unid_med_produc}">
+
+                        <label for="nombre">Estado</label>
                         <select th:field="*{estado_produc}" style="border-radius:8px">
-                            <option value=""> Estado </option>
                             <option value="Diponible"> Disponible </option>
                             <option value="Agotado"> Agotado </option>
                             <option value="Revision"> Revision </option>
@@ -115,7 +120,7 @@
                     </div>
 
                     <div class="form-group">
-                        <select th:field="*{produccion}" style="border-radius:8px">
+                        <select th:field="*{produccion}">
                             <option value="">Produccion</option>
                             <option th:each="p : ${producciones}" th:value="${p.id_producc}" th:text="${p.id_producc}"></option>
                         </select>
@@ -127,95 +132,6 @@
             </div>
         </form>
     </div>
-
-    <!-- BUSCADOR -->
-    <div id="search" class="search">
-        <form th:action="@{/admin/producto/buscar}" method="get">
-            <input type="text" name="filtro" th:value="${filtro}"
-                   placeholder="Escribe lo que quieras consultar" id="searchInput">
-            <input type="submit" value="Buscar" id="btnSearch">
-        </form>
-    </div>
-    <!-- TABLA -->
-    <table>
-        <thead>
-        <tr>
-            <th>Código</th>
-            <th>Producto</th>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Categoría</th>
-            <th>Unidad</th>
-            <th>Estado</th>
-            <th>ID Producción</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="p : ${productos}">
-            <td th:text="${p.id_produc}"></td>
-            <td>
-                <img th:if="${p.link_produc != null}"
-                     th:src="${p.link_produc}"
-                     alt="Producto"
-                     style="width:80px; height:80px; object-fit:cover; border-radius:8px;">
-            </td>
-            <td th:text="${p.nomProduc}"></td>
-            <td th:text="${p.desc_produc}"></td>
-            <td th:text="${p.categoria_produc}"></td>
-            <td th:text="${p.unid_med_produc}"></td>
-            <td th:text="${p.estado_produc}"></td>
-            <td th:text="${p.produccion != null ? p.produccion.id_producc : 'Sin asignar'}"></td>
-            <td>
-                <!-- Rutas corregidas -->
-                <a class="btn-accion" th:href="@{/admin/producto/editar/{id}(id=${p.id_produc})}"> Actualizar </a>
-                <a class="btn-eliminar" th:href="@{/admin/producto/eliminar/{id}(id=${p.id_produc})}" onclick="return confirm('¿Deseas eliminar este producto?');"> Eliminar </a>
-            </td>
-        </tr>
-        <tr th:if="${productos != null and #lists.isEmpty(productos)}">
-            <td colspan="8">No se encontraron resultados</td>
-        </tr>
-        </tbody>
-    </table>
 </div>
-<script th:src="@{/js/confirmacion.js}"></script>
-<script th:src="@{/js/eliminar.js}"></script>
-<script>
-    function mostrarImagen(event) {
-        const input = event.target;
-        const preview = document.getElementById("preview");
-        const iconoMas = document.getElementById("iconoMas");
-
-        if (input.files && input.files[0]) {
-
-            if (!input.files[0].type.startsWith("image/")) {
-                alert("Solo se permiten imágenes");
-                input.value = "";
-                return;
-            }
-
-            const reader = new FileReader();
-
-            reader.onload = function(e) {
-                preview.src = e.target.result;
-                preview.style.display = "block";
-                iconoMas.style.display = "none";
-            };
-
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const toggleBtn = document.getElementById("formToggle");
-        const submenu = document.getElementById("submenuForm");
-
-        toggleBtn?.addEventListener("click", function (e) {
-            e.preventDefault();
-            submenu?.classList.toggle("show");
-        });
-    });
-</script>
-
 </body>
 </html>

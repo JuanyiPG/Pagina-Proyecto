@@ -46,4 +46,9 @@ public class ProductoServiceImpl implements ProductoService {
     public List<Producto>  findAllByorderAsc(){
         return productorepositorio.findByOrderByNomProducAsc();
     }
+
+    @Override
+    public Producto buscarPorId(Integer id) {
+        return productorepositorio.findById(id).orElse(null);
+    }
 }

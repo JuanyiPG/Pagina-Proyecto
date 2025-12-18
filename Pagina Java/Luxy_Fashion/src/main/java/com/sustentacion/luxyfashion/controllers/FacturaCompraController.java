@@ -15,83 +15,86 @@ import java.util.List;
 public class FacturaCompraController {
 
     private final FacturaCompraService facturaCompraService;
-    private final EmpleService empleadoService;
+    private final EmpleService empleService;
 
     public FacturaCompraController(FacturaCompraService facturaCompraService,
-                                   EmpleService empleadoService) {
+                                   EmpleService empleService) {
         this.facturaCompraService = facturaCompraService;
-        this.empleadoService = empleadoService;
+        this.empleService = empleService;
     }
 
+    // LISTAR
     @GetMapping()
-    public String listarParaEmpleado(Model model, @RequestParam(required = false) String filtro) {
-        List<FacturaCompra> lista;
-        if (filtro != null && !filtro.isEmpty()) {
-            lista = facturaCompraService.buscarvarioscampos(filtro);
-        } else {
-            lista = facturaCompraService.listar();
-        }
-        model.addAttribute("facturas", lista);
-        model.addAttribute("filtro", filtro);
+    public String listar(Model model) {
+        List<FacturaCompra> facturas = facturaCompraService.listar();
+        model.addAttribute("facturas", facturas);
         model.addAttribute("facturaCompra", new FacturaCompra());
-        model.addAttribute("empleados", empleadoService.listar());
+        model.addAttribute("empleados", empleService.listar());
         return "admin/facturacompra/indexcompra";
     }
 
-    @GetMapping("/form")
-    public String mostrarFormulario(@RequestParam(required = false) Integer id, Model model) {
+    // NUEVO
+    @GetMapping("/nuevo")
+    public String nuevo(Model model) {
+        model.addAttribute("facturaCompra", new FacturaCompra());
+        model.addAttribute("empleados", empleService.listar());
+        return "admin/facturacompra/indexcompra";
+    }
 
-        FacturaCompra facturaCompra;
+    // GUARDAR
+    @PostMapping("/guardar")
+    public String guardar(FacturaCompra facturaCompra) {
 
-        if (id != null) {
-            facturaCompra = facturaCompraService.buscarPorId(id);
-            if (facturaCompra == null) {
-                return "redirect:/admin/facturacompra";
-            }
-        } else {
-            facturaCompra = new FacturaCompra();
+        // Asignar empleado correctamente (igual que con Rol en Empleado)
+        Integer idEmple = facturaCompra.getEmpleado().getIdEmple();
+        Empleado empleado = empleService.buscarPorId(idEmple);
+        facturaCompra.setEmpleado(empleado);
+
+        facturaCompraService.guardar(facturaCompra);
+        return "redirect:/admin/facturacompra?success=true";
+    }
+
+    // EDITAR
+    @GetMapping("/editar/{id}")
+    public String editar(@PathVariable Integer id, Model model) {
+
+        FacturaCompra facturaCompra = facturaCompraService.buscarPorId(id);
+
+        if (facturaCompra == null) {
+            return "redirect:/admin/facturacompra?error=not_found";
         }
 
         model.addAttribute("facturaCompra", facturaCompra);
-        model.addAttribute("empleados", empleadoService.listar());
+        model.addAttribute("empleados", empleService.listar());
+        return "admin/facturacompra/editarcompra";
+    }
+
+    // BUSCAR
+    @GetMapping("/buscar")
+    public String buscar(
+            @RequestParam(name = "buscar", required = false) String filtro,
+            Model model) {
+
+        List<FacturaCompra> facturas;
+
+        if (filtro == null || filtro.isEmpty()) {
+            facturas = facturaCompraService.listar();
+        } else {
+            facturas = facturaCompraService.buscarvarioscampos(filtro);
+        }
+
+        model.addAttribute("facturas", facturas);
+        model.addAttribute("facturaCompra", new FacturaCompra());
+        model.addAttribute("empleados", empleService.listar());
 
         return "admin/facturacompra/indexcompra";
     }
 
-
-    @PostMapping("/guardar")
-    public String guardar(@ModelAttribute FacturaCompra facturaCompra) {
-
-        Integer idEmple = facturaCompra.getEmpleado().getIdEmple();
-        Empleado empleado = empleadoService.buscarPorId(idEmple);
-
-        facturaCompra.setEmpleado(empleado);
-        facturaCompraService.guardar(facturaCompra);
-
-        return "redirect:/admin/facturacompra";
-    }
-
-
-
+    // ELIMINAR
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Integer id) {
         facturaCompraService.eliminar(id);
-        return "redirect:/admin/facturacompra";
+        return "redirect:/admin/facturacompra?deleted=true";
     }
-
-    // Buscar por filtro
-    @GetMapping("/buscar")
-    public String buscar(@RequestParam String filtro, Model model) {
-        List<FacturaCompra> lista = facturaCompraService.buscarvarioscampos(filtro);
-        model.addAttribute("facturas", lista);
-        model.addAttribute("filtro", filtro);
-        return "admin/facturacompra/indexcompra";
-    }
-
-    // Mostrar formulario de edición (alias de /form con id)
-    @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Integer id) {
-        return "redirect:/admin/facturacompra/form?id=" + id;
-    }
-
 }
+

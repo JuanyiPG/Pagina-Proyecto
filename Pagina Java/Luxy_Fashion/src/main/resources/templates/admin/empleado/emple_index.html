@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
@@ -35,6 +35,7 @@
                 <input type="text" placeholder="Fecha ingreso"
                        onfocus="this.type='date'" onblur="if(!this.value) this.type='text'" th:field="*{fecha_ing_emple}">
                 <select th:field="*{tipo_identificacion}" style="border-radius: 8px">
+                    <option value="">-- Tipo identificacion --</option>
                     <option value="CC">Cédula de Ciudadanía</option>
                     <option value="CE">Cédula Extranjera</option>
                     <option value="PEP">Permiso Especial de Permanencia</option>
@@ -45,13 +46,19 @@
                 <input type="text" placeholder="Salario" th:field="*{salari_emple}">
             </div>
             <div class="form-group">
-                <input type="text" placeholder="Estado" th:field="*{estado_emple}">
+                <select th:field="*{estado_emple}" required style="border-radius:8px">
+                    <option value="">-- Seleccione estado --</option>
+                    <option value="Activo">Activo</option>
+                    <option value="Descanso">Descanso</option>
+                    <option value="Incapacidad">Incapacidad</option>
+                    <option value="Retirado">Retirado</option>
+                </select>
                 <input type="text" placeholder="Usuario" th:field="*{usuario}">
             </div>
             <div class="form-group">
                 <input type="password" placeholder="Contraseña" th:field="*{contrasena}">
                 <select th:field="*{rol.id_rol}" required style="border-radius:8px">
-                    <option value="" disabled >-- Seleccione un rol --</option>
+                    <option value="">-- Seleccione un rol --</option>
                     <option th:each="r : ${roles}"
                             th:value="${r.id_rol}"
                             th:text="${r.nomRol}">

@@ -9,7 +9,7 @@
 <div class="main">
     <div class="card">
         <h1>Gestión de factura venta</h1>
-        <form th:action="@{/admin/facturaventa/guardar}" method="post" th:object="${facturaVenta}">
+        <form th:action="@{/admin/facturaventa/guardarAdmin}" method="post" th:object="${facturaVenta}">
 
             <input type="hidden" name="id_factuv" th:field="*{id_factuv}">
 

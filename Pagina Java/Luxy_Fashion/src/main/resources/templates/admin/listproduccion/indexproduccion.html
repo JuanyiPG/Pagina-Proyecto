@@ -49,8 +49,8 @@
         <td th:text="${prc.estado_producc}"></td>
 
         <td>
-            <a class="btn-accion" th:href="@{'/emple/produccion/editar/' + ${prc.id_producc}}">Editar</a>
-            <a class="btn-eliminar" th:href="@{'/emple/produccion/eliminar/' + ${prc.id_producc}}"
+            <a class="btn-accion" th:href="@{'/emple/produccion/editarAdmin/' + ${prc.id_producc}}">Editar</a>
+            <a class="btn-eliminar" th:href="@{'/emple/produccion/eliminarAdmin/' + ${prc.id_producc}}"
                onclick="return confirm('¿Seguro que deseas eliminar?')">Eliminar</a>
         </td>
     </tr>

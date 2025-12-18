@@ -15,4 +15,6 @@ public interface ProduccionService {
     List<Produccion> buscarvarioscampos(String filtro);
 
     List<Produccion> findAllByOrderAsc();
+
+    Produccion buscarPorId(Integer id);
 }

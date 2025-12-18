@@ -1,28 +1,62 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:Correo="http://www.w3.org/1999/xhtml">
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Editar empleado</title>
-    <link rel="stylesheet" href="../../CSS/index.css">
-    <img src="../IMG/logoB.png" height="100PX" style = "margin-left: 48%;">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>Producción</title>
+    <link rel="stylesheet" th:href="@{/CSS/index.css}">
 </head>
 <body>
-<div class="container-1">
-    <div class="formulario-1">
-        <form th:action="@{/facturacompra/guardar}" method="post" th:object="${/facturacompra}">
-            <h1>Actualizar Factura Compra</h1>
-            <input type="hidden" name="id_emple" th:field="*{id_factuc}">
-            <label for="nom_empleado">Fecha: </label>
-            <input type="date" id="nom_empleado" name="nomEmple" th:field="*{fechafactuc}" >
-            <label for="direccion_empleado">Total: </label>
-            <input type="text" id="direccion_empleado" name="dir_emple" th:field="*{total}"  >
-            <label for="tipo_sangre">Metodo Pago: </label>
-            <input type="text" id="tipo_sangre" name="rh_emple" th:field="*{ metodo_pago}" >
-            <label for="tipo_sangre">Estado: </label>
-            <input type="text" id="estado" name="rh_emple" th:field="*{estado}" >
-            <label>Nombre Empleado:</label>
-            <input type="text" name="tel_emple"  th:field="*{empleado.nomEmple}" >
-            <button type="submit">Actualizar</button>
+<body class="body2">
+<div class="main">
+    <div class="card">
+        <h1>Actualizar Materia prima</h1>
+        <form th:action="@{/admin/materiaprima/guardar}" method="post" th:object="${materiaprima}">
+
+            <input type="hidden" th:field="*{id_matp}"/>
+
+            <div class="form-group">
+                <label for="Estado">Nombre</label>
+                <input type="text" placeholder="Nombre" th:field="*{nomMatp}" required>
+                <label for="Estado">Color</label>
+                <input type="text" placeholder="Color" th:field="*{color}">
+            </div>
+
+            <div class="form-group">
+                <label for="Estado">Categoria</label>
+                <select type="text" placeholder="Categoría" th:field="*{categoria}" required style="border-radius:8px">
+                    <option value="...">--Categoria---</option>
+                    <option value="Tela">Tela</option>
+                    <option value="Botones">Botones</option>
+                    <option value="Guata">Guata</option>
+                    <option value="Agujas">Agujas</option>
+                    <option value="Hilos">Hilos</option>
+                    <option value="Hilazas">Hilazas</option>
+                </select>
+                <label for="Estado">Tipo</label>
+                <input type="text" placeholder="Tipo" th:field="*{tipo}">
+            </div>
+
+            <div class="form-group">
+                <label for="Estado">Stock Actual</label>
+                <input type="number" placeholder="Stock actual" th:field="*{stock_act}" required>
+                <label for="Estado">Stock Minimo</label>
+                <input type="number" placeholder="Stock mínimo" th:field="*{stock_min}">
+            </div>
+
+            <div class="form-group">
+                <label for="Estado">Descripcion</label>
+                <input type="text" placeholder="Descripción" th:field="*{desc_matp}" required>
+                <label for="Estado">Estado</label>
+                <select th:field="*{estado}" style="border-radius:8px">
+                    <option value="Disponible"> Disponible</option>
+                    <option value="Reservado"> Reservado</option>
+                    <option value="Consumido"> Consumido</option>
+                </select>
+            </div>
+
+            <button type="submit" class="save-btn">Actualizar</button>
         </form>
     </div>
 

@@ -1,5 +1,6 @@
 package com.sustentacion.luxyfashion.controllers;
 
+import com.sustentacion.luxyfashion.models.Produccion;
 import com.sustentacion.luxyfashion.models.Producto;
 import com.sustentacion.luxyfashion.services.ProductoService;
 import com.sustentacion.luxyfashion.services.ProduccionService;
@@ -108,4 +109,21 @@ public class ProductoController {
 
         return "admin/producto/indexproducto";
     }
+
+
+    @GetMapping("/editar/{id}")
+    public String editar(@PathVariable Integer id, Model model) {
+
+        Producto producto = productoService.buscarPorId(id);
+
+        if (producto == null) {
+            return "redirect:/admin/producto?error=not_found";
+        }
+
+        model.addAttribute("producto", producto);
+        model.addAttribute("producciones", produccionService.listar());
+
+        return "admin/producto/editarProducto";
+    }
+
 }

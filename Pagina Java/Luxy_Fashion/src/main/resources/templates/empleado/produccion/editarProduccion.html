@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>Producción</title>
+    <link rel="stylesheet" th:href="@{/CSS/index.css}">
+</head>
+<body class="body2">
+<div th:replace="~{itemss/headeremple :: miHeader}"></div>
+
+<div class="main">
+    <div class="card">
+        <h1>Gestio de Produccion </h1>
+
+        <form th:action="@{/emple/produccion/guardarAdmin}" th:object="${produccion}" method="post">
+            <div class="form-group">
+                <input type="hidden" name="id_producc" th:field="*{id_producc}">
+                <label for="fecha">Fecha inicio</label>
+                <input type="date" placeholder="Fecha inicio"
+                       onfocus="this.type='date'" onblur="if(!this.value) this.type='text'" th:field="*{fechaIniProducc}">
+                <label for="fecha">Cantidad</label>
+                <input type="number" th:field="*{cant_producc}" id="cantidad" placeholder="Cantidad">
+            </div>
+
+            <div class="form-group">
+                <label for="fecha">Costo Mano Obra</label>
+                <input type="number" th:field="*{costo_mano_obra_producc}" id="manoObra" placeholder="Costo Mano de Obra">
+
+                <label for="fecha">Costo total Produccion</label>
+                <input type="number" th:field="*{costo_mat_producc}" id="SubTotal" placeholder="Costo Material">
+            </div>
+
+            <div class="form-group">
+                <label for="fecha">IVA</label>
+                <input type="number" th:field="*{costo_iva_producc}" id="Iva" placeholder="Costo IVA">
+
+                <label for="fecha">Costo Producción</label>
+                <input type="number" th:field="*{costo_total_producc}" id="Total" placeholder="Costo Total">
+            </div>
+
+            <div class="form-group">
+                <label for="fecha">Fecha fin</label>
+                <input type="date" placeholder="Fecha fin"
+                       onfocus="this.type='date'" onblur="if(!this.value) this.type='text'" th:field="*{fecha_fin_producc}">
+
+                <label for="fecha">Estado</label>
+                <select th:field="*{estado_producc}">
+                    <option value="Proceso">En proceso</option>
+                    <option value="Pausa">Pausa</option>
+                    <option value="Reproceso">Reproceso</option>
+                    <option value="Cancelada">Cancelada</option>
+                    <option value="Finalizada">Finalizada</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+
+                <label for="fecha">Empleado</label>
+                <select th:field="*{empleado}">
+                    <option value="">Empleado</option>
+                    <option th:each="emp:${empleados}" th:value="${emp.idEmple}" th:text="${emp.nomEmple}"></option>
+                </select>
+
+                <label for="fecha">Pedido</label>
+                <select th:field="*{pedido}">
+                    <option value="">Pedido</option>
+                    <option th:each="ped:${pedidos}" th:value="${ped.id_pedido}" th:text="${ped.id_pedido}"></option>
+                </select>
+
+                <label for="fecha">Materia Prima</label>
+                <select th:field="*{materiaPrima}">
+                    <option value="">Materia Prima</option>
+                    <option th:each="mat:${materias}" th:value="${mat.id_matp}" th:text="${mat.nomMatp}"></option>
+                </select>
+            </div>
+
+            <button type="submit" class="save-btn">Guardar</button>
+        </form>
+        <div id="mensaje" th:if="${param.success}" style="color:purple; font-weight:bold; margin-bottom:10px;">
+            ¡Se insertó correctamente!
+        </div>
+    </div>
+</div>
+</body>
+</html>
