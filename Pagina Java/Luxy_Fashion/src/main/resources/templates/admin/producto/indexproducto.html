@@ -169,7 +169,7 @@
             <td>
                 <!-- Rutas corregidas -->
                 <a class="btn-accion" th:href="@{/admin/producto/editar/{id}(id=${p.id_produc})}"> Actualizar </a>
-                <a class="btn-eliminar" th:href="@{/admin/producto/eliminar/{id}(id=${p.id_produc})}" onclick="return confirm('¿Deseas eliminar este producto?');"> Eliminar </a>
+                <a class="btn-eliminar" th:href="@{/admin/producto/eliminar/{id}(id=${p.id_produc})}"> Eliminar </a>
             </td>
         </tr>
         <tr th:if="${productos != null and #lists.isEmpty(productos)}">
