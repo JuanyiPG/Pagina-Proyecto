@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script th:src="@{https://cdn.jsdelivr.net/npm/sweetalert2@11}"></script>
     <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}">
+
     <title>Gestión de Empleados</title>
 </head>
 <body class="body2">
@@ -120,7 +121,14 @@
                 <a class="btn-accion" th:href="@{'/admin/empleado/editar/' + ${r.idEmple}}">Actualizar</a>
                 <br>
                 <br>
-                <a class="btn-eliminar" th:href="@{'/admin/empleado/eliminar/' + ${r.idEmple}}" style="margin-top: 10px">Eliminar</a>
+                <a
+                        href="javascript:void(0)"
+                        class="btn-eliminar"
+                        th:data-id="${r. idEmple}">
+                    Eliminar
+                </a>
+
+
             </td>
         </tr>
         <tr th:if="${#lists.isEmpty(roles)}">
@@ -131,8 +139,8 @@
 </div>
 
 <!-- Scripts -->
+<script th:src="@{/js/fk.js}"></script>
 <script th:src="@{/js/confirmacion.js}"></script>
-<script th:src="@{/js/eliminar.js}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
       const toggleBtn = document.getElementById("formToggle");

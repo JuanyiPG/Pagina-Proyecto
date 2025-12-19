@@ -77,9 +77,10 @@ public List<Empleado> listar(){
     return empleRepositories.findAllByOrderByNomEmpleAsc();
     }
 
-    @Override
+    @Transactional
     public void eliminar(Integer id){
     empleRepositories.deleteById(id);
+        empleRepositories.flush();
     }
 
     @Override
@@ -91,4 +92,7 @@ public List<Empleado> listar(){
     public List<Empleado>buscarVariosCampos(String filtro){
     return empleRepositories.buscarVariosCampos(filtro);
     }
+
+
+
 }
