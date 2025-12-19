@@ -46,4 +46,9 @@ public class ProductoServiceImpl implements ProductoService {
     public Producto obtenerProductoPorId(Integer productoId) {
         return productorepositorio.findById(productoId).orElse(null);
     }
+
+    @Override
+    public Producto buscarPorId(Integer id) {
+        return productorepositorio.findById(id).orElse(null);
+    }
 }

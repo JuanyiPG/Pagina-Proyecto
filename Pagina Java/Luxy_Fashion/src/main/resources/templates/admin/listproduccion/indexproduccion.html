@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fctura Venta</title>
+    <title>Produccion</title>
     <link rel="stylesheet" href="../../CSS/listas.css">
 </head>
 <body class="body2">
@@ -50,8 +50,7 @@
 
         <td>
             <a class="btn-accion" th:href="@{'/emple/produccion/editar/' + ${prc.id_producc}}">Editar</a>
-            <a class="btn-eliminar" th:href="@{'/emple/produccion/eliminar/' + ${prc.id_producc}}"
-               onclick="return confirm('¿Seguro que deseas eliminar?')">Eliminar</a>
+            <a class="btn-accion" th:href="@{'/emple/produccion/eliminarAdmin/' + ${prc.id_producc}}">Eliminar</a>
         </td>
     </tr>
 

@@ -41,4 +41,8 @@ public class ProduccionServiceImpl implements ProduccionService {
         return produccionrepositorio.findAllByOrderByFechaIniProduccAsc();
     }
 
+    @Override
+    public Produccion buscarPorId(Integer id){
+        return produccionrepositorio.findById(id).orElse(null);
+    }
 }

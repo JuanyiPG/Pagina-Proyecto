@@ -15,6 +15,7 @@
 <h1>Gestio de Produccion </h1>
 <form th:action="@{/emple/produccion/guardar}" th:object="${produccion}" method="post">
 <div class="form-group">
+
     <input type="date" placeholder="Fecha inicio"
            onfocus="this.type='date'" onblur="if(!this.value) this.type='text'" th:field="*{fechaIniProducc}">
     <input type="number" th:field="*{cant_producc}" id="cantidad" placeholder="Cantidad">
@@ -35,13 +36,22 @@
     <div class="form-group">
         <input type="date" placeholder="Fecha fin"
                onfocus="this.type='date'" onblur="if(!this.value) this.type='text'" th:field="*{fecha_fin_producc}">
-    <input type="text" th:field="*{estado_producc}" placeholder="Estado">
+    <select th:field="*{estado_producc}">
+        <option value="">Estado</option>
+        <option value="Proceso">En proceso</option>
+        <option value="Pausa">Pausa</option>
+        <option value="Reproceso">Reproceso</option>
+        <option value="Cancelada">Cancelada</option>
+        <option value="Finalizada">Finalizada</option>
+    </select>
     </div>
+
     <div class="form-group">
     <select th:field="*{empleado}">
         <option value="">Empleado</option>
         <option th:each="emp:${empleados}" th:value="${emp.idEmple}" th:text="${emp.nomEmple}"></option>
     </select>
+
     <select th:field="*{pedido}">
         <option value="">Pedido</option>
         <option th:each="ped:${pedidos}" th:value="${ped.id_pedido}" th:text="${ped.id_pedido}"></option>
@@ -50,12 +60,13 @@
             <option value="">Materia Prima</option>
             <option th:each="mat:${materias}" th:value="${mat.id_matp}" th:text="${mat.nomMatp}"></option>
         </select>
+    </div>
+
+    <button type="submit" class="save-btn">Guardar</button>
+</form>
         <div id="mensaje" th:if="${param.success}" style="color:purple; font-weight:bold; margin-bottom:10px;">
             ¡Se insertó correctamente!
         </div>
-    </div>
-    <button type="submit" class="save-btn">Guardar</button>
-</form>
     </div>
 
 
@@ -97,9 +108,8 @@
         <td th:text="${prc.estado_producc}"></td>
 
         <td>
-            <a th:href="@{'/emple/produccion/editar/' + ${prc.id_producc}}">Editar</a>
-            <a th:href="@{'/emple/produccion/eliminar/' + ${prc.id_producc}}"
-               onclick="return confirm('¿Seguro que deseas eliminar?')">Eliminar</a>
+            <a class="btn-accion" th:href="@{'/emple/produccion/editar/' + ${prc.id_producc}}">Editar</a>
+            <a class="btn-eliminar" th:href="@{'/emple/produccion/eliminar/' + ${prc.id_producc}}">Eliminar</a>
         </td>
     </tr>
 

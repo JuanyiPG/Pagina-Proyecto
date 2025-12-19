@@ -52,7 +52,7 @@ public class MateriaPrimaController {
         model.addAttribute("materiaprima", materia);
         model.addAttribute("materias", materiaPrimaService.listar());
 
-        return "admin/materiaprima/indexmatp";
+        return "admin/materiaprima/editarmatp";
     }
 
     // ============================================

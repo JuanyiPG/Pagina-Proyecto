@@ -6,6 +6,9 @@ import com.sustentacion.luxyfashion.models.Usuario;
 import com.sustentacion.luxyfashion.services.EmpleService;
 import com.sustentacion.luxyfashion.services.RolService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -90,11 +93,17 @@ public class EmpleController {
         return "admin/empleado/emple_index";
     }
 
-        @GetMapping("/eliminar/{id}")
-        public String eliminar(@PathVariable Integer id) {
+    @GetMapping("/eliminar/{id}")
+    public ResponseEntity<String> eliminar(@PathVariable Integer id) {
+        try {
             empleService.eliminar(id);
-            return "redirect:/admin/empleado?error=not_found";
+            return ResponseEntity.ok("Empleado eliminado");
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body("No se puede eliminar porque está relacionado con otra tabla");
         }
-
-
     }
+
+
+}

@@ -19,54 +19,56 @@
 <div class="slider-container">
     <button class="arrow left">&#10094;</button>
     <div class="slider">
-        <a th:href="@{/admin/producto/cliente}">
         <div class="item">
+            <a th:href="@{/admin/producto/cliente}">
             <img th:src="@{/IMG/camisa_overzise.jpeg}" alt="Camisa Overzise">
+            </a>
             <div class="overlay">Camisa Overzise - $50.000</div>
         </div>
-        </a>
-        <a th:href="@{/admin/producto/cliente}">
         <div class="item">
+            <a th:href="@{/admin/producto/cliente}">
             <img th:src="@{/IMG/buso-camisa-gris.jpg}" alt="Buso Gris">
+            </a>
             <div class="overlay">Buso Gris - $65.000</div>
         </div>
-        </a>
-        <a th:href="@{/admin/producto/cliente}">
         <div class="item">
+            <a th:href="@{/admin/producto/cliente}">
             <img th:src="@{/IMG/buso-negro.jpg}" alt="Buso Negro">
+            </a>
             <div class="overlay">Buso Negro - $60.000</div>
         </div>
-        </a>
-        <a th:href="@{/admin/producto/cliente}">
         <div class="item">
+            <a th:href="@{/admin/producto/cliente}">
             <img th:src="@{/IMG/blusa-cuello-vinotinto.jpg}" alt="Blusa Cuello Vinotinto">
+            </a>
             <div class="overlay">Blusa Vinotinto - $55.000</div>
         </div>
-        </a>
-        <a th:href="@{/admin/producto/cliente}">
         <div class="item">
+            <a th:href="@{/admin/producto/cliente}">
             <img th:src="@{/IMG/chaqueta-amarilla.jpg}" alt="Chaqueta Amarilla">
+            </a>
             <div class="overlay">Chaqueta Amarilla - $120.000</div>
         </div>
-        </a>
-        <a th:href="@{/admin/producto/cliente}">
         <div class="item">
+            <a th:href="@{/admin/producto/cliente}">
             <img th:src="@{/IMG/frontchaquetabeige.jpg}" alt="Chaqueta Beige">
+            </a>
             <div class="overlay">Chaqueta Beige - $115.000</div>
         </div>
-        </a>
-        <a th:href="@{/admin/producto/cliente}">
         <div class="item">
-            <img th:src="@{/IMG/blusa-hombro-negro.jpeg}" alt="Camisa Hombro">
+            <a th:href="@{/admin/producto/cliente}">
+            <a th:href="@{/pedido}">
+            </a>
+                <img th:src="@{/IMG/blusa-hombro-negro.jpeg}" alt="Camisa Hombro">
+            </a>
             <div class="overlay">Camisa Hombro - $70.000</div>
         </div>
-        </a>
-        <a th:href="@{/admin/producto/cliente}">
-            <div class="item">
-                <img th:src="@{/IMG/camisa_beisbolera.jpeg}" alt="Camisa Beisbolera">
-                <div class="overlay">Camisa Beisbolera - $80.000</div>
-            </div>
-        </a>
+        <div class="item">
+            <a th:href="@{//admin/producto/cliente}">
+            <img th:src="@{/IMG/camisa_beisbolera.jpeg}" alt="Camisa Beisbolera">
+            </a>
+            <div class="overlay">Camisa Beisbolera - $80.000</div>
+        </div>
     </div>
     <button class="arrow right">&#10095;</button>
 </div>
@@ -82,9 +84,7 @@
 <section class="destacados">
     <h2>Productos Destacados</h2>
     <div class="grid">
-        <a th:href="@{/admin/producto/cliente}">
         <img th:src="@{/IMG/blusa-cuello-vinotinto.jpg}" alt="Blusa Vinotinto">
-        </a>
         <a th:href="@{/admin/producto/cliente}">
         <img th:src="@{/IMG/frontchaquetabeige.jpg}" alt="Chaqueta Beige">
         </a>
@@ -120,6 +120,6 @@
     <p>&copy; 2025 Fashion Luxy - Todos los derechos reservados</p>
 </footer>
 
-<script th:src="@{/js/cliente.js?v=2}"></script>
+<script th:src="@{/js/cliente.js?v=2}" defer></script>
 </body>
 </html>

@@ -1,6 +1,8 @@
 package com.sustentacion.luxyfashion.services;
 
 import com.sustentacion.luxyfashion.models.Producto;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 public interface ProductoService {
@@ -15,5 +17,7 @@ public interface ProductoService {
 
     List<Producto> buscarvarioscampos(String filtro);
 
-    Producto obtenerProductoPorId(Integer productoId);
+    List<Producto>  findAllByorderAsc();
+
+    Producto buscarPorId(Integer id);
 }
