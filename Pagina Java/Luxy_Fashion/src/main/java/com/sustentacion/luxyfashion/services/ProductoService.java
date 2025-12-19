@@ -17,7 +17,7 @@ public interface ProductoService {
 
     List<Producto> buscarvarioscampos(String filtro);
 
-    List<Producto>  findAllByorderAsc();
+    Producto obtenerProductoPorId(Integer productoId);
 
     Producto buscarPorId(Integer id);
 }
