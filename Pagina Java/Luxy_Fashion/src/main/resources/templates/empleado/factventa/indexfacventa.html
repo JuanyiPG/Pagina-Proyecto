@@ -101,7 +101,12 @@
             <td th:text="${r.pedido.id_pedido}"></td>
             <td>
                 <a class="btn-accion" th:href="@{'/admin/facturaventa/editar/' + ${r.id_factuv}}">Actualizar</a>
-                <a class="btn-eliminar" th:href="@{'/admin/facturaventa/eliminar/' + ${r.id_factuv}}">Eliminar</a>
+                <a
+                        href="javascript:void(0)"
+                        class="btn-eliminar"
+                        th:data-id="${r.id_factuv}">
+                    Eliminar
+                </a>
             </td>
         </tr>
         <tr th:if="${#lists.isEmpty(facturas)}">
@@ -112,8 +117,8 @@
 </div>
 
 <!---------JAVA SCRIPT----->
+<script th:src="@{/js/fk.js}"></script>
 <script src="/js/confirmacion.js"></script>
-<script src="/js/eliminar.js"></script>
 <!----------CALCULO-------------->
 <script>
     const subTotal = document.getElementById("SubTotal");
