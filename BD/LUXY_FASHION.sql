@@ -1,70 +1,65 @@
-CREATE DATABASE LUXY_FASHION;
+CREATE DATABASE IF NOT EXISTS LUXY_FASHION;
 USE LUXY_FASHION;
 
---    TABLA ROL, si
-DELIMITER //
+-- =========================
+-- TABLA ROL
+-- =========================
 CREATE TABLE Rol (
   id_rol INT PRIMARY KEY AUTO_INCREMENT,
-  desc_rol VARCHAR(200) NOT NULL
+  nom_rol VARCHAR(200) NOT NULL
 );
-//
 
---    TABLA EMPLEADO, si 
-DELIMITER //
+-- =========================
+-- TABLA EMPLEADO
+-- =========================
 CREATE TABLE Empleado (
   id_emple INT PRIMARY KEY AUTO_INCREMENT,
   nom_emple VARCHAR(50) NOT NULL,
   tel_emple VARCHAR(20) NOT NULL,
-  correo_emple VARCHAR(100) NOT NULL,
+  correo_emple VARCHAR(100) NOT NULL UNIQUE,
   dir_emple VARCHAR(100) NOT NULL,
   rh_emple VARCHAR(20) NOT NULL,
   fecha_naci_emple DATE NOT NULL,
-  tipo_identificacion VARCHAR(100) NOT NULL,
-  num_indetificacion VARCHAR(30) NOT NULL,
+  tipo_ident VARCHAR(100) NOT NULL,
+  num_ident VARCHAR(30) NOT NULL,
   fecha_ing_emple DATE NOT NULL,
-  salari_emple FLOAT NOT NULL,
+  salari_emple DECIMAL(10,2) NOT NULL,
   estado_emple VARCHAR(50) NOT NULL,
-  usuario VARCHAR(50) NOT NULL,
-  contrasena VARCHAR(100) NOT NULL,
   id_rol_fk_emple INT NOT NULL,
   CONSTRAINT fk_emple_rol FOREIGN KEY (id_rol_fk_emple) REFERENCES Rol(id_rol)
 );
-//
 
---    TABLA CLIENTE, si 
-DELIMITER //
+-- =========================
+-- TABLA CLIENTE
+-- =========================
 CREATE TABLE Cliente (
   id_clien INT PRIMARY KEY AUTO_INCREMENT,
-  nom_clien VARCHAR(50) NOT NULL, --
-  dir_clien VARCHAR(100) NOT NULL, --
-  tel_clien VARCHAR(20) NOT NULL, --
-  correo_clien VARCHAR(100) NOT NULL, --
-  usuario_clien VARCHAR(50) NOT NULL,
-  contra_clien VARCHAR(100) NOT NULL,
+  nom_clien VARCHAR(50) NOT NULL,
+  dir_clien VARCHAR(100) NOT NULL,
+  tel_clien VARCHAR(20) NOT NULL,
+  correo_clien VARCHAR(100) NOT NULL UNIQUE,
   id_rol_fk_clien INT NOT NULL,
-  CONSTRAINT fk_clien_rol FOREIGN KEY (id_rol_fk_clien) REFERENCES Rol(id_rol)
+  CONSTRAINT fk_clien_rol  FOREIGN KEY (id_rol_fk_clien) REFERENCES Rol(id_rol)
 );
-//
 
-DELIMITER //
--- TABLA USUSARIO, no
+-- =========================
+-- TABLA USUARIOS
+-- =========================
 CREATE TABLE usuarios (
-    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    contrasena VARCHAR(255) NOT NULL,
-    rol VARCHAR(20) NOT NULL,  
-    id_emple_fk_id_usuario INT, 
-    id_clien_fk_usuario INT,
-    CONSTRAINT fk_emple_usuario FOREIGN KEY ( id_emple_fk_id_usuario) REFERENCES Empleado(id_emple) ON DELETE CASCADE,
-    CONSTRAINT fk_clien_usuario FOREIGN KEY (id_clien_fk_usuario) REFERENCES Cliente(id_clien)
+  id_usuario INT PRIMARY KEY AUTO_INCREMENT,
+  username VARCHAR(50) NOT NULL UNIQUE,
+  contrasena VARCHAR(255) NOT NULL,
+  id_emple_fk_usuario INT NULL,
+  id_clien_fk_usuario INT NULL,
+  CONSTRAINT fk_usuario_emple FOREIGN KEY (id_emple_fk_usuario) REFERENCES Empleado(id_emple) ON DELETE CASCADE,
+  CONSTRAINT fk_usuario_clien FOREIGN KEY (id_clien_fk_usuario) REFERENCES Cliente(id_clien) ON DELETE CASCADE
 );
-//
+
 
 --    TABLA PEDIDO, si solo noti a admin
 DELIMITER //
 CREATE TABLE Pedido (
   id_pedido INT PRIMARY KEY AUTO_INCREMENT,
-  link_ped VARCHAR(500) NOT NULL, 
   nom_ped VARCHAR(100) NOT NULL,
   talla_ped VARCHAR(50) NOT NULL,
   color_ped VARCHAR(50) NOT NULL,
@@ -142,7 +137,6 @@ CREATE TABLE Produccion (
   cant_producc NUMERIC NOT NULL,
   costo_mano_obra_producc BIGINT NOT NULL,
   costo_mat_producc BIGINT NOT NULL,
-  costo_iva_producc BIGINT NOT NULL,
   costo_total_producc BIGINT NOT NULL,
   fecha_fin_producc DATE NOT NULL,
   estado_producc VARCHAR(50) NOT NULL,
@@ -150,7 +144,7 @@ CREATE TABLE Produccion (
   id_emple_fk_producc INT NOT NULL,
   CONSTRAINT fk_producc_emple FOREIGN KEY (id_emple_fk_producc) REFERENCES Empleado(id_emple),
 
-  id_pedido_fk_producc INT NOT NULL,
+  id_pedido_fk_producc INT NULL,
   CONSTRAINT fk_producc_pedido FOREIGN KEY (id_pedido_fk_producc) REFERENCES Pedido(id_pedido),
 
   id_matp_fk_producc INT NOT NULL,
