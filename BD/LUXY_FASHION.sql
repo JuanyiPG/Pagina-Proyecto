@@ -107,7 +107,7 @@ CREATE TABLE Abono (
   fecha_abono DATE NOT NULL,
   monto_abono BIGINT NOT NULL,
   metodo_pago VARCHAR(50) NOT NULL,
-  descripcion VARCHAR(200),
+  descripcion VARCHAR(200) NOT NULL,
 
   id_pedido_fk_abono INT NOT NULL,
   CONSTRAINT fk_abono_pedido FOREIGN KEY (id_pedido_fk_abono) REFERENCES Pedido( id_pedido)
