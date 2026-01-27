@@ -20,11 +20,11 @@ public class MateriaPrima {
     private Integer id_matp;
     @Column(name = "nom_matp")
     private String nomMatp;
-    private String color;
-    private String categoria;
-    private String tipo;
-    private BigDecimal stock_act;
-    private BigDecimal stock_min;
+    private String color_matp;
+    private String categoria_matp;
+    private String tipo_matp;
+    private BigDecimal stock_act_matp;
+    private BigDecimal stock_min_matp;
     private String desc_matp;
-    private String estado;
+    private String estado_matp;
 }

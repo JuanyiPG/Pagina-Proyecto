@@ -27,24 +27,21 @@ public class Empleado {
     @Column(name = "nom_emple")
     private String nomEmple;
     private String tel_emple;
-    @Column(name = "correo_emple")
-    private String correo;
+    private String correo_emple;
     private String dir_emple;
     private String rh_emple;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fecha_naci_emple;
 
-    private String tipo_identificacion;
-    private String num_indetificacion;
+    private String tipo_ident;
+    private String num_indet;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fecha_ing_emple;
 
     private BigDecimal salari_emple;
     private String estado_emple;
-    private String usuario;
-    private String contrasena;
 
     @ManyToOne
     @JoinColumn(name = "id_rol_fk_emple")

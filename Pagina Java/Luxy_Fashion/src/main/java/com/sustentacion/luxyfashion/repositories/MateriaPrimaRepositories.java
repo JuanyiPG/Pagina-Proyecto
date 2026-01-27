@@ -13,11 +13,11 @@ public interface MateriaPrimaRepositories extends JpaRepository<MateriaPrima, In
     @Query ("SELECT mp FROM MateriaPrima mp WHERE " +
             "CAST(mp.id_matp AS string) LIKE CONCAT('%', :filtro, '%') OR " +
             "LOWER(CAST(mp.nomMatp AS string)) LIKE LOWER(CONCAT('%', :filtro, '%')) OR "+
-            "LOWER(CAST(mp.color AS string)) LIKE LOWER(CONCAT('%', :filtro, '%')) OR "+
-            "LOWER(CAST(mp.categoria AS string)) LIKE LOWER(CONCAT('%', :filtro, '%')) OR "+
-            "LOWER(CAST(mp.tipo AS string)) LIKE LOWER(CONCAT('%', :filtro, '%')) OR "+
-            "CAST(mp.stock_act AS string) LIKE CONCAT('%', :filtro, '%') OR " +
-            "CAST(mp.stock_min AS string) LIKE CONCAT('%', :filtro, '%') OR " +
+            "LOWER(CAST(mp.color_matp AS string)) LIKE LOWER(CONCAT('%', :filtro, '%')) OR "+
+            "LOWER(CAST(mp.categoria_matp AS string)) LIKE LOWER(CONCAT('%', :filtro, '%')) OR "+
+            "LOWER(CAST(mp.tipo_matp AS string)) LIKE LOWER(CONCAT('%', :filtro, '%')) OR "+
+            "CAST(mp.stock_act_matp AS string) LIKE CONCAT('%', :filtro, '%') OR " +
+            "CAST(mp.stock_min_matp AS string) LIKE CONCAT('%', :filtro, '%') OR " +
             "LOWER(CAST(mp.desc_matp AS string)) LIKE LOWER(CONCAT('%', :filtro, '%'))"
     )
 

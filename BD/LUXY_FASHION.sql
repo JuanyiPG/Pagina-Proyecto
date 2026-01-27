@@ -68,8 +68,8 @@ CREATE TABLE Pedido (
   cant_ped NUMERIC NOT NULL,
   desc_ped VARCHAR(200) NOT NULL,
   fecha_ped DATE NOT NULL,
-  subtotal_ped BIGINT NOT NULL,
-  valor_ped BIGINT NOT NULL,
+  subtotal_ped DECIMAL(12,2) NOT NULL,
+  valor_ped DECIMAL(12,2) NOT NULL,
   estado_ped VARCHAR(50) NOT NULL,
   metodo_pago VARCHAR(50) NOT NULL,
   id_clien_fk_ped INT NOT NULL,
@@ -82,22 +82,28 @@ DELIMITER //
 CREATE TABLE Factura_venta (
   id_factuv INT PRIMARY KEY AUTO_INCREMENT,
   fecha_factuv DATE NOT NULL,
-  subtotal_factuv BIGINT NOT NULL,
-  iva_factuv BIGINT NOT NULL,
-  total_factuv BIGINT NOT NULL,
+
+  subtotal_factuv DECIMAL(12,2) NOT NULL,
+  iva_factuv DECIMAL(12,2) NOT NULL,
+  total_factuv DECIMAL(12,2) NOT NULL,
+
   metodo_pago_factuv VARCHAR(50) NOT NULL,
-  descu_factuv INT NOT NULL,
+  descu_factuv DECIMAL(12,2) DEFAULT 0,
   estado_factuv VARCHAR(50) NOT NULL,
 
   id_emple_fk_factuv INT NOT NULL,
-  CONSTRAINT fk_factuv_emple FOREIGN KEY (id_emple_fk_factuv) REFERENCES Empleado(id_emple),
+  CONSTRAINT fk_factuv_emple
+    FOREIGN KEY (id_emple_fk_factuv) REFERENCES Empleado(id_emple),
 
   id_clien_fk_factuv INT NOT NULL,
-  CONSTRAINT fk_factuv_clien FOREIGN KEY (id_clien_fk_factuv) REFERENCES Cliente(id_clien),
+  CONSTRAINT fk_factuv_clien
+    FOREIGN KEY (id_clien_fk_factuv) REFERENCES Cliente(id_clien),
 
   id_pedido_fk_factuv INT NOT NULL,
-  CONSTRAINT fk_factuv_pedido FOREIGN KEY (id_pedido_fk_factuv) REFERENCES Pedido(id_pedido)
+  CONSTRAINT fk_factuv_pedido
+    FOREIGN KEY (id_pedido_fk_factuv) REFERENCES Pedido(id_pedido)
 );
+
 //
 
 --    TABLA ABONO (NUEVA), si 
@@ -119,13 +125,13 @@ DELIMITER //
 CREATE TABLE Materia_prima (
   id_matp INT PRIMARY KEY AUTO_INCREMENT,
   nom_matp VARCHAR(50) NOT NULL,
-  color VARCHAR(50) NOT NULL,
-  categoria VARCHAR(50) NOT NULL,
-  tipo VARCHAR(100),
-  stock_act NUMERIC NOT NULL,
-  stock_min NUMERIC NOT NULL,
+  color_matp VARCHAR(50) NOT NULL,
+  categoria_matp VARCHAR(50) NOT NULL,
+  tipo_matp VARCHAR(100),
+  stock_act_matp NUMERIC NOT NULL,
+  stock_min_matp NUMERIC NOT NULL,
   desc_matp VARCHAR(200) NOT NULL,
-  estado VARCHAR(50) NOT NULL
+  estado_matp VARCHAR(50) NOT NULL
 );
 //
 

@@ -25,10 +25,6 @@ import lombok.Setter;
         @Column(name="correo_clien", unique = true )
         private String correo;
 
-        @Column(name = "usuario_clien", unique = true)
-        private String usuario;
-
-        private String contra_clien;
         //@OneToOne(cascade = CascadeType.ALL) //Cascade:relaciona las operaciones en las dos entidades, es decir que trabajan en conjunto.
         // CascadeType.All, es para indicar que todo lo que se opere en esat entidad tambien se ejecute en la otra, en este caso seria Usuario.
         @ManyToOne

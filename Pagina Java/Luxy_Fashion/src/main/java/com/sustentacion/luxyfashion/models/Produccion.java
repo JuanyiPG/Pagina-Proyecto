@@ -20,22 +20,26 @@ public class Produccion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_producc;
+
+    @Column(name="fecha_ini_producc")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fechaIniProducc;
+
     private BigDecimal cant_producc;
     private BigDecimal costo_mano_obra_producc;
     private BigDecimal costo_mat_producc;
-    private BigDecimal costo_iva_producc;
     private BigDecimal costo_total_producc;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fecha_fin_producc;
+
     private String estado_producc;
 
     @ManyToOne
     @JoinColumn(name = "id_emple_fk_producc", referencedColumnName = "id_emple")
     private Empleado empleado;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "id_pedido_fk_producc", referencedColumnName = "id_pedido")
     private Pedido pedido;
 

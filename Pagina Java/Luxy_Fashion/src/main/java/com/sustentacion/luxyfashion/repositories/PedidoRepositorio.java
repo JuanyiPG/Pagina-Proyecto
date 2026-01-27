@@ -14,7 +14,6 @@ public interface PedidoRepositorio extends JpaRepository<Pedido, Integer> {
 
     @Query("SELECT p FROM Pedido p WHERE " +
             "LOWER(CAST(p.id_pedido AS string)) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +
-            "LOWER(p.link_ped) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +
             "LOWER(p.nomPed) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +
             "LOWER(p.talla_ped) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +
             "LOWER(p.color_ped) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +
