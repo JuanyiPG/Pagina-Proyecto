@@ -22,7 +22,7 @@ public class Rol {
     @GeneratedValue(strategy = GenerationType.IDENTITY) //Genera el ID automaticamente
     //Integer ya que ahorra espacio, tiene mas capacidad y coincide con la BD
     private Integer id_rol;
-    @Column(name = "desc_rol")
+    @Column(name = "nom_rol")
     private String nomRol;
 
     public String getNomRol() {
