@@ -19,9 +19,7 @@ public interface ClienteRepositories extends JpaRepository<Cliente, Integer> {
             "LOWER(r.nomClien) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +
             "LOWER(r.dir_clien) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +
             "LOWER(r.tel_clien) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +
-            "LOWER(r.correo) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +
-            "LOWER(r.usuario) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +
-            "LOWER(r.contra_clien) LIKE LOWER(CONCAT('%', :filtro, '%'))")
+            "LOWER(r.correo) LIKE LOWER(CONCAT('%', :filtro, '%'))")
     List<Cliente> buscarVariosCampos(@Param("filtro") String filtro);
 }
 

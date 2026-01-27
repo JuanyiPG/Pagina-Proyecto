@@ -14,11 +14,10 @@ public interface EmpleRepositories extends JpaRepository<Empleado, Integer> {
     @Query("SELECT r FROM Empleado r WHERE " +
             "r.nomEmple LIKE CONCAT('%', :filtro, '%') OR " +
             "r.tel_emple LIKE CONCAT('%', :filtro, '%') OR " +
-            "r.correo LIKE CONCAT('%', :filtro, '%') OR " +
-            "r.tipo_identificacion LIKE CONCAT('%', :filtro, '%') OR " +
-            "r.num_indetificacion LIKE CONCAT('%', :filtro, '%') OR " +
-            "r.estado_emple LIKE CONCAT('%', :filtro, '%') OR " +
-            "r.usuario LIKE CONCAT('%', :filtro, '%')")
+            "r.correo_emple LIKE CONCAT('%', :filtro, '%') OR " +
+            "r.tipo_ident LIKE CONCAT('%', :filtro, '%') OR " +
+            "r.num_ident LIKE CONCAT('%', :filtro, '%') OR " +
+            "r.estado_emple LIKE CONCAT('%', :filtro, '%')")
     List<Empleado> buscarVariosCampos(@Param("filtro") String filtro);
 
     boolean existsByUsuario(String usuario);
