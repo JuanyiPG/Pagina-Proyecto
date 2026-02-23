@@ -45,15 +45,6 @@ public class ClienteController {
         return "empleado/listcliente/listcliente"; // tu plantilla Thymeleaf
     }
 
-    @GetMapping("/index")
-    public String clienteIndex(HttpSession session) {
-        Usuario u = (Usuario) session.getAttribute("usuarioLogueado");
-
-        if (u == null || !u.getRol().equals("CLIENTE")) {
-            return "redirect:/admin/cliente";
-        }
-        return "cliente/indexcliente";
-    }
 
     // Mostrar formulario para nuevo cliente
     @GetMapping("/nuevo")

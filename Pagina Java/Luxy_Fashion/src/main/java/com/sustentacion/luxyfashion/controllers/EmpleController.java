@@ -37,16 +37,14 @@ public class EmpleController {
         model.addAttribute("empleado", new Empleado());
         model.addAttribute("roles", rolService.listar());
 
-        return "admin/empleado/emple_index";
+        return "/admin/empleado/emple_index";
     }
 
     @GetMapping("/index")
     public String empleadoIndex(HttpSession session) {
         Usuario u = (Usuario) session.getAttribute("usuarioLogueado");
-        if (u == null || !u.getRol().equals("EMPLEADO")) {
-            return "redirect:/admin/cliente"; // Si no es empleado o no está logueado
-        }
-        return "empleado/indexemple"; // Vista de empleado
+
+        return "/empleado/indexemple"; // Vista de empleado
     }
 
     @GetMapping("/nuevo")
@@ -59,9 +57,6 @@ public class EmpleController {
 
     @PostMapping("/guardar")
     public String guardar(Empleado empleado){
-        //Asignar el rol
-        Rol rolSeleccionado = rolService.buscarPorId(empleado.getRol().getId_rol());
-        empleado.setRol(rolSeleccionado);
         empleService.guardar(empleado);
         return "redirect:/admin/empleado?success=true";
     }
