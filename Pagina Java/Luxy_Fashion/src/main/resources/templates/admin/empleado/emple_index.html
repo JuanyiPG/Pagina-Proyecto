@@ -35,7 +35,7 @@
             <div class="form-group">
                 <input type="text" placeholder="Fecha ingreso"
                        onfocus="this.type='date'" onblur="if(!this.value) this.type='text'" th:field="*{fecha_ing_emple}">
-                <select th:field="*{tipo_identificacion}" style="border-radius: 8px">
+                <select th:field="*{tipo_ident}" style="border-radius: 8px">
                     <option value="">-- Tipo identificacion --</option>
                     <option value="CC">Cédula de Ciudadanía</option>
                     <option value="CE">Cédula Extranjera</option>
@@ -43,27 +43,15 @@
                 </select>
             </div>
             <div class="form-group">
-                <input type="text" placeholder="Número ID" th:field="*{num_indetificacion}">
+                <input type="text" placeholder="Número ID" th:field="*{num_ident}">
                 <input type="text" placeholder="Salario" th:field="*{salari_emple}">
             </div>
             <div class="form-group">
                 <select th:field="*{estado_emple}" required style="border-radius:8px">
                     <option value="">-- Seleccione estado --</option>
                     <option value="Activo">Activo</option>
-                    <option value="Descanso">Descanso</option>
                     <option value="Incapacidad">Incapacidad</option>
                     <option value="Retirado">Retirado</option>
-                </select>
-                <input type="text" placeholder="Usuario" th:field="*{usuario}">
-            </div>
-            <div class="form-group">
-                <input type="password" placeholder="Contraseña" th:field="*{contrasena}">
-                <select th:field="*{rol.id_rol}" required style="border-radius:8px">
-                    <option value="">-- Seleccione un rol --</option>
-                    <option th:each="r : ${roles}"
-                            th:value="${r.id_rol}"
-                            th:text="${r.nomRol}">
-                    </option>
                 </select>
             </div>
             <button type="submit" class="save-btn">Insertar</button>
@@ -97,8 +85,6 @@
             <th>Fecha de ingreso</th>
             <th>Salario</th>
             <th>Estado</th>
-            <th>Usuario</th>
-            <th>Rol</th>
             <th>Acciones</th>
         </tr>
         </thead>
@@ -115,8 +101,6 @@
             <td th:text="${r.fecha_ing_emple}"></td>
             <td th:text="${r.salari_emple}"></td>
             <td th:text="${r.estado_emple}"></td>
-            <td th:text="${r.usuario}"></td>
-            <td th:text="${r.rol.nomRol}"></td>
             <td>
                 <a class="btn-accion" th:href="@{'/admin/empleado/editar/' + ${r.idEmple}}">Actualizar</a>
                 <br>
