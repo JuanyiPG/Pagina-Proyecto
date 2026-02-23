@@ -68,7 +68,7 @@
                 <input type="text" name="username" placeholder="Usuario" required>
             </div>
             <div class="container-input">
-                <input type="password" name="contrasena" placeholder="Contraseña" required>
+                <input type="password" name="password" placeholder="Contraseña" required>
             </div>
             <a href="#">¿Olvidaste tu contraseña?</a>
             <button type="submit" class="button-ingre">Ingresar</button>
@@ -92,12 +92,6 @@
             </div>
             <div class="container-input">
                 <input type="email" placeholder="Correo" th:field="*{correo}" required>
-            </div>
-            <div class="container-input">
-                <input type="text" placeholder="Usuario" th:field="*{usuario}" required>
-            </div>
-            <div class="container-input">
-                <input type="password" placeholder="Contraseña" th:field="*{contra_clien}" required>
             </div>
             <div th:if="${error}" th:text="${error}" style="color:red;"></div>
             <button type="submit" class="button-ingre">Registrarse Cliente</button>
