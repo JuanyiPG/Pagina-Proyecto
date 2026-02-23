@@ -1,14 +1,11 @@
 package com.sustentacion.luxyfashion.controllers;
 
-import com.sustentacion.luxyfashion.models.Usuario;
+import com.sustentacion.luxyfashion.models.Cliente;
 import com.sustentacion.luxyfashion.services.UsuarioService;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/login")
@@ -21,40 +18,10 @@ public class UsuarioController {
     }
 
     @GetMapping()
-    public String mostrarLogin() {
-        return "login/loginRegistro"; // tu vista login.html
-    }
+    public String mostrarLogin(Model model) {
 
-    @PostMapping
-    public String login(@RequestParam String username,
-                        @RequestParam String contrasena,
-                        HttpSession session,
-                        Model model) {
+        model.addAttribute("cliente", new Cliente());
 
-        try {
-            Usuario u = usuarioService.autenticar(username, contrasena);
-
-            session.setAttribute("usuarioLogueado", u);
-
-            switch (u.getRol()) {
-
-                case "EMPLEADO":
-                    return "redirect:/admin/empleado/index"; // home empleado
-
-                case "CLIENTE":
-                    return "redirect:/admin/cliente/index"; // home cliente
-
-                case "ADMIN":
-                    return "redirect:/admin";
-
-                default:
-                    model.addAttribute("error", "Rol no reconocido");
-                    return "login/loginRegistro";
-            }
-
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("error", e.getMessage());
-            return "login/loginRegistro";
-        }
+        return "login/loginRegistro";
     }
 }

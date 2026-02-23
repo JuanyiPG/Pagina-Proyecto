@@ -29,24 +29,22 @@
 
             <input type="hidden" name="fecha_naci_emple" th:field="*{fecha_naci_emple}">
 
-            <input type="hidden" name="tipo_identificacion" th:field="*{tipo_identificacion}"  >
+            <input type="hidden" name="tipo_ident" th:field="*{tipo_ident}"  >
 
-            <input type="hidden" name="num_indetificacion" th:field="*{num_indetificacion}"  >
+            <input type="hidden" name="num_ident" th:field="*{num_ident}"  >
 
             <label >Salario:</label>
             <input type="text" name="salari_emple" th:field="*{salari_emple}" >
 
+            <label >Rol:</label>
+            <input type="text" name="rol" th:field="*{salari_emple}" >
+
             <label >Estado:</label>
             <select th:field="*{estado_emple}" required style="border-radius:8px">
                 <option value="Activo">Activo</option>
-                <option value="Descanso">Descanso</option>
                 <option value="Incapacidad">Incapacidad</option>
                 <option value="Retirado">Retirado</option>
             </select>
-
-            <input type="hidden" name="usuario"  th:field="*{usuario}" >
-
-            <input type="hidden" name="contraseña" th:field="*{contrasena}"  >
 
             <label for="nombre">Rol</label>
             <select th:field="*{rol.id_rol}" required style="border-radius:8px">

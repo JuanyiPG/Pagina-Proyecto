@@ -16,48 +16,23 @@ import java.util.List;
 public class ClienteServiceImpl implements ClienteService {
 
         private final ClienteRepositories clienteRepositories;
-        private final UsuarioRepositories usuarioRepositories;
-        private final RolService rolService;
 
         public ClienteServiceImpl(ClienteRepositories clienteRepositories,
                                   UsuarioRepositories usuarioRepositories,
                                   RolService rolService) {
             this.clienteRepositories = clienteRepositories;
-            this.usuarioRepositories = usuarioRepositories;
-            this.rolService = rolService;
-        }
-
-        @Override
-        public Cliente registrarCliente(Cliente cliente) {
-
-            if (clienteRepositories.existsByCorreo(cliente.getCorreo()))
-                throw new IllegalArgumentException("Correo ya registrado");
-
-            if (clienteRepositories.existsByUsuario(cliente.getUsuario()))
-                throw new IllegalArgumentException("Usuario ya en uso");
-
-            // Buscar rol CLIENTE
-            Rol rol = rolService.buscarPorNombre("Cliente").get(0);
-            cliente.setRol(rol);
-
-            // Guardar cliente
-            Cliente clienteGuardado = clienteRepositories.save(cliente);
-
-            // Crear usuario para Spring Security
-            Usuario usuario = new Usuario();
-            usuario.setUsername(cliente.getUsuario());
-            usuario.setContrasena(cliente.getContra_clien());
-            usuario.setRol("CLIENTE");
-            usuario.setCliente(clienteGuardado);
-            usuarioRepositories.save(usuario);
-
-            return clienteGuardado;
         }
 
     @Override
     public List<Cliente> listar(){
          return clienteRepositories.findAll();
     }
+
+    @Override
+    public Cliente registrarCliente(Cliente cliente) {
+        return null;
+    }
+
     @Override
     public List<Cliente> listarOrdenAsc(){
          return clienteRepositories.findAllByOrderByNomClienAsc();
@@ -68,21 +43,6 @@ public class ClienteServiceImpl implements ClienteService {
          return clienteRepositories.buscarVariosCampos(filtro);
     }
 
-    @Override
-    public Cliente guardarClienteUsuario(Cliente cliente){
-
-        // validar correo
-        if (clienteRepositories.existsByCorreo(cliente.getCorreo())){
-            throw new IllegalArgumentException("El correo que ingresaste ya está registrado");
-        }
-
-        // validar usuario
-        if (clienteRepositories.existsByUsuario(cliente.getUsuario())){
-            throw new IllegalArgumentException("El nombre de usuario ya está en uso");
-        }
-
-        return clienteRepositories.save(cliente);
-    }
 
     @Override
     public void eliminarClienteUsuario(Integer id){

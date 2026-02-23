@@ -32,9 +32,6 @@ public class EmpleServiceImpl implements EmpleService {
         System.out.println("ID EMPLEADO RECIBIDO => " + empleado.getIdEmple());
 
         if (empleado.getIdEmple() == null) {
-            // ----- CREAR -----
-            if (empleRepositories.existsByUsuario(empleado.getUsuario()))
-                throw new IllegalArgumentException("Usuario ya en uso");
 
             if (empleRepositories.existsByCorreo(empleado.getCorreo()))
                 throw new IllegalArgumentException("Correo ya registrado");
@@ -42,9 +39,6 @@ public class EmpleServiceImpl implements EmpleService {
             Empleado empleadoGuardado = empleRepositories.save(empleado);
 
             Usuario usuario = new Usuario();
-            usuario.setUsername(empleado.getUsuario());
-            usuario.setContrasena(empleado.getContrasena());
-            usuario.setRol(empleado.getRol().getNomRol().toUpperCase());
             usuario.setEmpleado(empleadoGuardado);
             usuarioRepositories.save(usuario);
 
@@ -57,9 +51,7 @@ public class EmpleServiceImpl implements EmpleService {
                     .orElseThrow();
 
             // Mantener credenciales
-            empleado.setUsuario(original.getUsuario());
             empleado.setCorreo(original.getCorreo());
-            empleado.setContrasena(original.getContrasena());
 
 
             return empleRepositories.save(empleado);

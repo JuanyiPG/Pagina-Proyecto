@@ -23,6 +23,10 @@ public class Usuario {
     @Column(nullable = false)
     private String contrasena;
 
+    @ManyToOne
+    @JoinColumn(name = "id_rol_fk_usuario", nullable = false)
+    private Rol rol;
+
     //Conexion de las FK
     @ManyToOne(optional = true)
     @JoinColumn(name = "id_emple_fk_usuario", referencedColumnName = "id_emple")

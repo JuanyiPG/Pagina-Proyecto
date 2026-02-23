@@ -10,9 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ClienteRepositories extends JpaRepository<Cliente, Integer> {
-    Optional<Cliente> findByUsuario(String usuario);
     boolean existsByCorreo(String correo);
-    boolean existsByUsuario(String usuario);
     List<Cliente> findAllByOrderByNomClienAsc();
 
     @Query("SELECT r FROM Cliente r WHERE " +
