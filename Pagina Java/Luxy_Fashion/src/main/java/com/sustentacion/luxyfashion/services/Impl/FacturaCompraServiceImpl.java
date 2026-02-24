@@ -23,10 +23,14 @@ public class FacturaCompraServiceImpl implements FacturaCompraService{
     }
 
 
-    @Override
-    public void eliminar(Integer id){
+    @Transactional
+    public void eliminar(Integer id) {
+        if (!facturacomprarepositories.existsById(id)) {
+            throw new RuntimeException("No existe el ID: " + id);
+        }
         facturacomprarepositories.deleteById(id);
     }
+
 
 
     @Override
