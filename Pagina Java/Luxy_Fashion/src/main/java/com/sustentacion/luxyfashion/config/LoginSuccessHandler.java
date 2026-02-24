@@ -32,7 +32,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             response.sendRedirect("admin/empleado/emple_index");
         }
         else {
-            response.sendRedirect("/");
+            response.sendRedirect("/err");
         }
     }
 }

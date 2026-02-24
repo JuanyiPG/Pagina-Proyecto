@@ -229,3 +229,10 @@ CREATE TABLE Det_producc_matp (
 );
 //
 DELIMITER ;
+
+INSERT INTO rol (nom_rol)
+VALUES ('ADMIN');
+
+
+INSERT INTO usuario (username, contrasena, id_rol_fk_usuario)
+VALUES ('admin', '$2a$10$q857tQ1Po0rVJW0SWmtJvO59AEXfBZgKNcng9USw0GDRouKetU1pO',1);

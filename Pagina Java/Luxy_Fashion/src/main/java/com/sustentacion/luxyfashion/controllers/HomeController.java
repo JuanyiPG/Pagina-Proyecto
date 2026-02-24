@@ -21,4 +21,10 @@ public class HomeController {
     public String err(){
         return "error/404";
     }
+
+    @GetMapping("/registro")
+    public String registro() {
+        return "index"; // plantilla en templates
+    }
+
 }
