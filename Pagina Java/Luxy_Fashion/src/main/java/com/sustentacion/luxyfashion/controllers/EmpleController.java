@@ -41,9 +41,7 @@ public class EmpleController {
     }
 
     @GetMapping("/index")
-    public String empleadoIndex(HttpSession session) {
-        Usuario u = (Usuario) session.getAttribute("usuarioLogueado");
-
+    public String empleadoIndex() {
         return "/empleado/indexemple"; // Vista de empleado
     }
 
