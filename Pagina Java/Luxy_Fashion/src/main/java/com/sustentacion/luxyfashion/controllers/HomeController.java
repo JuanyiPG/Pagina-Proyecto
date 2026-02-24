@@ -21,4 +21,9 @@ public class HomeController {
     public String err(){
         return "error/404";
     }
+
+    @GetMapping("/index")
+    public String empleadoIndex() {
+        return "/admin/indexadmin"; // Vista de empleado
+    }
 }
