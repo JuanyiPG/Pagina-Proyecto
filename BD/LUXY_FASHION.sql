@@ -232,5 +232,5 @@ INSERT INTO rol (nom_rol)
 VALUES ('ADMIN');
 
 
-INSERT INTO usuario (username, contrasena, rol_id)
+INSERT INTO usuario (username, contrasena, id_rol)
 VALUES ('admin', '$2a$10$XyZp9F8sLk2JmNoPqRstUeH1JkLmNoPqRsTuVwXyZ123456789',1);
