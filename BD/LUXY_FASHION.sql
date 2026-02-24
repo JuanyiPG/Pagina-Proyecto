@@ -35,7 +35,7 @@ CREATE TABLE Cliente (
   nom_clien VARCHAR(50) NOT NULL,
   dir_clien VARCHAR(100) NOT NULL,
   tel_clien VARCHAR(20) NOT NULL,
-  correo_clien VARCHAR(100) NOT NULL UNIQUE,
+  correo_clien VARCHAR(100) NOT NULL UNIQUE
 );
 
 -- =========================
