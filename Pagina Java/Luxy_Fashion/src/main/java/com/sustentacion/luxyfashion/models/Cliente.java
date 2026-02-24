@@ -25,6 +25,9 @@ import lombok.Setter;
         @Column(name="correo_clien", unique = true )
         private String correo;
 
+        @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)
+        private Usuario usuario;
+
     }
 
 

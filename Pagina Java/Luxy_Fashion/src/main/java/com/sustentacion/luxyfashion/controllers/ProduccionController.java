@@ -6,6 +6,9 @@ import com.sustentacion.luxyfashion.services.EmpleService;
 import com.sustentacion.luxyfashion.services.PedidoService;
 import com.sustentacion.luxyfashion.services.MateriaPrimaService;
 
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -162,9 +165,16 @@ public class ProduccionController {
     }
 
     @GetMapping("/eliminarAdmin/{id}")
-    public String eliminarAdmin(@PathVariable Integer id) {
-        produccionService.eliminar(id);
-        return "redirect:/emple/produccion/admin?deleted=true";
+    public ResponseEntity<String> eliminarAdmin(@PathVariable Integer id) {
+        try {
+            produccionService.eliminar(id);
+            return ResponseEntity.ok("Producción eliminada");
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body("No se puede eliminar porque está relacionada con otra tabla");
+        }
     }
+
 }
 
