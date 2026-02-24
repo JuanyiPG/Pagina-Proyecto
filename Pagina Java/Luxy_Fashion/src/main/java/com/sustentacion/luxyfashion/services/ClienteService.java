@@ -19,7 +19,5 @@ public interface ClienteService {
 
     void eliminarClienteUsuario(Integer id);
     Cliente BuscarPorId(Integer id);
-
-
     void guardar(Cliente cliente);
 }

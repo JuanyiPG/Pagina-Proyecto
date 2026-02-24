@@ -21,9 +21,10 @@ public class ProduccionServiceImpl implements ProduccionService {
         return produccionrepositorio.save(produccion);
     }
 
-    @Override
+    @Transactional
     public void eliminar(Integer id){
         produccionrepositorio.deleteById(id);
+        produccionrepositorio.flush();
     }
 
     @Override

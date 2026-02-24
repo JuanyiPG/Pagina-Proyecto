@@ -93,6 +93,12 @@
             <div class="container-input">
                 <input type="email" placeholder="Correo" th:field="*{correo}" required>
             </div>
+            <div class="container-input">
+                <input type="text" placeholder="User" th:field="*{usuario.username}" required>
+            </div>
+            <div class="container-input">
+                <input type="password" placeholder="Contraseña" th:field="*{usuario.contrasena}" required>
+            </div>
             <div th:if="${error}" th:text="${error}" style="color:red;"></div>
             <button type="submit" class="button-ingre">Registrarse Cliente</button>
         </form>

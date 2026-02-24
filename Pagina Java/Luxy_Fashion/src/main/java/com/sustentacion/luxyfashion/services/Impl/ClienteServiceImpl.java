@@ -43,7 +43,6 @@ public class ClienteServiceImpl implements ClienteService {
          return clienteRepositories.buscarVariosCampos(filtro);
     }
 
-
     @Override
     public void eliminarClienteUsuario(Integer id){
          clienteRepositories.deleteById(id);

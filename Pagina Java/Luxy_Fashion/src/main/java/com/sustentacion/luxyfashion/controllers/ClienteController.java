@@ -50,6 +50,7 @@ public class ClienteController {
     @GetMapping("/nuevo")
     public String nuevoCliente(Model model) {
         model.addAttribute("cliente", new Cliente());
+        model.addAttribute(new Usuario());
         return "login/loginRegistro"; // tu plantilla de formulario
     }
 
