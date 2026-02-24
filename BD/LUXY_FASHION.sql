@@ -36,7 +36,6 @@ CREATE TABLE Cliente (
   dir_clien VARCHAR(100) NOT NULL,
   tel_clien VARCHAR(20) NOT NULL,
   correo_clien VARCHAR(100) NOT NULL UNIQUE,
->>>>>>> sebas
 );
 
 -- =========================
