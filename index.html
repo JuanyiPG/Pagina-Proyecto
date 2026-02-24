@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fashion Luxy</title>
+  <link rel="stylesheet" type="text/css" href="Pagina Web/CSS/index.css">
+  <link rel="stylesheet" href="Pagina Web/bootstrap/css/bootstrap.min.css">
+  <script src="Pagina Web/bootstrap/js/bootstrap.bundle.min.js"></script>
+</head>
+<style>
+.diferencia {
+    text-align: center;
+    padding: 140px 20px; 
+    font-family: 'Arial', sans-serif;
+    color: #2c2c2c;
+}
+
+.diferencia h4 {
+    font-size: 22px;
+    color: #888;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    letter-spacing: 3px;
+}
+
+.diferencia h2 {
+    font-size: 55px;
+    font-weight: 800;
+    margin-bottom: 90px;
+    color: #5e0925;
+    letter-spacing: 1px;
+}
+
+
+.contenedor-cards {
+    display: flex;
+    justify-content: center;
+    gap: 120px; 
+    flex-wrap: wrap;
+}
+
+
+.card-dif {
+    position: relative;
+    width: 380px;
+    padding: 25px;
+}
+
+.card-dif h3 {
+    font-size: 24px;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    color: #5e0925;
+    letter-spacing: 1px;
+}
+
+.card-dif p {
+    font-size: 18px;
+    color: #555;
+    line-height: 1.7;
+}
+
+/* NÚMERO FONDO */
+.num-fondo {
+    position: absolute;
+    font-size: 150px;
+    font-weight: 900;
+    color: rgba(0, 0, 0, 0.05);
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+/* Contenedor general */
+.mosaico {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 25px;
+    padding: 40px 5%;
+    background-color: #ffffff;
+    justify-items: center;
+}
+
+/* Cada tarjeta */
+.mosaico .item {
+    text-align: center;
+    cursor: pointer;
+    transition: transform .3s ease, box-shadow .3s ease;
+}
+
+/* Estilo de las imágenes */
+.mosaico img {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 5px;
+    transition: transform .4s ease, filter .4s ease;
+}
+
+/* Efecto de hover para lujo */
+.mosaico .item:hover img {
+    transform: scale(1.05);
+    filter: brightness(1.15);
+    box-shadow: 0px 15px 30px rgba(0,0,0,0.2);
+}
+
+/* Texto debajo de cada imagen */
+.mosaico p {
+    margin-top: 15px;
+    font-size: 18px;
+    font-family: 'Times New Roman', serif;
+    letter-spacing: 1px;
+    color: #2c2c2c;
+    font-weight: 500;
+    transition: color .3s ease;
+    text-transform: capitalize;
+}
+
+.mosaico .item:hover p {
+    color: #000;
+}
+
+
+</style>
+<body>
+  <header id="header"></header>
+  <!--Vista previa -->
+    <main>
+      <section class="p-p">
+        <video autoplay muted loop class="VPP">
+          <source src="Pagina Web/VIDEO/pexels-cottonbro-7871150.jpg" type="imagen">
+        </video>
+      </section>
+
+ 
+<section class="diferencia">
+    <h4>Diseño y confección exclusiva</h4>
+    <h2>ASÍ TRABAJAMOS EN LUXY FASHION</h2>
+
+    <div class="contenedor-cards">
+        <div class="card-dif">
+            <span class="num-fondo">1</span>
+            <h3>Nosotros</h3>
+            <p>En nuestra empresa, sabemos que la moda no tiene por que ser un lujo.Por eso te traemos accessorios de calidad
+              y tendencia a precios que te encantaran. Nacimos de la pasion por asercar productos unicos y asequibles, para que 
+              pueda encontrar ese toque especial que complementa tu estilo.
+            </p>
+        </div>
+
+        <div class="card-dif">
+            <span class="num-fondo">2</span>
+            <h3>CALIDAD GARANTIZADA</h3>
+            <p>Cada uno de nuestros productos pasa por un riguroso control de calidad antes de ser enviados.
+              Nos aseguramos de que cada pieza este impecable para que la recibas en perfectas condiciones..</p>
+        </div>
+
+        <div class="card-dif">
+            <span class="num-fondo">3</span>
+            <h3>SEGURIDAD EN TU ENVIO</h3>
+            <p>Creemos que la calidad no debe ser un lujo. Nuestros precios estan diseñados para ser acccequibles, 
+              reflejando el valor real de cada pieza, desde los materiales hasta el trabajo artesanal. Asi, puedes 
+              consentirte sin preocupaciones.</p>
+        </div>
+    </div>
+</section>
+
+      <!--productos -->
+      <section class="mosaico">
+          <img src="Pagina Web/IMG/index1.jpg" alt="Imagen 1" class="imagen">
+          <img src="Pagina Web/IMG/index2.jpg" alt="Imagen 2" class="imagen2">
+          <img src="Pagina Web/IMG/index5.jpg" alt="Imagen 3" class="imagen3">
+          <img src="Pagina Web/IMG/index3.jpg" alt="Imagen 4" class="imagen4">
+          <img src="Pagina Web/IMG/index4.jpg" alt="Imagen 5" class="imagen5">
+          <img src="Pagina Web/IMG/index6.jpg" alt="imagen 6" class="imagen6">
+          <img src="Pagina Web/IMG/index7.jpg" alt="Imagen 7" class="imagen7">
+          <img src="Pagina Web/IMG/index8.jpg" alt="Imagen 8" class="imagen8">
+          <img src="Pagina Web/IMG/index9.jpg" alt="Imagen 9" class="imagen9">
+          <img src="Pagina Web/IMG/index10.jpg" alt="Imagen 10" class="imagen10">
+        </section>
+
+      <button class="ver-mas-final">Ver más</button>
+      <hr>
+      <br>
+  </main>
+  <button id="btn-ayuda">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-circle" viewBox="0 0 16 16">
+      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+      <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286m1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94"/>
+    </svg> 
+    Ayuda
+</button>
+
+  <br>
+  <footer id="footer"></footer>
+
+  <script> 
+
+fetch("Pagina Web/Items/footer.php")
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("footer").innerHTML = data;
+  });
+
+fetch("Pagina Web/Items/header.php")
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("header").innerHTML = data;
+
+    const nav = document.getElementById('navegador');
+    const video = document.querySelector('.VPP');
+
+    window.addEventListener('scroll', () => {
+      const rect = video.getBoundingClientRect();
+      if (rect.bottom <= 0) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
