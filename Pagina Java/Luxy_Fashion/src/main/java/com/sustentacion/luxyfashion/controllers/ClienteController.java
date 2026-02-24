@@ -96,4 +96,9 @@ public class ClienteController {
         model.addAttribute("clientes", clientes);
         return "ladmin/listcliente/listcliente";
     }
+
+    @GetMapping("/index")
+    public String clienteIndex() {
+        return "cliente/indexcliente";
+    }
 }

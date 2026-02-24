@@ -22,9 +22,8 @@ public class HomeController {
         return "error/404";
     }
 
-    @GetMapping("/registro")
-    public String registro() {
-        return "index"; // plantilla en templates
+    @GetMapping("/index")
+    public String empleadoIndex() {
+        return "/admin/indexadmin"; // Vista de empleado
     }
-
 }
