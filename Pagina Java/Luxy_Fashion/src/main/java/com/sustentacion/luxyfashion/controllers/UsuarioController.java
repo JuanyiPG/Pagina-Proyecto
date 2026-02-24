@@ -15,18 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
-    private final RolService rolService;
-
     public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
-        this.rolService = rolService;
     }
 
     @GetMapping()
     public String mostrarLogin(@ModelAttribute Cliente cliente) {
-
-        Rol rol = RolService("CLIENTE").get(1);
-        model.addAttribute("cliente", new Cliente());
 
         return "login/loginRegistro";
     }

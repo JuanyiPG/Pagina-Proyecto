@@ -41,7 +41,7 @@ CREATE TABLE Cliente (
 -- =========================
 -- TABLA USUARIOS
 -- =========================
-CREATE TABLE usuario (
+CREATE TABLE Usuario (
   id_usuario INT PRIMARY KEY AUTO_INCREMENT,
   username VARCHAR(50) NOT NULL UNIQUE,
   contrasena VARCHAR(255) NOT NULL,

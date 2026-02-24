@@ -17,7 +17,7 @@ import java.util.List;
 
 
 @Controller
-@RequestMapping("/admin/empleado")
+@RequestMapping("/empleado")
 public class EmpleController {
 
     private final RolService rolService;

@@ -22,14 +22,14 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         String rol = authentication.getAuthorities()
                 .iterator() .next() .getAuthority();
         if (rol.equals("ROLE_ADMIN")) {
-            response.sendRedirect("/admin");
+            response.sendRedirect("/indexadmin");
         }
         else if (rol.equals("ROLE_CLIENTE"))
         {
-            response.sendRedirect("/admin/cliente/index");
+            response.sendRedirect("/cliente/index");
         }
         else if (rol.equals("ROLE_EMPLEADO")) {
-            response.sendRedirect("admin/empleado/index");
+            response.sendRedirect("/empleado/index");
         }
         else {
             response.sendRedirect("/err");
