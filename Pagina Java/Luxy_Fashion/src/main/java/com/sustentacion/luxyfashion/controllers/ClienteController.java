@@ -79,7 +79,7 @@ public class ClienteController {
             return "redirect:/admin/cliente";
         }
         model.addAttribute("cliente", cliente);
-        return "cliente/editar";
+        return "/cliente/editar";
     }
 
     // Eliminar cliente
@@ -94,7 +94,7 @@ public class ClienteController {
     public String buscarClientes(@RequestParam String filtro, Model model) {
         List<Cliente> clientes = clienteService.buscarVariosCampos(filtro);
         model.addAttribute("clientes", clientes);
-        return "ladmin/listcliente/listcliente";
+        return "/cliente/listcliente/listcliente";
     }
 
     @GetMapping("/index")

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin/indexadmin/abono")
+@RequestMapping("/admin/abono")
 public class AbonoController {
 
     private final AbonoService abonoService;

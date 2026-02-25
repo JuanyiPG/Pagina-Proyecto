@@ -17,7 +17,7 @@
     <div class="card">
         <h1 th:text="${empleado != null and empleado.idEmple != null} ? 'Editar Empleado' : 'Gestión de Empleados'"></h1>
 
-        <form class="formulario-mensaje" th:action="@{/admin/empleado/guardar}" method="post" th:object="${empleado}">
+        <form class="formulario-mensaje" th:action="@{/empleado/guardar}" method="post" th:object="${empleado}">
 
             <div class="form-group">
                 <input type="text" placeholder="Nombre" th:field="*{nomEmple}" required>
@@ -64,7 +64,7 @@
 
     <!-- BUSCADOR -->
     <div id="search" class="search">
-        <form th:action="@{/admin/empleado/buscar}" method="get">
+        <form th:action="@{/empleado/buscar}" method="get">
             <input type="text" name="buscar" placeholder="Escribe lo que quieras consultar" id="searchInput">
             <input type="submit" value="Buscar" id="btnSearch">
         </form>
@@ -102,7 +102,7 @@
             <td th:text="${r.salari_emple}"></td>
             <td th:text="${r.estado_emple}"></td>
             <td>
-                <a class="btn-accion" th:href="@{'/admin/empleado/editar/' + ${r.idEmple}}">Actualizar</a>
+                <a class="btn-accion" th:href="@{'/empleado/editar/' + ${r.idEmple}}">Actualizar</a>
                 <br>
                 <br>
                 <a
