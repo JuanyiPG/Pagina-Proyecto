@@ -1,0 +1,23 @@
+### --- JAVA / SPRING BOOT --- ###
+target/              # Archivos compilados (basura)
+*.class              # Archivos binarios
+.mtj.tmp/            # Temporales
+*.jar                # Archivos empaquetados
+*.war
+
+### --- PHP --- ###
+vendor/              # Librerías externas (se descargan con composer)
+.phpunit.result.cache
+.php_cs.cache
+
+### --- PYTHON / DJANGO --- ###
+__pycache__/         # Archivos temporales de Python
+*.py[cod]            # Más temporales
+venv/                # Entorno virtual (¡Pesa mucho!)
+db.sqlite3           # Tu base de datos local (no quieres subir tus datos de prueba)
+
+### --- SEGURIDAD Y EDITORES --- ###
+.env                 # AQUÍ VAN TUS CONTRASEÑAS (¡Súper importante!)
+.vscode/             # Configuración de tu editor
+.idea/               # Configuración de IntelliJ
+.DS_Store            # Basura de Mac
