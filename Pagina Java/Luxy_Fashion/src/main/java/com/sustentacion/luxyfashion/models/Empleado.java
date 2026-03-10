@@ -27,7 +27,8 @@ public class Empleado {
     @Column(name = "nom_emple")
     private String nomEmple;
     private String tel_emple;
-    private String correo_emple;
+    @Column(name ="correo_emple")
+    private String correo;
     private String dir_emple;
     private String rh_emple;
 
@@ -35,17 +36,13 @@ public class Empleado {
     private Date fecha_naci_emple;
 
     private String tipo_ident;
-    private String num_indet;
+    private String num_ident;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fecha_ing_emple;
 
     private BigDecimal salari_emple;
     private String estado_emple;
-
-    @ManyToOne
-    @JoinColumn(name = "id_rol_fk_emple")
-    private Rol rol;
 
 }
 

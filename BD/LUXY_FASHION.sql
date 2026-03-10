@@ -24,9 +24,7 @@ CREATE TABLE Empleado (
   num_ident VARCHAR(30) NOT NULL,
   fecha_ing_emple DATE NOT NULL,
   salari_emple DECIMAL(10,2) NOT NULL,
-  estado_emple VARCHAR(50) NOT NULL,
-  id_rol_fk_emple INT NOT NULL,
-  CONSTRAINT fk_emple_rol FOREIGN KEY (id_rol_fk_emple) REFERENCES Rol(id_rol)
+  estado_emple VARCHAR(50) NOT NULL
 );
 
 -- =========================
@@ -37,20 +35,20 @@ CREATE TABLE Cliente (
   nom_clien VARCHAR(50) NOT NULL,
   dir_clien VARCHAR(100) NOT NULL,
   tel_clien VARCHAR(20) NOT NULL,
-  correo_clien VARCHAR(100) NOT NULL UNIQUE,
-  id_rol_fk_clien INT NOT NULL,
-  CONSTRAINT fk_clien_rol  FOREIGN KEY (id_rol_fk_clien) REFERENCES Rol(id_rol)
+  correo_clien VARCHAR(100) NOT NULL UNIQUE
 );
 
 -- =========================
 -- TABLA USUARIOS
 -- =========================
-CREATE TABLE usuarios (
+CREATE TABLE Usuario (
   id_usuario INT PRIMARY KEY AUTO_INCREMENT,
   username VARCHAR(50) NOT NULL UNIQUE,
   contrasena VARCHAR(255) NOT NULL,
   id_emple_fk_usuario INT NULL,
   id_clien_fk_usuario INT NULL,
+  id_rol_fk_usuario INT NOT NULL,
+  CONSTRAINT fk_usuario_rol FOREIGN KEY (id_rol_fk_usuario) REFERENCES Rol(id_rol),
   CONSTRAINT fk_usuario_emple FOREIGN KEY (id_emple_fk_usuario) REFERENCES Empleado(id_emple) ON DELETE CASCADE,
   CONSTRAINT fk_usuario_clien FOREIGN KEY (id_clien_fk_usuario) REFERENCES Cliente(id_clien) ON DELETE CASCADE
 );
@@ -229,3 +227,10 @@ CREATE TABLE Det_producc_matp (
 );
 //
 DELIMITER ;
+
+INSERT INTO rol (nom_rol)
+VALUES ('ADMIN');
+
+
+INSERT INTO usuario (username, contrasena, id_rol_fk_usuario)
+VALUES ('admin', '$2a$10$XyZp9F8sLk2JmNoPqRstUeH1JkLmNoPqRsTuVwXyZ123456789',1);

@@ -4,6 +4,9 @@ import com.sustentacion.luxyfashion.models.Empleado;
 import com.sustentacion.luxyfashion.models.FacturaCompra;
 import com.sustentacion.luxyfashion.services.FacturaCompraService;
 import com.sustentacion.luxyfashion.services.EmpleService;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -92,9 +95,16 @@ public class FacturaCompraController {
 
     // ELIMINAR
     @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id) {
-        facturaCompraService.eliminar(id);
-        return "redirect:/admin/facturacompra?deleted=true";
+    public ResponseEntity<String> eliminar(@PathVariable Integer id) {
+        try {
+            facturaCompraService.eliminar(id);
+            return ResponseEntity.ok("Factura de compra eliminada");
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body("No se puede eliminar porque está relacionada con otra tabla");
+        }
     }
+
 }
 

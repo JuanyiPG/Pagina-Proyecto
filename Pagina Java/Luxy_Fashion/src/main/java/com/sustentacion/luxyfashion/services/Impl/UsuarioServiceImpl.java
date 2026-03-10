@@ -4,18 +4,24 @@ import com.sustentacion.luxyfashion.models.Usuario;
 import com.sustentacion.luxyfashion.repositories.UsuarioRepositories;
 import com.sustentacion.luxyfashion.services.UsuarioService;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Transactional
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepositories usuarioRepositories;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioServiceImpl(UsuarioRepositories usuarioRepositories) {
+    public UsuarioServiceImpl(
+            UsuarioRepositories usuarioRepositories,
+            PasswordEncoder passwordEncoder) {
+
         this.usuarioRepositories = usuarioRepositories;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -35,6 +41,12 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public Usuario guardar(Usuario usuario) {
+
+        String passwordCifrada =
+                passwordEncoder.encode(usuario.getContrasena());
+
+        usuario.setContrasena(passwordCifrada);
+
         return usuarioRepositories.save(usuario);
     }
 
@@ -53,20 +65,4 @@ public class UsuarioServiceImpl implements UsuarioService {
         if (usuarioRepositories.existsByUsername(username))
             throw new IllegalArgumentException("Ese nombre de usuario ya existe");
     }
-
-    public Usuario autenticar(String username, String contraseña) {
-        Usuario usuario = usuarioRepositories.findByUsername(username)
-                .orElse(null);
-
-        if (usuario == null) {
-            throw new IllegalArgumentException("El usuario no existe");
-        }
-
-        if (!usuario.getContrasena().equals(contraseña)) {
-            throw new IllegalArgumentException("Contraseña incorrecta");
-        }
-
-        return usuario;
-    }
-
 }

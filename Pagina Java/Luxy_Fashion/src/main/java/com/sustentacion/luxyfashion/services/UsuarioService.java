@@ -14,7 +14,6 @@ public interface UsuarioService {
     void EliminarPorId(Integer id);
     Usuario BuscarPorId(Integer id);
     void validarUsuario (String username);
-    Usuario autenticar(String username, String contraseña);
 
 
 
