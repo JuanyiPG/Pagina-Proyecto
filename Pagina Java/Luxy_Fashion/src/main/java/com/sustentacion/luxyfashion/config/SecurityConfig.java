@@ -44,7 +44,12 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/login?logout")
+                        .logoutUrl("/logout") // La URL que "activa" el cierre de sesión
+                        .logoutSuccessUrl("/login?logout") // A donde va tras cerrar sesión
+                        .invalidateHttpSession(true) // Borra la sesión del servidor
+                        .clearAuthentication(true) // Borra los datos del usuario de la memoria
+                        .deleteCookies("JSESSIONID") // Borra la galleta de rastreo
+                        .permitAll()
                 );
 
         return http.build();

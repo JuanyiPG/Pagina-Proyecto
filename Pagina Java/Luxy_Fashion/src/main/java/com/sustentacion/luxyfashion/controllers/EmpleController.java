@@ -37,12 +37,12 @@ public class EmpleController {
         model.addAttribute("empleado", new Empleado());
         model.addAttribute("roles", rolService.listar());
 
-        return "/empleado/emple_index";
+        return "/admin/empleado/emple_index";
     }
 
     @GetMapping("/index")
     public String empleadoIndex() {
-        return "/empleado/indexemple"; // Vista de empleado
+        return "/admin/empleado/indexemple"; // Vista de empleado
     }
 
     @GetMapping("/nuevo")
@@ -50,7 +50,7 @@ public class EmpleController {
         Empleado empleado = new Empleado();
         model.addAttribute("empleado", empleado);
         model.addAttribute("roles", rolService.listar()); // <-- Lo necesitas para llenar el select
-        return "/empleado/emple_index";
+        return "/admin/empleado/emple_index";
     }
 
     @PostMapping("/guardar")
@@ -67,7 +67,7 @@ public class EmpleController {
             return "redirect:empleado?error=not_found";
         }
         model.addAttribute("empleado", empleado);
-        return "/empleado/editar_emple";
+        return "/admin/empleado/editar_emple";
     }
 
     @GetMapping("/buscar")
@@ -83,7 +83,7 @@ public class EmpleController {
         }
         model.addAttribute("empleado", new Empleado());
         model.addAttribute("roles", rolService.listar());
-        return "/empleado/emple_index";
+        return "/admin/empleado/emple_index";
     }
 
     @GetMapping("/eliminar/{id}")
