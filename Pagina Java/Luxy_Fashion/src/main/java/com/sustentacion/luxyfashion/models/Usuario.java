@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "usuarios")
+@Table(name = "Usuario")
 @Setter
 @Getter
 @AllArgsConstructor
@@ -22,6 +22,10 @@ public class Usuario {
 
     @Column(nullable = false)
     private String contrasena;
+
+    @ManyToOne
+    @JoinColumn(name = "id_rol_fk_usuario", nullable = false)
+    private Rol rol;
 
     //Conexion de las FK
     @ManyToOne(optional = true)

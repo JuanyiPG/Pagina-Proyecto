@@ -17,7 +17,7 @@ import java.util.List;
 
 
 @Controller
-@RequestMapping("/admin/empleado")
+@RequestMapping("/empleado")
 public class EmpleController {
 
     private final RolService rolService;
@@ -37,16 +37,12 @@ public class EmpleController {
         model.addAttribute("empleado", new Empleado());
         model.addAttribute("roles", rolService.listar());
 
-        return "admin/empleado/emple_index";
+        return "/admin/empleado/emple_index";
     }
 
     @GetMapping("/index")
-    public String empleadoIndex(HttpSession session) {
-        Usuario u = (Usuario) session.getAttribute("usuarioLogueado");
-        if (u == null || !u.getRol().equals("EMPLEADO")) {
-            return "redirect:/admin/cliente"; // Si no es empleado o no está logueado
-        }
-        return "empleado/indexemple"; // Vista de empleado
+    public String empleadoIndex() {
+        return "/admin/empleado/indexemple"; // Vista de empleado
     }
 
     @GetMapping("/nuevo")
@@ -54,16 +50,13 @@ public class EmpleController {
         Empleado empleado = new Empleado();
         model.addAttribute("empleado", empleado);
         model.addAttribute("roles", rolService.listar()); // <-- Lo necesitas para llenar el select
-        return "admin/empleado/emple_index";
+        return "/admin/empleado/emple_index";
     }
 
     @PostMapping("/guardar")
     public String guardar(Empleado empleado){
-        //Asignar el rol
-        Rol rolSeleccionado = rolService.buscarPorId(empleado.getRol().getId_rol());
-        empleado.setRol(rolSeleccionado);
         empleService.guardar(empleado);
-        return "redirect:/admin/empleado?success=true";
+        return "redirect:empleado?success=true";
     }
 
     @GetMapping("/editar/{id}")
@@ -74,7 +67,7 @@ public class EmpleController {
             return "redirect:empleado?error=not_found";
         }
         model.addAttribute("empleado", empleado);
-        return "admin/empleado/editar_emple";
+        return "/admin/empleado/editar_emple";
     }
 
     @GetMapping("/buscar")
@@ -90,7 +83,7 @@ public class EmpleController {
         }
         model.addAttribute("empleado", new Empleado());
         model.addAttribute("roles", rolService.listar());
-        return "admin/empleado/emple_index";
+        return "/admin/empleado/emple_index";
     }
 
     @GetMapping("/eliminar/{id}")

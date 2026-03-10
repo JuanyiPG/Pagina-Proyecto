@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin/cliente")
+@RequestMapping("/cliente")
 public class ClienteController {
 
     private final ClienteService clienteService;
@@ -45,20 +45,12 @@ public class ClienteController {
         return "empleado/listcliente/listcliente"; // tu plantilla Thymeleaf
     }
 
-    @GetMapping("/index")
-    public String clienteIndex(HttpSession session) {
-        Usuario u = (Usuario) session.getAttribute("usuarioLogueado");
-
-        if (u == null || !u.getRol().equals("CLIENTE")) {
-            return "redirect:/admin/cliente";
-        }
-        return "cliente/indexcliente";
-    }
 
     // Mostrar formulario para nuevo cliente
     @GetMapping("/nuevo")
     public String nuevoCliente(Model model) {
         model.addAttribute("cliente", new Cliente());
+        model.addAttribute(new Usuario());
         return "login/loginRegistro"; // tu plantilla de formulario
     }
 
@@ -87,7 +79,7 @@ public class ClienteController {
             return "redirect:/admin/cliente";
         }
         model.addAttribute("cliente", cliente);
-        return "cliente/editar";
+        return "/cliente/editar";
     }
 
     // Eliminar cliente
@@ -102,6 +94,11 @@ public class ClienteController {
     public String buscarClientes(@RequestParam String filtro, Model model) {
         List<Cliente> clientes = clienteService.buscarVariosCampos(filtro);
         model.addAttribute("clientes", clientes);
-        return "ladmin/listcliente/listcliente";
+        return "/cliente/listcliente/listcliente";
+    }
+
+    @GetMapping("/index")
+    public String clienteIndex() {
+        return "cliente/indexcliente";
     }
 }
