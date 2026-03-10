@@ -97,12 +97,24 @@
     }
 
     /* Estilo de las imágenes */
+    .mosaico {
+    display: flex;
+    justify-content: center; /* centra horizontal */
+    align-items: center;     /* centra vertical */
+}
     .mosaico img {
-        width: 100%;
+        width: 80%;
         height: 350px;
         object-fit: cover;
-        border-radius: 5px;
+        border-radius: 10px;
+        display: auto;
+        margin: auto;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3)
         transition: transform .4s ease, filter .4s ease;
+    }
+    .mosaico img:hover {
+           transform: scale(1.05)
+           filter: brigthness(1.1)
     }
 
     /* Efecto de hover para lujo */
