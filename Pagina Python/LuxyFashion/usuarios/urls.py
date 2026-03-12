@@ -9,10 +9,10 @@ path('roles/editar/<int:id>/', views.editar_rol, name='editar_rol'),
 path('roles/eliminar/<int:id>/', views.eliminar_rol, name='eliminar_rol'),
 
 
-path('usuarios/', views.lista_usuarios, name='lista_usuarios'),
-path('usuarios/crear/', views.crear_usuario, name='crear_usuario'),
-path('usuarios/editar/<int:id>/', views.editar_usuario, name='editar_usuario'),
-path('usuarios/eliminar/<int:id>/', views.eliminar_usuario, name='eliminar_usuario'),
+path('usuario/', views.lista_usuarios, name='lista_usuarios'),
+path('usuario/crear/', views.crear_usuario, name='crear_usuario'),
+path('usuario/editar/<int:id>/', views.editar_usuario, name='editar_usuario'),
+path('usuario/eliminar/<int:id>/', views.eliminar_usuario, name='eliminar_usuario'),
 
 
 path('empleados/', views.lista_empleados, name='lista_empleados'),

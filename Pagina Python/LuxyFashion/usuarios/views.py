@@ -32,7 +32,7 @@ def eliminar_rol(request, id):
 
 def lista_usuarios(request):
     usuarios = Usuario.objects.all()
-    return render(request, 'usuarios/usuarios/lista.html', {'usuarios': usuarios})
+    return render(request, 'usuarios/usuario/lista.html', {'usuarios': usuarios})
 
 def crear_usuario(request):
     roles = Rol.objects.all()
@@ -52,7 +52,7 @@ def crear_usuario(request):
 
         return redirect('lista_usuarios')
 
-    return render(request, 'usuarios/usuarios/crear.html', {'roles': roles})
+    return render(request, 'usuarios/usuario/crear.html', {'roles': roles})
 
 def editar_usuario(request, id):
     usuario = get_object_or_404(Usuario, id_usuario=id)
@@ -66,7 +66,7 @@ def editar_usuario(request, id):
 
         return redirect('lista_usuarios')
 
-    return render(request, 'usuarios/usuarios/editar.html', {
+    return render(request, 'usuarios/usuario/editar.html', {
         'usuario': usuario,
         'roles': roles
     })
