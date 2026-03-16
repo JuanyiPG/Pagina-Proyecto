@@ -1,0 +1,138 @@
+/* --- RESET GENERAL --- */
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Fundamental para que los paddings no rompan el ancho */
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+    background: #f5f5f5;
+    margin-left: 230px; /* Espacio para el nav fixed */
+}
+
+/* --- NAVEGACIÓN --- */
+nav{
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 230px;
+    height: 100vh;
+    background: linear-gradient(180deg, #6a0f2e, #3d061a);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+}
+
+nav h1{
+    color: white;
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 22px;
+    letter-spacing: 1px;
+}
+
+nav a{
+    text-decoration: none;
+    color: white;
+    padding: 12px 15px;
+    margin: 5px 0;
+    border-radius: 8px;
+    transition: 0.3s;
+    font-weight: 500;
+}
+
+nav a:hover{
+    background: #7e1a3f;
+    transform: translateX(5px);
+}
+
+hr{
+    display: none;
+}
+
+/* --- CONTENIDO PRINCIPAL --- */
+main{
+    padding: 30px;
+}
+
+h2{
+    color: #7e1a3f;
+    padding: 20px 0; /* Ajustado para que no flote tanto */
+    margin-bottom: 20px;
+}
+
+/* --- FORMULARIO CORREGIDO --- */
+form {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    max-width: 500px;
+    margin-bottom: 40px;
+}
+
+label {
+    display: block;      /* Para que el label esté sobre el input */
+    margin-bottom: 8px;
+    color: #7e1a3f;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+input {
+    display: block;      /* Evita problemas de alineación lateral */
+    width: 100%;         /* Se ajusta al ancho del formulario */
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    border: 1.5px solid #ddd;
+    border-radius: 25px; /* Tu estilo redondeado */
+    color: #7e1a3f;
+    outline: none;
+    transition: 0.3s;
+}
+
+input:focus {
+    border-color: #7e1a3f;
+    background-color: #fffafb;
+}
+
+/* --- TABLA --- */
+table {
+    border-collapse: collapse;
+    width: 90%;
+    margin-top: 20px;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden; /* Para que se vean los bordes redondeados */
+}
+
+tr {
+    background-color: white;
+    color: #7e1a3f;
+}
+
+th, td {
+    padding: 12px 15px;
+    border: 1px solid #eee;
+    text-align: left;
+}
+
+th {
+    background-color: #7e1a3f;
+    color: white;
+    border: none;
+}
+
+/* Estilo para links fuera del nav (como los de la tabla) */
+main a {
+    padding: 5px 10px;
+    text-decoration: none;
+    color: #3d061a;
+    font-weight: bold;
+}
+
+main a:hover {
+    color: #7e1a3f;
+    text-decoration: underline;
+}
