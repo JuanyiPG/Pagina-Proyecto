@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuxyFashion | Editar Producto</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e67e22;
+            --error-color: #e74c3c;
+            --success-color: #27ae60;
+            --disabled-bg: #f4f4f4;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        input[type="text"], 
+        textarea, 
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box; /* Evita que el padding ensanche el input */
+        }
+
+        /* Estilo para campos no editables */
+        .readonly-field {
+            background-color: var(--disabled-bg);
+            color: #888;
+            cursor: not-allowed;
+            border: 1px solid #eee;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: opacity 0.3s;
+            border: none;
+            margin-top: 10px;
+            color: white;
+        }
+
+        .btn-update {
+            background-color: var(--success-color);
+        }
+
+        .btn-delete {
+            background-color: var(--error-color);
+            margin-top: 20px;
+            font-size: 14px;
+            padding: 10px;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .divider {
+            margin: 30px 0 20px;
+            border: 0;
+            border-top: 1px solid #eee;
+        }
+
+        .img-current {
+            display: block;
+            margin: 10px auto;
+            max-width: 150px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Editar Prenda</h2>
+
+    <form action="{% url 'ventas:editar_producto' producto.id %}" method="POST">
+        {% csrf_token %}
+
+        <div class="form-group" style="text-align: center;">
+            <label>Imagen Actual</label>
+            {% if producto.imagen_product %}
+                <img src="{{ producto.imagen_product.url }}" alt="Producto" class="img-current">
+            {% else %}
+                <p style="font-size: 0.8em; color: #999;">Sin imagen registrada</p>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label>Nombre del Producto</label>
+            <input type="text" class="readonly-field" value="{{ producto.nom_produc }}" readonly>
+        </div>
+
+        <div class="form-group">
+            <label>Categoría</label>
+            <input type="text" class="readonly-field" value="{{ producto.cat_produc }}" readonly>
+        </div>
+
+        <div class="form-group">
+            <label for="estado_produc">Estado</label>
+            <select id="estado_produc" name="estado_produc">
+                <option value="Nuevo" {% if producto.estado_produc == 'Nuevo' %}selected{% endif %}>Nuevo</option>
+                <option value="En Stock" {% if producto.estado_produc == 'En Stock' %}selected{% endif %}>En Stock</option>
+                <option value="Agotado" {% if producto.estado_produc == 'Agotado' %}selected{% endif %}>Agotado</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="desc_produc">Descripción Corta</label>
+            <textarea id="desc_produc" name="desc_produc" rows="4">{{ producto.desc_produc }}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-update">GUARDAR CAMBIOS</button>
+    </form>
+
+</body>
+</html>

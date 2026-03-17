@@ -1,0 +1,47 @@
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista Productos</title>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Imagen</th>
+                <th>Nombre</th>
+                <th>descripción</th>
+                <th>Categoria</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos %}
+            <tr>
+                <td>{{producto.id_produc}}</td>
+                <td>{% if producto.imagen_product %}
+                    <img src="{{prducto.imagen_product.url}}" alt="{{ producto.nom_produc }}">
+                    {% else %}
+                    <span> Sin imagen</span>
+                    {% endif %}
+                </td>
+                <td>{{producto.nom_produc}}</td>
+                <td>{{producto.desc_produc}}</td>
+                <td>{{producto.categoria_produc}}</td>
+                <td>{{producto.estado_produc}}</td>
+                <td>
+                    <a href="{% url 'ventas:editar_producto' prducto.id_produc %}"></a>
+                    <a href="{% url 'ventas:eliminar_producto' prducto.id_produc %}"></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+
+{% endblock %}
