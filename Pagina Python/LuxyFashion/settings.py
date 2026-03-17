@@ -128,3 +128,9 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# URL para acceder a las imagines 
+MEDIA_URL = '/media/'
+
+#En dodne se crearan las carpetas y guardaran los archivos 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
