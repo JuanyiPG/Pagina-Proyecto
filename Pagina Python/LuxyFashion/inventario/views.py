@@ -1,3 +1,5 @@
 from django.shortcuts import render
-
-# Create your views here.
+from .models import Estampado, Proveedor, Movimiento_matp
+#proveedor
+def lista_provee(request):
+    proveedor= Proveedor.objects.all
