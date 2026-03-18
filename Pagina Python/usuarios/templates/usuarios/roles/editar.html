@@ -1,0 +1,17 @@
+{% extends 'usuarios/base.html' %}
+
+{% block content %}
+
+<h2>Editar Rol</h2>
+
+<form method="POST">
+{% csrf_token %}
+
+<label>Nombre del rol</label>
+<input type="text" name="nom_rol" value="{{ rol.nom_rol }}">
+
+<button type="submit">Actualizar</button>
+
+</form>
+
+{% endblock %}
