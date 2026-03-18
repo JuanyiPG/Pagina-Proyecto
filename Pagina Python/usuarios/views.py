@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Rol, Usuario, Empleado, Cliente
+from django.shortcuts import render
 
 
 
@@ -202,3 +203,6 @@ def eliminar_cliente(request, id):
     cliente = get_object_or_404(Cliente, id_clien=id)
     cliente.delete()
     return redirect('lista_clientes')
+
+def login_view(request):
+    return render(request, 'usuarios/login.html')

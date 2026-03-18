@@ -1,0 +1,137 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+
+    <title>Login</title>
+
+    <style>
+        *{
+             margin: 0;
+             padding: 0;
+             box-sizing: border-box;
+         }
+         body{
+             height: 100vh;
+             width: 100%;
+             display: flex;
+             justify-content: center;
+             align-items: center;
+         }
+         .nav {
+         background: linear-gradient(to right, rgb(255, 255, 255), #5c0b26);
+         display: flex;
+         width: 100%;
+         position: fixed;
+         align-items: center;
+         top: 0;
+         left: 0;
+         z-index: 1000;
+         }
+
+         .nav img{
+         height: 100%;
+         width: 140px;
+         }
+
+         .nav ul {
+         padding: 1px 20px;
+         display: flex;
+         }
+    </style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<div class="nav">
+    <ul>
+        <a href="{% url 'inicio' %}">
+            <img src="{% static 'IMG/Logo_Luxy_Fashion.png' %}" alt="Logo">
+        </a>
+    </ul>
+</div>
+
+<div class="container-l">
+
+    <!-- LOGIN -->
+    <div class="container-l-f">
+        <form action="{% url 'login' %}" method="post" class="sign-in">
+            {% csrf_token %}
+
+            {% if error %}
+                <div style="color:red;">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            <h2>Iniciar sesión</h2>
+            <span>Use su usuario y contraseña</span>
+
+            <div class="container-input">
+                <input type="text" name="username" placeholder="Usuario" required>
+            </div>
+
+            <div class="container-input">
+                <input type="password" name="password" placeholder="Contraseña" required>
+            </div>
+
+            <a href="#">¿Olvidaste tu contraseña?</a>
+
+            <button type="submit" class="button-ingre">Ingresar</button>
+        </form>
+    </div>
+
+
+    <!-- REGISTRO -->
+    <div class="container-l-f">
+        <form action="{% url 'registro' %}" method="post">
+            {% csrf_token %}
+
+            <h2>Registro</h2>
+            <span>Ingrese sus datos personales</span>
+
+            <div class="container-input">
+                <input type="text" name="nombre" placeholder="Nombre Completo" required>
+            </div>
+
+            <div class="container-input">
+                <input type="text" name="direccion" placeholder="Dirección" required>
+            </div>
+
+            <div class="container-input">
+                <input type="text" name="telefono" placeholder="Teléfono" required>
+            </div>
+
+            <div class="container-input">
+                <input type="email" name="correo" placeholder="Correo" required>
+            </div>
+
+            <div class="container-input">
+                <input type="text" name="username" placeholder="Usuario" required>
+            </div>
+
+            <div class="container-input">
+                <input type="password" name="password" placeholder="Contraseña" required>
+            </div>
+
+            {% if error_registro %}
+                <div style="color:red;">{{ error_registro }}</div>
+            {% endif %}
+
+            <button type="submit" class="button-ingre">Registrarse</button>
+        </form>
+    </div>
+
+</div>
+
+<script src="{% static 'js/login.js' %}"></script>
+
+</body>
+</html>

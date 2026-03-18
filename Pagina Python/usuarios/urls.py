@@ -1,5 +1,6 @@
 from django.urls import path
-from . import views
+from . import views 
+from .views import login_view
 
 urlpatterns = [
     # --- ROLES ---
@@ -24,4 +25,7 @@ urlpatterns = [
     path('clientes/', views.lista_clientes, name='lista_clientes'),
     path('clientes/crear/', views.crear_cliente, name='crear_cliente'),
     path('clientes/eliminar/<int:id>/', views.eliminar_cliente, name='eliminar_cliente'),
+
+    path('login/', views.login_view, name='login'),
+
 ]
