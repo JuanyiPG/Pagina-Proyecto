@@ -23,7 +23,7 @@
 <input type="text" name="rh_emple" value="{{ empleado.rh_emple }}">
 
 <label>Fecha Nacimiento</label>
-<input type="date" name="fecha_naci_emple" value="{{ empleado.fecha_naci_emple }}">
+<input type="date" name="fecha_naci_emple" value="{{ empleado.fecha_naci_emple|date:'Y-m-d' }}">
 
 <label>Tipo Identificación</label>
 <input type="text" name="tipo_ident" value="{{ empleado.tipo_ident }}">
@@ -32,7 +32,7 @@
 <input type="text" name="num_ident" value="{{ empleado.num_ident }}">
 
 <label>Fecha Ingreso</label>
-<input type="date" name="fecha_ing_emple" value="{{ empleado.fecha_ing_emple }}">
+<input type="date" name="fecha_ing_emple" value="{{ empleado.fecha_ing_emple|date:'Y-m-d' }}">
 
 <label>Salario</label>
 <input type="number" step="0.01" name="salari_emple" value="{{ empleado.salari_emple }}">

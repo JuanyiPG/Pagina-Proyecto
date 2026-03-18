@@ -22,8 +22,8 @@
 <td>{{ usuario.id_rol_fk }}</td>
 
 <td>
-<a href="/usuario/editar/{{usuario.id_usuario}}/">Editar</a>
-<a href="/usuario/eliminar/{{usuario.id_usuario}}/">Eliminar</a>
+<a href="{% url 'editar_usuario' id=usuario.id_usuario %}">Editar</a>
+<a href="{% url 'eliminar_usuario' id=usuario.id_usuario %}">Eliminar</a>
 </td>
 
 </tr>

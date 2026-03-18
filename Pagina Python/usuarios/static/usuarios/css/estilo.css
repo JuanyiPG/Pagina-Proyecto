@@ -1,4 +1,4 @@
-/* --- RESET GENERAL --- */
+
 *{
     margin: 0;
     padding: 0;
@@ -11,7 +11,7 @@ body{
     margin-left: 230px;
 }
 
-/* --- NAV --- */
+
 nav{
     position: fixed;
     left: 0;
@@ -22,6 +22,7 @@ nav{
     padding: 25px;
     display: flex;
     flex-direction: column;
+    
 }
 
 nav h1{
@@ -87,10 +88,10 @@ h2 + a:hover{
     box-shadow: 0 8px 20px rgba(126,26,63,0.3);
 }
 
-/* --- FORMULARIO --- */
+
 form{
     background: white;
-    padding: 30px;
+    padding: 50px;
     border-radius: 15px;
     max-width: 500px;
     margin: 0 auto 40px auto;
@@ -117,7 +118,7 @@ input:focus{
     border-color: #7e1a3f;
 }
 
-/* botón form */
+
 button{
     width: 100%;
     background: linear-gradient(135deg, #7e1a3f, #a8325f);
@@ -129,7 +130,7 @@ button{
     font-weight: bold;
 }
 
-/* --- TABLA --- */
+
 table{
     width: 100%;
     border-collapse: collapse;
@@ -137,6 +138,7 @@ table{
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    padding: 40px;
 }
 
 th{
@@ -156,7 +158,7 @@ tr:hover{
     background: #fafafa;
 }
 
-/* --- BOTONES DE ACCIÓN --- */
+
 td a{
     display: inline-block;
     padding: 6px 10px;
@@ -167,13 +169,13 @@ td a{
     font-weight: bold;
 }
 
-/* editar */
+
 td a:first-child{
     background: #e6f0ff;
     color: #2d6cdf;
 }
 
-/* eliminar */
+
 td a:last-child{
     background: #ffe6e6;
     color: #d33;
