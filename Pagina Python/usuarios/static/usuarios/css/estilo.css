@@ -2,16 +2,16 @@
 *{
     margin: 0;
     padding: 0;
-    box-sizing: border-box; /* Fundamental para que los paddings no rompan el ancho */
+    box-sizing: border-box;
     font-family: Arial, Helvetica, sans-serif;
 }
 
 body{
     background: #f5f5f5;
-    margin-left: 230px; /* Espacio para el nav fixed */
+    margin-left: 230px;
 }
 
-/* --- NAVEGACIÓN --- */
+/* --- NAV --- */
 nav{
     position: fixed;
     left: 0;
@@ -29,7 +29,6 @@ nav h1{
     text-align: center;
     margin-bottom: 40px;
     font-size: 22px;
-    letter-spacing: 1px;
 }
 
 nav a{
@@ -39,7 +38,6 @@ nav a{
     margin: 5px 0;
     border-radius: 8px;
     transition: 0.3s;
-    font-weight: 500;
 }
 
 nav a:hover{
@@ -51,88 +49,132 @@ hr{
     display: none;
 }
 
-/* --- CONTENIDO PRINCIPAL --- */
+/* --- CONTENIDO --- */
 main{
-    padding: 30px;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
 }
 
+/* contenedor interno */
+main > *{
+    width: 100%;
+    max-width: 1100px;
+}
+
+/* --- TITULO --- */
 h2{
     color: #7e1a3f;
-    padding: 20px 0; /* Ajustado para que no flote tanto */
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
-/* --- FORMULARIO CORREGIDO --- */
-form {
-    background: white;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    max-width: 500px;
-    margin-bottom: 40px;
-}
-
-label {
-    display: block;      /* Para que el label esté sobre el input */
-    margin-bottom: 8px;
-    color: #7e1a3f;
+/* 🔥 BOTÓN CREAR (FUNCIONA CON TODOS TUS HTML) */
+h2 + a{
+    display: inline-block;
+    background: linear-gradient(135deg, #7e1a3f, #a8325f);
+    color: white;
+    padding: 10px 22px;
+    border-radius: 25px;
+    margin: 10px 0 20px 0;
+    text-decoration: none;
     font-weight: bold;
     font-size: 14px;
-}
-
-input {
-    display: block;      /* Evita problemas de alineación lateral */
-    width: 100%;         /* Se ajusta al ancho del formulario */
-    padding: 10px 15px;
-    margin-bottom: 20px;
-    border: 1.5px solid #ddd;
-    border-radius: 25px; /* Tu estilo redondeado */
-    color: #7e1a3f;
-    outline: none;
     transition: 0.3s;
 }
 
-input:focus {
-    border-color: #7e1a3f;
-    background-color: #fffafb;
+h2 + a:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(126,26,63,0.3);
 }
 
-/* --- TABLA --- */
-table {
-    border-collapse: collapse;
-    width: 90%;
-    margin-top: 20px;
+/* --- FORMULARIO --- */
+form{
     background: white;
-    border-radius: 10px;
-    overflow: hidden; /* Para que se vean los bordes redondeados */
+    padding: 30px;
+    border-radius: 15px;
+    max-width: 500px;
+    margin: 0 auto 40px auto;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
-tr {
-    background-color: white;
+label{
+    display: block;
+    margin-bottom: 8px;
     color: #7e1a3f;
-}
-
-th, td {
-    padding: 12px 15px;
-    border: 1px solid #eee;
-    text-align: left;
-}
-
-th {
-    background-color: #7e1a3f;
-    color: white;
-    border: none;
-}
-
-/* Estilo para links fuera del nav (como los de la tabla) */
-main a {
-    padding: 5px 10px;
-    text-decoration: none;
-    color: #3d061a;
     font-weight: bold;
 }
 
-main a:hover {
-    color: #7e1a3f;
-    text-decoration: underline;
+input{
+    width: 100%;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    border: 1.5px solid #ddd;
+    border-radius: 25px;
+    outline: none;
+}
+
+input:focus{
+    border-color: #7e1a3f;
+}
+
+/* botón form */
+button{
+    width: 100%;
+    background: linear-gradient(135deg, #7e1a3f, #a8325f);
+    color: white;
+    padding: 10px;
+    border-radius: 25px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* --- TABLA --- */
+table{
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+th{
+    background: #7e1a3f;
+    color: white;
+    padding: 12px;
+    font-size: 14px;
+}
+
+td{
+    padding: 10px;
+    border-top: 1px solid #eee;
+    font-size: 13px;
+}
+
+tr:hover{
+    background: #fafafa;
+}
+
+/* --- BOTONES DE ACCIÓN --- */
+td a{
+    display: inline-block;
+    padding: 6px 10px;
+    margin: 2px;
+    border-radius: 8px;
+    font-size: 12px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* editar */
+td a:first-child{
+    background: #e6f0ff;
+    color: #2d6cdf;
+}
+
+/* eliminar */
+td a:last-child{
+    background: #ffe6e6;
+    color: #d33;
 }

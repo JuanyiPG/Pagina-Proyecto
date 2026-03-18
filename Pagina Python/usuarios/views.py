@@ -145,27 +145,59 @@ def eliminar_empleado(request, id):
     return redirect('lista_empleados')
 
 
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Cliente, Usuario
 
+# 🔹 LISTAR
 def lista_clientes(request):
     clientes = Cliente.objects.all()
     return render(request, 'usuarios/clientes/lista.html', {'clientes': clientes})
 
+
+# 🔹 CREAR
 def crear_cliente(request):
     usuarios = Usuario.objects.all()
 
     if request.method == 'POST':
+        id_usuario_seleccionado = request.POST.get('id_usuario_fk_clien')
+
         Cliente.objects.create(
             nom_clien=request.POST['nom_clien'],
             dir_clien=request.POST['dir_clien'],
             tel_clien=request.POST['tel_clien'],
             correo_clien=request.POST['correo_clien'],
-            id_usuario_fk=Usuario.objects.get(id_usuario=request.POST['id_usuario'])
+            id_usuario_fk=Usuario.objects.get(id_usuario=id_usuario_seleccionado)
         )
 
         return redirect('lista_clientes')
 
     return render(request, 'usuarios/clientes/crear.html', {'usuarios': usuarios})
 
+
+def editar_cliente(request, id):
+    cliente = get_object_or_404(Cliente, id_clien=id)
+    usuarios = Usuario.objects.all()
+
+    if request.method == 'POST':
+        cliente.nom_clien = request.POST['nom_clien']
+        cliente.dir_clien = request.POST['dir_clien']
+        cliente.tel_clien = request.POST['tel_clien']
+        cliente.correo_clien = request.POST['correo_clien']
+
+        id_usuario = request.POST.get('id_usuario_fk_clien')
+        if id_usuario:
+            cliente.id_usuario_fk = Usuario.objects.get(id_usuario=id_usuario)
+
+        cliente.save()
+        return redirect('lista_clientes')
+
+    return render(request, 'usuarios/clientes/editar.html', {
+        'cliente': cliente,
+        'usuarios': usuarios
+    })
+
+
+# 🔹 ELIMINAR
 def eliminar_cliente(request, id):
     cliente = get_object_or_404(Cliente, id_clien=id)
     cliente.delete()

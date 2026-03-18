@@ -4,7 +4,7 @@
 
 <h2>Lista de Empleados</h2>
 
-<a href="/empleados/crear/">Crear Empleado</a>
+<a href="{% url 'crear_empleado' %}">Crear empleado</a>
 
 <table border="1">
 
@@ -43,7 +43,7 @@
 <td>{{ empleado.id_usuario_fk.username }}</td>
 
 <td>
-<a href="/empleados/editar/{{empleado.id_emple}}/">Editar</a>
+<a href="{% url 'editar_empleado' id=empleado.id_emple %}">Editar</a>
 <a href="/empleados/eliminar/{{empleado.id_emple}}/">Eliminar</a>
 </td>
 
