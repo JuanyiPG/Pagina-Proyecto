@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Rol, Usuario, Empleado, Cliente
 from django.shortcuts import render
-
+from django.contrib.auth import authenticate,login as auth_login
+from django.contrib.auth.models import User
+from django.db import transaction
+from django.contrib import messages
 
 
 def lista_roles(request):
@@ -204,5 +207,80 @@ def eliminar_cliente(request, id):
     cliente.delete()
     return redirect('lista_clientes')
 
+#LOGIN AUN NO COMPROBADO :(
 def login_view(request):
+    if request.method == 'POST':
+        user_post = request.POST.get('username')
+        pass_post = request.POST.get('password')
+        
+        user = authenticate(username=user_post, password=pass_post)
+        
+        if user is not None:
+            auth_login(request, user)
+            if user.is_staff:
+                return redirect('admin_dashboard')  # Ejemplo para empleados/admin
+            else:
+                return redirect('index')  
+        else:
+            return render(request, 'usuarios/login.html', {'error': True})
+            
+    return render(request, 'usuarios/login.html')
+#REGISTRO
+def registro_view(request):
+    if request.method == 'POST':
+
+        nombre = request.POST.get('nombre')
+        direccion = request.POST.get('direccion')
+        telefono = request.POST.get('telefono')
+        correo = request.POST.get('correo')
+        usuario_val = request.POST.get('username')
+        contra = request.POST.get('password')
+
+        #  Validar que el usuario no exista
+        if User.objects.filter(username=usuario_val).exists():
+            return render(request, 'usuarios/login.html', {'error_registro': True, 'msg': 'El usuario ya existe'})
+
+        try:
+            # transaction.atomic asegura que se creen los  registros o ninguno
+            with transaction.atomic():
+                # A. Crear User de Django (para el Login)
+                user_django = User.objects.create_user(
+                    username=usuario_val, 
+                    email=correo, 
+                    password=contra,
+                    first_name=nombre
+                )
+
+               
+                rol_cliente, _ = Rol.objects.get_or_create(nom_rol='Cliente')
+
+              
+                nuevo_perfil = Usuario.objects.create(
+                    username=usuario_val,
+                    contrasena=contra,
+                    id_rol_fk=rol_cliente
+                )
+
+             
+                Cliente.objects.create(
+                    nom_clien=nombre,
+                    dir_clien=direccion,
+                    tel_clien=telefono,
+                    correo_clien=correo,
+                    id_usuario_fk=nuevo_perfil
+                )
+
+              
+                messages.success(request, '¡Registro exitoso! Bienvenido a Luxy Fashion.')
+
+              
+                auth_login(request, user_django)
+                return redirect('login')
+
+        except Exception as e:
+  
+            print(f"ERROR CRÍTICO EN REGISTRO: {e}")
+            messages.error(request, 'No se pudo completar el registro. Inténtalo de nuevo.')
+            return render(request, 'usuarios/login.html', {'error_registro': True})
+            
     return render(request, 'usuarios/login.html')

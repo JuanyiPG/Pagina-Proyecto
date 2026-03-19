@@ -27,5 +27,6 @@ urlpatterns = [
     path('clientes/eliminar/<int:id>/', views.eliminar_cliente, name='eliminar_cliente'),
 
     path('login/', views.login_view, name='login'),
+    path('registro/', views.registro_view, name='registro'),
 
 ]
