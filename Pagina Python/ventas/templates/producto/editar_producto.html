@@ -1,3 +1,4 @@
+{% block content %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -118,13 +119,13 @@
 <div class="container">
     <h2>Editar Prenda</h2>
 
-    <form action="{% url 'ventas:editar_producto' producto.id %}" method="POST">
+    <form action="{% url 'ventas:editar_producto' producto.pk %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
         <div class="form-group" style="text-align: center;">
             <label>Imagen Actual</label>
             {% if producto.imagen_product %}
-                <img src="{{ producto.imagen_product.url }}" alt="Producto" class="img-current">
+                <img src="{{ producto.imagen_product.url }}" alt="{{ producto.nom_produc }}" style="max-width: 200px; display: block; margin: 0 auto;">
             {% else %}
                 <p style="font-size: 0.8em; color: #999;">Sin imagen registrada</p>
             {% endif %}
@@ -132,12 +133,12 @@
 
         <div class="form-group">
             <label>Nombre del Producto</label>
-            <input type="text" class="readonly-field" value="{{ producto.nom_produc }}" readonly>
+            <input type="text" class="readonly-field" name="nom_produc" value="{{ producto.nom_produc }}" readonly>
         </div>
 
         <div class="form-group">
             <label>Categoría</label>
-            <input type="text" class="readonly-field" value="{{ producto.cat_produc }}" readonly>
+            <input type="text" class="readonly-field" name="categoria_produc" value="{{ producto.categoria_produc }}" readonly>
         </div>
 
         <div class="form-group">
@@ -156,6 +157,6 @@
 
         <button type="submit" class="btn btn-update">GUARDAR CAMBIOS</button>
     </form>
+</div>
 
-</body>
-</html>
+{% endblock %}
