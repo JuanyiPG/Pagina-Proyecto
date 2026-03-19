@@ -1,18 +1,22 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="es">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Fashion Luxy</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
-    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
-    <script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
-</head>
-<body>
-<div replace="{% include 'includes/header.html' %}"></div>
 
-<!--Vista previa -->
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+</head>
+
+<body>
+
+<!-- HEADER -->
+{% include 'includes/header.html' %}
+
+<!-- ESTILOS INTERNOS -->
 <style>
     .diferencia {
         text-align: center;
@@ -37,14 +41,12 @@
         letter-spacing: 1px;
     }
 
-
     .contenedor-cards {
         display: flex;
         justify-content: center;
         gap: 120px;
         flex-wrap: wrap;
     }
-
 
     .card-dif {
         position: relative;
@@ -58,7 +60,6 @@
         text-transform: uppercase;
         margin-bottom: 20px;
         color: #5e0925;
-        letter-spacing: 1px;
     }
 
     .card-dif p {
@@ -67,7 +68,6 @@
         line-height: 1.7;
     }
 
-    /* NÚMERO FONDO */
     .num-fondo {
         position: absolute;
         font-size: 150px;
@@ -79,7 +79,6 @@
         pointer-events: none;
     }
 
-    /* Contenedor general */
     .mosaico {
         width: 100%;
         display: grid;
@@ -90,14 +89,6 @@
         justify-items: center;
     }
 
-    /* Cada tarjeta */
-    .mosaico .item {
-        text-align: center;
-        cursor: pointer;
-        transition: transform .3s ease, box-shadow .3s ease;
-    }
-
-    /* Estilo de las imágenes */
     .mosaico img {
         width: 100%;
         height: 350px;
@@ -106,127 +97,108 @@
         transition: transform .4s ease, filter .4s ease;
     }
 
-    /* Efecto de hover para lujo */
-    .mosaico .item:hover img {
+    .mosaico img:hover {
         transform: scale(1.05);
         filter: brightness(1.15);
         box-shadow: 0px 15px 30px rgba(0,0,0,0.2);
     }
 
-    /* Texto debajo de cada imagen */
     .mosaico p {
         margin-top: 15px;
         font-size: 18px;
         font-family: 'Times New Roman', serif;
-        letter-spacing: 1px;
         color: #2c2c2c;
-        font-weight: 500;
-        transition: color .3s ease;
-        text-transform: capitalize;
     }
-
-    .mosaico .item:hover p {
-        color: #000;
-    }
-
-
 </style>
-<body>
-<!--Vista previa -->
+
 <main>
+
+    <!-- VIDEO -->
     <section class="p-p">
         <video autoplay muted loop class="VPP">
             <source src="{% static 'videos/VideoPIndex.mp4' %}" type="video/mp4">
         </video>
     </section>
 
-
+    <!-- SECCIÓN -->
     <section class="diferencia">
         <h4>Diseño y confección exclusiva</h4>
         <h2>ASÍ TRABAJAMOS EN LUXY FASHION</h2>
 
         <div class="contenedor-cards">
+
             <div class="card-dif">
                 <span class="num-fondo">1</span>
                 <h3>Nosotros</h3>
-                <p>En nuestra empresa, sabemos que la moda no tiene por que ser un lujo.Por eso te traemos accessorios de calidad
-                    y tendencia a precios que te encantaran. Nacimos de la pasion por asercar productos unicos y asequibles, para que
-                    pueda encontrar ese toque especial que complementa tu estilo.
-                </p>
+                <p>En nuestra empresa, sabemos que la moda no tiene por qué ser un lujo. Ofrecemos accesorios de calidad a precios accesibles.</p>
             </div>
 
             <div class="card-dif">
                 <span class="num-fondo">2</span>
-                <h3>CALIDAD GARANTIZADA</h3>
-                <p>Cada uno de nuestros productos pasa por un riguroso control de calidad antes de ser enviados.
-                    Nos aseguramos de que cada pieza este impecable para que la recibas en perfectas condiciones..</p>
+                <h3>Calidad Garantizada</h3>
+                <p>Cada producto pasa por control de calidad para que llegue en perfectas condiciones.</p>
             </div>
 
             <div class="card-dif">
                 <span class="num-fondo">3</span>
-                <h3>SEGURIDAD EN TU ENVIO</h3>
-                <p>Creemos que la calidad no debe ser un lujo. Nuestros precios estan diseñados para ser acccequibles,
-                    reflejando el valor real de cada pieza, desde los materiales hasta el trabajo artesanal. Asi, puedes
-                    consentirte sin preocupaciones.</p>
+                <h3>Seguridad en tu envío</h3>
+                <p>Precios accesibles con materiales de calidad para que compres sin preocupaciones.</p>
             </div>
+
         </div>
     </section>
 
-    <!--productos -->
+    <!-- MOSAICO -->
     <section class="mosaico">
-        <img src="{% static 'IMG/index1.jpg' %}" alt="Imagen 1" class="imagen">
-        <img src="{% static 'IMG/index2.jpg' %}" alt="Imagen 2" class="imagen2">
-        <img src="{% static 'IMG/index5.jpg' %}" alt="Imagen 3" class="imagen3">
-        <img src="{% static 'IMG/index3.jpg' %}" alt="Imagen 4" class="imagen4">
-        <img src="{% static 'IMG/index4.jpg' %}" alt="Imagen 5" class="imagen5">
-        <img src="{% static 'IMG/index6.jpg' %}" alt="imagen 6" class="imagen6">
-        <img src="{% static 'IMG/index7.jpeg' %}" alt="Imagen 7" class="imagen7">
-        <img src="{% static 'IMG/index8.jpeg' %}" alt="Imagen 8" class="imagen8">
-        <img src="{% static 'IMG/index9.jpg' %}" alt="Imagen 9" class="imagen9">
-        <img src="{% static 'IMG/index10.jpg '%}" alt="Imagen 10" class="imagen10">
+        <img src="{% static 'IMG/index1.jpg' %}">
+        <img src="{% static 'IMG/index2.jpg' %}">
+        <img src="{% static 'IMG/index5.jpg' %}">
+        <img src="{% static 'IMG/index3.jpg' %}">
+        <img src="{% static 'IMG/index4.jpg' %}">
+        <img src="{% static 'IMG/index6.jpg' %}">
+        <img src="{% static 'IMG/index7.jpeg' %}">
+        <img src="{% static 'IMG/index8.jpeg' %}">
+        <img src="{% static 'IMG/index9.jpg' %}">
+        <img src="{% static 'IMG/index10.jpg' %}">
     </section>
 
     <button class="ver-mas-final">Ver más</button>
+
     <hr>
-    <br>
+
+    <!-- LINKS -->
+    <a href="{% url 'ventas:lista_abono' %}">Haz click aqui para el abono</a><br>
+    <a href="{% url 'ventas:form_producto' %}">Haz click aqui para crear el producto</a>
+
 </main>
-<a href="{% url 'ventas:lista_abono' %}">Haz click aqui para el abono</a>
-<a href="{% url 'ventas:form_producto' %}">Haz click aqui para crear el producto</a>
+
+<!-- BOTÓN AYUDA -->
 <button id="btn-ayuda">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-circle" viewBox="0 0 16 16">
-        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-        <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286m1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94"/>
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14"></path>
+        <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987"></path>
     </svg>
     Ayuda
 </button>
 
-<br>
-<footer id="{% include 'includes/footer.html' %}"></footer>
+<!-- FOOTER -->
+{% include 'includes/footer.html' %}
+
+<!-- JS -->
+<script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
 <script>
+    const nav = document.getElementById('navegador');
+    const video = document.querySelector('.VPP');
 
-    fetch("LuxyFahion/includes/footer.html")
-    .then(res => res.text())
-    .then(data => {
-        document.getElementById("footer").innerHTML = data;
-    });
-
-    fetch("LuxyFashion/includes/header.html")
-    .then(res => res.text())
-    .then(data => {
-        document.getElementById("header").innerHTML = data;
-
-        const nav = document.getElementById('navegador');
-        const video = document.querySelector('.VPP');
-
-        window.addEventListener('scroll', () => {
+    window.addEventListener('scroll', () => {
+        if (!video) return;
         const rect = video.getBoundingClientRect();
         if (rect.bottom <= 0) {
             nav.classList.add('scrolled');
         } else {
             nav.classList.remove('scrolled');
         }
-        });
     });
 </script>
 

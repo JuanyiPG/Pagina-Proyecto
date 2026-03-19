@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Mi Carrito - Luxy Fashion</title>
+
+<style>
+body{
+    font-family: Arial;
+    background:#f4eeee;
+    margin:0;
+}
+
+header{
+    background:white;
+    height:80px;
+    padding:0 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:fixed;
+    top:0;
+    width:100%;
+    box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+main{
+    margin-top:100px;
+    padding:40px;
+}
+
+.producto{
+    display:flex;
+    align-items:center;
+    background:white;
+    margin-bottom:20px;
+    padding:15px;
+}
+
+.producto img{
+    width:120px;
+    margin-right:20px;
+}
+
+.total{
+    font-size:20px;
+    font-weight:bold;
+    margin-top:20px;
+}
+
+button{
+    padding:10px 20px;
+    background:rgb(87,16,29);
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div>
+        <a href="../PAGINAS_LUXY_PROD/PAGINA_PROD.html">
+        <img src="../PAGINAS_LUXY_PROD/IMAGENES/Logo_Luxy_Fashion.png" height="60">
+        </a>
+    </div>
+
+    <div>
+        🛒 <span id="contador-carrito">0</span>
+    </div>
+</header>
+
+<main>
+    <h2>Mi Carrito</h2>
+    <div id="lista"></div>
+    <div class="total">Total: $<span id="total"></span></div>
+    <br>
+    <button onclick="comprar()">Comprar</button>
+</main>
+
+<script>
+
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+let lista = document.getElementById("lista");
+let totalHTML = document.getElementById("total");
+let contador = document.getElementById("contador-carrito");
+
+contador.textContent = carrito.length;
+
+let total = 0;
+
+carrito.forEach(function(item){
+
+    total += item.precio;
+
+    lista.innerHTML += `
+        <div class="producto">
+            <img src="${item.imagen}">
+            <div>
+                <p>${item.nombre}</p>
+                <p>$${item.precio.toLocaleString()}</p>
+            </div>
+        </div>
+    `;
+});
+
+totalHTML.textContent = total.toLocaleString();
+
+function comprar(){
+    alert("Compra realizada con éxito 🎉");
+    localStorage.removeItem("carrito");
+    location.reload();
+}
+
+</script>
+
+</body>
+</html>

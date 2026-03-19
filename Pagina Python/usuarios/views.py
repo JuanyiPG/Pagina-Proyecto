@@ -1,6 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Rol, Usuario, Empleado, Cliente
-
+from django.shortcuts import render
+from django.contrib.auth import authenticate,login as auth_login
+from django.contrib.auth.models import User
+from django.db import transaction
+from django.contrib import messages
 
 
 def lista_roles(request):
@@ -145,28 +149,138 @@ def eliminar_empleado(request, id):
     return redirect('lista_empleados')
 
 
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Cliente, Usuario
 
+# 🔹 LISTAR
 def lista_clientes(request):
     clientes = Cliente.objects.all()
     return render(request, 'usuarios/clientes/lista.html', {'clientes': clientes})
 
+
+# 🔹 CREAR
 def crear_cliente(request):
     usuarios = Usuario.objects.all()
 
     if request.method == 'POST':
+        id_usuario_seleccionado = request.POST.get('id_usuario_fk_clien')
+
         Cliente.objects.create(
             nom_clien=request.POST['nom_clien'],
             dir_clien=request.POST['dir_clien'],
             tel_clien=request.POST['tel_clien'],
             correo_clien=request.POST['correo_clien'],
-            id_usuario_fk=Usuario.objects.get(id_usuario=request.POST['id_usuario'])
+            id_usuario_fk=Usuario.objects.get(id_usuario=id_usuario_seleccionado)
         )
 
         return redirect('lista_clientes')
 
     return render(request, 'usuarios/clientes/crear.html', {'usuarios': usuarios})
 
+
+def editar_cliente(request, id):
+    cliente = get_object_or_404(Cliente, id_clien=id)
+    usuarios = Usuario.objects.all()
+
+    if request.method == 'POST':
+        cliente.nom_clien = request.POST['nom_clien']
+        cliente.dir_clien = request.POST['dir_clien']
+        cliente.tel_clien = request.POST['tel_clien']
+        cliente.correo_clien = request.POST['correo_clien']
+
+        id_usuario = request.POST.get('id_usuario_fk_clien')
+        if id_usuario:
+            cliente.id_usuario_fk = Usuario.objects.get(id_usuario=id_usuario)
+
+        cliente.save()
+        return redirect('lista_clientes')
+
+    return render(request, 'usuarios/clientes/editar.html', {
+        'cliente': cliente,
+        'usuarios': usuarios
+    })
+
+
+# 🔹 ELIMINAR
 def eliminar_cliente(request, id):
     cliente = get_object_or_404(Cliente, id_clien=id)
     cliente.delete()
     return redirect('lista_clientes')
+
+#LOGIN AUN NO COMPROBADO :(
+def login_view(request):
+    if request.method == 'POST':
+        user_post = request.POST.get('username')
+        pass_post = request.POST.get('password')
+        
+        user = authenticate(username=user_post, password=pass_post)
+        
+        if user is not None:
+            auth_login(request, user)
+            if user.is_staff:
+                return redirect('admin_dashboard')  # Ejemplo para empleados/admin
+            else:
+                return redirect('index')  
+        else:
+            return render(request, 'usuarios/login.html', {'error': True})
+            
+    return render(request, 'usuarios/login.html')
+#REGISTRO
+def registro_view(request):
+    if request.method == 'POST':
+
+        nombre = request.POST.get('nombre')
+        direccion = request.POST.get('direccion')
+        telefono = request.POST.get('telefono')
+        correo = request.POST.get('correo')
+        usuario_val = request.POST.get('username')
+        contra = request.POST.get('password')
+
+        #  Validar que el usuario no exista
+        if User.objects.filter(username=usuario_val).exists():
+            return render(request, 'usuarios/login.html', {'error_registro': True, 'msg': 'El usuario ya existe'})
+
+        try:
+            # transaction.atomic asegura que se creen los  registros o ninguno
+            with transaction.atomic():
+                # A. Crear User de Django (para el Login)
+                user_django = User.objects.create_user(
+                    username=usuario_val, 
+                    email=correo, 
+                    password=contra,
+                    first_name=nombre
+                )
+
+               
+                rol_cliente, _ = Rol.objects.get_or_create(nom_rol='Cliente')
+
+              
+                nuevo_perfil = Usuario.objects.create(
+                    username=usuario_val,
+                    contrasena=contra,
+                    id_rol_fk=rol_cliente
+                )
+
+             
+                Cliente.objects.create(
+                    nom_clien=nombre,
+                    dir_clien=direccion,
+                    tel_clien=telefono,
+                    correo_clien=correo,
+                    id_usuario_fk=nuevo_perfil
+                )
+
+              
+                messages.success(request, '¡Registro exitoso! Bienvenido a Luxy Fashion.')
+
+              
+                auth_login(request, user_django)
+                return redirect('login')
+
+        except Exception as e:
+  
+            print(f"ERROR CRÍTICO EN REGISTRO: {e}")
+            messages.error(request, 'No se pudo completar el registro. Inténtalo de nuevo.')
+            return render(request, 'usuarios/login.html', {'error_registro': True})
+            
+    return render(request, 'usuarios/login.html')
