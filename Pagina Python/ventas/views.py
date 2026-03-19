@@ -151,4 +151,11 @@ def editar_pedido(request, id):
         return redirect('ventas:lista_pedido') 
         
     return render(request, 'pedido/editar_pedido.html', {'pedido': pedido})
+
+def eliminar_pedido(request): 
+    pedido = get_object_or_404(Pedido, id=id)
+    if request.method == 'POST': 
+        pedido.delete()
+        return redirect('lista_pedido')
+    return render(request, 'pedido/eliminar_pedido.html', {'pedido' : pedido})
     
