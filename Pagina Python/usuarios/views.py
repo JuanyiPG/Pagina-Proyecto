@@ -148,10 +148,6 @@ def eliminar_empleado(request, id):
     empleado.delete()
     return redirect('lista_empleados')
 
-
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Cliente, Usuario
-
 # 🔹 LISTAR
 def lista_clientes(request):
     clientes = Cliente.objects.all()
