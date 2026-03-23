@@ -44,7 +44,7 @@
 
 <td>
 <a href="{% url 'editar_empleado' id=empleado.id_emple %}">Editar</a>
-<a href="/empleados/eliminar/{{empleado.id_emple}}/">Eliminar</a>
+<a href="{% url 'eliminar_empleado' id=empleado.id_emple %}">Eliminar</a>
 </td>
 
 </tr>

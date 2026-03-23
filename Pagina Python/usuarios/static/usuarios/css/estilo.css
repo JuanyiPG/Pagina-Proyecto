@@ -69,7 +69,7 @@ h2{
     margin-bottom: 15px;
 }
 
-/* 🔥 BOTÓN CREAR (FUNCIONA CON TODOS TUS HTML) */
+
 h2 + a{
     display: inline-block;
     background: linear-gradient(135deg, #7e1a3f, #a8325f);
@@ -135,10 +135,11 @@ table{
     width: 100%;
     border-collapse: collapse;
     background: white;
-    border-radius: 10px;
+    border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-    padding: 40px;
+   
+
 }
 
 th{

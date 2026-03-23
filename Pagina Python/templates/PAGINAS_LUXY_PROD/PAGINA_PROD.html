@@ -1,606 +1,269 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luxi Fashion</title>
+    <link rel="stylesheet" href="{% static 'css/prod.css' %}">
+    <title>Luxy Fashion</title>
 </head>
-
-<style>
-
-    body {
-        font-family: Arial;
-        background: #f4eeee;
-        margin: 0;
-        padding: 0;
-        
-    }
-
-    header {
-        background: linear-gradient(to right, #f9f9f9, #540a1f);
-        height: 80px;
-        padding: 0 20px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #f4eeee;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        z-index: 9999;
-    }
-    .carrito-panel {
-        position: fixed;
-        right: -400px;
-        top: 0;
-        width: 350px;
-        height: 100%;
-        background: white;
-        box-shadow: -3px 0 10px rgba(0,0,0,0.2);
-        padding: 20px;
-        transition: 0.3s;
-        z-index: 2000;
-        overflow-y: auto;
-    }
-
-    .carrito-panel.activo {
-        right: 0;
-    }
-
-    .btn-carrito {
-        width: 100%;
-        padding: 8px;
-        background: rgb(87, 16, 29);
-        color: white;
-        border: none;
-        cursor: pointer;
-        margin-top: 10px;
-    }
-    .menu-superior a {
-        margin-left: 20px;
-        margin-right: 20px;
-        text-decoration: none;
-        color: white;
-        font-size: 14px;
-    }
-
-    .menu-superior a:hover {
-        text-decoration: underline;
-        color: rgb(87, 16, 29);
-    }
-
-    .principal {
-        display: flex;
-    }
-
-    .filtros {
-        padding: 20px;
-        background: white;
-        width: 220px;
-        min-height: 100vh;
-        border-right: 1px solid #efeeee;
-        position: sticky;
-        top: 100px;
-        height: fit-content;
-    }
-
-    .filtros h3 {
-        margin-bottom: 15px;
-    }
-
-    .filtros ul {
-        list-style: none;
-        padding: 0;
-    }
-
-    .filtros li {
-        margin-bottom: 12px;
-        cursor: pointer;
-    }
-
-    .filtros li:hover {
-        text-decoration: underline;
-    }
-
-    .container {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
-        padding: 20px;
-        flex: 1;
-        margin-top: 80px;
-    }
-
-    .card {
-        background: white;
-        padding: 10px;
-    }
-
-    .imagen-container {
-        position: relative;
-    }
-
-    .card img {
-        width: 100%;
-        height: 350px;
-        object-fit: cover;
-    }
-
-    .corazon {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        font-size: 18px;
-        cursor: pointer;
-    }
-
-    .nombre {
-        font-size: 14px;
-        margin-top: 10px;
-    }
-
-    .precios {
-        margin: 5px 0;
-    }
-
-    .precio-anterior {
-        text-decoration: line-through;
-        color: gray;
-        margin-right: 10px;
-    }
-
-    .precio-actual {
-        font-weight: bold;
-    }
-
-    .descuento {
-        color: red;
-        font-size: 12px;
-        text-align: right;
-    }
-
-    .colores {
-        font-size: 13px;
-    }
-
-    .card:hover {
-        transform: scale(1.02);
-        transition: 0.3s;
-        }
-    footer {
-        background: rgb(87, 16, 29);
-        color: white;
-        margin-top: 40px;
-    }
-    .footer-contenido {
-        display: flex;
-        justify-content: space-between;
-        padding: 30px 50px;
-    }
-    .footer-empresa {
-        width: 40%;
-    }
-    .footer-empresa p {
-        font-size: 14px;
-        margin-top: 10px;
-    }
-    .footer-contacto h4 {
-        margin-bottom: 10px;
-    }
-    .footer-contacto p {
-        font-size: 14px;
-        margin: 5px 0;
-    }
-    .footer-copy {
-        text-align: center;
-        padding: 15px;
-        border-top: 1px solid gray;
-        font-size: 13px;
-    }
-</style>
-
-</head>
-
 <body>
-
-    <header>
-
-        <div class="logo">
-           <a href="#"><img src="../PAGINAS_LUXY_PROD/IMAGENES/Logo_Luxy_Fashion.png" height="60px" width="120px"></a>
-        </div>
-
-        <div class="menu-superior">
-            <a href="#">Inicio</a>
-            <a href="#">Iniciar sesión</a>
-            <a href="../PAGINAS_LUXY_PROD/PAGINA_CARRITO.html">
-                🛒 <span id="contador-carrito">0</span>
+<aside>
+<nav id="navegador">
+    <ul class="menu">
+        <li>
+            <a href="{% url 'index' %}">
+                <img src="{% static 'IMG/logo.png' %}" alt="Logo" class="logo-menu">
             </a>
+        </li>
+
+        <li class="m-right">
+            <a href="" class="LM">Servicios</a>
+            <a href="#We" class="LM">Nosotros</a>
+
+            <a href="{% url 'index' %}" class="iconP-link">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-bag-heart" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0M14 14V5H2v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1M8 7.993c1.664-1.711 5.825 1.283 0 5.132-5.825-3.85-1.664-6.843 0-5.132"></path>
+                </svg>
             </a>
-        </div>
 
-    </header>
-    <div class="carrito-panel" id="carritoPanel">
-        <h2>Mi Carrito</h2>
-        <div id="lista-carrito"></div>
-        <h3>Total: $<span id="total">0</span></h3>
-    </div>
-
-
-
+            <a href="{% url 'login' %}" class="iconP-link">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+                    <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"></path>
+                </svg>
+            </a>
+            <a href="#">🛒 <span id="contador-carrito">0</span></a>
+        </li>
+    </ul>
+</nav>
+</aside>
     <div class="principal">
-
         <div class="filtros">
-
-            <h3 style=" color:rgb(87, 16, 29) ;">Filtros</h3>
-            
+            <h3 style="color:rgb(87, 16, 29);">Filtros</h3>
             <hr>
             <ul>
-                <li onclick="filtrar('todos')">Todos</li>
-                <hr>
-                <li onclick="filtrar('Hombre')">Hombre</li>
-                <hr>
-                <li onclick="filtrar('Mujer')">Mujer</li>
-                <hr>
-                <li onclick="filtrar('chaqueta')">Chaquetas</li>
-                <hr>
+                <li onclick="filtrar('todos')">Todos</li><hr>
+                <li onclick="filtrar('Hombre')">Hombre</li><hr>
+                <li onclick="filtrar('Mujer')">Mujer</li><hr>
+                <li onclick="filtrar('chaqueta')">Chaquetas</li><hr>
             </ul>
-
         </div>
+
         <div class="container">
-            <div class="card Mujer">
+            <div class="card Mujer chaqueta">
                 <div class="imagen-container">
-                    <img src="../PAGINAS_LUXY_PROD/IMAGENES/chaqueta.jpg">
+                    <img src="{% static 'IMG/chaqueta.jpg' %}">
                     <div class="corazon">♡</div>
                 </div>
-                <p class="nombre">
-                    Chaqueta Negra Con obejero
-                </p>
+                <p class="nombre">Chaqueta Negra Con ovejero</p>
                 <p class="precios">
                     <span class="precio-anterior">$230.000</span>
                     <span class="precio-actual">$167.900</span>
                 </p>
-                <p class="descuento">
-                    AHORRO DEL 30%
-                </p>
-                <p class="colores">
-                    + Más colores
-                </p>
+                <p class="descuento">AHORRO DEL 30%</p>
                 <button class="btn-carrito">Añadir al carrito</button>
             </div>
 
-            <div class="card Mujer">
+            <div class="card Hombre chaqueta">
                 <div class="imagen-container">
-                    <img src="../PAGINAS_LUXY_PROD/IMAGENES/chawuetahomre.jpg">
+                    <img src="{% static 'IMG/chawuetahomre.jpg' %}">
                     <div class="corazon">♡</div>
                 </div>
-                <p class="nombre">
-                    Chaqueta blanca puff
-                </p>
+                <p class="nombre">Chaqueta blanca puff</p>
                 <p class="precios">
                     <span class="precio-anterior">$300.000</span>
                     <span class="precio-actual">$210.000</span>
                 </p>
-                <p class="descuento">
-                    AHORRO DEL 30%
-                </p>
-                <p class="colores">
-                    + Más colores
-                </p>
+                <p class="descuento">AHORRO DEL 30%</p>
                 <button class="btn-carrito">Añadir al carrito</button>
             </div>
-            <div class="card Hombre">
+            <div class="card Hombre chaqueta">
                 <div class="imagen-container">
-                    <img src="../PAGINAS_LUXY_PROD/IMAGENES/chaqutaotra.jpg">
+                    <img src="{% static 'IMG/imagenchaqueta.png' %}">
                     <div class="corazon">♡</div>
                 </div>
-                <p class="nombre">
-                    Chaqueta Negra Moderna
-                </p>
+                <p class="nombre">Chaqueta blanca puff</p>
                 <p class="precios">
-                    <span class="precio-anterior">$400.000</span>
-                    <span class="precio-actual">$280.000</span>
+                    <span class="precio-anterior">$300.000</span>
+                    <span class="precio-actual">$210.000</span>
                 </p>
-                <p class="descuento">
-                    AHORRO DEL 30%
-                </p>
-                <p class="colores">
-                    + Más colores
-                </p>
+                <p class="descuento">AHORRO DEL 30%</p>
                 <button class="btn-carrito">Añadir al carrito</button>
             </div>
-                        <div class="card Mujer">
+                        <div class="card Hombre chaqueta">
                 <div class="imagen-container">
-                    <img src="../PAGINAS_LUXY_PROD/IMAGENES/imagenchaqueta.png">
+                    <img src="{% static 'IMG/chaqutaotra.jpg' %}">
                     <div class="corazon">♡</div>
                 </div>
-                <p class="nombre">
-                    Chaqueta Negra Moderna
-                </p>
+                <p class="nombre">Chaqueta blanca puff</p>
                 <p class="precios">
-                    <span class="precio-anterior">$400.000</span>
-                    <span class="precio-actual">$280.000</span>
+                    <span class="precio-anterior">$300.000</span>
+                    <span class="precio-actual">$210.000</span>
                 </p>
-                <p class="descuento">
-                    AHORRO DEL 30%
-                </p>
-                <p class="colores">
-                    + Más colores
-                </p>
+                <p class="descuento">AHORRO DEL 30%</p>
                 <button class="btn-carrito">Añadir al carrito</button>
             </div>
-             <div class="card Mujer">
+                        <div class="card Mujer chaqueta">
                 <div class="imagen-container">
-                    <img src="../PAGINAS_LUXY_PROD/IMAGENES/chaqueta.jpg">
+                    <img src="{% static 'IMG/chaqueta.jpg' %}">
                     <div class="corazon">♡</div>
                 </div>
-                <p class="nombre">
-                    Chaqueta Negra Con obejero
-                </p>
+                <p class="nombre">Chaqueta Negra Con ovejero</p>
                 <p class="precios">
                     <span class="precio-anterior">$230.000</span>
                     <span class="precio-actual">$167.900</span>
                 </p>
-                <p class="descuento">
-                    AHORRO DEL 30%
-                </p>
-                <p class="colores">
-                    + Más colores
-                </p>
+                <p class="descuento">AHORRO DEL 30%</p>
                 <button class="btn-carrito">Añadir al carrito</button>
             </div>
 
-            <div class="card Mujer">
+            <div class="card Hombre chaqueta">
                 <div class="imagen-container">
-                    <img src="../PAGINAS_LUXY_PROD/IMAGENES/chawuetahomre.jpg">
+                    <img src="{% static 'IMG/chawuetahomre.jpg' %}">
                     <div class="corazon">♡</div>
                 </div>
-                <p class="nombre">
-                    Chaqueta blanca puff
-                </p>
+                <p class="nombre">Chaqueta blanca puff</p>
                 <p class="precios">
                     <span class="precio-anterior">$300.000</span>
                     <span class="precio-actual">$210.000</span>
                 </p>
-                <p class="descuento">
-                    AHORRO DEL 30%
-                </p>
-                <p class="colores">
-                    + Más colores
-                </p>
+                <p class="descuento">AHORRO DEL 30%</p>
                 <button class="btn-carrito">Añadir al carrito</button>
             </div>
-            <div class="card Hombre">
+            <div class="card Hombre chaqueta">
                 <div class="imagen-container">
-                    <img src="../PAGINAS_LUXY_PROD/IMAGENES/chaqutaotra.jpg">
+                    <img src="{% static 'IMG/imagenchaqueta.png' %}">
                     <div class="corazon">♡</div>
                 </div>
-                <p class="nombre">
-                    Chaqueta Negra Moderna
-                </p>
+                <p class="nombre">Chaqueta blanca puff</p>
                 <p class="precios">
-                    <span class="precio-anterior">$400.000</span>
-                    <span class="precio-actual">$280.000</span>
+                    <span class="precio-anterior">$300.000</span>
+                    <span class="precio-actual">$210.000</span>
                 </p>
-                <p class="descuento">
-                    AHORRO DEL 30%
-                </p>
-                <p class="colores">
-                    + Más colores
-                </p>
+                <p class="descuento">AHORRO DEL 30%</p>
                 <button class="btn-carrito">Añadir al carrito</button>
             </div>
-                        <div class="card Mujer">
+                        <div class="card Hombre chaqueta">
                 <div class="imagen-container">
-                    <img src="../PAGINAS_LUXY_PROD/IMAGENES/imagenchaqueta.png">
+                    <img src="{% static 'IMG/chaqutaotra.jpg' %}">
                     <div class="corazon">♡</div>
                 </div>
-                <p class="nombre">
-                    Chaqueta Negra Moderna
-                </p>
+                <p class="nombre">Chaqueta blanca puff</p>
                 <p class="precios">
-                    <span class="precio-anterior">$400.000</span>
-                    <span class="precio-actual">$280.000</span>
+                    <span class="precio-anterior">$300.000</span>
+                    <span class="precio-actual">$210.000</span>
                 </p>
-                <p class="descuento">
-                    AHORRO DEL 30%
-                </p>
-                <p class="colores">
-                    + Más colores
-                </p>
+                <p class="descuento">AHORRO DEL 30%</p>
                 <button class="btn-carrito">Añadir al carrito</button>
             </div>
-             <div class="card Mujer">
+
+            <div class="card Mujer chaqueta">
                 <div class="imagen-container">
-                    <img src="../PAGINAS_LUXY_PROD/IMAGENES/chaqueta.jpg">
+                    <img src="{% static 'IMG/chaqueta.jpg' %}">
                     <div class="corazon">♡</div>
                 </div>
-                <p class="nombre">
-                    Chaqueta Negra Con obejero
-                </p>
+                <p class="nombre">Chaqueta Negra Con ovejero</p>
                 <p class="precios">
                     <span class="precio-anterior">$230.000</span>
                     <span class="precio-actual">$167.900</span>
                 </p>
-                <p class="descuento">
-                    AHORRO DEL 30%
-                </p>
-                <p class="colores">
-                    + Más colores
-                </p>
+                <p class="descuento">AHORRO DEL 30%</p>
                 <button class="btn-carrito">Añadir al carrito</button>
             </div>
 
-            <div class="card Mujer">
+            <div class="card Hombre chaqueta">
                 <div class="imagen-container">
-                    <img src="../PAGINAS_LUXY_PROD/IMAGENES/chawuetahomre.jpg">
+                    <img src="{% static 'IMG/chawuetahomre.jpg' %}">
                     <div class="corazon">♡</div>
                 </div>
-                <p class="nombre">
-                    Chaqueta blanca puff
-                </p>
+                <p class="nombre">Chaqueta blanca puff</p>
                 <p class="precios">
                     <span class="precio-anterior">$300.000</span>
                     <span class="precio-actual">$210.000</span>
                 </p>
-                <p class="descuento">
-                    AHORRO DEL 30%
-                </p>
-                <p class="colores">
-                    + Más colores
-                </p>
+                <p class="descuento">AHORRO DEL 30%</p>
                 <button class="btn-carrito">Añadir al carrito</button>
             </div>
-            <div class="card Hombre">
+            <div class="card Hombre chaqueta">
                 <div class="imagen-container">
-                    <img src="../PAGINAS_LUXY_PROD/IMAGENES/chaqutaotra.jpg">
+                    <img src="{% static 'IMG/imagenchaqueta.png' %}">
                     <div class="corazon">♡</div>
                 </div>
-                <p class="nombre">
-                    Chaqueta Negra Moderna
-                </p>
+                <p class="nombre">Chaqueta blanca puff</p>
                 <p class="precios">
-                    <span class="precio-anterior">$400.000</span>
-                    <span class="precio-actual">$280.000</span>
+                    <span class="precio-anterior">$300.000</span>
+                    <span class="precio-actual">$210.000</span>
                 </p>
-                <p class="descuento">
-                    AHORRO DEL 30%
-                </p>
-                <p class="colores">
-                    + Más colores
-                </p>
+                <p class="descuento">AHORRO DEL 30%</p>
                 <button class="btn-carrito">Añadir al carrito</button>
             </div>
-                        <div class="card Mujer">
+                        <div class="card Hombre chaqueta">
                 <div class="imagen-container">
-                    <img src="../PAGINAS_LUXY_PROD/IMAGENES/imagenchaqueta.png">
+                    <img src="{% static 'IMG/chaqutaotra.jpg' %}">
                     <div class="corazon">♡</div>
                 </div>
-                <p class="nombre">
-                    Chaqueta Negra Moderna
-                </p>
+                <p class="nombre">Chaqueta blanca puff</p>
                 <p class="precios">
-                    <span class="precio-anterior">$400.000</span>
-                    <span class="precio-actual">$280.000</span>
+                    <span class="precio-anterior">$300.000</span>
+                    <span class="precio-actual">$210.000</span>
                 </p>
-                <p class="descuento">
-                    AHORRO DEL 30%
-                </p>
-                <p class="colores">
-                    + Más colores
-                </p>
+                <p class="descuento">AHORRO DEL 30%</p>
                 <button class="btn-carrito">Añadir al carrito</button>
             </div>
-            
+
+            </div>
+
+    </div>
+
+    <footer>
+        <div class="footer-contenido">
+            <div class="footer-empresa">
+                <h1>LUXY FASHION</h1>
+                <p>Tienda enfocada en ropa moderna y elegante.</p>
+            </div>
+            <div class="footer-contacto">
+                <h4>Contacto</h4>
+                <p>luxyfashion@gmail.com</p>
+                <p>Instagram: @LuxyFashion</p>
+            </div>
         </div>
-
-    </div>
- <footer>
-
-    <div class="footer-contenido">
-        <div class="footer-empresa">
-            <h1>LUXY FASHION</h1>
-            <p>
-                Luxy Fashion es una tienda enfocada en ofrecer ropa moderna,
-                elegante y de alta calidad, inspirada en las mejores marcas del mundo.
-            </p>
+        <div class="footer-copy">
+            © 2026 Luxy Fashion | Todos los derechos reservados
         </div>
-        <div class="footer-contacto">
-            <h4>Contacto</h4>
-            <p>Correo: luxyfashion@gmail.com</p>
-            <p>WhatsApp: 300 123 4567</p>
-            <p>Instagram: @LuxyFashion</p>
-            <p>Facebook: Luxy Fashion</p>
-        </div>
+    </footer>
 
-    </div>
+    <script>
+        // Función de filtrado
+        function filtrar(categoria) {
+            let productos = document.querySelectorAll(".card");
+            productos.forEach(p => {
+                if (categoria === "todos" || p.classList.contains(categoria)) {
+                    p.style.display = "block";
+                } else {
+                    p.style.display = "none";
+                }
+            });
+        }
 
+        // Lógica simple del carrito
+        let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+        const contadorHTML = document.getElementById("contador-carrito");
+        
+        function actualizarContador() {
+            contadorHTML.textContent = carrito.length;
+        }
 
-
-    <div class="footer-copy">
-        © 2026 Luxy Fashion | Todos los derechos reservados
-    </div>
-
-</footer>
-    </div>
-
-<script>
-
-    function filtrar(categoria) {
-
-        let productos = document.querySelectorAll(".card");
-
-        productos.forEach(function(producto) {
-
-            if (categoria == "todos") {
-                producto.style.display = "block";
-            }
-            else if (producto.classList.contains(categoria)) {
-
-                producto.style.display = "block";
-            }
-            else {
-                producto.style.display = "none";
-
-            }
-
+        document.querySelectorAll(".btn-carrito").forEach(boton => {
+            boton.addEventListener("click", () => {
+                let card = boton.closest(".card");
+                let nombre = card.querySelector(".nombre").textContent;
+                carrito.push({nombre: nombre});
+                localStorage.setItem("carrito", JSON.stringify(carrito));
+                actualizarContador();
+            });
         });
 
-    }
-            let lastScroll = 0;
-        let header = document.querySelector("header");
-
-        window.addEventListener("scroll", function () {
-            let currentScroll = window.pageYOffset;
-
-            if (currentScroll > lastScroll) {
-                header.style.top = "0"; 
-            } else {
-                header.style.top = "0";
-            }
-
-            lastScroll = currentScroll;
-        });
-
-</script>
-<script>
-let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-
-let contadorHTML = document.getElementById("contador-carrito");
-
-function guardarCarrito() {
-    localStorage.setItem("carrito", JSON.stringify(carrito));
-}
-
-function actualizarContador() {
-    contadorHTML.textContent = carrito.length;
-}
-
-actualizarContador();
-
-document.querySelectorAll(".btn-carrito").forEach(function(boton) {
-
-    boton.addEventListener("click", function() {
-
-        let card = boton.closest(".card");
-        let nombre = card.querySelector(".nombre").textContent;
-        let precioTexto = card.querySelector(".precio-actual").textContent
-                            .replace("$","")
-                            .replace(".","");
-
-        let imagen = card.querySelector("img").src;
-
-        let precio = parseInt(precioTexto);
-
-        carrito.push({nombre, precio, imagen});
-
-        guardarCarrito();
         actualizarContador();
-    });
-
-});
-</script>
-
+    </script>
 </body>
 </html>

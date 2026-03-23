@@ -1,0 +1,41 @@
+{% extends 'usuarios/base.html' %}
+
+{% block content %}
+
+<h2>Editar Cliente</h2>
+
+<form method="POST">
+{% csrf_token %}
+
+<label>Nombre</label>
+<input type="text" name="nom_clien" value="{{ cliente.nom_clien }}">
+
+<label>Dirección</label>
+<input type="text" name="dir_clien" value="{{ cliente.dir_clien }}">
+
+<label>Teléfono</label>
+<input type="text" name="tel_clien" value="{{ cliente.tel_clien }}">
+
+<label>Correo</label>
+<input type="email" name="correo_clien" value="{{ cliente.correo_clien }}">
+
+<label>Usuario</label>
+<select name="id_usuario_fk">
+
+{% for usuario in usuarios %}
+<option value="{{ usuario.id_usuario }}"
+{% if usuario.id_usuario == cliente.id_usuario_fk_id %}
+selected
+{% endif %}
+>
+{{ usuario.username }}
+</option>
+{% endfor %}
+
+</select>
+
+<button type="submit">Actualizar</button>
+
+</form>
+
+{% endblock %}

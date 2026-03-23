@@ -7,6 +7,7 @@ from django.db import transaction
 from django.contrib import messages
 
 
+
 def lista_roles(request):
     roles = Rol.objects.all()
     return render(request, 'usuarios/roles/lista.html', {'roles': roles})
@@ -112,8 +113,6 @@ def crear_empleado(request):
 
     return render(request, 'usuarios/empleados/crear.html', {'usuarios': usuarios})
 
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Empleado, Usuario
 
 def editar_empleado(request, id):
     empleado = get_object_or_404(Empleado, id_emple=id)
@@ -149,16 +148,14 @@ def eliminar_empleado(request, id):
     return redirect('lista_empleados')
 
 
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Cliente, Usuario
 
-# 🔹 LISTAR
+# LISTAR
 def lista_clientes(request):
     clientes = Cliente.objects.all()
     return render(request, 'usuarios/clientes/lista.html', {'clientes': clientes})
 
 
-# 🔹 CREAR
+# CREAR
 def crear_cliente(request):
     usuarios = Usuario.objects.all()
 
@@ -201,7 +198,7 @@ def editar_cliente(request, id):
     })
 
 
-# 🔹 ELIMINAR
+#  ELIMINAR
 def eliminar_cliente(request, id):
     cliente = get_object_or_404(Cliente, id_clien=id)
     cliente.delete()
