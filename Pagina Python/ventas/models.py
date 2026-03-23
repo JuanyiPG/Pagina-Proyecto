@@ -1,6 +1,6 @@
 from django.db import models
 from usuarios.models import Cliente 
-from inventario.models import Estampado
+from inventario.models import Estampado, Movimiento_matp
 from django.db.models import Sum
     
 
@@ -23,6 +23,13 @@ class Producto(models.Model) :
     desc_produc = models.CharField(max_length=200)
     categoria_produc = models.CharField(max_length=50)
     estado_produc = models.CharField(max_length=50)
+    dias_produccion = models.PositiveIntegerField(default=1)
+    tipo_matp = models.CharField(max_length=200)
+    cant_gast_matp = models.PositiveIntegerField(default=1)
+
+class Det_mov_matp(models.Model) : 
+    id_movi_mtp_fk_id_produc = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    id_abono_fk_pedido = models.ForeignKey(Movimiento_matp, on_delete=models.CASCADE, null=True, blank=True)
 
 class Det_valor(models.Model):
     id_det_valor = models.AutoField(primary_key=True)
@@ -62,6 +69,7 @@ class Abono(models.Model):
             self.id_detvalor_fk_abono.estado_pago = 'PENDIENTE'
 
         self.id_detvalor_fk_abono.save()
+        id_abono_fk_pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, null=True, blank=True)
 
 class Pedido(models.Model):
     id_pedido = models.AutoField(primary_key=True)
@@ -74,8 +82,16 @@ class Pedido(models.Model):
     desc_ped = models.CharField(max_length=200)
     fecha_ped = models.DateField(auto_now_add=True)
     subtotal_ped = models.DecimalField(max_digits=12, decimal_places= 2)
+    def save(self, *args, **kwargs):
+        if self.cant_ped and self.valor_ped and self.cant_ped > 1: 
+            self.subtotal_ped = self.cant_ped * self.valor_ped
+        else: 
+            self.subtotal_ped = self.valor_ped
+        
+        super().save(*args, **kwargs)
+        
     valor_ped = models.DecimalField(max_digits=12, decimal_places=2)
     estado_ped = models.CharField(max_length=50)
     metodo_pago = models.CharField(max_length= 50)
-    id_abono_fk_pedido = models.ForeignKey(Abono, on_delete=models.CASCADE)
-    id_clien_fk = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    fecha_entrega = models.DateField(blank=True, null=True)
+    id_clien_fk = models.ForeignKey(Cliente, on_delete=models.CASCADE, null=True, blank=True)

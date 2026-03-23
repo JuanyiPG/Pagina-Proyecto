@@ -148,7 +148,6 @@ def eliminar_empleado(request, id):
     return redirect('lista_empleados')
 
 
-
 # LISTAR
 def lista_clientes(request):
     clientes = Cliente.objects.all()

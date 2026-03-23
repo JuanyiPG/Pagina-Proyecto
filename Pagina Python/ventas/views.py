@@ -50,24 +50,35 @@ def crear_producto(request):
 
 
 def editar_producto(request, id): 
-    productos = get_object_or_404(Producto, id_produc=id)
+    producto = get_object_or_404(Producto, id_produc=id)
     if request.method == 'POST': 
-        productos.imagen_product = request.POST['imagen_product']
-        productos.nom_produc = request.POST['nom_produc']
-        productos.desc_produc = request.POST['desc_produc']
-        productos.categoria_produc = request.POST['categoria_produc']
-        productos.estado_produc = request.POST['estado_produc']
-        productos.save()
-        return redirect('lista_producto')
-    return render(request, 'producto/editar_producto.html', {'productos': productos})
+        nueva_imagen = request.FILES.get('imagen_product')
+        # Solo asignamos la imagen si 'nueva_imagen' no es None
+        if nueva_imagen:
+            producto.imagen_product = nueva_imagen
+            
+            # Si usas el sistema de hash, recúclalo aquí también
+            hasher = hashlib.sha256()
+            for chunk in nueva_imagen.chunks():
+                hasher.update(chunk)
+            producto.imagen_hash = hasher.hexdigest()
+            nueva_imagen.seek(0)
+
+        producto.nom_produc = request.POST.get('nom_produc')
+        producto.desc_produc = request.POST['desc_produc']
+        producto.categoria_produc = request.POST.get('categoria_produc')
+        producto.estado_produc = request.POST['estado_produc']
+        producto.save()
+        return redirect('ventas:lista_product')
+    return render(request, 'producto/editar_producto.html', {'producto': producto})
 
 
 def eliminar_producto(request, product_id): 
-    productos = get_object_or_404(Producto, id_produc=product_id)
+    producto = get_object_or_404(Producto, id_produc=product_id)
     if request.method == 'POST':
-        productos.delete()
-        return redirect('lista_productos')
-    return render(request, 'producto/eliminar_producto.html', {'productos':productos})
+        producto.delete()
+        return redirect('ventas:lista_product')
+    return render(request, 'producto/eliminar_producto.html', {'producto':producto})
 
 
 #----------------- CRUD ABONO ------------------------------
@@ -107,23 +118,44 @@ def lista_pedido(request):
 
 def crear_pedido(request): 
     if request.method == 'POST': 
-        nom_ped = request.POST['nom_ped']
-        talla_ped = request.POST['talla_ped']
-        color_ped = request.POST['color_ped']
-        categoria_ped = request.POST['categoria_ped']
-        material_ped = request.POST['material_ped']
-        cant_ped = request.POST['cant_ped']
-        desc_ped = request.POST['desc_ped']
-        subtotal_ped = request.POST['subtotal_ped']
-        valor_ped = request.POST['valor_ped']
-        estado_ped = request.POST['estado_ped']
-        metodo_pago = request.POST['metodo_pago']
-
+        # Es más seguro usar .get() para evitar errores si falta un campo
+        Pedido.objects.create(
+            nom_ped=request.POST.get('nom_ped'),
+            talla_ped=request.POST.get('talla_ped'),
+            color_ped=request.POST.get('color_ped'),
+            categoria_ped=request.POST.get('categoria_ped'),
+            material_ped=request.POST.get('material_ped'),
+            cant_ped=request.POST.get('cant_ped'),
+            desc_ped=request.POST.get('desc_ped'),
+            valor_ped=request.POST.get('valor_ped'),
+            estado_ped=request.POST.get('estado_ped'),
+            metodo_pago=request.POST.get('metodo_pago')
+        )
+        return redirect('ventas:lista_pedido') # Asegúrate que este nombre coincida con tu urls.py
     return render(request, 'pedido/form_pedido.html', {})
 
-def eliminar_pedido(request, id): 
-    pedidos = get_object_or_404(Pedido, id_pedido = id)
+def editar_pedido(request, id): 
+    # CORRECCIÓN: El primer parámetro es el Modelo, no request
+    pedido = get_object_or_404(Pedido, id_pedido=id)
+
     if request.method == 'POST': 
-        pedidos.delete()
+        pedido.nom_ped = request.POST.get('nom_ped')
+        pedido.talla_ped = request.POST.get('talla_ped')
+        pedido.color_ped = request.POST.get('color_ped')
+        pedido.categoria_ped = request.POST.get('categoria_ped')
+        pedido.cant_ped = request.POST.get('cant_ped') # Corregido: antes tenías desc_ped
+        pedido.valor_ped = request.POST.get('valor_ped')
+        pedido.estado_ped = request.POST.get('estado_ped')
+        pedido.metodo_pago = request.POST.get('metodo_pago')
+        pedido.save() # Esto disparará el cálculo del subtotal automáticamente
+        return redirect('ventas:lista_pedido') 
+        
+    return render(request, 'pedido/editar_pedido.html', {'pedido': pedido})
+
+def eliminar_pedido(request): 
+    pedido = get_object_or_404(Pedido, id=id)
+    if request.method == 'POST': 
+        pedido.delete()
         return redirect('lista_pedido')
-    return render(request, 'pedido/eliminar_pedido.html', {'pedidos': pedidos})
+    return render(request, 'pedido/eliminar_pedido.html', {'pedido' : pedido})
+    

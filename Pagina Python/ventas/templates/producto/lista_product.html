@@ -6,6 +6,95 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista Productos</title>
 </head>
+<style>
+    /* Contenedor general */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    padding: 20px;
+}
+
+/* Estilos de la Tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden; /* Para que los bordes redondeados funcionen */
+    margin: 20px 0;
+}
+
+/* Encabezados */
+thead {
+    background-color: #2c3e50;
+    color: #ffffff;
+    text-align: left;
+}
+
+th, td {
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Filas cebra y efecto hover */
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+    background-color: #f1f4f9;
+    transition: background-color 0.3s ease;
+}
+
+/* Control de la Imagen */
+img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    display: block;
+}
+
+/* Estilos para las Celdas de Acción */
+td a {
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: bold;
+    margin-right: 5px;
+    display: inline-block;
+}
+
+/* Botón Editar */
+a[href*="editar"] {
+    background-color: #3498db;
+    color: white;
+}
+
+a[href*="editar"]:hover {
+    background-color: #2980b9;
+}
+
+/* Botón Eliminar */
+a[href*="eliminar"] {
+    background-color: #e74c3c;
+    color: white;
+}
+
+a[href*="eliminar"]:hover {
+    background-color: #c0392b;
+}
+
+/* Badge para el Estado */
+td:nth-child(6) {
+    font-weight: 600;
+    text-transform: capitalize;
+}
+</style>
 <body>
     <table>
         <thead>
@@ -24,18 +113,18 @@
             <tr>
                 <td>{{producto.id_produc}}</td>
                 <td>{% if producto.imagen_product %}
-                    <img src="{{prducto.imagen_product.url}}" alt="{{ producto.nom_produc }}">
+                    <img src="{{producto.imagen_produc.url}}" alt="{{ producto.nom_produc }}">
                     {% else %}
                     <span> Sin imagen</span>
-                    {% endif %}
+                    {% endif%}
                 </td>
                 <td>{{producto.nom_produc}}</td>
                 <td>{{producto.desc_produc}}</td>
                 <td>{{producto.categoria_produc}}</td>
                 <td>{{producto.estado_produc}}</td>
                 <td>
-                    <a href="{% url 'ventas:editar_producto' prducto.id_produc %}"></a>
-                    <a href="{% url 'ventas:eliminar_producto' prducto.id_produc %}"></a>
+                    <a href="{% url 'ventas:editar_producto' producto.id_produc %}">Editar</a>
+                    <a href="{% url 'ventas:eliminar_producto' producto.id_produc %}">Eliminar</a>
                 </td>
             </tr>
             {% endfor %}
