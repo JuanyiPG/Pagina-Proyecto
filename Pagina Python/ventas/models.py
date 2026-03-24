@@ -13,6 +13,7 @@ class Variacion(models.Model) :
     costo_var = models.DecimalField(max_digits=12, decimal_places=2)
     id_estam_fk_var = models.ForeignKey(Estampado, on_delete=models.CASCADE)
 
+
 class Producto(models.Model) :
     id_produc= models.AutoField(primary_key=True)
     #carpeta en donde se guardara las imagines
@@ -24,21 +25,24 @@ class Producto(models.Model) :
     categoria_produc = models.CharField(max_length=50)
     estado_produc = models.CharField(max_length=50)
     dias_produccion = models.PositiveIntegerField(default=1)
-    tipo_matp = models.CharField(max_length=200)
-    cant_gast_matp = models.PositiveIntegerField(default=1)
+    precio = models.DecimalField(max_digits=12, decimal_places= 2)
+
 
 class Det_mov_matp(models.Model) : 
-    id_movi_mtp_fk_id_produc = models.ForeignKey(Producto, on_delete=models.CASCADE)
-    id_abono_fk_pedido = models.ForeignKey(Movimiento_matp, on_delete=models.CASCADE, null=True, blank=True)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    materia_prima = models.ForeignKey(Movimiento_matp, on_delete=models.CASCADE)
+    cantidad_usada = models.DecimalField(max_digits=10, decimal_places=2)
 
-class Det_valor(models.Model):
-    id_det_valor = models.AutoField(primary_key=True)
-    valor_total = models.DecimalField(max_digits=10, decimal_places=0)
-    cant = models.DecimalField(max_digits=12, decimal_places=2)
-    tipo_pedido = models.CharField(max_length=200)
-    estado_pago = models.CharField(max_length=50)
-    id_var_fk_detval = models.ForeignKey(Variacion, on_delete=models.CASCADE)
-    id_prod_fk_detval = models.ForeignKey(Producto, on_delete=models.CASCADE)
+class Pedido(models.Model):
+    id_pedido = models.AutoField(primary_key=True)
+    fecha_ped = models.DateField(auto_now_add=True)
+    subtotal_ped = models.DecimalField(max_digits=12, decimal_places= 2)
+    valor_ped = models.DecimalField(max_digits=12, decimal_places=2)
+    estado_ped = models.CharField(max_length=50)
+    metodo_pago = models.CharField(max_length= 50)
+    fecha_entrega = models.DateField(blank=True, null=True)
+    id_clien_fk = models.ForeignKey(Cliente, on_delete=models.CASCADE, null=True, blank=True)
+
 
 class Abono(models.Model):
     id_abono = models.AutoField(primary_key=True)
@@ -53,45 +57,31 @@ class Abono(models.Model):
     colocar opcional en la BD se coloca null= True.
     '''
     descripcion = models.TextField( blank=True, default= "")
-    id_detvalor_fk_abono = models.ForeignKey(Det_valor, on_delete=models.CASCADE, null=True, blank=True)
+    id_pedido_fk_abono = models.ForeignKey(Pedido, on_delete=models.CASCADE, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
+        # Corregido: 'monto_abono' en lugar de 'monto'
         total_abono = Abono.objects.filter(
-            id_detvalor_fk_abono = self.id_detvalor_fk_abono
-            #aggregate es para traer todo el conjunto de datos de una forma mas facil y que no utilice tanto almacenamiento 
-        ).aggregate(Sum('monto'))['monto__sum'] or 0
+            id_pedido_fk_abono=self.id_pedido_fk_abono
+        ).aggregate(total=Sum('monto_abono'))['total'] or 0
 
-        if total_abono >= self.id_detvalor_fk_abono.valor_total:
-            self.id_detvalor_fk_abono.estado_pago = 'PAGADO'
+        # Comparamos con el valor del pedido
+        if total_abono >= self.id_pedido_fk_abono.valor_ped:
+            self.id_pedido_fk_abono.estado_pago = 'PAGADO'
         else: 
-            self.id_detvalor_fk_abono.estado_pago = 'PENDIENTE'
+            self.id_pedido_fk_abono.estado_pago = 'PENDIENTE'
 
-        self.id_detvalor_fk_abono.save()
-        id_abono_fk_pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, null=True, blank=True)
+        self.id_pedido_fk_abono.save()
 
-class Pedido(models.Model):
-    id_pedido = models.AutoField(primary_key=True)
-    nom_ped = models.CharField(max_length=100)
-    talla_ped = models.CharField(max_length=50)
-    color_ped = models.CharField(max_length=50)
-    categoria_ped = models.CharField(max_length=50)
-    material_ped = models.CharField(max_length=100)
-    cant_ped = models.DecimalField(max_digits=10, decimal_places=2)
-    desc_ped = models.CharField(max_length=200)
-    fecha_ped = models.DateField(auto_now_add=True)
-    subtotal_ped = models.DecimalField(max_digits=12, decimal_places= 2)
-    def save(self, *args, **kwargs):
-        if self.cant_ped and self.valor_ped and self.cant_ped > 1: 
-            self.subtotal_ped = self.cant_ped * self.valor_ped
-        else: 
-            self.subtotal_ped = self.valor_ped
-        
-        super().save(*args, **kwargs)
-        
-    valor_ped = models.DecimalField(max_digits=12, decimal_places=2)
-    estado_ped = models.CharField(max_length=50)
-    metodo_pago = models.CharField(max_length= 50)
-    fecha_entrega = models.DateField(blank=True, null=True)
-    id_clien_fk = models.ForeignKey(Cliente, on_delete=models.CASCADE, null=True, blank=True)
+
+class Det_valor(models.Model):
+    id_det_valor = models.AutoField(primary_key=True)
+    valor_total = models.DecimalField(max_digits=10, decimal_places=0)
+    cant = models.DecimalField(max_digits=12, decimal_places=2)
+    talla = models.CharField(max_length=100)
+    tipo_pedido = models.CharField(max_length=200)
+    id_ped_fk_detval = models.ForeignKey(Pedido, on_delete=models.CASCADE)
+    id_var_fk_detval = models.ForeignKey(Variacion, on_delete=models.CASCADE, null=True)
+    id_prod_fk_detval = models.ForeignKey(Producto, on_delete=models.CASCADE)

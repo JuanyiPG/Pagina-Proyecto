@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Carrito - Luxy Fashion</title>
+    <style>
+        body { font-family: Arial; background: #f4eeee; margin: 0; }
+        header { 
+            background: white; height: 80px; padding: 0 20px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            position: fixed; top: 0; width: 100%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            z-index: 1000;
+        }
+        main { margin-top: 100px; padding: 40px; }
+        .producto { 
+            display: flex; align-items: center; background: white; 
+            margin-bottom: 20px; padding: 15px; border-radius: 8px;
+        }
+        .producto img { width: 120px; height: auto; margin-right: 20px; object-fit: cover; }
+        .info-prod p { margin: 5px 0; }
+        .nombre-p { font-weight: bold; font-size: 18px; }
+        .total { font-size: 22px; font-weight: bold; margin-top: 20px; color: #333; }
+        
+        .btn-comprar { 
+            padding: 12px 30px; background: rgb(87,16,29); 
+            color: white; border: none; cursor: pointer; 
+            font-size: 16px; border-radius: 5px; transition: 0.3s;
+        }
+        .btn-comprar:hover { background: rgb(110, 20, 37); }
+        .carrito-vacio { text-align: center; color: #666; margin-top: 50px; }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div>
+        <a href="{% url 'index' %}">
+            <img src="{% static 'img/Logo_Luxy_Fashion.png' %}" height="60" alt="Logo">
+        </a>
+    </div>
+
+    <div>
+        🛒 <span id="contador-carrito">{{ items|length }}</span>
+    </div>
+</header>
+
+<main>
+    <h2>Mi Carrito</h2>
+
+    <div id="lista">
+        {% if items %}
+            {% for item in items %}
+            <div class="producto">
+                {% if item.id_prod_fk_detval.imagen_product %}
+                    <img src="{{ item.id_prod_fk_detval.imagen_product.url }}" alt="{{ item.id_prod_fk_detval.nom_produc }}">
+                {% else %}
+                    <img src="{% static 'img/default.jpg' %}" alt="No image">
+                {% endif %}
+                
+                <div class="info-prod">
+                    <p class="nombre-p">{{ item.id_prod_fk_detval.nom_produc }}</p>
+                    <p>Talla: <strong>{{ item.talla }}</strong></p>
+                    <p>Cantidad: {{ item.cant }}</p>
+                    <p>Subtotal: <strong>${{ item.valor_total }}</strong></p>
+                </div>
+            </div>
+            {% endfor %}
+            
+            <div class="total">Total a pagar: ${{ total }}</div>
+            <br>
+            <form action="{% url 'ventas:finalizar_compra' %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn-comprar">Finalizar Compra</button>
+            </form>
+            
+        {% else %}
+            <div class="carrito-vacio">
+                <h3>Tu carrito está vacío</h3>
+                <p>¡Explora nuestros productos y elige tus favoritos!</p>
+                <a href="{% url 'index' %}"><button class="btn-comprar">Ver Productos</button></a>
+            </div>
+        {% endif %}
+    </div>
+</main>
+
+{% if messages %}
+    {% for message in messages %}
+        <script>alert("{{ message }}");</script>
+    {% endfor %}
+{% endif %}
+
+</body>
+</html>

@@ -150,7 +150,7 @@
 
     <!-- MOSAICO -->
     <section class="mosaico">
-        <img src="{% static 'IMG/index1.jpg' %}">
+        <img src="{% static 'IMG/index.jpeg' %}">
         <img src="{% static 'IMG/index2.jpg' %}">
         <img src="{% static 'IMG/index5.jpg' %}">
         <img src="{% static 'IMG/index3.jpg' %}">
@@ -162,7 +162,7 @@
         <img src="{% static 'IMG/index10.jpg' %}">
     </section>
 
-    <button class="ver-mas-final">Ver más</button>
+    <a href="{% url 'ventas:lista_product' %}"><button class="ver-mas-final">Ver más</button></a>
 
     <hr>
 
