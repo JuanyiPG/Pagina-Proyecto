@@ -4,21 +4,13 @@ from django.contrib import messages
 from django.db import transaction
 import hashlib
 from django.db.models import Sum, Max
-from django.contrib.auth.decorators import login_required
 from datetime import timedelta
+from usuarios.views import solo_personal, login_requerido_custom
 
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Abono,Pedido, Variacion, Det_valor, Producto, Estampado, Movimiento_matp,Det_mov_matp,Cliente
 
 #---------------------- COMPROBAR LOGIN ------------------------------
-def login_requerido_custom(view_func):
-    def _wrapped_view(request, *args, **kwargs):
-        # Verificamos si el ID de TU usuario está en la sesión
-        if 'usuario_id' not in request.session:
-            messages.info(request, "Debes iniciar sesión para acceder a esta sección.")
-            return redirect('login') # Nombre de tu URL de login
-        return view_func(request, *args, **kwargs)
-    return _wrapped_view
 
 def obtener_cliente_actual(request):
     id_user = request.session.get('usuario_id')
@@ -126,8 +118,17 @@ def eliminar_variacion (request, detalle_id):
 
 def lista_producto(request): 
     productos = Producto.objects.all()
-    return render(request, 'producto/lista_product.html','index.html' {'productos': productos})
+    rol_usuario = request.session.get('rol')
 
+    # 2. Comprobamos si es del personal (Admin o Empleado)
+    if rol_usuario in ['Administrador', 'Empleado']:
+        # Si es admin/empleado, ve la tabla de gestión (CRUD)
+        return render(request, 'producto/lista_product.html', {'productos': productos})
+    else:
+        # Si es cliente o visitante anónimo, ve la tienda bonita
+        return render(request, 'PAGINAS_LUXY_PROD/PAGINA_PROD.html', {'productos': productos})
+
+#@solo_personal
 def crear_producto(request): 
     nuevo_hash = None #inicializamos la variable
 
@@ -208,7 +209,50 @@ def eliminar_producto(request, product_id):
         return redirect('ventas:lista_product')
     return render(request, 'producto/eliminar_producto.html', {'producto':producto})
 
+#----------------- PRODUCTO SIN VARIACION ---------------------
+@login_requerido_custom
+def producto_sin_personalizar(request, producto_id):
+    print("¡ENTRÉ A LA VISTA!") 
+    if request.method == 'POST':
+        print("¡ES UN POST!")
+    producto = get_object_or_404(Producto, id_produc=producto_id)
+    tallas = ["S", "M", "L", "XL", "XXL"]
+    
+    if request.method == 'POST':
+        cliente = obtener_cliente_actual(request)
+        talla = request.POST.get('talla')
+        
+        try:
+            cantidad = int(request.POST.get('cantidad', 1))
+        except ValueError:
+            cantidad = 1
 
+        with transaction.atomic():
+            pedido, creado = Pedido.objects.get_or_create(
+                id_clien_fk=cliente,
+                estado_ped='Carrito', 
+                defaults={'subtotal_ped': 0, 'valor_ped': 0, 'metodo_pago': 'Pendiente'}
+            )
+
+            Det_valor.objects.create(
+                id_ped_fk_detval=pedido, 
+                id_prod_fk_detval=producto,
+                talla=talla, 
+                cant=cantidad,
+                valor_total=producto.precio * cantidad,
+                tipo_pedido='Estandar',
+                id_var_fk_detval=None  # Porque no es personalizado
+            )
+
+        messages.success(request, f"{producto.nom_produc} añadido al carrito.")
+        # IMPORTANTE: Después de agregar, lo mandamos a ver su carrito
+        return redirect('ventas:ver_carrito')
+    
+    # --- PARTE 3: RENDERIZAR LA PÁGINA (SI ES GET O SI EL POST FALLÓ) ---
+    return render(request, 'producto/vista_producto.html', {
+        'producto': producto,
+        'tallas': tallas
+    })
 #----------------- CRUD ABONO ------------------------------
 
 def lista_abono(request):
@@ -369,39 +413,20 @@ def eliminar_pedido(request, id):
     return render(request, 'pedido/eliminar_pedido.html', {'pedido': pedido})
 
 #------------------------ CARRITO --------------------------
-@login_requerido_custom
-def agregar_al_carrito(request, producto_id):
-    cliente = obtener_cliente_actual(request)
-
-    if not cliente: 
-        messages.error(request, "Perfil de cliente no encontrado.")
-        return redirect('login')
-    
-    producto = get_object_or_404(Producto, id_produc=producto_id)
-    # Obtenemos al cliente asociado al usuario que inició sesión
-    cliente = request.user.cliente 
-
-    # get_or_create busca un pedido que sea 'Carrito'. 
-    # Si lo encuentra, lo usa. Si no, lo crea con los datos de 'defaults'.
-    pedido, creado = Pedido.objects.get_or_create(
-        id_clien_fk=cliente,
-        estado_ped='Carrito', 
-        defaults={
-            'subtotal_ped': 0,
-            'valor_ped': 0,
-            'metodo_pago': 'Pendiente',
-        }
-    )
 
 @login_requerido_custom
 def ver_carrito(request):
-    cliente = obtener_cliente_actual(request)
+    usuario_id = request.session.get('usuario_id')
 
-    if not cliente: 
-        messages.error(request, "Perfil de cliente no encontrado.")
-        return redirect('login')
-    # Buscamos el pedido actual del cliente
-    pedido = Pedido.objects.filter(id_clien_fk=request.user.cliente, estado_ped='Carrito').first()
+    try:
+        cliente = Cliente.objects.get(id_clien=usuario_id)
+    except Cliente.DoesNotExist:
+        # Si no hay sesión manual, redirigimos al login
+        return redirect('usuarios:login')
+
+    # CORRECCIÓN AQUÍ: Usamos la variable 'cliente' que definimos arriba
+    # En lugar de request.user.cliente
+    pedido = Pedido.objects.filter(id_clien_fk=cliente, estado_ped='Carrito').first()
     
     if pedido:
         # Traemos todos los detalles de ese pedido
@@ -412,7 +437,7 @@ def ver_carrito(request):
         items = []
         total = 0
 
-    return render(request, 'ventas/carrito.html', {
+    return render(request, 'pedido/carrito.html', {
         'pedido': pedido,
         'items': items,
         'total': total
@@ -444,6 +469,7 @@ def eliminar_del_carrito(request, detalle_id):
         
     messages.success(request, "Producto eliminado del carrito.")
     return redirect('ver_carrito')
+
 #------------- DET_MOV_MATP ---------------------------------
 def matp_producto(request, producto_id): 
     producto = get_object_or_404(Producto, id_produc = producto_id)

@@ -1,0 +1,59 @@
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'vista_producto.css' %}">
+    <title>{{ producto.nom_produc }} | LuxyFashion</title>
+</head>
+<body>
+
+<div class="con-pro-cli">
+    <div class="imgs-of-produc">
+        <img id="img1" src="{{ producto.imagen_product.url }}" class="imgs-of-produc" alt="Vista 1">
+        <img id="img2" src="{{ producto.imagen_product.url }}" class="imgs-of-produc" alt="Vista 2">
+        <img id="img3" src="{{ producto.imagen_product.url }}" class="imgs-of-produc" alt="Vista 3">
+    </div>
+
+    <div class="img-prin-pro">
+        {% if producto.imagen_product %}
+            <img src="{{ producto.imagen_product.url }}" alt="{{ producto.nom_produc }}">
+        {% else %}
+            <img src="{% static 'img/default.jpg' %}" alt="No image">
+        {% endif %}
+    </div>
+
+   <div class="form-pro">
+    <form action="{% url 'ventas:producto_sin_personalizar' producto.id_produc %}" method="POST">
+        {% csrf_token %}
+
+        <h2 style="font-family: Georgia;">{{ producto.nom_produc }}</h2>
+        <p class="subinfo">Precio: $ {{ producto.precio }}</p>
+
+        <div style="margin-top: 15px;">
+            <label for="talla_id">Selecciona tu talla:</label>
+            <select name="talla" id="talla_id" class="form-select" required>
+                <option value="" disabled selected>Elegir...</option>
+                {% for t in tallas %}
+                    <option value="{{ t }}">{{ t }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div style="margin-top: 15px;">
+            <label for="cantidad_id">Cantidad:</label>
+            <input type="number" name="cantidad" id="cantidad_id" value="1" min="1" style="width: 60px;">
+        </div>
+
+        <div style="margin-top: 20px;">
+            <button type="submit" class="btn" style="background-color: black; color: white; padding: 10px 25px; border: none; cursor: pointer;">
+                Añadir al Carrito
+            </button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
+{% endblock %}

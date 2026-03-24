@@ -2,6 +2,8 @@ from django.urls import path
 from . import views 
 from .views import login_view
 
+app_name = 'usuarios'
+
 urlpatterns = [
     # --- ROLES ---
     path('roles/', views.lista_roles, name='lista_roles'),

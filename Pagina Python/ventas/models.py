@@ -80,6 +80,7 @@ class Det_valor(models.Model):
     id_det_valor = models.AutoField(primary_key=True)
     valor_total = models.DecimalField(max_digits=10, decimal_places=0)
     cant = models.DecimalField(max_digits=12, decimal_places=2)
+    talla = models.CharField(max_length=100)
     tipo_pedido = models.CharField(max_length=200)
     id_ped_fk_detval = models.ForeignKey(Pedido, on_delete=models.CASCADE)
     id_var_fk_detval = models.ForeignKey(Variacion, on_delete=models.CASCADE, null=True)
