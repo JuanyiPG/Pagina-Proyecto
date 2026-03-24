@@ -5,9 +5,14 @@ from django.contrib.auth import authenticate,login as auth_login
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
+from django.shortcuts import render
+from django.contrib.auth import logout
 
 
-
+@never_cache
+@login_required
 def lista_roles(request):
     roles = Rol.objects.all()
     return render(request, 'usuarios/roles/lista.html', {'roles': roles})
@@ -34,7 +39,8 @@ def eliminar_rol(request, id):
     rol.delete()
     return redirect('lista_roles')
 
-
+@never_cache
+@login_required
 def lista_usuarios(request):
     usuarios = Usuario.objects.all()
     return render(request, 'usuarios/usuario/lista.html', {'usuarios': usuarios})
@@ -83,7 +89,8 @@ def eliminar_usuario(request, id):
 
 
 
-
+@never_cache
+@login_required
 def lista_empleados(request):
     empleados = Empleado.objects.all()
     return render(request, 'usuarios/empleados/lista.html', {'empleados': empleados})
@@ -148,13 +155,14 @@ def eliminar_empleado(request, id):
     return redirect('lista_empleados')
 
 
-# LISTAR
+@never_cache
+@login_required
 def lista_clientes(request):
     clientes = Cliente.objects.all()
     return render(request, 'usuarios/clientes/lista.html', {'clientes': clientes})
 
 
-# CREAR
+
 def crear_cliente(request):
     usuarios = Usuario.objects.all()
 
@@ -204,7 +212,20 @@ def eliminar_cliente(request, id):
     return redirect('lista_clientes')
 
 #LOGIN AUN NO COMPROBADO :(
+
 def login_view(request):
+
+    # 👇 si ya está logueado, no puede volver al login
+    if request.user.is_authenticated:
+        if request.user.is_superuser:
+            return redirect('lista_roles')
+        elif request.user.groups.filter(name='Empleado').exists():
+            return redirect('lista_empleados')
+        elif request.user.groups.filter(name='Cliente').exists():
+            return redirect('lista_clientes')
+        else:
+            return redirect('index')
+
     if request.method == 'POST':
         user_post = request.POST.get('username')
         pass_post = request.POST.get('password')
@@ -213,15 +234,33 @@ def login_view(request):
         
         if user is not None:
             auth_login(request, user)
-            if user.is_staff:
-                return redirect('admin_dashboard')  # Ejemplo para empleados/admin
+
+            if user.is_superuser:
+                return redirect('lista_roles')
+
+            elif user.groups.filter(name='Empleado').exists():
+                return redirect('lista_empleados')
+
+            elif user.groups.filter(name='Cliente').exists():
+                return redirect('lista_clientes')
+
             else:
-                return redirect('index')  
+                return redirect('index')
+
         else:
             return render(request, 'usuarios/login.html', {'error': True})
             
     return render(request, 'usuarios/login.html')
-#REGISTRO
+
+
+
+def logout_view(request):
+    if request.method == 'POST':
+        logout(request)
+        request.session.flush()
+        return redirect('login')
+    return redirect('login')
+
 def registro_view(request):
     if request.method == 'POST':
 
@@ -232,14 +271,13 @@ def registro_view(request):
         usuario_val = request.POST.get('username')
         contra = request.POST.get('password')
 
-        #  Validar que el usuario no exista
         if User.objects.filter(username=usuario_val).exists():
             return render(request, 'usuarios/login.html', {'error_registro': True, 'msg': 'El usuario ya existe'})
 
         try:
-            # transaction.atomic asegura que se creen los  registros o ninguno
+
             with transaction.atomic():
-                # A. Crear User de Django (para el Login)
+
                 user_django = User.objects.create_user(
                     username=usuario_val, 
                     email=correo, 

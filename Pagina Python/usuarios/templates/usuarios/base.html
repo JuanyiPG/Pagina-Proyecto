@@ -2,6 +2,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Luxy Fashion</title>
 
 <link rel="stylesheet" href="{% static 'usuarios/css/estilo.css' %}">
@@ -18,10 +21,19 @@
 <a href="{% url 'lista_usuarios' %}">Usuarios</a>
 <a href="{% url 'lista_empleados' %}">Empleados</a>
 <a href="{% url 'lista_clientes' %}">Clientes</a>
+<form action="{% url 'logout' %}" method="POST" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit">Cerrar sesión</button>
+</form>
 </nav>
 
 <hr>
 
+<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+</script>
 {% block content %}
 {% endblock %}
 
