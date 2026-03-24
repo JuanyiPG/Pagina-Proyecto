@@ -26,7 +26,8 @@ from . import views
 urlpatterns = [
     path('', views.index, name='index'),
     path('ventas/', include('ventas.urls')),
-    path('usuarios/', include('usuarios.urls'))
+    path('usuarios/', include('usuarios.urls')),
+    path('inventario/', include('inventario.urls')),
 ]
 
 if settings.DEBUG:
