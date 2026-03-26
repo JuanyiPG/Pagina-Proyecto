@@ -17,7 +17,7 @@
 <div class="main-container" id="container">
     
     <div class="form-container sign-up-container">
-        <form action="{% url 'registro' %}" method="post">
+        <form action="{% url 'usuarios:registro' %}" method="post">
             {% csrf_token %}
             <h2>Registro</h2>
             <span class="subtitle">Ingrese sus datos personales</span>
@@ -32,7 +32,7 @@
     </div>
 
     <div class="form-container sign-in-container">
-        <form action="{% url 'login' %}" method="post">
+        <form action="{% url 'usuarios:login' %}" method="post">
             {% csrf_token %}
             <h2>Iniciar sesión</h2>
             <span class="subtitle">Use su usuario y contraseña</span>

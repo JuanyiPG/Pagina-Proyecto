@@ -113,7 +113,7 @@ td:nth-child(6) {
             <tr>
                 <td>{{producto.id_produc}}</td>
                 <td>{% if producto.imagen_product %}
-                    <img src="{{producto.imagen_produc.url}}" alt="{{ producto.nom_produc }}">
+                    <img src="{{producto.imagen_product.url}}" alt="{{ producto.nom_produc }}">
                     {% else %}
                     <span> Sin imagen</span>
                     {% endif%}
@@ -122,6 +122,7 @@ td:nth-child(6) {
                 <td>{{producto.desc_produc}}</td>
                 <td>{{producto.categoria_produc}}</td>
                 <td>{{producto.estado_produc}}</td>
+                <td>{{producto.precio}}</td>
                 <td>
                     <a href="{% url 'ventas:editar_producto' producto.id_produc %}">Editar</a>
                     <a href="{% url 'ventas:eliminar_producto' producto.id_produc %}">Eliminar</a>

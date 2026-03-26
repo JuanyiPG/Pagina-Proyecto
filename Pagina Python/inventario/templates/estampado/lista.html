@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block contenido %}
+<div class="container-wide">
+    <h2>🎨 Catálogo de Estampados</h2>
+    <div class="form-card">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-grid">
+                <div><label>Nombre del Diseño</label><input type="text" name="nombre_estamp" required></div>
+                <div><label>URL Imagen</label><input type="text" name="link_estamp" required></div>
+                <div><label>Costo Adicional</label><input type="number" step="0.01" name="costo_adi" required></div>
+                <div><label>Técnica</label><input type="text" name="tipo_estamp" required></div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-save">✨ Registrar Estampado</button>
+            </div>
+        </form>
+    </div>
+    <table>
+        <thead><tr><th>Nombre</th><th>Tipo</th><th>Costo</th><th>Acciones</th></tr></thead>
+        <tbody>
+            {% for e in estampados %}
+            <tr>
+                <td><strong>{{ e.nombre_estamp }}</strong></td>
+                <td>{{ e.tipo_estamp }}</td>
+                <td>${{ e.costo_adi }}</td>
+                <td>
+                    <a href="{% url 'editar_estampado' e.id_estamp %}" class="btn-edit">Editar</a>
+                    <a href="{% url 'eliminar_estampado' e.id_estamp %}" class="btn-delete">Borrar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

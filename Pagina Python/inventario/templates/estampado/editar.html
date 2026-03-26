@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load l10n %}
+
+{% block contenido %}
+<div class="edit-container">
+    <h2>🎨 Editar Estampado</h2>
+    <div class="form-card">
+        <form method="POST">
+            {% csrf_token %}
+            
+            <label>Nombre del Diseño:</label>
+            <input type="text" name="nombre_estamp" value="{{ estampado.nombre_estamp }}" required>
+            
+            <label>URL de la Imagen:</label>
+            <input type="text" name="link_estamp" value="{{ estampado.link_estamp }}" required>
+            
+            <label>Costo Adicional:</label>
+            <input type="number" step="0.01" name="costo_adi" value="{{ estampado.costo_adi|unlocalize }}" required>
+            
+            <label>Técnica / Tipo:</label>
+            <input type="text" name="tipo_estamp" value="{{ estampado.tipo_estamp }}" required>
+
+            <div class="form-actions" style="flex-direction: column; gap: 10px;">
+                <button type="submit" class="btn-save" style="width: 100%;">✨ Actualizar Diseño</button>
+                <a href="{% url 'lista_estampado' %}" style="text-align: center; color: #666; text-decoration: none; font-size: 14px;">Volver al catálogo</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -140,3 +140,6 @@ MEDIA_URL = '/media/'
 
 #En dodne se crearan las carpetas y guardaran los archivos 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# settings.py
+LOGIN_URL = 'login'
