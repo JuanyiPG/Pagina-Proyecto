@@ -1,8 +1,8 @@
+from functools import wraps
+
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Rol, Usuario, Empleado, Cliente
-from django.shortcuts import render
-from django.contrib.auth import authenticate,login as auth_login
-from django.contrib.auth.models import User
+from django.contrib.auth.hashers import check_password, make_password
 from django.db import transaction
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -13,6 +13,7 @@ from django.contrib.auth import logout
 
 @never_cache
 @login_required
+
 def lista_roles(request):
     roles = Rol.objects.all()
     return render(request, 'usuarios/roles/lista.html', {'roles': roles})
@@ -57,7 +58,7 @@ def crear_usuario(request):
 
         Usuario.objects.create(
             username=username,
-            contrasena=contrasena,
+            contrasena=make_password(contrasena),
             id_rol_fk=rol
         )
 
@@ -71,7 +72,10 @@ def editar_usuario(request, id):
 
     if request.method == 'POST':
         usuario.username = request.POST['username']
-        usuario.contrasena = request.POST['contrasena']
+        nueva_contra = request.POST['contrasena']
+        if nueva_contra and not nueva_contra.startswith('pbkdf2_sha256$'):
+            usuario.contrasena = make_password(nueva_contra)
+
         usuario.id_rol_fk = Rol.objects.get(id_rol=request.POST['id_rol'])
         usuario.save()
 
@@ -230,25 +234,28 @@ def login_view(request):
         user_post = request.POST.get('username')
         pass_post = request.POST.get('password')
         
-        user = authenticate(username=user_post, password=pass_post)
-        
-        if user is not None:
-            auth_login(request, user)
-
-            if user.is_superuser:
-                return redirect('lista_roles')
-
-            elif user.groups.filter(name='Empleado').exists():
-                return redirect('lista_empleados')
-
-            elif user.groups.filter(name='Cliente').exists():
-                return redirect('lista_clientes')
-
+        try:
+            # Buscamos en TU tabla Usuario
+            usuario = Usuario.objects.get(username=user_post)
+            
+            # Comparamos la contraseña ingresada con la encriptada en BD
+            if check_password(pass_post, usuario.contrasena):
+                # CREAMOS LA SESIÓN MANUALMENTE
+                request.session['usuario_id'] = usuario.id_usuario
+                request.session['rol'] = usuario.id_rol_fk.nom_rol
+                
+                messages.success(request, f"Bienvenido, {usuario.username}")
+                
+                # Redirección según rol
+                if usuario.id_rol_fk.nom_rol == 'Administrador' or usuario.id_rol_fk.nom_rol == 'Empleado':
+                    return redirect('admin_dashboard')
+                else:
+                    return redirect('index') # Página principal para clientes
             else:
-                return redirect('index')
-
-        else:
-            return render(request, 'usuarios/login.html', {'error': True})
+                messages.error(request, "Contraseña incorrecta.")
+                
+        except Usuario.DoesNotExist:
+            messages.error(request, "El usuario no existe.")
             
     return render(request, 'usuarios/login.html')
 
@@ -263,7 +270,7 @@ def logout_view(request):
 
 def registro_view(request):
     if request.method == 'POST':
-
+        # 1. Recibimos los datos del HTML
         nombre = request.POST.get('nombre')
         direccion = request.POST.get('direccion')
         telefono = request.POST.get('telefono')
@@ -271,31 +278,24 @@ def registro_view(request):
         usuario_val = request.POST.get('username')
         contra = request.POST.get('password')
 
-        if User.objects.filter(username=usuario_val).exists():
-            return render(request, 'usuarios/login.html', {'error_registro': True, 'msg': 'El usuario ya existe'})
+        # 2. Validamos si el username ya existe en TU tabla Usuario
+        if Usuario.objects.filter(username=usuario_val).exists():
+            messages.error(request, 'El nombre de usuario ya existe.')
+            return render(request, 'usuarios/login.html')
 
         try:
-
             with transaction.atomic():
-
-                user_django = User.objects.create_user(
-                    username=usuario_val, 
-                    email=correo, 
-                    password=contra,
-                    first_name=nombre
-                )
-
-               
+                # 3. Buscamos u obtenemos el Rol 'Cliente'
                 rol_cliente, _ = Rol.objects.get_or_create(nom_rol='Cliente')
 
-              
+                # 4. Creamos TU modelo de Usuario (con contraseña segura)
                 nuevo_perfil = Usuario.objects.create(
                     username=usuario_val,
-                    contrasena=contra,
+                    contrasena=make_password(contra), # Encriptamos
                     id_rol_fk=rol_cliente
                 )
 
-             
+                # 5. Creamos el registro en la tabla Cliente relacionado con el usuario
                 Cliente.objects.create(
                     nom_clien=nombre,
                     dir_clien=direccion,
@@ -304,17 +304,48 @@ def registro_view(request):
                     id_usuario_fk=nuevo_perfil
                 )
 
-              
-                messages.success(request, '¡Registro exitoso! Bienvenido a Luxy Fashion.')
-
-              
-                auth_login(request, user_django)
-                return redirect('login')
+            messages.success(request, '¡Registro exitoso! Ya puedes iniciar sesión.')
+            return redirect('login') # Te manda al login para que entres
 
         except Exception as e:
-  
-            print(f"ERROR CRÍTICO EN REGISTRO: {e}")
-            messages.error(request, 'No se pudo completar el registro. Inténtalo de nuevo.')
-            return render(request, 'usuarios/login.html', {'error_registro': True})
+            messages.error(request, 'Error al registrar: ' + str(e))
             
     return render(request, 'usuarios/login.html')
+
+def logout_view(request):
+    # 1. Borramos todos los datos de la sesión
+    if 'usuario_id' in request.session:
+        del request.session['usuario_id']
+    if 'rol' in request.session:
+        del request.session['rol']
+    
+    # También puedes usar request.session.flush() para borrar TODO de golpe
+    request.session.flush()
+
+    messages.info(request, "Has cerrado sesión correctamente.")
+    return redirect('login')
+
+def solo_personal(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        # 1. ¿Está logueado?
+        if 'usuario_id' not in request.session:
+            return redirect('login')
+        
+        # 2. ¿Es parte del personal? (Admin o Empleado)
+        rol = request.session.get('rol')
+        if rol in ['Administrador', 'Empleado']:
+            return view_func(request, *args, **kwargs)
+        
+        # Si es un cliente intentando entrar, lo mandamos al index
+        return redirect('index') 
+    return _wrapped_view
+
+def login_requerido_custom(view_func):
+    def _wrapped_view(request, *args, **kwargs):
+        # Verificamos si el ID de TU usuario está en la sesión
+        if 'usuario_id' not in request.session:
+            messages.info(request, "Debes iniciar sesión para acceder a esta sección.")
+            return redirect('usuarios:login') # Nombre de tu URL de login
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view

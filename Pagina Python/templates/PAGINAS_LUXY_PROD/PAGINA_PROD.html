@@ -1,31 +1,86 @@
+{% block content %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/prod.css' %}">
     <title>Luxy Fashion</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4eeee; margin: 0; padding: 0; }
+
+        header {
+            background: linear-gradient(to right, #f9f9f9, #540a1f);
+            height: 80px; padding: 0 20px; display: flex;
+            justify-content: space-between; align-items: center;
+            position: fixed; top: 0; width: 100%; z-index: 9999;
+            box-sizing: border-box;
+        }
+
+        .menu-superior a { margin-left: 20px; text-decoration: none; color: white; font-size: 14px; }
+
+        .principal { display: flex; margin-top: 80px; min-height: 100vh; }
+
+        /* Filtros lateral fijo */
+        .filtros {
+            padding: 20px; background: white; width: 220px;
+            border-right: 1px solid #efeeee; position: sticky;
+            top: 80px; height: calc(100vh - 80px);
+        }
+
+        .filtros li { list-style: none; margin-bottom: 12px; cursor: pointer; color: #540a1f; }
+        .filtros li:hover { text-decoration: underline; }
+
+        /* CONTENEDOR DE GRID CORREGIDO */
+        .container {
+            display: grid;
+            /* Crea 4 columnas iguales, pero se ajusta si la pantalla es pequeña */
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+            gap: 25px;
+            padding: 30px;
+            flex: 1; /* Esto hace que ocupe el resto del espacio al lado de los filtros */
+        }
+
+        .card {
+            background: white; padding: 15px;
+            display: flex; flex-direction: column;
+            transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+
+        .imagen-container { position: relative; width: 100%; }
+
+        .card img {
+            width: 100%; height: 350px;
+            object-fit: cover; /* Mantiene la proporción de la foto sin deformar */
+        }
+
+        .corazon { position: absolute; top: 10px; right: 10px; font-size: 20px; cursor: pointer; color: #540a1f; }
+
+        .nombre { font-size: 14px; margin: 15px 0 5px; min-height: 40px; }
+        .precio-actual { font-weight: bold; color: #540a1f; font-size: 18px; }
+        
+        .btn-carrito {
+            width: 100%; padding: 10px; background: rgb(87, 16, 29);
+            color: white; border: none; cursor: pointer; margin-top: auto;
+        }
+
+        footer { background: rgb(87, 16, 29); color: white; padding: 40px 20px; text-align: center; }
+    </style>
 </head>
 <body>
-<aside>
-<nav id="navegador">
-    <ul class="menu">
-        <li>
-            <a href="{% url 'index' %}">
-                <img src="{% static 'IMG/logo.png' %}" alt="Logo" class="logo-menu">
-            </a>
-        </li>
 
-        <li class="m-right">
-            <a href="" class="LM">Servicios</a>
-            <a href="#We" class="LM">Nosotros</a>
-
-            <a href="{% url 'index' %}" class="iconP-link">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-bag-heart" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0M14 14V5H2v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1M8 7.993c1.664-1.711 5.825 1.283 0 5.132-5.825-3.85-1.664-6.843 0-5.132"></path>
-                </svg>
-            </a>
+    <header>
+        <div class="logo">
+            <a href="#"><img src="{% static 'IMG/logo.png' %}" height="60px"></a>
+        </div>
+        <div class="menu-superior">
+            <a href="#">Inicio</a>
+            <a href="{% url 'usuarios:login' %}">Iniciar sesión</a>
+            <a href="#">🛒 <span id="contador-carrito">0</span></a>
+        </div>
+    </header>
 
             <a href="{% url 'login' %}" class="iconP-link">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
@@ -50,182 +105,44 @@
         </div>
 
         <div class="container">
-            <div class="card Mujer chaqueta">
-                <div class="imagen-container">
-                    <img src="{% static 'IMG/chaqueta.jpg' %}">
-                    <div class="corazon">♡</div>
+            {% for producto in productos %}
+                <div class="card {{ producto.categoria_produc }}"> 
+                    <a href="{% url 'ventas:producto_sin_personalizar' producto.id_produc %}">
+                        <div class="imagen-container">
+                        {% if producto.imagen_product %}
+                            <img src="{{ producto.imagen_product.url }}" alt="{{ producto.nom_produc }}">
+                        {% else %}
+                            <img src="{% static 'img/default.jpg' %}" alt="No image">
+                        {% endif %}
+                        <div class="corazon">♡</div>
+                    </div>
+                    </a>
+                    
+                    <div class="nombre">
+                        <p hidden> {{ producto.id_produc }}</p><br>
+                        <strong>{{ producto.nom_produc }}</strong>
+                    </div>
+                    
+                    <p class="precios">
+                        <span class="precio-actual">${{ producto.precio }}</span>
+                    </p>
+                    
+                    <p style="font-size: 12px; color: gray;">+ Más colores</p>
+                    
+                    <button class="btn-carrito">Añadir al carrito</button>
                 </div>
-                <p class="nombre">Chaqueta Negra Con ovejero</p>
-                <p class="precios">
-                    <span class="precio-anterior">$230.000</span>
-                    <span class="precio-actual">$167.900</span>
-                </p>
-                <p class="descuento">AHORRO DEL 30%</p>
-                <button class="btn-carrito">Añadir al carrito</button>
-            </div>
-
-            <div class="card Hombre chaqueta">
-                <div class="imagen-container">
-                    <img src="{% static 'IMG/chawuetahomre.jpg' %}">
-                    <div class="corazon">♡</div>
+            {% empty %}
+                <div style="grid-column: 1 / -1; text-align: center; padding: 50px;">
+                    <h3>No hay productos disponibles actualmente en Luxy Fashion.</h3>
                 </div>
-                <p class="nombre">Chaqueta blanca puff</p>
-                <p class="precios">
-                    <span class="precio-anterior">$300.000</span>
-                    <span class="precio-actual">$210.000</span>
-                </p>
-                <p class="descuento">AHORRO DEL 30%</p>
-                <button class="btn-carrito">Añadir al carrito</button>
-            </div>
-            <div class="card Hombre chaqueta">
-                <div class="imagen-container">
-                    <img src="{% static 'IMG/imagenchaqueta.png' %}">
-                    <div class="corazon">♡</div>
-                </div>
-                <p class="nombre">Chaqueta blanca puff</p>
-                <p class="precios">
-                    <span class="precio-anterior">$300.000</span>
-                    <span class="precio-actual">$210.000</span>
-                </p>
-                <p class="descuento">AHORRO DEL 30%</p>
-                <button class="btn-carrito">Añadir al carrito</button>
-            </div>
-                        <div class="card Hombre chaqueta">
-                <div class="imagen-container">
-                    <img src="{% static 'IMG/chaqutaotra.jpg' %}">
-                    <div class="corazon">♡</div>
-                </div>
-                <p class="nombre">Chaqueta blanca puff</p>
-                <p class="precios">
-                    <span class="precio-anterior">$300.000</span>
-                    <span class="precio-actual">$210.000</span>
-                </p>
-                <p class="descuento">AHORRO DEL 30%</p>
-                <button class="btn-carrito">Añadir al carrito</button>
-            </div>
-                        <div class="card Mujer chaqueta">
-                <div class="imagen-container">
-                    <img src="{% static 'IMG/chaqueta.jpg' %}">
-                    <div class="corazon">♡</div>
-                </div>
-                <p class="nombre">Chaqueta Negra Con ovejero</p>
-                <p class="precios">
-                    <span class="precio-anterior">$230.000</span>
-                    <span class="precio-actual">$167.900</span>
-                </p>
-                <p class="descuento">AHORRO DEL 30%</p>
-                <button class="btn-carrito">Añadir al carrito</button>
-            </div>
-
-            <div class="card Hombre chaqueta">
-                <div class="imagen-container">
-                    <img src="{% static 'IMG/chawuetahomre.jpg' %}">
-                    <div class="corazon">♡</div>
-                </div>
-                <p class="nombre">Chaqueta blanca puff</p>
-                <p class="precios">
-                    <span class="precio-anterior">$300.000</span>
-                    <span class="precio-actual">$210.000</span>
-                </p>
-                <p class="descuento">AHORRO DEL 30%</p>
-                <button class="btn-carrito">Añadir al carrito</button>
-            </div>
-            <div class="card Hombre chaqueta">
-                <div class="imagen-container">
-                    <img src="{% static 'IMG/imagenchaqueta.png' %}">
-                    <div class="corazon">♡</div>
-                </div>
-                <p class="nombre">Chaqueta blanca puff</p>
-                <p class="precios">
-                    <span class="precio-anterior">$300.000</span>
-                    <span class="precio-actual">$210.000</span>
-                </p>
-                <p class="descuento">AHORRO DEL 30%</p>
-                <button class="btn-carrito">Añadir al carrito</button>
-            </div>
-                        <div class="card Hombre chaqueta">
-                <div class="imagen-container">
-                    <img src="{% static 'IMG/chaqutaotra.jpg' %}">
-                    <div class="corazon">♡</div>
-                </div>
-                <p class="nombre">Chaqueta blanca puff</p>
-                <p class="precios">
-                    <span class="precio-anterior">$300.000</span>
-                    <span class="precio-actual">$210.000</span>
-                </p>
-                <p class="descuento">AHORRO DEL 30%</p>
-                <button class="btn-carrito">Añadir al carrito</button>
-            </div>
-
-            <div class="card Mujer chaqueta">
-                <div class="imagen-container">
-                    <img src="{% static 'IMG/chaqueta.jpg' %}">
-                    <div class="corazon">♡</div>
-                </div>
-                <p class="nombre">Chaqueta Negra Con ovejero</p>
-                <p class="precios">
-                    <span class="precio-anterior">$230.000</span>
-                    <span class="precio-actual">$167.900</span>
-                </p>
-                <p class="descuento">AHORRO DEL 30%</p>
-                <button class="btn-carrito">Añadir al carrito</button>
-            </div>
-
-            <div class="card Hombre chaqueta">
-                <div class="imagen-container">
-                    <img src="{% static 'IMG/chawuetahomre.jpg' %}">
-                    <div class="corazon">♡</div>
-                </div>
-                <p class="nombre">Chaqueta blanca puff</p>
-                <p class="precios">
-                    <span class="precio-anterior">$300.000</span>
-                    <span class="precio-actual">$210.000</span>
-                </p>
-                <p class="descuento">AHORRO DEL 30%</p>
-                <button class="btn-carrito">Añadir al carrito</button>
-            </div>
-            <div class="card Hombre chaqueta">
-                <div class="imagen-container">
-                    <img src="{% static 'IMG/imagenchaqueta.png' %}">
-                    <div class="corazon">♡</div>
-                </div>
-                <p class="nombre">Chaqueta blanca puff</p>
-                <p class="precios">
-                    <span class="precio-anterior">$300.000</span>
-                    <span class="precio-actual">$210.000</span>
-                </p>
-                <p class="descuento">AHORRO DEL 30%</p>
-                <button class="btn-carrito">Añadir al carrito</button>
-            </div>
-                        <div class="card Hombre chaqueta">
-                <div class="imagen-container">
-                    <img src="{% static 'IMG/chaqutaotra.jpg' %}">
-                    <div class="corazon">♡</div>
-                </div>
-                <p class="nombre">Chaqueta blanca puff</p>
-                <p class="precios">
-                    <span class="precio-anterior">$300.000</span>
-                    <span class="precio-actual">$210.000</span>
-                </p>
-                <p class="descuento">AHORRO DEL 30%</p>
-                <button class="btn-carrito">Añadir al carrito</button>
-            </div>
-
-            </div>
-
+            {% endfor %}
+        </div>
     </div>
 
     <footer>
         <div class="footer-contenido">
-            <div class="footer-empresa">
-                <h1>LUXY FASHION</h1>
-                <p>Tienda enfocada en ropa moderna y elegante.</p>
-            </div>
-            <div class="footer-contacto">
-                <h4>Contacto</h4>
-                <p>luxyfashion@gmail.com</p>
-                <p>Instagram: @LuxyFashion</p>
-            </div>
+            <h1>LUXY FASHION</h1>
+            <p>Ropa moderna y elegante de alta calidad.</p>
         </div>
         <div class="footer-copy">
             © 2026 Luxy Fashion | Todos los derechos reservados
@@ -236,30 +153,34 @@
         // Función de filtrado
         function filtrar(categoria) {
             let productos = document.querySelectorAll(".card");
-            productos.forEach(p => {
-                if (categoria === "todos" || p.classList.contains(categoria)) {
-                    p.style.display = "block";
+            productos.forEach(function(producto) {
+                if (categoria === "todos" || producto.classList.contains(categoria)) {
+                    producto.style.display = "flex"; // Usamos flex para mantener el diseño interno
                 } else {
-                    p.style.display = "none";
+                    producto.style.display = "none";
                 }
             });
         }
 
-        // Lógica simple del carrito
+        // Lógica del carrito (LocalStorage)
         let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
         const contadorHTML = document.getElementById("contador-carrito");
-        
+
         function actualizarContador() {
             contadorHTML.textContent = carrito.length;
         }
 
         document.querySelectorAll(".btn-carrito").forEach(boton => {
-            boton.addEventListener("click", () => {
+            boton.addEventListener("click", function() {
                 let card = boton.closest(".card");
-                let nombre = card.querySelector(".nombre").textContent;
-                carrito.push({nombre: nombre});
+                let nombre = card.querySelector(".nombre strong").textContent;
+                let precio = card.querySelector(".precio-actual").textContent;
+                let imagen = card.querySelector("img").src;
+
+                carrito.push({nombre, precio, imagen});
                 localStorage.setItem("carrito", JSON.stringify(carrito));
                 actualizarContador();
+                alert("¡Producto añadido!");
             });
         });
 
@@ -267,3 +188,4 @@
     </script>
 </body>
 </html>
+{% endblock %}

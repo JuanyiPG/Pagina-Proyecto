@@ -29,6 +29,7 @@ urlpatterns = [
     path('usuarios/', include('usuarios.urls')),
     path('productos/', views.productos, name='productos'),
 
+    path('inventario/', include('inventario.urls')),
 ]
 
 if settings.DEBUG:
