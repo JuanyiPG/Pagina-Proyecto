@@ -13,19 +13,36 @@
 
 <body>
 
-<nav>
-<h1>Luxy Fashion</h1>
-<hr>
+<!-- SIDEBAR -->
+<nav class="sidebar">
+    <h1>Luxy Fashion</h1>
 
-<a href="{% url 'lista_roles' %}">Roles</a>
-<a href="{% url 'lista_usuarios' %}">Usuarios</a>
-<a href="{% url 'lista_empleados' %}">Empleados</a>
-<a href="{% url 'lista_clientes' %}">Clientes</a>
-<form action="{% url 'logout' %}" method="POST" style="display:inline;">
-    {% csrf_token %}
-    <button type="submit">Cerrar sesión</button>
-</form>
+    <div class="menu">
+        <a href="{% url 'lista_roles' %}"> Roles</a>
+        <a href="{% url 'lista_usuarios' %}"> Usuarios</a>
+        <a href="{% url 'lista_empleados' %}"> Empleados</a>
+        <a href="{% url 'lista_clientes' %}"> Clientes</a>
+    </div>
+
+    <div class="active">
+        <form action="{% url 'logout' %}" method="POST">
+            {% csrf_token %}
+            <button type="submit">Cerrar sesión</button>
+        </form>
+    </div>
 </nav>
+
+
+<div class="main-content">
+
+    
+    <div class="header">
+        <h2>Consola de administración</h2>
+        <div class="user"></div>
+    </div>
+
+
+</div>
 
 <hr>
 

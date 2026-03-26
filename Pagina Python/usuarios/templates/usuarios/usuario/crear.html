@@ -2,37 +2,48 @@
 
 {% block content %}
 
-<h2>Crear Usuario</h2>
+<div class="page">
 
-<form method="POST">
-{% csrf_token %}
 
-<label>Username</label>
-<input type="text" name="username" required>
+    <div class="page-header">
+        <h3>Crear Usuario</h3>
+    </div>
 
-<br><br>
+  
+    <div class="form-card">
 
-<label>Contraseña</label>
-<input type="password" name="contrasena" required>
+        <form method="POST">
+        {% csrf_token %}
 
-<br><br>
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" name="username" required>
+        </div>
 
-<label>Rol</label>
+        <div class="form-group">
+            <label>Contraseña</label>
+            <input type="password" name="contrasena" required>
+        </div>
 
-<select name="id_rol">
+        <div class="form-group">
+            <label>Rol</label>
+            <select name="id_rol">
+                {% for rol in roles %}
+                <option value="{{rol.id_rol}}">
+                    {{rol.nom_rol}}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
 
-{% for rol in roles %}
-<option value="{{rol.id_rol}}">
-{{rol.nom_rol}}
-</option>
-{% endfor %}
+        <div class="form-actions">
+            <button type="submit" class="btn-save">Guardar</button>
+        </div>
 
-</select>
+        </form>
 
-<br><br>
+    </div>
 
-<button type="submit">Guardar</button>
-
-</form>
+</div>
 
 {% endblock %}

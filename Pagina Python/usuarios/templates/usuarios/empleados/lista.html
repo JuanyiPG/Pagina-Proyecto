@@ -2,54 +2,70 @@
 
 {% block content %}
 
-<h2>Lista de Empleados</h2>
+<div class="page">
 
-<a href="{% url 'crear_empleado' %}">Crear empleado</a>
+    <div class="page-header">
+        <h3>Empleados</h3>
 
-<table border="1">
+        <div class="actions">
+            <input type="text" placeholder=" Buscar...">
+            <a href="{% url 'crear_empleado' %}" class="btn">+ Crear Empleado</a>
+        </div>
+    </div>
 
-<tr>
-<th>ID</th>
-<th>Nombre</th>
-<th>Teléfono</th>
-<th>Correo</th>
-<th>Dirección</th>
-<th>Tipo de sangre</th>
-<th>Fecha Nacimiento</th>
-<th>Tipo de documento</th>
-<th>Número de documento</th>
-<th>Fecha Ingreso</th>
-<th>Salario</th>
-<th>Estado</th>
-<th> Nombre de Usuario</th>
-<th>Acciones</th>
-</tr>
+    <div class="table-card">
 
-{% for empleado in empleados %}
-<tr>
+        <div class="table-top">
+            <span><strong>{{ empleados|length }}</strong> registros</span>
+        </div>
 
-<td>{{ empleado.id_emple }}</td>
-<td>{{ empleado.nom_emple }}</td>
-<td>{{ empleado.tel_emple }}</td>
-<td>{{ empleado.correo_emple }}</td>
-<td>{{ empleado.dir_emple }}</td>
-<td>{{ empleado.rh_emple }}</td>
-<td>{{ empleado.fecha_naci_emple }}</td>
-<td>{{ empleado.tipo_ident }}</td>
-<td>{{ empleado.num_ident }}</td>
-<td>{{ empleado.fecha_ing_emple }}</td>
-<td>{{ empleado.salari_emple }}</td>
-<td>{{ empleado.estado_emple }}</td>
-<td>{{ empleado.id_usuario_fk.username }}</td>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Teléfono</th>
+                    <th>Correo</th>
+                    <th>Dirección</th>
+                    <th>RH</th>
+                    <th>F. Nacimiento</th>
+                    <th>Tipo Doc</th>
+                    <th>N° Doc</th>
+                    <th>F. Ingreso</th>
+                    <th>Salario</th>
+                    <th>Estado</th>
+                    <th>Usuario</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
 
-<td>
-<a href="{% url 'editar_empleado' id=empleado.id_emple %}">Editar</a>
-<a href="{% url 'eliminar_empleado' id=empleado.id_emple %}">Eliminar</a>
-</td>
+            <tbody>
+                {% for empleado in empleados %}
+                <tr>
+                    <td>{{ empleado.id_emple }}</td>
+                    <td>{{ empleado.nom_emple }}</td>
+                    <td>{{ empleado.tel_emple }}</td>
+                    <td>{{ empleado.correo_emple }}</td>
+                    <td>{{ empleado.dir_emple }}</td>
+                    <td>{{ empleado.rh_emple }}</td>
+                    <td>{{ empleado.fecha_naci_emple }}</td>
+                    <td>{{ empleado.tipo_ident }}</td>
+                    <td>{{ empleado.num_ident }}</td>
+                    <td>{{ empleado.fecha_ing_emple }}</td>
+                    <td>{{ empleado.salari_emple }}</td>
+                    <td>{{ empleado.estado_emple }}</td>
+                    <td>{{ empleado.id_usuario_fk.username }}</td>
+                    <td>
+                        <a href="{% url 'editar_empleado' id=empleado.id_emple %}" class="edit">Editar</a>
+                        <a href="{% url 'eliminar_empleado' id=empleado.id_emple %}" class="delete">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-</tr>
-{% endfor %}
+    </div>
 
-</table>
+</div>
 
 {% endblock %}

@@ -2,16 +2,34 @@
 
 {% block content %}
 
-<h2>Editar Rol</h2>
+<div class="page">
 
-<form method="POST">
-{% csrf_token %}
+    <!-- ENCABEZADO -->
+    <div class="page-header">
+        <h3>Editar Rol</h3>
+    </div>
 
-<label>Nombre del rol</label>
-<input type="text" name="nom_rol" value="{{ rol.nom_rol }}">
+    <!-- TARJETA -->
+    <div class="form-card">
 
-<button type="submit">Actualizar</button>
+        <form method="POST">
+        {% csrf_token %}
 
-</form>
+        <div class="form-group">
+            <label>Nombre del rol</label>
+            <input type="text" name="nom_rol" value="{{ rol.nom_rol }}" required>
+        </div>
+
+        <!-- BOTONES -->
+        <div class="form-actions">
+            <button type="submit" class="btn-save">Actualizar</button>
+            <a href="{% url 'lista_roles' %}" class="btn-cancel">Cancelar</a>
+        </div>
+
+        </form>
+
+    </div>
+
+</div>
 
 {% endblock %}

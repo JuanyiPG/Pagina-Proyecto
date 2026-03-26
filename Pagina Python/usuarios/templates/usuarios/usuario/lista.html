@@ -2,33 +2,50 @@
 
 {% block content %}
 
-<h2>Lista de Usuarios</h2>
+<div class="page">
 
-<a href="{% url 'crear_usuario' %}">Crear Usuario</a>
-<table border="1">
+    <div class="page-header">
+        <h3>Usuarios</h3>
 
-<tr>
-<th>ID</th>
-<th>Username</th>
-<th>Rol</th>
-<th>Acciones</th>
-</tr>
+        <div class="actions">
+            <input type="text" placeholder=" Buscar...">
+            <a href="{% url 'crear_usuario' %}" class="btn">+ Crear Usuario</a>
+        </div>
+    </div>
 
-{% for usuario in usuarios %}
-<tr>
+    <div class="table-card">
 
-<td>{{ usuario.id_usuario }}</td>
-<td>{{ usuario.username }}</td>
-<td>{{ usuario.id_rol_fk }}</td>
+        <div class="table-top">
+            <span><strong>{{ usuarios|length }}</strong> registros</span>
+        </div>
 
-<td>
-<a href="{% url 'editar_usuario' id=usuario.id_usuario %}">Editar</a>
-<a href="{% url 'eliminar_usuario' id=usuario.id_usuario %}">Eliminar</a>
-</td>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
 
-</tr>
-{% endfor %}
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.id_usuario }}</td>
+                    <td>{{ usuario.username }}</td>
+                    <td>{{ usuario.id_rol_fk }}</td>
+                    <td>
+                        <a href="{% url 'editar_usuario' id=usuario.id_usuario %}" class="edit">Editar</a>
+                        <a href="{% url 'eliminar_usuario' id=usuario.id_usuario %}" class="delete">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-</table>
+    </div>
+
+</div>
 
 {% endblock %}

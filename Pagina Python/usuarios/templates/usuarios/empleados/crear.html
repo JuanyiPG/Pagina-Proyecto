@@ -2,57 +2,93 @@
 
 {% block content %}
 
-<h2>Crear Empleado</h2>
+<div class="page">
 
-<form method="POST">
-{% csrf_token %}
+    <!-- TITULO -->
+    <div class="page-header">
+        <h3>Crear Empleado</h3>
+    </div>
 
-<label>Nombre</label>
-<input type="text" name="nom_emple">
+    <!-- CARD -->
+    <div class="form-card">
 
-<label>Teléfono</label>
-<input type="text" name="tel_emple">
+        <form method="POST">
+        {% csrf_token %}
 
-<label>Correo</label>
-<input type="email" name="correo_emple">
+        <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" name="nom_emple">
+        </div>
 
-<label>Dirección</label>
-<input type="text" name="dir_emple">
+        <div class="form-group">
+            <label>Teléfono</label>
+            <input type="text" name="tel_emple">
+        </div>
 
-<label>RH</label>
-<input type="text" name="rh_emple">
+        <div class="form-group">
+            <label>Correo</label>
+            <input type="email" name="correo_emple">
+        </div>
 
-<label>Fecha Nacimiento</label>
-<input type="date" name="fecha_naci_emple">
+        <div class="form-group">
+            <label>Dirección</label>
+            <input type="text" name="dir_emple">
+        </div>
 
-<label>Tipo Identificación</label>
-<input type="text" name="tipo_ident">
+        <div class="form-group">
+            <label>RH</label>
+            <input type="text" name="rh_emple">
+        </div>
 
-<label>Número Identificación</label>
-<input type="text" name="num_ident">
+        <div class="form-group">
+            <label>Fecha Nacimiento</label>
+            <input type="date" name="fecha_naci_emple">
+        </div>
 
-<label>Fecha Ingreso</label>
-<input type="date" name="fecha_ing_emple">
+        <div class="form-group">
+            <label>Tipo Identificación</label>
+            <input type="text" name="tipo_ident">
+        </div>
 
-<label>Salario</label>
-<input type="number" step="0.01" name="salari_emple">
+        <div class="form-group">
+            <label>Número Identificación</label>
+            <input type="text" name="num_ident">
+        </div>
 
-<label>Estado</label>
-<input type="text" name="estado_emple">
+        <div class="form-group">
+            <label>Fecha Ingreso</label>
+            <input type="date" name="fecha_ing_emple">
+        </div>
 
-<label>Usuario</label>
-<select name="id_usuario_fk_emple">
+        <div class="form-group">
+            <label>Salario</label>
+            <input type="number" step="0.01" name="salari_emple">
+        </div>
 
-{% for usuario in usuarios %}
-<option value="{{ usuario.id_usuario }}">
-{{ usuario.username }}
-</option>
-{% endfor %}
+        <div class="form-group">
+            <label>Estado</label>
+            <input type="text" name="estado_emple">
+        </div>
 
-</select>
+        <div class="form-group">
+            <label>Usuario</label>
+            <select name="id_usuario_fk_emple">
+                {% for usuario in usuarios %}
+                <option value="{{ usuario.id_usuario }}">
+                    {{ usuario.username }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
 
-<button type="submit">Guardar</button>
+        <div class="form-actions">
+            <button type="submit" class="btn-save">Guardar</button>
+        </div>
 
-</form>
+        </form>
+
+    </div>
+
+</div>
 
 {% endblock %}

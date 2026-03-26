@@ -2,40 +2,61 @@
 
 {% block content %}
 
-<h2>Editar Cliente</h2>
+<div class="page">
 
-<form method="POST">
-{% csrf_token %}
+    <div class="page-header">
+        <h3>Editar Cliente</h3>
+    </div>
 
-<label>Nombre</label>
-<input type="text" name="nom_clien" value="{{ cliente.nom_clien }}">
+    <div class="form-card">
 
-<label>Dirección</label>
-<input type="text" name="dir_clien" value="{{ cliente.dir_clien }}">
+        <form method="POST">
+        {% csrf_token %}
 
-<label>Teléfono</label>
-<input type="text" name="tel_clien" value="{{ cliente.tel_clien }}">
+        <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" name="nom_clien" value="{{ cliente.nom_clien }}">
+        </div>
 
-<label>Correo</label>
-<input type="email" name="correo_clien" value="{{ cliente.correo_clien }}">
+        <div class="form-group">
+            <label>Dirección</label>
+            <input type="text" name="dir_clien" value="{{ cliente.dir_clien }}">
+        </div>
 
-<label>Usuario</label>
-<select name="id_usuario_fk">
+        <div class="form-group">
+            <label>Teléfono</label>
+            <input type="text" name="tel_clien" value="{{ cliente.tel_clien }}">
+        </div>
 
-{% for usuario in usuarios %}
-<option value="{{ usuario.id_usuario }}"
-{% if usuario.id_usuario == cliente.id_usuario_fk_id %}
-selected
-{% endif %}
->
-{{ usuario.username }}
-</option>
-{% endfor %}
+        <div class="form-group">
+            <label>Correo</label>
+            <input type="email" name="correo_clien" value="{{ cliente.correo_clien }}">
+        </div>
 
-</select>
+        <div class="form-group">
+            <label>Usuario</label>
+            <select name="id_usuario_fk">
+                {% for usuario in usuarios %}
+                <option value="{{ usuario.id_usuario }}"
+                {% if usuario.id_usuario == cliente.id_usuario_fk_id %}
+                selected
+                {% endif %}
+                >
+                {{ usuario.username }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
 
-<button type="submit">Actualizar</button>
+        <div class="form-actions">
+            <button type="submit" class="btn-save">Actualizar</button>
+            <a href="{% url 'lista_clientes' %}" class="btn-cancel">Cancelar</a>
+        </div>
 
-</form>
+        </form>
+
+    </div>
+
+</div>
 
 {% endblock %}

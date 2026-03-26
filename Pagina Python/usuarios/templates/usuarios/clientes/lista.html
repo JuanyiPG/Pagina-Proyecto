@@ -2,40 +2,56 @@
 
 {% block content %}
 
-<h2>Lista de Clientes</h2>
+<div class="page">
 
-<a href="{% url 'crear_cliente' %}">Crear Cliente</a>
+    <div class="page-header">
+        <h3>Clientes</h3>
 
-<table border="1">
+        <div class="actions">
+            <input type="text" placeholder=" Buscar...">
+            <a href="{% url 'crear_cliente' %}" class="btn">+ Crear Cliente</a>
+        </div>
+    </div>
 
-<tr>
-<th>ID</th>
-<th>Nombre</th>
-<th>Direccion</th>
-<th>Telefono</th>
-<th>Correo</th>
-<th>Nombre de usuario</th>
-<th>Acciones</th>
-</tr>
+    <div class="table-card">
 
-{% for cliente in clientes %}
-<tr>
+        <div class="table-top">
+            <span><strong>{{ clientes|length }}</strong> registros</span>
+        </div>
 
-<td>{{ cliente.id_clien }}</td>
-<td>{{ cliente.nom_clien }}</td>
-<td>{{ cliente.dir_clien }}</td>
-<td>{{ cliente.tel_clien }}</td>
-<td>{{ cliente.correo_clien }}</td>
-<td>{{ cliente.id_usuario_fk.username }}</td>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Dirección</th>
+                    <th>Teléfono</th>
+                    <th>Correo</th>
+                    <th>Usuario</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
 
-<td>
-<a href="{% url 'editar_cliente' id=cliente.id_clien %}">Editar</a>
-<a href="{% url 'eliminar_cliente' id=cliente.id_clien %}">Eliminar</a>
-</td>
+            <tbody>
+                {% for cliente in clientes %}
+                <tr>
+                    <td>{{ cliente.id_clien }}</td>
+                    <td>{{ cliente.nom_clien }}</td>
+                    <td>{{ cliente.dir_clien }}</td>
+                    <td>{{ cliente.tel_clien }}</td>
+                    <td>{{ cliente.correo_clien }}</td>
+                    <td>{{ cliente.id_usuario_fk.username }}</td>
+                    <td>
+                        <a href="{% url 'editar_cliente' id=cliente.id_clien %}" class="edit">Editar</a>
+                        <a href="{% url 'eliminar_cliente' id=cliente.id_clien %}" class="delete">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-</tr>
-{% endfor %}
+    </div>
 
-</table>
+</div>
 
 {% endblock %}
