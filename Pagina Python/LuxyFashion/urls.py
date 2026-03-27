@@ -27,8 +27,6 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('ventas/', include('ventas.urls')),
     path('usuarios/', include('usuarios.urls')),
-    path('productos/', views.productos, name='productos'),
-
     path('inventario/', include('inventario.urls')),
 ]
 
