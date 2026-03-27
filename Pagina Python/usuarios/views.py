@@ -5,14 +5,20 @@ from .models import Rol, Usuario, Empleado, Cliente
 from django.contrib.auth.hashers import check_password, make_password
 from django.db import transaction
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from django.shortcuts import render
 from django.contrib.auth import logout
-
+from django.contrib.auth.decorators import login_required
 
 @never_cache
-@login_required
+
+def login_requerido_custom(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if 'usuario_id' not in request.session:
+            return redirect('login')  # o la ruta de tu login
+        return view_func(request, *args, **kwargs)
+    return wrapper
 
 def lista_roles(request):
     roles = Rol.objects.all()
@@ -216,41 +222,28 @@ def eliminar_cliente(request, id):
     return redirect('lista_clientes')
 
 #LOGIN AUN NO COMPROBADO :(
-
 def login_view(request):
-
-    # 👇 si ya está logueado, no puede volver al login
-    if request.user.is_authenticated:
-        if request.user.is_superuser:
-            return redirect('lista_roles')
-        elif request.user.groups.filter(name='Empleado').exists():
-            return redirect('lista_empleados')
-        elif request.user.groups.filter(name='Cliente').exists():
-            return redirect('lista_clientes')
-        else:
-            return redirect('index')
 
     if request.method == 'POST':
         user_post = request.POST.get('username')
         pass_post = request.POST.get('password')
         
         try:
-            # Buscamos en TU tabla Usuario
             usuario = Usuario.objects.get(username=user_post)
             
-            # Comparamos la contraseña ingresada con la encriptada en BD
             if check_password(pass_post, usuario.contrasena):
-                # CREAMOS LA SESIÓN MANUALMENTE
+
                 request.session['usuario_id'] = usuario.id_usuario
                 request.session['rol'] = usuario.id_rol_fk.nom_rol
-                
+
                 messages.success(request, f"Bienvenido, {usuario.username}")
-                
-                # Redirección según rol
-                if usuario.id_rol_fk.nom_rol == 'Administrador' or usuario.id_rol_fk.nom_rol == 'Empleado':
-                    return redirect('admin_dashboard')
+
+                # 🔥 AQUÍ ESTÁ LA CLAVE
+                if usuario.id_rol_fk.nom_rol == 'Administrador':
+                    return redirect('usuarios:lista_roles')
                 else:
-                    return redirect('index') # Página principal para clientes
+                    return redirect('index')
+
             else:
                 messages.error(request, "Contraseña incorrecta.")
                 
@@ -258,15 +251,12 @@ def login_view(request):
             messages.error(request, "El usuario no existe.")
             
     return render(request, 'usuarios/login.html')
-
-
-
 def logout_view(request):
     if request.method == 'POST':
         logout(request)
         request.session.flush()
-        return redirect('login')
-    return redirect('login')
+        return redirect('usuarios:login')
+    return redirect('usuarios:login')
 
 def registro_view(request):
     if request.method == 'POST':
@@ -305,7 +295,7 @@ def registro_view(request):
                 )
 
             messages.success(request, '¡Registro exitoso! Ya puedes iniciar sesión.')
-            return redirect('login') # Te manda al login para que entres
+            return redirect('usuarios:login') # Te manda al login para que entres
 
         except Exception as e:
             messages.error(request, 'Error al registrar: ' + str(e))
@@ -323,14 +313,14 @@ def logout_view(request):
     request.session.flush()
 
     messages.info(request, "Has cerrado sesión correctamente.")
-    return redirect('login')
+    return redirect('usuarios:login')
 
 def solo_personal(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
         # 1. ¿Está logueado?
         if 'usuario_id' not in request.session:
-            return redirect('login')
+            return redirect('usuarios:login')
         
         # 2. ¿Es parte del personal? (Admin o Empleado)
         rol = request.session.get('rol')

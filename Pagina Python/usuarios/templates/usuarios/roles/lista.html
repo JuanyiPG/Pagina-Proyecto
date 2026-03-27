@@ -9,7 +9,7 @@
 
         <div class="actions">
             <input type="text" placeholder=" Buscar...">
-            <a href="{% url 'crear_rol' %}" class="btn">+ Crear Rol</a>
+            <a href="{% url 'usuarios:crear_rol' %}" class="btn">+ Crear Rol</a>
         </div>
     </div>
 
@@ -35,8 +35,8 @@
                     <td>{{ rol.id_rol }}</td>
                     <td>{{ rol.nom_rol }}</td>
                     <td>
-                        <a href="{% url 'editar_rol' id=rol.id_rol %}" class="edit">Editar</a>
-                        <a href="{% url 'eliminar_rol' id=rol.id_rol %}" class="delete">Eliminar</a>
+                        <a href="{% url 'usuarios:editar_rol' id=rol.id_rol %}" class="edit">Editar</a>
+                        <a href="{% url 'usuarios:eliminar_rol' id=rol.id_rol %}" class="delete">Eliminar</a>
                     </td>
                 </tr>
                 {% endfor %}

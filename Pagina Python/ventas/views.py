@@ -115,7 +115,7 @@ def eliminar_variacion (request, detalle_id):
 
 
 #----------------- CRUD PRODUCTO ------------------------------
-
+@solo_personal
 def lista_producto(request): 
     productos = Producto.objects.all()
     rol_usuario = request.session.get('rol')
@@ -128,7 +128,7 @@ def lista_producto(request):
         # Si es cliente o visitante anónimo, ve la tienda bonita
         return render(request, 'PAGINAS_LUXY_PROD/PAGINA_PROD.html', {'productos': productos})
 
-#@solo_personal
+@solo_personal
 def crear_producto(request): 
     nuevo_hash = None #inicializamos la variable
 
@@ -170,7 +170,7 @@ def crear_producto(request):
         return redirect('ventas:lista_product')
     return render(request, 'producto/form_producto.html')
 
-
+@solo_personal
 def editar_producto(request, id): 
     producto = get_object_or_404(Producto, id_produc=id)
     if request.method == 'POST': 
@@ -201,7 +201,7 @@ def editar_producto(request, id):
         return redirect('ventas:lista_product')
     return render(request, 'producto/editar_producto.html', {'producto': producto})
 
-
+@solo_personal
 def eliminar_producto(request, product_id): 
     producto = get_object_or_404(Producto, id_produc=product_id)
     if request.method == 'POST':
