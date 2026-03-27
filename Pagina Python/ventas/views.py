@@ -116,17 +116,20 @@ def eliminar_variacion (request, detalle_id):
 
 #----------------- CRUD PRODUCTO ------------------------------
 @solo_personal
+@login_requerido_custom
 def lista_producto(request): 
     productos = Producto.objects.all()
     rol_usuario = request.session.get('rol')
+    cliente = obtener_cliente_actual(request)
 
     if rol_usuario in ['Administrador', 'Empleado']:
         return render(request, 'producto/lista_product.html', {'productos': productos})
-    else:
+    elif cliente:
         return render(request, 'PAGINAS_LUXY_PROD/PAGINA_PROD.html', {'productos': productos})
 
 @solo_personal
 def crear_producto(request): 
+    rol_usuario = request.session.get('rol')
     nuevo_hash = None
 
     if request.method == 'POST': 
@@ -347,7 +350,7 @@ def lista_det_val(request):
 
 def lista_pedido(request): 
     pedidos = Pedido.objects.all()
-    return render(request, 'pedido/lista_pedido.html', {'pedidos': pedidos})
+    return render(request, 'pedido/lista_pedidos.html', {'pedidos': pedidos})
 
     # Ahora redirigimos a la vista de "Personalizar" (crear_variacion) 
     # pasándole el ID del pedido que acabamos de encontrar o crear.
