@@ -70,16 +70,14 @@ class Abono(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-        # Corregido: 'monto_abono' en lugar de 'monto'
         total_abono = Abono.objects.filter(
             id_pedido_fk_abono=self.id_pedido_fk_abono
         ).aggregate(total=Sum('monto_abono'))['total'] or 0
 
-        # Comparamos con el valor del pedido
         if total_abono >= self.id_pedido_fk_abono.valor_ped:
-            self.id_pedido_fk_abono.estado_pago = 'PAGADO'
+            self.id_pedido_fk_abono.estado_ped = 'PAGADO'
         else: 
-            self.id_pedido_fk_abono.estado_pago = 'PENDIENTE'
+            self.id_pedido_fk_abono.estado_ped = 'PENDIENTE'
 
         self.id_pedido_fk_abono.save()
 
@@ -89,6 +87,7 @@ class Det_valor(models.Model):
     valor_total = models.DecimalField(max_digits=10, decimal_places=0)
     cant = models.DecimalField(max_digits=12, decimal_places=2)
     talla = models.CharField(max_length=100)
+    color = models.CharField(max_length=100)
     tipo_pedido = models.CharField(max_length=200)
     id_ped_fk_detval = models.ForeignKey(Pedido, on_delete=models.CASCADE)
     id_var_fk_detval = models.ForeignKey(Variacion, on_delete=models.CASCADE, null=True)

@@ -28,7 +28,7 @@ def crear_variacion(request, producto_id, pedido_id):
 
     if not cliente: 
         messages.error(request, "Perfil de cliente no encontrado.")
-        return redirect('login')
+        return redirect('ventas:lista_product')
 
     producto = get_object_or_404(Producto, producto_id)
     estampados = Estampado.objects.all()
@@ -120,17 +120,14 @@ def lista_producto(request):
     productos = Producto.objects.all()
     rol_usuario = request.session.get('rol')
 
-    # 2. Comprobamos si es del personal (Admin o Empleado)
     if rol_usuario in ['Administrador', 'Empleado']:
-        # Si es admin/empleado, ve la tabla de gestión (CRUD)
         return render(request, 'producto/lista_product.html', {'productos': productos})
     else:
-        # Si es cliente o visitante anónimo, ve la tienda bonita
         return render(request, 'PAGINAS_LUXY_PROD/PAGINA_PROD.html', {'productos': productos})
 
 @solo_personal
 def crear_producto(request): 
-    nuevo_hash = None #inicializamos la variable
+    nuevo_hash = None
 
     if request.method == 'POST': 
         #POST para textos plano, FILES, para img, pdf, etc
@@ -212,15 +209,14 @@ def eliminar_producto(request, product_id):
 #----------------- PRODUCTO SIN VARIACION ---------------------
 @login_requerido_custom
 def producto_sin_personalizar(request, producto_id):
-    print("¡ENTRÉ A LA VISTA!") 
-    if request.method == 'POST':
-        print("¡ES UN POST!")
     producto = get_object_or_404(Producto, id_produc=producto_id)
     tallas = ["S", "M", "L", "XL", "XXL"]
+    colores = ["rojo", "blanco", "gris", "azul"]
     
     if request.method == 'POST':
         cliente = obtener_cliente_actual(request)
         talla = request.POST.get('talla')
+        color = request.POST.get('color')
         
         try:
             cantidad = int(request.POST.get('cantidad', 1))
@@ -237,21 +233,21 @@ def producto_sin_personalizar(request, producto_id):
             Det_valor.objects.create(
                 id_ped_fk_detval=pedido, 
                 id_prod_fk_detval=producto,
-                talla=talla, 
+                talla=talla,
+                color = color,
                 cant=cantidad,
                 valor_total=producto.precio * cantidad,
                 tipo_pedido='Estandar',
-                id_var_fk_detval=None  # Porque no es personalizado
+                id_var_fk_detval=None
             )
 
         messages.success(request, f"{producto.nom_produc} añadido al carrito.")
-        # IMPORTANTE: Después de agregar, lo mandamos a ver su carrito
-        return redirect('ventas:ver_carrito')
+        return redirect('ventas:lista_product')
     
-    # --- PARTE 3: RENDERIZAR LA PÁGINA (SI ES GET O SI EL POST FALLÓ) ---
     return render(request, 'producto/vista_producto.html', {
         'producto': producto,
-        'tallas': tallas
+        'tallas': tallas,
+        'colores': colores
     })
 #----------------- CRUD ABONO ------------------------------
 
@@ -262,46 +258,79 @@ def lista_abono(request):
 @login_requerido_custom
 def crear_abono(request, pedido_id):
     cliente = obtener_cliente_actual(request)
-
     if not cliente: 
-        messages.error(request, "Perfil de cliente no encontrado.")
         return redirect('login')
     
     pedido = get_object_or_404(Pedido, id_pedido=pedido_id)
     
+    # 1. Calculamos totales actuales
+    items = Det_valor.objects.filter(id_ped_fk_detval=pedido)
+    total_productos = items.aggregate(Sum('valor_total'))['valor_total__sum'] or 0
+    
+    total_abonado_previo = Abono.objects.filter(id_pedido_fk_abono=pedido).aggregate(Sum('monto_abono'))['monto_abono__sum'] or 0
+    saldo_pendiente = total_productos - total_abonado_previo
+
     if request.method == 'POST':
         monto_str = request.POST.get('monto_abono', '0')
+        # Si no llega método, ponemos uno por defecto para evitar el error 1048
+        metodo = request.POST.get('metodo_pago', 'Efectivo')
+
         try:
-            # Limpiamos el monto (tu modelo usa BigIntegerField)
-            valor = int(monto_str.replace('$', '').replace('.', '').replace(',', '').strip())
+            # Limpieza del valor ingresado
+            valor_ingresado = int(monto_str.replace('$', '').replace('.', '').replace(',', '').strip())
             
+            # VALIDACIÓN: No permitir abonos de 0 o negativos
+            if valor_ingresado <= 0:
+                messages.error(request, "El monto debe ser mayor a 0.")
+                return redirect('ventas:crear_abono', pedido_id=pedido_id)
+
+            # VALIDACIÓN: No permitir pagar más de lo que se debe
+            if valor_ingresado > saldo_pendiente:
+                messages.error(request, f"El monto (${valor_ingresado}) supera el saldo pendiente (${saldo_pendiente}).")
+                return redirect('ventas:crear_abono', pedido_id=pedido_id)
+
             with transaction.atomic():
-                # --- PUNTO CRÍTICO: ¿Es el primer abono? ---
+                # Verificamos si es el primer abono para descontar inventario
                 tiene_abonos = Abono.objects.filter(id_pedido_fk_abono=pedido).exists()
-                
                 if not tiene_abonos:
-                    # Si es el primero, intentamos descontar de la bodega
+                    # Solo restamos del inventario la primera vez que pone dinero
                     gestionar_inventario(pedido, 'RESTAR')
-                
-                # Creamos el abono (esto disparará el save() del modelo que cambia el estado a PAGADO si aplica)
+
+                # REGISTRAMOS EL ABONO EXACTO
                 Abono.objects.create(
                     id_pedido_fk_abono=pedido,
-                    monto_abono=valor,
-                    metodo_pago=request.POST.get('metodo_pago'),
-                    descripcion=request.POST.get('descripcion', '')
+                    monto_abono=valor_ingresado,
+                    metodo_pago=metodo,
+                    descripcion=request.POST.get('descripcion', 'Abono parcial')
                 )
                 
-            messages.success(request, "Abono registrado correctamente.")
-            return redirect('lista_abono')
+                # Calculamos cuánto lleva pagado en total sumando el nuevo abono
+                total_pagado_ahora = total_abonado_previo + valor_ingresado
+
+                # CAMBIO DE ESTADO: Solo si llegó al total exacto
+                if total_pagado_ahora >= total_productos:
+                    # Cambiamos a 'Confirmado' o 'PAGADO' (según uses en tus filtros)
+                    pedido.estado_ped = 'Confirmado' 
+                    pedido.save()
+                    messages.success(request, "¡Felicidades! Has completado el pago de tu pedido.")
+                else:
+                    messages.success(request, f"Abono de ${valor_ingresado} registrado con éxito.")
+
+            return redirect('ventas:ver_carrito')
             
-        except ValueError as e:
-            messages.error(request, str(e))
-            return redirect('crear_abono', pedido_id=pedido_id)
+        except ValueError:
+            messages.error(request, "Por favor, ingresa un número válido.")
+            return redirect('ventas:crear_abono', pedido_id=pedido_id)
 
-    return render(request, 'abono/form_abono.html', {'pedido': pedido})
+    return render(request, 'abono/form_abono.html', {
+        'pedido': pedido,
+        'total_productos': total_productos,
+        'total_abonado': total_abonado_previo, 
+        'saldo_pendiente': saldo_pendiente
+    })
 
-def eliminar_abono(request, id): # <-- IMPORTANTE: Agregar el id aquí
-    abono = get_object_or_404(Abono, id_abono=id) # Usamos el nombre de tu PK: id_abono
+def eliminar_abono(request, id):
+    abono = get_object_or_404(Abono, id_abono=id) 
     if request.method == 'POST': 
         abono.delete()
         return redirect('lista_abono')
@@ -335,14 +364,18 @@ def finalizar_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id_pedido=pedido_id)
     
     if request.method == 'POST':
+        tipo_pago = request.POST.get('tipo_pago')
+
+        if tipo_pago == 'abono':
+            return redirect ('ventas:crear_abono', pedido_id=pedido.id_pedido)
         # Traemos todos los detalles (prendas) que el cliente metió en este pedido
         detalles = Det_valor.objects.filter(id_ped_fk_detval=pedido)
         
         if not detalles.exists():
             messages.error(request, "Tu carrito está vacío.")
-            return redirect('lista_productos')
+            return redirect('ventas:lista_product')
 
-        # 1. SUMA TOTAL Y DÍAS DE PRODUCCIÓN
+        # SUMAR TOTAL Y DÍAS DE PRODUCCIÓN
         # Usamos aggregate para que la base de datos haga el trabajo pesado
         resultados = detalles.aggregate(
             total=Sum('valor_total'),
@@ -351,21 +384,37 @@ def finalizar_pedido(request, pedido_id):
         
         total_real = resultados['total'] or 0
         dias_produccion = resultados['max_espera'] or 1
-
-        # 2. TRANSFORMACIÓN DEL PEDIDO
-        # Actualizamos los campos que estaban en 0 o vacíos
-        pedido.subtotal_ped = total_real
-        pedido.valor_ped = total_real
-        pedido.metodo_pago = request.POST.get('metodo_pago')
-        pedido.fecha_ped = timezone.now().date() # Fecha de hoy
-        pedido.fecha_entrega = timezone.now().date() + timedelta(days=dias_produccion)
         
-        # CAMBIO DE ESTADO: Aquí deja de ser un carrito
-        pedido.estado_ped = 'Confirmado' 
-        pedido.save()
+        try: 
+            with transaction.atomic(): 
+                alerta_stock = gestionar_inventario(pedido, operacion='RESTAR')
+        # Actualizamos datos de pedido
+                pedido.subtotal_ped = total_real
+                pedido.valor_ped = total_real
+                pedido.metodo_pago = request.POST.get('metodo_pago')
+                pedido.fecha_ped = timezone.now().date() # Fecha de hoy
+                pedido.fecha_entrega = timezone.now().date() + timedelta(days=dias_produccion)
+        
+        #cambio estado
+                pedido.estado_ped = 'Confirmado' 
+                pedido.save()
 
-        messages.success(request, f"¡Pedido confirmado! Estará listo el {pedido.fecha_entrega}")
-        return redirect('ventas:lista_pedido')
+                Abono.objects.create(
+                    id_pedido_fk_abono=pedido,
+                    monto_abono=total_real, # El 100%
+                    metodo_pago=request.POST.get('metodo_pago'),
+                    descripcion="Pago Exitoso."
+                )
+
+                if alerta_stock: 
+                    print(f"El pedido {pedido.id_pedido} requiere compra de {alerta_stock} ")
+
+                messages.success(request, f"¡Pedido confirmado! Estará listo el {pedido.fecha_entrega}")
+                return redirect('ventas:lista_product')
+            
+        except Exception as e: 
+            messages.error(request, f"Error al procesar el pago: {e}")
+            return redirect('ventas:ver_carrito')
 
     return render(request, 'pedido/finalizar.html', {'pedido': pedido})
 
@@ -401,13 +450,21 @@ def eliminar_pedido(request, id):
     pedido = get_object_or_404(Pedido, id_pedido=id)
     
     if request.method == 'POST':
-        with transaction.atomic():
+        if pedido.estado_ped == 'Cancelado': 
+            messages.warning(request, "Pedido ya cancelado")
+            return redirect('ventas:lista_pedido')
+        try: 
+            with transaction.atomic():
             # Si el pedido ya tenía abonos, significa que el inventario se descontó
-            if Abono.objects.filter(id_pedido_fk_abono=pedido).exists():
-                gestionar_inventario(pedido, 'SUMAR') # Devolvemos el material
+                realizo_pago = Abono.objects.filter(id_pedido_fk_abono=pedido).exists()
+                if realizo_pago:    
+                    gestionar_inventario(pedido, 'SUMAR') # Devolvemos el material
             
-            pedido.delete()
-            messages.success(request, "Pedido eliminado y materiales devueltos al stock.")
+            pedido.estado_ped = 'Cancelado'
+            pedido.save()
+            return redirect('ventas:lista_pedido')
+        except Exception as e:
+            messages.success(request, f"Error al cancelar el pedido: {e}")
             return redirect('ventas:lista_pedido')
             
     return render(request, 'pedido/eliminar_pedido.html', {'pedido': pedido})
@@ -417,58 +474,77 @@ def eliminar_pedido(request, id):
 @login_requerido_custom
 def ver_carrito(request):
     usuario_id = request.session.get('usuario_id')
+    cliente = get_object_or_404(Cliente, id_clien=usuario_id)
 
-    try:
-        cliente = Cliente.objects.get(id_clien=usuario_id)
-    except Cliente.DoesNotExist:
-        # Si no hay sesión manual, redirigimos al login
-        return redirect('usuarios:login')
+    pedido = Pedido.objects.filter(id_clien_fk=cliente).exclude(estado_ped='Cancelado').first()
 
-    # CORRECCIÓN AQUÍ: Usamos la variable 'cliente' que definimos arriba
-    # En lugar de request.user.cliente
-    pedido = Pedido.objects.filter(id_clien_fk=cliente, estado_ped='Carrito').first()
+    if not pedido:
+        return render(request, 'pedido/carrito.html', {'items': [], 'total_productos': 0})
+
+    items = Det_valor.objects.filter(id_ped_fk_detval=pedido)
+    total_productos = items.aggregate(Sum('valor_total'))['valor_total__sum'] or 0
+    total_abonado = Abono.objects.filter(id_pedido_fk_abono=pedido).aggregate(Sum('monto_abono'))['monto_abono__sum'] or 0
     
-    if pedido:
-        # Traemos todos los detalles de ese pedido
-        items = Det_valor.objects.filter(id_ped_fk_detval=pedido)
-        # Sumamos el total para mostrarlo en el HTML
-        total = items.aggregate(Sum('valor_total'))['valor_total__sum'] or 0
-    else:
-        items = []
-        total = 0
+    saldo_pendiente = max(0, total_productos - total_abonado)
+
+    if saldo_pendiente <= 0 and pedido.estado_ped in ['PAGADO', 'Confirmado', 'Confirmada']:
+        return render(request, 'pedido/carrito.html', {'items': [], 'total_productos': 0})
 
     return render(request, 'pedido/carrito.html', {
         'pedido': pedido,
         'items': items,
-        'total': total
+        'total_productos': total_productos,
+        'saldo_pendiente': saldo_pendiente,
+        'tiene_abonos': total_abonado > 0
     })
 
 @login_requerido_custom
-def eliminar_del_carrito(request, detalle_id):
+def eliminar_del_carrito(request, id_det_valor):
     cliente = obtener_cliente_actual(request)
 
     if not cliente: 
         messages.error(request, "Perfil de cliente no encontrado.")
         return redirect('login')
     
-    # Buscamos el detalle que el cliente quiere quitar
-    detalle = get_object_or_404(Det_valor, id_det_valor=detalle_id)
+    detalle = get_object_or_404(Det_valor, id_det_valor=id_det_valor)
     
-    # Verificamos que el pedido aún sea un 'Carrito' (Seguridad)
     if detalle.id_ped_fk_detval.estado_ped != 'Carrito':
         messages.error(request, "No puedes eliminar productos de un pedido ya confirmado.")
         return redirect('ventas:lista_pedido')
 
     with transaction.atomic():
-        # Si el detalle tiene una variación (talla, color, etc.), la borramos primero
+        
         if detalle.id_var_fk_detval:
             detalle.id_var_fk_detval.delete()
         
-        # Luego borramos el detalle del carrito
         detalle.delete()
         
     messages.success(request, "Producto eliminado del carrito.")
-    return redirect('ver_carrito')
+    return redirect('ventas:ver_carrito')
+
+@login_requerido_custom
+def editar_carrito(request, id_det_valor):
+    # 1. Obtenemos el detalle que se quiere "cambiar"
+    detalle = get_object_or_404(Det_valor, id_det_valor=id_det_valor)
+    
+    # 2. Guardamos los datos necesarios antes de borrar
+    id_producto = detalle.id_prod_fk_detval.id_produc
+    id_pedido = detalle.id_ped_fk_detval.id_pedido
+    es_personalizado = (detalle.tipo_pedido == "Personalizado")
+
+    # 3. Borramos el registro actual del carrito
+    with transaction.atomic():
+        if detalle.id_var_fk_detval:
+            detalle.id_var_fk_detval.delete() # Borra la variación si existe
+        detalle.delete() # Borra el renglón del carrito
+
+    # 4. Redirección inteligente según el tipo de producto
+    if es_personalizado:
+        # Te manda al formulario de personalización (talla, estampado, etc.)
+        return redirect('ventas:crear_variacion', producto_id=id_producto, pedido_id=id_pedido)
+    else:
+        # Te manda a la vista simple (solo talla)
+        return redirect('ventas:producto_sin_personalizar', producto_id=id_producto)
 
 #------------- DET_MOV_MATP ---------------------------------
 def matp_producto(request, producto_id): 
@@ -492,28 +568,28 @@ def matp_producto(request, producto_id):
     })
 
 def gestionar_inventario(pedido, operacion):
-    """
-    operacion: 'RESTAR' (Venta/Abono), 'SUMAR' (Cancelación)
-    """
     detalles = Det_valor.objects.filter(id_ped_fk_detval=pedido)
-    
+    materiales_faltantes = [] # Lista para guardar los materiales faltantes
+
     with transaction.atomic():
         for item in detalles:
-            # Buscamos la receta en Det_mov_matp usando 'producto' (como en tu modelo)
             receta = Det_mov_matp.objects.filter(producto=item.id_prod_fk_detval)
             
             for insumo in receta:
                 material = insumo.materia_prima
-                # Cantidad necesaria = (lo que gasta 1) * (cantidad comprada)
                 cantidad_total = insumo.cantidad_usada * item.cant
 
                 if operacion == 'RESTAR':
-                    if material.stock_movi_mtp >= cantidad_total:
-                        material.stock_movi_mtp -= cantidad_total
-                    else:
-                        raise ValueError(f"No hay suficiente {material.tipo_movi_mtp} para {item.id_prod_fk_detval.nom_produc}")
+                    # Restamos de todos modos
+                    material.stock_movi_mtp -= cantidad_total
+                    
+                    # Si el stock bajó de cero, lo anotamos en la lista de faltantes
+                    if material.stock_movi_mtp < 0:
+                        materiales_faltantes.append(f"{material.tipo_movi_mtp} (Faltan {abs(material.stock_movi_mtp)} unidades)")
                 
                 elif operacion == 'SUMAR':
                     material.stock_movi_mtp += cantidad_total
                 
                 material.save()
+    
+    return materiales_faltantes

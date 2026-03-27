@@ -126,7 +126,7 @@ def crear_empleado(request):
             id_usuario_fk=Usuario.objects.get(id_usuario=id_usuario_seleccionado)
         )
 
-        return redirect('lista_empleados')
+        return redirect('usuario:lista_empleados')
 
     return render(request, 'usuarios/empleados/crear.html', {'usuarios': usuarios})
 
@@ -165,14 +165,20 @@ def eliminar_empleado(request, id):
     return redirect('lista_empleados')
 
 
+<<<<<<< HEAD
+=======
 @never_cache
 @login_required
+>>>>>>> 16d15749ef8ea742fe75a022afde8c975a926237
 def lista_clientes(request):
     clientes = Cliente.objects.all()
     return render(request, 'usuarios/clientes/lista.html', {'clientes': clientes})
 
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> 16d15749ef8ea742fe75a022afde8c975a926237
 def crear_cliente(request):
     usuarios = Usuario.objects.all()
 
@@ -215,7 +221,10 @@ def editar_cliente(request, id):
     })
 
 
+<<<<<<< HEAD
+=======
 #  ELIMINAR
+>>>>>>> 16d15749ef8ea742fe75a022afde8c975a926237
 def eliminar_cliente(request, id):
     cliente = get_object_or_404(Cliente, id_clien=id)
     cliente.delete()
