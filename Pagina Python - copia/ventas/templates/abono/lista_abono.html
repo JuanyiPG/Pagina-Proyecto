@@ -1,0 +1,34 @@
+{% block content %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Abonos</title>
+</head>
+<body>
+    <table>
+        <thead> 
+            <tr></tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Monto</th>
+                <th>Método</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for abono in abonos %} 
+            <tr>
+                <td>{{ abono.id }}</td>
+                <td>{{ abono.fecha_abono }}</td>
+                <td>{{ abono.monto_abono }}</td>
+                <td>{{ abono.metodo_pago }}</td>
+                <td>{{ abono.descripcion }}</td>
+            </tr>
+            {% endfor %} </tbody>
+    </table>
+    
+</body>
+</html>
+{% endblock %}
