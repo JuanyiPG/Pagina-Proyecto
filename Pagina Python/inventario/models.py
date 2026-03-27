@@ -1,11 +1,14 @@
 from django.db import models
-
 class Estampado(models.Model):
     id_estamp = models.AutoField(primary_key=True)
     nombre_estamp = models.CharField(max_length=100)
-    link_estamp = models.CharField(max_length=500)
+    imagen_estamp = models.ImageField(upload_to='estampados/', null=True, blank=True)
+    imagen_hash = models.CharField(max_length=64, unique=True, null=True, blank=True)
     costo_adi = models.FloatField()
     tipo_estamp = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.nombre_estamp
 
 class Proveedor(models.Model):
     id_provee = models.AutoField(primary_key=True)
