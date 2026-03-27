@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Carrito - Luxy Fashion</title>
+    <style>
+        body { font-family: Arial; background: #f4eeee; margin: 0; }
+        header { 
+            background: white; height: 80px; padding: 0 20px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            position: fixed; top: 0; width: 100%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            z-index: 1000;
+        }
+        main { margin-top: 100px; padding: 40px; }
+        .producto { 
+            display: flex; align-items: center; background: white; 
+            margin-bottom: 20px; padding: 15px; border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .producto img { width: 120px; height: auto; margin-right: 20px; object-fit: cover; border-radius: 4px; }
+        .info-prod p { margin: 5px 0; }
+        .nombre-p { font-weight: bold; font-size: 18px; color: rgb(87,16,29); }
+        
+        .resumen-pago {
+            background: white; padding: 25px; border-radius: 12px;
+            max-width: 450px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-top: 30px;
+        }
+        .fila-resumen { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 16px; color: #555; }
+        .total-final { margin-top: 15px; padding-top: 15px; border-top: 2px dashed #eee; font-size: 22px; font-weight: bold; }
+        
+        /* Botones y Spinner */
+        .btn-comprar { 
+            display: flex; justify-content: center; align-items: center;
+            width: 100%; padding: 15px; background: rgb(87,16,29); 
+            color: white; border: none; cursor: pointer; font-size: 16px; 
+            border-radius: 8px; transition: 0.3s; font-weight: bold; margin-top: 10px;
+            text-decoration: none;
+        }
+        .btn-comprar:hover { background: rgb(110, 20, 37); }
+        .btn-comprar:disabled { background: #999; cursor: not-allowed; }
+
+        .spinner {
+            width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%; border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            display: none; margin-right: 10px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .carrito-vacio { text-align: center; color: #666; margin-top: 50px; }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <div><a href="{% url 'ventas:lista_product' %}"><img src="{% static 'img/Logo_Luxy_Fashion.jpg' %}" height="60" alt="Logo"></a></div>
+</header>
+
+<main>
+    <h2>Mi Carrito</h2>
+    <div id="lista">
+        {% if items %}
+            {% for item in items %}
+            <div class="producto">
+                <img src="{% if item.id_prod_fk_detval.imagen_product %}{{ item.id_prod_fk_detval.imagen_product.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}" alt="Producto">
+                <div class="info-prod">
+                    <p class="nombre-p">{{ item.id_prod_fk_detval.nom_produc }}</p>
+                    <p>Talla: <strong>{{ item.talla }}</strong> | Cantidad: {{ item.cant }}</p>
+                    <p>Subtotal: <strong>${{ item.valor_total }}</strong></p>
+                </div>
+                
+                <div class="borrar">
+                    <a href="{% url 'ventas:eliminar_carrito' id_det_valor=item.id_det_valor %}" 
+                        style="color: #57101d;"
+                        onclick="return confirm('¿Desea remover este producto?')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16" style="margin-left:60em;">
+                            <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
+                        </svg>
+                    </a>
+                </div>
+
+                <div class="borrar">
+                    <a href="{% url 'ventas:editar_carrito' id_det_valor=item.id_det_valor %}" 
+                        style="color: #57101d;"
+                        onclick="return confirm('¿Desea editar este producto?')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16" style="margin-left: 20px">
+                            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
+                        </svg>
+                    </a>
+                </div>
+
+            </div>
+            {% endfor %} <div class="resumen-pago">
+                <h3>Resumen de compra</h3>
+                <div class="fila-resumen"><span>Total productos:</span><span>${{ total_productos }}</span></div>
+
+                {% if tiene_abonos %}
+                    <div class="fila-resumen total-final"><span>Saldo Pendiente:</span><span style="color:rgb(87,16,29);">${{ saldo_pendiente }}</span></div>
+                {% else %}
+                    <div class="fila-resumen total-final"><span>Total a pagar:</span><span>${{ total_productos }}</span></div>
+                {% endif %}
+
+                <a href="{% url 'ventas:finalizar_compra' pedido.id_pedido %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-comprar" id="btn-submit">
+                        <div class="spinner" id="loader"></div>
+                        <span id="btn-texto">Finalizar Compra</span>
+                    </button>
+                </a>
+            </div>
+
+        {% else %}
+            <div class="carrito-vacio">
+                <h3>Tu carrito está vacío</h3>
+                <a href="{% url 'ventas:lista_product' %}" class="btn-comprar" style="display:inline-block; width:auto;">Ver Productos</a>
+            </div>
+        {% endif %}
+    </div>
+</main>
+
+<script>
+    // Lógica para el efecto de carga
+    document.getElementById('form-finalizar').addEventListener('submit', function() {
+        const btn = document.getElementById('btn-submit');
+        const loader = document.getElementById('loader');
+        const texto = document.getElementById('btn-texto');
+
+        btn.disabled = true; // Evita doble clic
+        loader.style.display = 'block'; // Muestra la ruedita
+        texto.innerText = 'Procesando...'; // Cambia el texto
+    });
+</script>
+
+{% if messages %}
+    {% for message in messages %}<script>alert("{{ message }}");</script>{% endfor %}
+{% endif %}
+</body>
+</html>

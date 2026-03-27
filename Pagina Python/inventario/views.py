@@ -11,7 +11,7 @@ def lista_provee(request):
             fech_ingre=request.POST.get('fech_ingre'),
             num_tel=request.POST.get('num_tel')
         )
-        return redirect('lista_provee') 
+        return redirect('inventario:lista_provee') 
 
     proveedores = Proveedor.objects.all()
     return render(request, "proveedor/lista.html", {'proveedor': proveedores})
@@ -28,7 +28,7 @@ def editar_provee(request, id):
 
 def eliminar_provee(request, id):
     get_object_or_404(Proveedor, id_provee=id).delete()
-    return redirect('lista_provee')
+    return redirect('inventario:lista_provee')
 
 # --- MOVIMIENTOS MATP ---
 def lista_mmtp(request):
@@ -46,7 +46,7 @@ def lista_mmtp(request):
                 id_estamp_fk_invent=get_object_or_404(Estampado, id_estamp=id_est),
                 id_proveedor_fk=get_object_or_404(Proveedor, id_provee=id_pro)
             )
-            return redirect('lista_mmtp')
+            return redirect('inventario:lista_mmtp')
 
     return render(request, "movimiento_matp/lista.html", {
         'mmtp': Movimiento_matp.objects.all(), 
@@ -80,7 +80,7 @@ def editar_mmtp(request, id):
 
 def eliminar_mmtp(request, id):
     get_object_or_404(Movimiento_matp, id_mmtp=id).delete()
-    return redirect('lista_mmtp')
+    return redirect('inventario:lista_mmtp')
 
 from django.db.models import Q # <--- ¡ASEGÚRATE DE AGREGAR ESTA IMPORTACIÓN ARRIBA!
 
@@ -120,7 +120,7 @@ def lista_estampado(request):
             imagen_estamp=archivo_img,
             imagen_hash=nuevo_hash
         )
-        return redirect('lista_estampado')
+        return redirect('inventario:lista_estampado')
 
     # 3. MANEJAR LA MUESTRA DE DATOS Y FILTRADO (GET)
     if query:
@@ -165,7 +165,7 @@ def editar_estampado(request, id):
         estampado.tipo_estamp = request.POST.get('tipo_estamp')
         
         estampado.save() # Guarda todos los cambios en MySQL
-        return redirect('lista_estampado')
+        return redirect('inventario:lista_estampado')
 
     return render(request, 'estampado/editar.html', {'estampado': estampado})
 
@@ -185,4 +185,4 @@ def eliminar_estampado(request, id):
     # 4. Ahora sí, borramos el registro de la base de datos
     estampado.delete()
     
-    return redirect('lista_estampado')
+    return redirect('inventario:lista_estampado')
