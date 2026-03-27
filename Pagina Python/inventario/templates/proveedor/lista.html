@@ -25,8 +25,10 @@
                 <td>{{ p.fech_ingre }}</td>
                 <td>{{ p.num_tel }}</td>
                 <td>
-                    <a href="{% url 'editar_provee' p.id_provee %}" class="btn-edit">Editar</a>
-                    <a href="{% url 'eliminar_provee' p.id_provee %}" class="btn-delete">Borrar</a>
+                   
+                        <a href="{% url 'inventario:editar_provee' p.id_provee %}" class="btn-edit">Editar</a>
+                        <a href="{% url 'inventario:eliminar_provee' p.id_provee %}" class="btn-delete">Borrar</a>
+
                 </td>
             </tr>
             {% endfor %}

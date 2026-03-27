@@ -37,14 +37,14 @@ def editar_rol(request, id):
     if request.method == 'POST':
         rol.nom_rol = request.POST['nom_rol']
         rol.save()
-        return redirect('lista_roles')
+        return redirect('usuarios:lista_roles')
 
     return render(request, 'usuarios/roles/editar.html', {'rol': rol})
 
 def eliminar_rol(request, id):
     rol = get_object_or_404(Rol, id_rol=id)
     rol.delete()
-    return redirect('lista_roles')
+    return redirect('usuarios:lista_roles')
 
 @never_cache
 @login_required
@@ -68,7 +68,7 @@ def crear_usuario(request):
             id_rol_fk=rol
         )
 
-        return redirect('lista_usuarios')
+        return redirect('usuarios:lista_usuarios')
 
     return render(request, 'usuarios/usuario/crear.html', {'roles': roles})
 
@@ -85,7 +85,7 @@ def editar_usuario(request, id):
         usuario.id_rol_fk = Rol.objects.get(id_rol=request.POST['id_rol'])
         usuario.save()
 
-        return redirect('lista_usuarios')
+        return redirect('usuarios:lista_usuarios')
 
     return render(request, 'usuarios/usuario/editar.html', {
         'usuario': usuario,
@@ -95,7 +95,7 @@ def editar_usuario(request, id):
 def eliminar_usuario(request, id):
     usuario = get_object_or_404(Usuario, id_usuario=id)
     usuario.delete()
-    return redirect('lista_usuarios')
+    return redirect('usuarios:lista_usuarios')
 
 
 
@@ -126,7 +126,7 @@ def crear_empleado(request):
             id_usuario_fk=Usuario.objects.get(id_usuario=id_usuario_seleccionado)
         )
 
-        return redirect('usuario:lista_empleados')
+        return redirect('usuarios:lista_empleados')
 
     return render(request, 'usuarios/empleados/crear.html', {'usuarios': usuarios})
 
@@ -154,7 +154,7 @@ def editar_empleado(request, id):
             empleado.id_usuario_fk = Usuario.objects.get(id_usuario=id_usuario)
         empleado.save()
 
-        return redirect('lista_empleados')
+        return redirect('usuarios:lista_empleados')
     return render(request, 'usuarios/empleados/editar.html', {
         'empleado': empleado,
         'usuarios': usuarios
@@ -162,7 +162,7 @@ def editar_empleado(request, id):
 def eliminar_empleado(request, id):
     empleado = get_object_or_404(Empleado, id_emple=id)
     empleado.delete()
-    return redirect('lista_empleados')
+    return redirect('usuarios:lista_empleados')
 
 
 @never_cache
@@ -187,7 +187,7 @@ def crear_cliente(request):
             id_usuario_fk=Usuario.objects.get(id_usuario=id_usuario_seleccionado)
         )
 
-        return redirect('lista_clientes')
+        return redirect('usuarios:lista_clientes')
 
     return render(request, 'usuarios/clientes/crear.html', {'usuarios': usuarios})
 
@@ -207,7 +207,7 @@ def editar_cliente(request, id):
             cliente.id_usuario_fk = Usuario.objects.get(id_usuario=id_usuario)
 
         cliente.save()
-        return redirect('lista_clientes')
+        return redirect('usuarios:lista_clientes')
 
     return render(request, 'usuarios/clientes/editar.html', {
         'cliente': cliente,
@@ -219,11 +219,10 @@ def editar_cliente(request, id):
 def eliminar_cliente(request, id):
     cliente = get_object_or_404(Cliente, id_clien=id)
     cliente.delete()
-    return redirect('lista_clientes')
+    return redirect('usuarios:lista_clientes')
 
 #LOGIN AUN NO COMPROBADO :(
 def login_view(request):
-
     if request.method == 'POST':
         user_post = request.POST.get('username')
         pass_post = request.POST.get('password')
@@ -232,17 +231,23 @@ def login_view(request):
             usuario = Usuario.objects.get(username=user_post)
             
             if check_password(pass_post, usuario.contrasena):
+                
+                # 🧹 PASO CLAVE: Borra sesiones viejas de este navegador antes de iniciar la nueva
+                request.session.flush() 
 
+                # 📝 Guardamos los nuevos datos en sesión
                 request.session['usuario_id'] = usuario.id_usuario
                 request.session['rol'] = usuario.id_rol_fk.nom_rol
 
                 messages.success(request, f"Bienvenido, {usuario.username}")
 
-                # 🔥 AQUÍ ESTÁ LA CLAVE
+                # 🔀 Enrutamiento por Roles
                 if usuario.id_rol_fk.nom_rol == 'Administrador':
                     return redirect('usuarios:lista_roles')
+                elif usuario.id_rol_fk.nom_rol == 'Empleado':
+                    return redirect('usuarios:lista_roles') # O la vista del empleado
                 else:
-                    return redirect('index')
+                    return redirect('index') # Mandar al cliente al catálogo
 
             else:
                 messages.error(request, "Contraseña incorrecta.")
@@ -251,6 +256,7 @@ def login_view(request):
             messages.error(request, "El usuario no existe.")
             
     return render(request, 'usuarios/login.html')
+
 def logout_view(request):
     if request.method == 'POST':
         logout(request)

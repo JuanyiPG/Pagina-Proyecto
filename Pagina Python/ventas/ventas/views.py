@@ -473,18 +473,9 @@ def eliminar_pedido(request, id):
 
 @login_requerido_custom
 def ver_carrito(request):
-    # 1. Usamos tu función para obtener el cliente correctamente
-    try:
-        cliente = obtener_cliente_actual(request)
-    except Cliente.DoesNotExist:
-        # En vez de mandar un error 404, pintamos el carrito vacío y mandamos un mensaje
-        return render(request, 'pedido/carrito.html', {
-            'items': [], 
-            'total_productos': 0, 
-            'error_perfil': "No tienes un perfil de Cliente asociado a tu usuario."
-        })
+    usuario_id = request.session.get('usuario_id')
+    cliente = get_object_or_404(Cliente, id_clien=usuario_id)
 
-    # 2. El resto del código continúa exactamente igual
     pedido = Pedido.objects.filter(id_clien_fk=cliente).exclude(estado_ped='Cancelado').first()
 
     if not pedido:
@@ -512,7 +503,7 @@ def eliminar_del_carrito(request, id_det_valor):
     cliente = obtener_cliente_actual(request)
 
     if not cliente: 
-        messages.error(request, "Perfil de cliente no encontrado.inst")
+        messages.error(request, "Perfil de cliente no encontrado.")
         return redirect('login')
     
     detalle = get_object_or_404(Det_valor, id_det_valor=id_det_valor)

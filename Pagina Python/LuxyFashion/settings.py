@@ -125,9 +125,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-#Para que busque en la carpeta raiz (proyecto)
+# settings.py
+
+STATIC_URL = '/static/'
+
+# Esto le dice a Django: "Busca los archivos en la carpeta 'static' de la raíz"
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    BASE_DIR / 'static',
 ]
 
 # Default primary key field type
