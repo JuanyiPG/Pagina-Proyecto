@@ -7,8 +7,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'vista_producto.css' %}">
     <title>{{ producto.nom_produc }} | LuxyFashion</title>
+    <style>
+        body { font-family: Arial; background: #f4eeee; margin: 0; }
+        header { 
+            background: white; height: 80px; padding: 0 20px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            position: fixed; top: 0; width: 100%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            z-index: 1000;
+        }
+        main { margin-top: 100px; padding: 40px; }
+        .producto { 
+            display: flex; align-items: center; background: white; 
+            margin-bottom: 20px; padding: 15px; border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .producto img { width: 120px; height: auto; margin-right: 20px; object-fit: cover; border-radius: 4px; }
+        .info-prod p { margin: 5px 0; }
+        .nombre-p { font-weight: bold; font-size: 18px; color: rgb(87,16,29); }
+        
+        .resumen-pago {
+            background: white; padding: 25px; border-radius: 12px;
+            max-width: 450px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-top: 30px;
+        }
+        .fila-resumen { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 16px; color: #555; }
+        .total-final { margin-top: 15px; padding-top: 15px; border-top: 2px dashed #eee; font-size: 22px; font-weight: bold; }
+        
+        /* Botones y Spinner */
+        .btn-comprar { 
+            display: flex; justify-content: center; align-items: center;
+            width: 100%; padding: 15px; background: rgb(87,16,29); 
+            color: white; border: none; cursor: pointer; font-size: 16px; 
+            border-radius: 8px; transition: 0.3s; font-weight: bold; margin-top: 10px;
+            text-decoration: none;
+        }
+        .btn-comprar:hover { background: rgb(110, 20, 37); }
+        .btn-comprar:disabled { background: #999; cursor: not-allowed; }
+
+        .spinner {
+            width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%; border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            display: none; margin-right: 10px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .carrito-vacio { text-align: center; color: #666; margin-top: 50px; }
+
+    </style>
 </head>
 <body>
+    <header>
+    <div><a href="{% url 'ventas:lista_product' %}"><img src="{% static 'img/Logo_Luxy_Fashion.jpg' %}" height="60" alt="Logo"></a></div>
+</header>
 
 <div class="con-pro-cli">
     <div class="imgs-of-produc">
@@ -25,27 +76,43 @@
         {% endif %}
     </div>
 
-   <div class="form-pro">
+<div class="form-pro">
     <form action="{% url 'ventas:producto_sin_personalizar' producto.id_produc %}" method="POST">
         {% csrf_token %}
 
-        <h2 style="font-family: Georgia;">{{ producto.nom_produc }}</h2>
-        <p class="subinfo">Precio: $ {{ producto.precio }}</p>
+            <pre class="readonly"><input type="text" class="nombre" name="nomPedido" value="{{producto.nom_produc}}" readonly style="font-size: 25px; width: 70%; font-family:Georgia, 'Times New Roman', Times, serif;"></pre>
+        <label for="valor" class="subinfo" style="font-family: Georgia, 'Times New Roman', Times, serif;">Valor:</label>
+            <pre class="readonly">$<input type="text"  class="valor" name="valor" value="{{ producto.precio }}" readonly style="font-family: Georgia, 'Times New Roman', Times, serif;"></pre>
 
-        <div style="margin-top: 15px;">
-            <label for="talla_id">Selecciona tu talla:</label>
-            <select name="talla" id="talla_id" class="form-select" required>
-                <option value="" disabled selected>Elegir...</option>
-                {% for t in tallas %}
-                    <option value="{{ t }}">{{ t }}</option>
-                {% endfor %}
-            </select>
+        {% for t in tallas %}
+            <input type="radio" name="talla" id="talla-{{t}}" value="{{t}}">
+            <label for="talla-{{t}}" class="btn-talla">{{t}}</label>
+        {% endfor %}
+
+        <div class="contenedor-opciones-color">
+        {% for c in colores %}
+        <div class="color-picker subinfo">
+
+                <input type="radio" name="color" id="color-{{c}}" value="{{c}}">
+                <label for="color-{{c}}" class="color-option"
+                    style="background-color:{% if c == 'rojo' %}red{% elif c == 'azul' %}blue{% elif c == 'negro' %}:blank{% elif c == 'blanco' %}white{% elif c == 'gris' %}gray{% else %}#ccc{% endif %};">
+                </label>
+        </div>
+        {% endfor %}
         </div>
 
         <div style="margin-top: 15px;">
             <label for="cantidad_id">Cantidad:</label>
             <input type="number" name="cantidad" id="cantidad_id" value="1" min="1" style="width: 60px;">
         </div>
+
+        <div class="descripcion-container">
+                <div class="descripcion-header">
+                    <label for="descrip" class="titulo-desc">Descripcion</label>
+                    <span class="arrow-desc">▶</span>
+                </div>
+                <input type=""  readonly id="descrip_produc" name="desc_produc" class="hidden" value="{{producto.desc_produc}}">
+            </div>
 
         <div style="margin-top: 20px;">
             <button type="submit" class="btn" style="background-color: black; color: white; padding: 10px 25px; border: none; cursor: pointer;">
@@ -54,6 +121,7 @@
         </div>
     </form>
 </div>
+<script src="{% static 'js/cliente.js' %}"></script>
 </body>
 </html>
 {% endblock %}

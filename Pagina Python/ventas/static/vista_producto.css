@@ -363,9 +363,9 @@ footer {
   border-radius: 20%;
 }
 
-.Nombre {
+.nombre {
   font-size: 35px;
-  margin-bottom: 10px ;
+  margin-bottom: 20px ;
 }
 
 .subinfo {
@@ -449,7 +449,7 @@ input[type="radio"] {
 .btn-talla {
   display: inline-block;
   padding: 10px 16px;
-  margin: 6px 6px;
+  margin: 20px 6px;
   border: solid 2px #5c0b26;
   border-radius: 8px;
   cursor: pointer;
@@ -475,8 +475,18 @@ input[type="radio"]:checked + .btn-talla {
   display: none;
 }
 
+.contenedor-opciones-color {
+    display: flex; 
+    flex-direction: row;
+    flex-wrap: wrap; 
+    gap: 10px;         
+    align-items: center;   
+    margin-top: 10px;
+}
+
+
 .color-picker .color-option {
-  display: inline-block;
+  display:inline-block;
   width: 30px;
   height: 20px;
   border-radius: 10px;
@@ -493,11 +503,6 @@ input[type="radio"]:checked + .btn-talla {
 .color-picker input[type="radio"]:checked + .color-option {
   border: 3px solid #5c5c5c;
 }
-
-.color-picker .rojo   { background: red; }
-.color-picker .gris  { background: grey;  border: 2px solid #585858;}
-.color-picker .blanco { background: #fff; border: 2px solid #aaa; }
-.color-picker .negro  { background: #000;  border: 2px solid #adacac;}
 
 #add-car-shop {
   background-color: #5c0b26f1;

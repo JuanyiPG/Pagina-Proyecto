@@ -112,7 +112,7 @@ def crear_empleado(request):
             id_usuario_fk=Usuario.objects.get(id_usuario=id_usuario_seleccionado)
         )
 
-        return redirect('lista_empleados')
+        return redirect('usuario:lista_empleados')
 
     return render(request, 'usuarios/empleados/crear.html', {'usuarios': usuarios})
 
@@ -152,13 +152,12 @@ def eliminar_empleado(request, id):
     empleado.delete()
     return redirect('lista_empleados')
 
-# 🔹 LISTAR
+
 def lista_clientes(request):
     clientes = Cliente.objects.all()
     return render(request, 'usuarios/clientes/lista.html', {'clientes': clientes})
 
 
-# 🔹 CREAR
 def crear_cliente(request):
     usuarios = Usuario.objects.all()
 
@@ -201,7 +200,6 @@ def editar_cliente(request, id):
     })
 
 
-# 🔹 ELIMINAR
 def eliminar_cliente(request, id):
     cliente = get_object_or_404(Cliente, id_clien=id)
     cliente.delete()
