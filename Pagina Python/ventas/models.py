@@ -28,10 +28,18 @@ class Producto(models.Model) :
     precio = models.DecimalField(max_digits=12, decimal_places= 2)
 
 
-class Det_mov_matp(models.Model) : 
+class Det_mov_matp(models.Model): 
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
-    materia_prima = models.ForeignKey(Movimiento_matp, on_delete=models.CASCADE)
+    materia_prima = models.ForeignKey(
+        Movimiento_matp, 
+        on_delete=models.CASCADE,
+        db_column='id_movi_mtp_fk_id_produc_id' # <--- ESTO ES LO QUE BUSCA EN MYSQL
+    )
     cantidad_usada = models.DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        managed = True  # Permite que Django sepa que él controla este modelo
+        db_table = 'ventas_det_mov_matp'
 
 class Pedido(models.Model):
     id_pedido = models.AutoField(primary_key=True)

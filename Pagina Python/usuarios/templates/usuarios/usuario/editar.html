@@ -2,45 +2,54 @@
 
 {% block content %}
 
-<h2>Editar Usuario</h2>
+<div class="page">
 
-<form method="POST">
-{% csrf_token %}
+    <!-- ENCABEZADO -->
+    <div class="page-header">
+        <h3>Editar Usuario</h3>
+    </div>
 
-<label>Username</label>
-<input type="text" name="username" value="{{usuario.username}}">
+    <!-- TARJETA -->
+    <div class="form-card">
 
-<br><br>
+        <form method="POST">
+        {% csrf_token %}
 
-<label>Contraseña</label>
-<input type="text" name="contrasena" value="{{usuario.contrasena}}">
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" name="username" value="{{usuario.username}}">
+        </div>
 
-<br><br>
+        <div class="form-group">
+            <label>Contraseña</label>
+            <input type="text" name="contrasena" value="{{usuario.contrasena}}">
+        </div>
 
-<label>Rol</label>
+        <div class="form-group">
+            <label>Rol</label>
+            <select name="id_rol">
+                {% for rol in roles %}
+                <option value="{{rol.id_rol}}"
+                {% if rol.id_rol == usuario.id_rol_fk.id_rol %}
+                selected
+                {% endif %}
+                >
+                {{rol.nom_rol}}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
 
-<select name="id_rol">
+        <!-- BOTONES -->
+        <div class="form-actions">
+            <button type="submit" class="btn-save">Actualizar</button>
+            <a href="{% url 'lista_usuarios' %}" class="btn-cancel">Cancelar</a>
+        </div>
 
-{% for rol in roles %}
+        </form>
 
-<option value="{{rol.id_rol}}"
-{% if rol.id_rol == usuario.id_rol_fk.id_rol %}
-selected
-{% endif %}
->
+    </div>
 
-{{rol.nom_rol}}
-
-</option>
-
-{% endfor %}
-
-</select>
-
-<br><br>
-
-<button type="submit">Actualizar</button>
-
-</form>
+</div>
 
 {% endblock %}

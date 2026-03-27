@@ -5,8 +5,20 @@ from .models import Rol, Usuario, Empleado, Cliente
 from django.contrib.auth.hashers import check_password, make_password
 from django.db import transaction
 from django.contrib import messages
+from django.views.decorators.cache import never_cache
+from django.shortcuts import render
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 
+@never_cache
 
+def login_requerido_custom(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if 'usuario_id' not in request.session:
+            return redirect('login')  # o la ruta de tu login
+        return view_func(request, *args, **kwargs)
+    return wrapper
 
 def lista_roles(request):
     roles = Rol.objects.all()
@@ -34,7 +46,8 @@ def eliminar_rol(request, id):
     rol.delete()
     return redirect('lista_roles')
 
-
+@never_cache
+@login_required
 def lista_usuarios(request):
     usuarios = Usuario.objects.all()
     return render(request, 'usuarios/usuario/lista.html', {'usuarios': usuarios})
@@ -86,7 +99,8 @@ def eliminar_usuario(request, id):
 
 
 
-
+@never_cache
+@login_required
 def lista_empleados(request):
     empleados = Empleado.objects.all()
     return render(request, 'usuarios/empleados/lista.html', {'empleados': empleados})
@@ -116,8 +130,6 @@ def crear_empleado(request):
 
     return render(request, 'usuarios/empleados/crear.html', {'usuarios': usuarios})
 
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Empleado, Usuario
 
 def editar_empleado(request, id):
     empleado = get_object_or_404(Empleado, id_emple=id)
@@ -153,11 +165,20 @@ def eliminar_empleado(request, id):
     return redirect('lista_empleados')
 
 
+<<<<<<< HEAD
+=======
+@never_cache
+@login_required
+>>>>>>> 16d15749ef8ea742fe75a022afde8c975a926237
 def lista_clientes(request):
     clientes = Cliente.objects.all()
     return render(request, 'usuarios/clientes/lista.html', {'clientes': clientes})
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 16d15749ef8ea742fe75a022afde8c975a926237
 def crear_cliente(request):
     usuarios = Usuario.objects.all()
 
@@ -200,36 +221,38 @@ def editar_cliente(request, id):
     })
 
 
+<<<<<<< HEAD
+=======
+#  ELIMINAR
+>>>>>>> 16d15749ef8ea742fe75a022afde8c975a926237
 def eliminar_cliente(request, id):
     cliente = get_object_or_404(Cliente, id_clien=id)
     cliente.delete()
     return redirect('lista_clientes')
 
 #LOGIN AUN NO COMPROBADO :(
-
-
 def login_view(request):
+
     if request.method == 'POST':
         user_post = request.POST.get('username')
         pass_post = request.POST.get('password')
         
         try:
-            # Buscamos en TU tabla Usuario
             usuario = Usuario.objects.get(username=user_post)
             
-            # Comparamos la contraseña ingresada con la encriptada en BD
             if check_password(pass_post, usuario.contrasena):
-                # CREAMOS LA SESIÓN MANUALMENTE
+
                 request.session['usuario_id'] = usuario.id_usuario
                 request.session['rol'] = usuario.id_rol_fk.nom_rol
-                
+
                 messages.success(request, f"Bienvenido, {usuario.username}")
-                
-                # Redirección según rol
-                if usuario.id_rol_fk.nom_rol == 'Administrador' or usuario.id_rol_fk.nom_rol == 'Empleado':
-                    return redirect('admin_dashboard')
+
+                # 🔥 AQUÍ ESTÁ LA CLAVE
+                if usuario.id_rol_fk.nom_rol == 'Administrador':
+                    return redirect('usuarios:lista_roles')
                 else:
-                    return redirect('index') # Página principal para clientes
+                    return redirect('index')
+
             else:
                 messages.error(request, "Contraseña incorrecta.")
                 
@@ -237,7 +260,13 @@ def login_view(request):
             messages.error(request, "El usuario no existe.")
             
     return render(request, 'usuarios/login.html')
-#REGISTRO
+def logout_view(request):
+    if request.method == 'POST':
+        logout(request)
+        request.session.flush()
+        return redirect('usuarios:login')
+    return redirect('usuarios:login')
+
 def registro_view(request):
     if request.method == 'POST':
         # 1. Recibimos los datos del HTML
@@ -275,7 +304,7 @@ def registro_view(request):
                 )
 
             messages.success(request, '¡Registro exitoso! Ya puedes iniciar sesión.')
-            return redirect('login') # Te manda al login para que entres
+            return redirect('usuarios:login') # Te manda al login para que entres
 
         except Exception as e:
             messages.error(request, 'Error al registrar: ' + str(e))
@@ -293,14 +322,14 @@ def logout_view(request):
     request.session.flush()
 
     messages.info(request, "Has cerrado sesión correctamente.")
-    return redirect('login')
+    return redirect('usuarios:login')
 
 def solo_personal(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
         # 1. ¿Está logueado?
         if 'usuario_id' not in request.session:
-            return redirect('login')
+            return redirect('usuarios:login')
         
         # 2. ¿Es parte del personal? (Admin o Empleado)
         rol = request.session.get('rol')

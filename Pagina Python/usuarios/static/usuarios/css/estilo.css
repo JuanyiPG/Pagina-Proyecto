@@ -1,4 +1,4 @@
-
+/* RESET */
 *{
     margin: 0;
     padding: 0;
@@ -6,177 +6,291 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
+/* BODY */
 body{
-    background: #f5f5f5;
-    margin-left: 230px;
+    background: #f5f6fa;
+    margin-left: 240px;
 }
 
-
+/* ===== SIDEBAR ===== */
 nav{
     position: fixed;
     left: 0;
     top: 0;
-    width: 230px;
+    width: 240px;
     height: 100vh;
     background: linear-gradient(180deg, #6a0f2e, #3d061a);
-    padding: 25px;
     display: flex;
     flex-direction: column;
-    
+    box-shadow: 3px 0 15px rgba(0,0,0,0.15);
 }
 
+/* LOGO */
 nav h1{
     color: white;
-    text-align: center;
-    margin-bottom: 40px;
-    font-size: 22px;
+    padding: 22px 20px;
+    font-size: 20px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
+/* LINKS */
 nav a{
-    text-decoration: none;
-    color: white;
-    padding: 12px 15px;
-    margin: 5px 0;
-    border-radius: 8px;
-    transition: 0.3s;
-}
-
-nav a:hover{
-    background: #7e1a3f;
-    transform: translateX(5px);
-}
-
-hr{
-    display: none;
-}
-
-/* --- CONTENIDO --- */
-main{
-    padding: 40px;
     display: flex;
-    justify-content: center;
-}
-
-/* contenedor interno */
-main > *{
-    width: 100%;
-    max-width: 1100px;
-}
-
-/* --- TITULO --- */
-h2{
-    color: #7e1a3f;
-    margin-bottom: 15px;
-}
-
-/* 🔥 BOTÓN CREAR (FUNCIONA CON TODOS TUS HTML) */
-h2 + a{
-    display: inline-block;
-    background: linear-gradient(135deg, #7e1a3f, #a8325f);
-    color: white;
-    padding: 10px 22px;
-    border-radius: 25px;
-    margin: 10px 0 20px 0;
+    align-items: center;
+    color: #f3e8ef;
     text-decoration: none;
-    font-weight: bold;
+    padding: 14px 22px;
     font-size: 14px;
+    transition: all 0.25s ease;
+    border-left: 4px solid transparent;
+}
+
+/* HOVER */
+nav a:hover{
+    background: rgba(255,255,255,0.08);
+    padding-left: 28px;
+    border-left: 4px solid #ffffff;
+}
+
+/* ACTIVO */
+nav a.active{
+    background: #7e1a3f;
+    border-left: 4px solid white;
+}
+
+/* LOGOUT */
+.logout-box{
+    margin-top: auto;
+    padding: 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.logout-box button{
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    background: white;
+    color: #7e1a3f;
+    font-weight: bold;
+    cursor: pointer;
     transition: 0.3s;
 }
 
-h2 + a:hover{
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(126,26,63,0.3);
+.logout-box button:hover{
+    background: #f1f1f1;
+    transform: scale(1.03);
 }
 
-
-form{
-    background: white;
-    padding: 50px;
-    border-radius: 15px;
-    max-width: 500px;
-    margin: 0 auto 40px auto;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+/* CONTENIDO */
+.main-content{
+    padding: 30px;
 }
 
-label{
-    display: block;
-    margin-bottom: 8px;
-    color: #7e1a3f;
-    font-weight: bold;
-}
-
-input{
-    width: 100%;
-    padding: 10px 15px;
+/* HEADER */
+.header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
-    border: 1.5px solid #ddd;
-    border-radius: 25px;
+}
+
+/* PAGE */
+.page{
+    width: 100%;
+}
+
+/* TITULOS */
+h2, h3{
+    color: #7e1a3f;
+    margin-bottom: 10px;
+}
+
+/* HEADER DE PAGINA */
+.page-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* BUSCADOR + BOTON */
+.actions{
+    display: flex;
+    gap: 10px;
+}
+
+.actions input{
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
     outline: none;
 }
 
-input:focus{
+.actions input:focus{
     border-color: #7e1a3f;
 }
 
-
-button{
-    width: 100%;
+/* BOTON PRINCIPAL */
+.btn{
     background: linear-gradient(135deg, #7e1a3f, #a8325f);
     color: white;
-    padding: 10px;
-    border-radius: 25px;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
+    padding: 10px 16px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.3s;
 }
 
+.btn:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(126,26,63,0.3);
+}
 
+/* TARJETAS */
+.card, .table-card, .form-card{
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+/* INFO TABLA */
+.table-top{
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+/* TABLA */
 table{
     width: 100%;
     border-collapse: collapse;
-    background: white;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-    padding: 40px;
 }
 
+/* HEADER TABLA */
 th{
     background: #7e1a3f;
     color: white;
-    padding: 12px;
-    font-size: 14px;
-}
-
-td{
-    padding: 10px;
-    border-top: 1px solid #eee;
+    padding: 14px;
+    text-align: left;
     font-size: 13px;
 }
 
+/* CELDAS */
+td{
+    padding: 14px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+}
+
+/* HOVER FILAS */
 tr:hover{
-    background: #fafafa;
+    background: #f9fafb;
 }
 
-
-td a{
-    display: inline-block;
-    padding: 6px 10px;
-    margin: 2px;
+/* BOTONES TABLA */
+.edit{
+    background: #f3e8ef;
+    color: #7e1a3f;
+    padding: 6px 12px;
     border-radius: 8px;
-    font-size: 12px;
     text-decoration: none;
-    font-weight: bold;
+    font-size: 12px;
+    transition: 0.2s;
 }
 
-
-td a:first-child{
-    background: #e6f0ff;
-    color: #2d6cdf;
+.edit:hover{
+    background: #e4d2db;
 }
 
-
-td a:last-child{
+.delete{
     background: #ffe6e6;
-    color: #d33;
+    color: #b30000;
+    padding: 6px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 12px;
+    transition: 0.2s;
+}
+
+.delete:hover{
+    background: #ffd6d6;
+}
+
+/* FORMULARIO */
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* GRUPO */
+.form-group{
+    display: flex;
+    flex-direction: column;
+}
+
+/* LABEL */
+label{
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #7e1a3f;
+}
+
+/* INPUTS */
+input, select{
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    outline: none;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+input:focus, select:focus{
+    border-color: #7e1a3f;
+    box-shadow: 0 0 0 2px rgba(126,26,63,0.1);
+}
+
+/* BOTONES FORM */
+.form-actions{
+    display: flex;
+    gap: 10px;
+}
+
+/* GUARDAR */
+.btn-save{
+    background: linear-gradient(135deg, #7e1a3f, #a8325f);
+    color: white;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    flex: 1;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-save:hover{
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* CANCELAR */
+.btn-cancel{
+    background: #eee;
+    color: #333;
+    padding: 12px;
+    border-radius: 10px;
+    text-decoration: none;
+    flex: 1;
+    text-align: center;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-cancel:hover{
+    background: #ddd;
 }

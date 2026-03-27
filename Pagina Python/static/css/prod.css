@@ -1,0 +1,240 @@
+
+    body {
+        font-family: Arial;
+        background: #f4eeee;
+        margin: 0;
+        padding: 0;
+        font-family: 'Times New Roman', Times, serif;
+        
+    }#navegador {
+        width: 100%;
+        height: 80px;
+        position: fixed;
+        z-index: 10;
+        background: linear-gradient(to left, #5c0b26, rgb(255, 255, 255));
+    }
+
+    .menu {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .left-section {
+        display: flex;
+        align-items: center;
+    }
+
+    .logo-menu {
+        height: 80px;
+        max-width: 150px;
+        margin-left: 20px;
+    }
+
+    .m-right {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .iconP-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+        margin: 0 5px;
+        border-radius: 8px;
+        width: 30px;
+        height: 30px;
+        color: white;
+        transition: background-color 0.3s ease;
+        overflow: visible;
+    }
+
+    .iconP-link:hover {
+        background-color: #5e0925;
+    }
+
+    .iconP-link svg {
+        width: 40px;
+        height: 50px;
+        display: block;
+    }
+
+    .LM {
+        text-decoration: none;
+        color: white;
+        font-size: 18px;
+        margin: 0 5px;
+        padding: 8px 12px;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    
+    }
+
+    .LM:hover {
+        background-color: #5e0925;
+        color: white;
+    }
+
+    .carrito-panel {
+        position: fixed;
+        right: -400px;
+        top: 0;
+        width: 350px;
+        height: 100%;
+        background: white;
+        box-shadow: -3px 0 10px rgba(0,0,0,0.2);
+        padding: 20px;
+        transition: 0.3s;
+        z-index: 2000;
+        overflow-y: auto;
+        
+    }
+
+    .carrito-panel.activo {
+        right: 0;
+    }
+
+    .btn-carrito {
+        width: 100%;
+        padding: 8px;
+        background: rgb(87, 16, 29);
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .principal {
+        display: flex;
+    }
+
+    .filtros {
+        padding: 20px;
+        background: white;
+        width: 220px;
+        min-height: 100vh;
+        border-right: 1px solid #efeeee;
+        position: sticky;
+        top: 100px;
+        height: fit-content;
+    }
+
+    .filtros h3 {
+        margin-bottom: 15px;
+    }
+
+    .filtros ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .filtros li {
+        margin-bottom: 12px;
+        cursor: pointer;
+    }
+
+    .filtros li:hover {
+        text-decoration: underline;
+    }
+
+    .container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        padding: 20px;
+        flex: 1;
+        margin-top: 80px;
+    }
+
+    .card {
+        background: white;
+        padding: 10px;
+    }
+
+    .imagen-container {
+        position: relative;
+    }
+
+    .card img {
+        width: 100%;
+        height: 350px;
+        object-fit: cover;
+    }
+
+    .corazon {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 18px;
+        cursor: pointer;
+    }
+
+    .nombre {
+        font-size: 14px;
+        margin-top: 10px;
+    }
+
+    .precios {
+        margin: 5px 0;
+    }
+
+    .precio-anterior {
+        text-decoration: line-through;
+        color: gray;
+        margin-right: 10px;
+    }
+
+    .precio-actual {
+        font-weight: bold;
+    }
+
+    .descuento {
+        color: red;
+        font-size: 12px;
+        text-align: right;
+    }
+
+    .colores {
+        font-size: 13px;
+    }
+
+    .card:hover {
+        transform: scale(1.02);
+        transition: 0.3s;
+        }
+    footer {
+        background: rgb(87, 16, 29);
+        color: white;
+        margin-top: 40px;
+    }
+    .footer-contenido {
+        display: flex;
+        justify-content: space-between;
+        padding: 30px 50px;
+    }
+    .footer-empresa {
+        width: 40%;
+    }
+    .footer-empresa p {
+        font-size: 14px;
+        margin-top: 10px;
+    }
+    .footer-contacto h4 {
+        margin-bottom: 10px;
+    }
+    .footer-contacto p {
+        font-size: 14px;
+        margin: 5px 0;
+    }
+    .footer-copy {
+        text-align: center;
+        padding: 15px;
+        border-top: 1px solid gray;
+        font-size: 13px;
+    }
