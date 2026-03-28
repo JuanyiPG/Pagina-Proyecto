@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 import os 
 import hashlib
 from .models import Estampado, Proveedor, Movimiento_matp
+from django.db.models import Q 
 
 # --- PROVEEDORES ---
 def lista_provee(request):
@@ -23,7 +24,7 @@ def editar_provee(request, id):
         proveedor.fech_ingre = request.POST.get('fech_ingre')
         proveedor.num_tel = request.POST.get('num_tel')
         proveedor.save()
-        return redirect('lista_provee')
+        return redirect('inventario:lista_provee')
     return render(request, 'proveedor/editar.html', {'proveedor': proveedor})
 
 def eliminar_provee(request, id):
@@ -70,7 +71,7 @@ def editar_mmtp(request, id):
         mmtp.id_estamp_fk_invent = get_object_or_404(Estampado, id_estamp=id_est)
         mmtp.id_proveedor_fk = get_object_or_404(Proveedor, id_provee=id_pro)
         mmtp.save()
-        return redirect('lista_mmtp') 
+        return redirect('inventario:lista_mmtp') 
 
     return render(request, 'movimiento_matp/editar.html', {
         'mmtp': mmtp,
@@ -82,14 +83,11 @@ def eliminar_mmtp(request, id):
     get_object_or_404(Movimiento_matp, id_mmtp=id).delete()
     return redirect('inventario:lista_mmtp')
 
-from django.db.models import Q # <--- ¡ASEGÚRATE DE AGREGAR ESTA IMPORTACIÓN ARRIBA!
 
 # --- ESTAMPADOS ---
 def lista_estampado(request):
-    # 1. CAPTURAR EL TEXTO DEL BUSCADOR (Si existe)
     query = request.GET.get('q') 
     
-    # 2. MANEJAR EL GUARDADO (POST)
     if request.method == 'POST':
         nombre = request.POST.get('nombre_estamp')
         costo = request.POST.get('costo_adi')
@@ -104,7 +102,6 @@ def lista_estampado(request):
             nuevo_hash = hasher.hexdigest()
             archivo_img.seek(0)
 
-            # Verificar si el diseño ya existe
             if Estampado.objects.filter(imagen_hash=nuevo_hash).exists():
                 return render(request, "estampado/lista.html", {
                     'estampados': Estampado.objects.all(),
@@ -112,7 +109,6 @@ def lista_estampado(request):
                     'query': query
                 })
 
-        # Crear el registro
         Estampado.objects.create(
             nombre_estamp=nombre,
             costo_adi=costo,
@@ -121,8 +117,6 @@ def lista_estampado(request):
             imagen_hash=nuevo_hash
         )
         return redirect('inventario:lista_estampado')
-
-    # 3. MANEJAR LA MUESTRA DE DATOS Y FILTRADO (GET)
     if query:
         # Si hay algo en el buscador, filtramos por nombre O por técnica
         estampados = Estampado.objects.filter(
@@ -130,7 +124,6 @@ def lista_estampado(request):
             Q(tipo_estamp__icontains=query)
         )
     else:
-        # Si no hay búsqueda, mostramos todos
         estampados = Estampado.objects.all()
 
     return render(request, "estampado/lista.html", {

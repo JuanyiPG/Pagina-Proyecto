@@ -13,7 +13,7 @@ vendor/
 ### --- PYTHON / DJANGO --- ###
 **/__pycache__/
 *.py[cod]
-venv/
+**/venv/
 db.sqlite3
 
 ### --- SEGURIDAD Y EDITORES --- ###
