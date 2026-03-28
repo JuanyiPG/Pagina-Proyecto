@@ -92,7 +92,7 @@ def editar_variacion(request, detalle_id):
         detalle.cant = variacion.cant_soli
         detalle.valor_total = (producto.precio + variacion.costo_var) * variacion.cant_soli
 
-        return redirect ('carrito')
+        return redirect ('ventas:ver_carrito')
     return render (request, 'personalizar.html',{
         'producto': producto,
         'estampados': estampado,
@@ -110,7 +110,7 @@ def eliminar_variacion (request, detalle_id):
     # Luego borramos el renglón del detalle
     detalle.delete()
     
-    return redirect('carrito')
+    return redirect('ventas:ver_carrito')
 
 
 
@@ -121,9 +121,9 @@ def lista_producto(request):
     rol_usuario = request.session.get('rol')
 
     if rol_usuario in ['Administrador', 'Empleado']:
-        return render(request, 'producto/lista_product.html', {'productos': productos})
+        return render(request, 'ventas/producto/lista_product.html', {'productos': productos})
     else:
-        return render(request, 'PAGINAS_LUXY_PROD/PAGINA_PROD.html', {'productos': productos})
+        return render(request, 'ventas/PAGINAS_LUXY_PROD/PAGINA_PROD.html', {'productos': productos})
 
 #@solo_personal
 def crear_producto(request): 
@@ -157,7 +157,7 @@ def crear_producto(request):
 
             #Verificar si ya existe el hash
             if Producto.objects.filter(imagen_hash=nuevo_hash).exists():
-                return render(request, 'producto/form_producto.html',{
+                return render(request, 'ventas/producto/form_producto.html',{
                     'error': 'ERROR: Esta prenda ya ha sido subida anteriormente.'
             })
         
@@ -165,7 +165,7 @@ def crear_producto(request):
                                 desc_produc=desc_produc, categoria_produc=categoria_produc,estado_produc=estado_produc, precio=valor )
         
         return redirect('ventas:lista_product')
-    return render(request, 'producto/form_producto.html')
+    return render(request, 'ventas/producto/form_producto.html')
 
 
 def editar_producto(request, id): 
@@ -196,7 +196,7 @@ def editar_producto(request, id):
 
         producto.save()
         return redirect('ventas:lista_product')
-    return render(request, 'producto/editar_producto.html', {'producto': producto})
+    return render(request, 'ventas/producto/editar_producto.html', {'producto': producto})
 
 
 def eliminar_producto(request, product_id): 
@@ -204,7 +204,7 @@ def eliminar_producto(request, product_id):
     if request.method == 'POST':
         producto.delete()
         return redirect('ventas:lista_product')
-    return render(request, 'producto/eliminar_producto.html', {'producto':producto})
+    return render(request, 'ventas/producto/eliminar_producto.html', {'producto':producto})
 
 #----------------- PRODUCTO SIN VARIACION ---------------------
 @login_requerido_custom
@@ -244,7 +244,7 @@ def producto_sin_personalizar(request, producto_id):
         messages.success(request, f"{producto.nom_produc} añadido al carrito.")
         return redirect('ventas:lista_product')
     
-    return render(request, 'producto/vista_producto.html', {
+    return render(request, 'ventas/producto/vista_producto.html', {
         'producto': producto,
         'tallas': tallas,
         'colores': colores
@@ -253,7 +253,7 @@ def producto_sin_personalizar(request, producto_id):
 
 def lista_abono(request):
     abonos = Abono.objects.all()
-    return render(request, 'abono/lista_abono.html', {'abonos': abonos})
+    return render(request, 'ventas/abono/lista_abono.html', {'abonos': abonos})
 
 @login_requerido_custom
 def crear_abono(request, pedido_id):
@@ -322,7 +322,7 @@ def crear_abono(request, pedido_id):
             messages.error(request, "Por favor, ingresa un número válido.")
             return redirect('ventas:crear_abono', pedido_id=pedido_id)
 
-    return render(request, 'abono/form_abono.html', {
+    return render(request, 'ventas/abono/form_abono.html', {
         'pedido': pedido,
         'total_productos': total_productos,
         'total_abonado': total_abonado_previo, 
@@ -334,20 +334,20 @@ def eliminar_abono(request, id):
     if request.method == 'POST': 
         abono.delete()
         return redirect('lista_abono')
-    return render(request, 'abono/eliminar_abono.html', {'abono': abono})
+    return render(request, 'ventas/abono/eliminar_abono.html', {'abono': abono})
 
 
 #---------------- CRUD DETALLE VALOR -------------------
 
 def lista_det_val(request): 
     detalles = Det_valor.objects.all()
-    return render(request, 'detVal/lista_detVal.html', {'detalles': detalles})
+    return render(request, 'ventas/detVal/lista_detVal.html', {'detalles': detalles})
 
 #--------------------- CRUD PEDIDO -----------------
 
 def lista_pedido(request): 
     pedidos = Pedido.objects.all()
-    return render(request, 'pedido/lista_pedido.html', {'pedidos': pedidos})
+    return render(request, 'ventas/pedido/lista_pedido.html', {'pedidos': pedidos})
 
     # Ahora redirigimos a la vista de "Personalizar" (crear_variacion) 
     # pasándole el ID del pedido que acabamos de encontrar o crear.
@@ -416,7 +416,7 @@ def finalizar_pedido(request, pedido_id):
             messages.error(request, f"Error al procesar el pago: {e}")
             return redirect('ventas:ver_carrito')
 
-    return render(request, 'pedido/finalizar.html', {'pedido': pedido})
+    return render(request, 'ventas/pedido/finalizar.html', {'pedido': pedido})
 
 @login_requerido_custom
 def editar_pedido(request, id): 
@@ -438,7 +438,7 @@ def editar_pedido(request, id):
         pedido.save() # Esto disparará el cálculo del subtotal automáticamente
         return redirect('ventas:lista_pedido') 
         
-    return render(request, 'pedido/editar_pedido.html', {'pedido': pedido})
+    return render(request, 'ventas/pedido/editar_pedido.html', {'pedido': pedido})
 
 @login_requerido_custom
 def eliminar_pedido(request, id):
@@ -467,7 +467,7 @@ def eliminar_pedido(request, id):
             messages.success(request, f"Error al cancelar el pedido: {e}")
             return redirect('ventas:lista_pedido')
             
-    return render(request, 'pedido/eliminar_pedido.html', {'pedido': pedido})
+    return render(request, 'ventas/pedido/eliminar_pedido.html', {'pedido': pedido})
 
 #------------------------ CARRITO --------------------------
 
@@ -478,7 +478,7 @@ def ver_carrito(request):
         cliente = obtener_cliente_actual(request)
     except Cliente.DoesNotExist:
         # En vez de mandar un error 404, pintamos el carrito vacío y mandamos un mensaje
-        return render(request, 'pedido/carrito.html', {
+        return render(request, 'ventas/pedido/carrito.html', {
             'items': [], 
             'total_productos': 0, 
             'error_perfil': "No tienes un perfil de Cliente asociado a tu usuario."
@@ -488,7 +488,7 @@ def ver_carrito(request):
     pedido = Pedido.objects.filter(id_clien_fk=cliente).exclude(estado_ped='Cancelado').first()
 
     if not pedido:
-        return render(request, 'pedido/carrito.html', {'items': [], 'total_productos': 0})
+        return render(request, 'ventas/pedido/carrito.html', {'items': [], 'total_productos': 0})
 
     items = Det_valor.objects.filter(id_ped_fk_detval=pedido)
     total_productos = items.aggregate(Sum('valor_total'))['valor_total__sum'] or 0
@@ -497,9 +497,9 @@ def ver_carrito(request):
     saldo_pendiente = max(0, total_productos - total_abonado)
 
     if saldo_pendiente <= 0 and pedido.estado_ped in ['PAGADO', 'Confirmado', 'Confirmada']:
-        return render(request, 'pedido/carrito.html', {'items': [], 'total_productos': 0})
+        return render(request, 'ventas/pedido/carrito.html', {'items': [], 'total_productos': 0})
 
-    return render(request, 'pedido/carrito.html', {
+    return render(request, 'ventas/pedido/carrito.html', {
         'pedido': pedido,
         'items': items,
         'total_productos': total_productos,
@@ -571,7 +571,7 @@ def matp_producto(request, producto_id):
         )
 
         return redirect('detalle_producto', producto_id=producto.id_produc)
-    return render(request, 'admin/registrar_producto.html',{
+    return render(request, 'ventas/admin/registrar_producto.html',{
         'producto': producto,
         'materiales': materiales
     })
