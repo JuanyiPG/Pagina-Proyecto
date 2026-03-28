@@ -130,7 +130,8 @@
                         <div class="color-picker">
                             <input type="radio" name="color" id="color-{{c}}" value="{{c}}" style="display:none;" required>
                             <label for="color-{{c}}" class="color-option"
-                                style="background-color:{% if c == 'rojo' %}red{% elif c == 'azul' %}blue{% elif c == 'blanco' %}white{% elif c == 'gris' %}gray{% else %}#ccc{% endif %};">
+                            <div class="{% if c == 'rojo' %}bg-rojo{% elif c == 'azul' %}bg-azul{% elif c == 'blanco' %}bg-blanco{% elif c == 'gris' %}bg-gris{% else %}bg-default{% endif %}">
+                            </div>
                             </label>
                         </div>
                     {% endfor %}
