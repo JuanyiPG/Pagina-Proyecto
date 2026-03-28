@@ -1,0 +1,97 @@
+{% extends 'usuarios/base.html' %}
+
+{% block content %}
+
+<div class="page">
+
+    <div class="page-header">
+        <h3>Editar Empleado</h3>
+    </div>
+
+    <div class="form-card">
+
+        <form method="POST">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" name="nom_emple" value="{{ empleado.nom_emple }}">
+        </div>
+
+        <div class="form-group">
+            <label>Teléfono</label>
+            <input type="text" name="tel_emple" value="{{ empleado.tel_emple }}">
+        </div>
+
+        <div class="form-group">
+            <label>Correo</label>
+            <input type="email" name="correo_emple" value="{{ empleado.correo_emple }}">
+        </div>
+
+        <div class="form-group">
+            <label>Dirección</label>
+            <input type="text" name="dir_emple" value="{{ empleado.dir_emple }}">
+        </div>
+
+        <div class="form-group">
+            <label>RH</label>
+            <input type="text" name="rh_emple" value="{{ empleado.rh_emple }}">
+        </div>
+
+        <div class="form-group">
+            <label>Fecha Nacimiento</label>
+            <input type="date" name="fecha_naci_emple" value="{{ empleado.fecha_naci_emple|date:'Y-m-d' }}">
+        </div>
+
+        <div class="form-group">
+            <label>Tipo Identificación</label>
+            <input type="text" name="tipo_ident" value="{{ empleado.tipo_ident }}">
+        </div>
+
+        <div class="form-group">
+            <label>Número Identificación</label>
+            <input type="text" name="num_ident" value="{{ empleado.num_ident }}">
+        </div>
+
+        <div class="form-group">
+            <label>Fecha Ingreso</label>
+            <input type="date" name="fecha_ing_emple" value="{{ empleado.fecha_ing_emple|date:'Y-m-d' }}">
+        </div>
+
+        <div class="form-group">
+            <label>Salario</label>
+            <input type="text" name="salari_emple" value="{{ empleado.salari_emple }}">
+        </div>
+
+        <div class="form-group">
+            <label>Estado</label>
+            <input type="text" name="estado_emple" value="{{ empleado.estado_emple }}">
+        </div>
+
+        <div class="form-group">
+            <label>Usuario</label>
+            <select name="id_usuario_fk_emple">
+                {% for usuario in usuarios %}
+                <option value="{{ usuario.id_usuario }}"
+                {% if usuario.id_usuario == empleado.id_usuario_fk_emple %}
+                selected
+                {% endif %}
+                >
+                {{ usuario.username }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-save">Actualizar</button>
+            <a href="{% url 'usuarios:lista_empleados' %}" class="btn-cancel">Cancelar</a>
+        </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
