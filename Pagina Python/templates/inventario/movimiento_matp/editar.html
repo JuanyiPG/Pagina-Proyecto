@@ -1,51 +1,68 @@
-{% extends 'usuarios/base.html' %}
+{% extends 'base.html' %}
 {% load l10n %}
 
-{% block contenido %}
-<div class="edit-container">
-    <h2>📦 Editar Movimiento #{{ mmtp.id_mmtp }}</h2>
-    <div class="form-card">
-        <form method="POST">
-            {% csrf_token %}
-            
-            <label>Tipo de Movimiento:</label>
-            <input type="text" name="tipo_mmtp" value="{{ mmtp.tipo_mmtp }}" required>
-            
-            <label>Talla:</label>
-            <input type="text" name="talla_mmtp" value="{{ mmtp.talla_mmtp }}" required>
+{% block content %}
+<div class="main-content">
+    <div class="container-wide" style="max-width: 800px;">
+        <h2 style="color: #6a0f2e; margin-bottom: 25px; text-align: center;">📦 Editar Movimiento #{{ mmtp.id_mmtp }}</h2>
+        
+        <div class="form-card">
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Tipo de Movimiento</label>
+                        <input type="text" name="tipo_mmtp" value="{{ mmtp.tipo_mmtp }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Talla</label>
+                        <input type="text" name="talla_mmtp" value="{{ mmtp.talla_mmtp }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Color</label>
+                        <input type="text" name="color_mmtp" value="{{ mmtp.color_mmtp }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha</label>
+                        <input type="date" name="fecha_mmtp" value="{{ mmtp.fecha_mmtp|date:'Y-m-d' }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Cantidad (Stock)</label>
+                        <input type="number" step="0.01" name="stock_mmtp" value="{{ mmtp.stock_mmtp|unlocalize }}" required>
+                    </div>
+                </div>
 
-            <label>Color:</label>
-            <input type="text" name="color_mmtp" value="{{ mmtp.color_mmtp }}" required>
-            
-            <label>Fecha:</label>
-            <input type="date" name="fecha_mmtp" value="{{ mmtp.fecha_mmtp|date:'Y-m-d' }}" required>
-            
-            <label>Cantidad (Stock):</label>
-            <input type="number" step="0.01" name="stock_mmtp" value="{{ mmtp.stock_mmtp|unlocalize }}" required>
+                <div class="form-grid" style="grid-template-columns: 1fr 1fr; margin-top: 15px;">
+                    <div class="form-group">
+                        <label>Diseño de Estampado</label>
+                        <select name="id_estamp_fk_invent" required>
+                            {% for e in estampados %}
+                                <option value="{{ e.id_estamp }}" {% if e.id_estamp == mmtp.id_estamp_fk_invent.id_estamp %}selected{% endif %}>
+                                    {{ e.nombre_estamp }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
 
-            <label>Diseño de Estampado:</label>
-            <select name="id_estamp_fk_invent" required>
-                {% for e in estampados %}
-                    <option value="{{ e.id_estamp }}" {% if e.id_estamp == mmtp.id_estamp_fk_invent.id_estamp %}selected{% endif %}>
-                        {{ e.nombre_estamp }}
-                    </option>
-                {% endfor %}
-            </select>
+                    <div class="form-group">
+                        <label>Proveedor</label>
+                        <select name="id_proveedor_fk" required>
+                            {% for p in proveedores %}
+                                <option value="{{ p.id_provee }}" {% if p.id_provee == mmtp.id_proveedor_fk.id_provee %}selected{% endif %}>
+                                    {{ p.nom_provee }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
 
-            <label>Proveedor:</label>
-            <select name="id_proveedor_fk" required>
-                {% for p in proveedores %}
-                    <option value="{{ p.id_provee }}" {% if p.id_provee == mmtp.id_proveedor_fk.id_provee %}selected{% endif %}>
-                        {{ p.nom_provee }}
-                    </option>
-                {% endfor %}
-            </select>
-
-            <div class="form-actions" style="flex-direction: column; gap: 10px;">
-                <button type="submit" class="btn-save" style="width: 100%;">💾 Actualizar Movimiento</button>
-                <a href="{% url 'lista_mmtp' %}" style="text-align: center; color: #666; text-decoration: none; font-size: 14px;">Cancelar y volver</a>
-            </div>
-        </form>
+                <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 12px;">
+                    <button type="submit" class="btn-save">💾 Actualizar Datos del Movimiento</button>
+                    <a href="{% url 'lista_mmtp' %}" style="text-align: center; color: #666; text-decoration: none; font-size: 14px;">🔙 Cancelar y Volver al Listado</a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}
