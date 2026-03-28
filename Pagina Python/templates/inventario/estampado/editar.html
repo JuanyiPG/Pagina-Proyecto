@@ -1,41 +1,79 @@
-{% extends 'usuarios/base.html' %}
+{% extends 'base.html' %}
 {% load l10n %}
 
-{% block contenido %}
-<div class="edit-container">
-    <h2>🎨 Editar Estampado</h2>
-    <div class="form-card">
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            
-            <label>Nombre del Diseño:</label>
-            <input type="text" name="nombre_estamp" value="{{ estampado.nombre_estamp }}" required>
-            
-            <label>Imagen Actual:</label>
-            <div style="margin-bottom: 15px; border: 1px dashed #ccc; padding: 10px; text-align: center;">
-                {% if estampado.imagen_estamp %}
-                    <img src="{{ estampado.imagen_estamp.url }}" alt="Actual" style="max-width: 150px; border-radius: 8px;">
-                    <p style="font-size: 12px; color: #666;">Archivo: {{ estampado.imagen_estamp.name }}</p>
-                {% else %}
-                    <p style="color: #999;">Sin imagen registrada</p>
-                {% endif %}
-            </div>
+{% block content %}
+<div class="main-content">
+    <div class="container-wide" style="max-width: 700px;">
+        <h2 style="color: #6a0f2e; margin-bottom: 30px; text-align: center;">🎨 Editar Estampado</h2>
 
-            <label>Subir Nueva Imagen (Opcional):</label>
-            <input type="file" name="archivo_imagen" accept="image/*">
-            <small style="display: block; margin-bottom: 15px; color: #888;">Si no seleccionas nada, se mantendrá la imagen actual.</small>
-            
-            <label>Costo Adicional:</label>
-            <input type="number" step="0.01" name="costo_adi" value="{{ estampado.costo_adi|unlocalize }}" required>
-            
-            <label>Técnica / Tipo:</label>
-            <input type="text" name="tipo_estamp" value="{{ estampado.tipo_estamp }}" required>
+        {% if error %}
+        <div style="background: #fff0f5; color: #6a0f2e; padding: 15px; border-radius: 10px; border: 1px solid #7e1a3f; margin-bottom: 25px; text-align: center;">
+            <strong>{{ error }}</strong>
+        </div>
+        {% endif %}
 
-            <div class="form-actions" style="flex-direction: column; gap: 10px;">
-                <button type="submit" class="btn-save" style="width: 100%;">✨ Actualizar Diseño</button>
-                <a href="{% url 'lista_estampado' %}" style="text-align: center; color: #666; text-decoration: none; font-size: 14px;">Volver al catálogo</a>
-            </div>
-        </form>
+        <div class="form-card">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label>Nombre del Diseño</label>
+                    <input type="text" name="nombre_estamp" value="{{ estampado.nombre_estamp }}" required>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Técnica / Tipo</label>
+                        <input type="text" name="tipo_estamp" value="{{ estampado.tipo_estamp }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Costo Adicional</label>
+                        <input type="number" step="0.01" name="costo_adi" value="{{ estampado.costo_adi|unlocalize }}" required>
+                    </div>
+                </div>
+
+                <div style="margin: 20px 0; padding: 20px; border: 1.5px dashed #ccc; border-radius: 12px; text-align: center; background: #fcfcfc;">
+                    <label style="color: #666; display: block; margin-bottom: 10px;">Imagen Actual</label>
+                    {% if estampado.imagen_estamp %}
+                        <img src="{{ estampado.imagen_estamp.url }}" alt="Actual" style="max-width: 180px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                        <p style="font-size: 11px; color: #888;">Archivo: {{ estampado.imagen_estamp.name }}</p>
+                    {% else %}
+                        <p style="color: #999;">Sin imagen registrada</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label>Subir Nueva Imagen (Opcional)</label>
+                    <input type="file" name="archivo_imagen" id="file-upload" accept="image/*" onchange="preview(this)">
+                    <small style="display: block; color: #888; margin-top: 5px;">Si no seleccionas nada, se mantendrá la actual.</small>
+                    
+                    <div id="preview_box" style="display: none; margin-top: 15px; text-align: center;">
+                        <p style="font-size: 12px; color: #7e1a3f;">Nueva vista previa:</p>
+                        <img id="img_preview" src="#" style="max-width: 150px; border-radius: 10px; border: 3px solid #7e1a3f;">
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 10px;">
+                    <button type="submit" class="btn-save">✨ Actualizar Diseño</button>
+                    <a href="{% url 'lista_estampado' %}" style="text-align: center; color: #666; text-decoration: none; font-size: 14px;">Volver al catálogo</a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+
+<script>
+    function preview(input) {
+        const box = document.getElementById('preview_box');
+        const img = document.getElementById('img_preview');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                img.src = e.target.result;
+                box.style.display = 'block';
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
 {% endblock %}
