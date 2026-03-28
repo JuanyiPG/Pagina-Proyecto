@@ -1,62 +1,93 @@
-{% extends 'usuarios/base.html' %}
-{% block contenido %}
-<div class="container-wide">
-    <h2>📦 Gestión de Materia Prima</h2>
-    
-    <div class="form-card">
-        <form method="POST">
-            {% csrf_token %}
-            <div class="form-grid">
-                <div><label>Tipo</label><input type="text" name="tipo_mmtp" placeholder="Entrada/Salida" required></div>
-                <div><label>Talla</label><input type="text" name="talla_mmtp" placeholder="S, M, L..." required></div>
-                <div><label>Color</label><input type="text" name="color_mmtp" placeholder="Color de prenda" required></div>
-                <div><label>Fecha</label><input type="date" name="fecha_mmtp" required></div>
-                <div><label>Cantidad (Stock)</label><input type="number" step="0.01" name="stock_mmtp" required></div>
-                <div>
-                    <label>Estampado</label>
-                    <select name="id_estamp_fk_invent" required>
-                        <option value="">Seleccione...</option>
-                        {% for e in estampados %}<option value="{{ e.id_estamp }}">{{ e.nombre_estamp }}</option>{% endfor %}
-                    </select>
+{% extends 'base.html' %}
+{% block content %}
+<div class="main-content">
+    <div class="container-wide">
+        <h2 style="color: #6a0f2e; margin-bottom: 25px;">📦 Gestión de Materia Prima</h2>
+        
+        <div class="form-card">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Tipo de Movimiento</label>
+                        <input type="text" name="tipo_mmtp" placeholder="Entrada/Salida" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Talla</label>
+                        <input type="text" name="talla_mmtp" placeholder="S, M, L, XL..." required>
+                    </div>
+                    <div class="form-group">
+                        <label>Color de Prenda</label>
+                        <input type="text" name="color_mmtp" placeholder="Ej: Azul Turquí" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha Registro</label>
+                        <input type="date" name="fecha_mmtp" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Cantidad (Stock)</label>
+                        <input type="number" step="0.01" name="stock_mmtp" required placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Diseño Estampado</label>
+                        <select name="id_estamp_fk_invent" required>
+                            <option value="">Seleccione un diseño...</option>
+                            {% for e in estampados %}
+                                <option value="{{ e.id_estamp }}">{{ e.nombre_estamp }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Proveedor Responsable</label>
+                        <select name="id_proveedor_fk" required>
+                            <option value="">Seleccione proveedor...</option>
+                            {% for p in proveedores %}
+                                <option value="{{ p.id_provee }}">{{ p.nom_provee }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
-                <div>
-                    <label>Proveedor</label>
-                    <select name="id_proveedor_fk" required>
-                        <option value="">Seleccione...</option>
-                        {% for p in proveedores %}<option value="{{ p.id_provee }}">{{ p.nom_provee }}</option>{% endfor %}
-                    </select>
-                </div>
-            </div>
+                <button type="submit" class="btn-save" style="width: 100%; margin-top: 10px;">💾 Guardar en Inventario</button>
+            </form>
+        </div>
 
-            <div class="form-actions">
-                <button type="submit" class="btn-save">💾 Guardar Movimiento</button>
-            </div>
-        </form>
+        <div class="table-responsive">
+            <table class="table-inventory">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tipo</th>
+                        <th>Talla</th>
+                        <th>Color</th>
+                        <th>Stock</th>
+                        <th>Estampado</th>
+                        <th>Proveedor</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in mmtp %}
+                    <tr>
+                        <td>{{ m.id_mmtp }}</td>
+                        <td><strong>{{ m.tipo_mmtp }}</strong></td>
+                        <td>{{ m.talla_mmtp }}</td>
+                        <td>{{ m.color_mmtp }}</td>
+                        <td>{{ m.stock_mmtp }}</td>
+                        <td>{{ m.id_estamp_fk_invent.nombre_estamp }}</td>
+                        <td>{{ m.id_proveedor_fk.nom_provee }}</td>
+                        <td style="display: flex; gap: 10px;">
+                            <a href="{% url 'editar_mmtp' m.id_mmtp %}" class="edit" style="text-decoration: none; color: #2d6cdf; font-weight: bold;">Editar</a>
+                            <a href="{% url 'eliminar_mmtp' m.id_mmtp %}" class="delete" style="text-decoration: none; color: #d33; font-weight: bold;" onclick="return confirm('¿Desea eliminar este movimiento?')">Borrar</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" style="text-align: center; color: #999; padding: 20px;">No hay movimientos registrados.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th><th>Tipo</th><th>Talla</th><th>Color</th><th>Stock</th><th>Estampado</th><th>Proveedor</th><th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for m in mmtp %}
-            <tr>
-                <td>{{ m.id_mmtp }}</td>
-                <td>{{ m.tipo_mmtp }}</td>
-                <td>{{ m.talla_mmtp }}</td>
-                <td>{{ m.color_mmtp }}</td>
-                <td>{{ m.stock_mmtp }}</td>
-                <td>{{ m.id_estamp_fk_invent.nombre_estamp }}</td>
-                <td>{{ m.id_proveedor_fk.nom_provee }}</td>
-                <td>
-                    <a href="{% url 'editar_mmtp' m.id_mmtp %}" class="btn-edit">Editar</a>
-                    <a href="{% url 'eliminar_mmtp' m.id_mmtp %}" class="btn-delete" onclick="return confirm('¿Eliminar?')">Borrar</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 </div>
 {% endblock %}
