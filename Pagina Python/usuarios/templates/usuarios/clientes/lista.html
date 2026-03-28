@@ -9,7 +9,7 @@
 
         <div class="actions">
             <input type="text" placeholder=" Buscar...">
-            <a href="{% url 'crear_cliente' %}" class="btn">+ Crear Cliente</a>
+            <a href="{% url 'usuarios:crear_cliente' %}" class="btn">+ Crear Cliente</a>
         </div>
     </div>
 
@@ -42,8 +42,8 @@
                     <td>{{ cliente.correo_clien }}</td>
                     <td>{{ cliente.id_usuario_fk.username }}</td>
                     <td>
-                        <a href="{% url 'editar_cliente' id=cliente.id_clien %}" class="edit">Editar</a>
-                        <a href="{% url 'eliminar_cliente' id=cliente.id_clien %}" class="delete">Eliminar</a>
+                        <a href="{% url 'usuarios:editar_cliente' id=cliente.id_clien %}" class="edit">Editar</a>
+                        <a href="{% url 'usuarios:eliminar_cliente' id=cliente.id_clien %}" class="delete">Eliminar</a>
                     </td>
                 </tr>
                 {% endfor %}
