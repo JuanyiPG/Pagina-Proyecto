@@ -9,7 +9,7 @@
 
         <div class="actions">
             <input type="text" placeholder=" Buscar...">
-            <a href="{% url 'crear_usuario' %}" class="btn">+ Crear Usuario</a>
+            <a href="{% url 'usuarios:crear_usuario' %}" class="btn">+ Crear Usuario</a>
         </div>
     </div>
 
@@ -36,8 +36,8 @@
                     <td>{{ usuario.username }}</td>
                     <td>{{ usuario.id_rol_fk }}</td>
                     <td>
-                        <a href="{% url 'editar_usuario' id=usuario.id_usuario %}" class="edit">Editar</a>
-                        <a href="{% url 'eliminar_usuario' id=usuario.id_usuario %}" class="delete">Eliminar</a>
+                        <a href="{% url 'usuarios:editar_usuario' id=usuario.id_usuario %}" class="edit">Editar</a>
+                        <a href="{% url 'usuarios:eliminar_usuario' id=usuario.id_usuario %}" class="delete">Eliminar</a>
                     </td>
                 </tr>
                 {% endfor %}
