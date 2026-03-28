@@ -49,7 +49,7 @@ def lista_mmtp(request):
             )
             return redirect('inventario:lista_mmtp')
 
-    return render(request, "movimiento_matp/lista.html", {
+    return render(request, "inventario/movimiento_matp/lista.html", {
         'mmtp': Movimiento_matp.objects.all(), 
         'estampados': Estampado.objects.all(), 
         'proveedores': Proveedor.objects.all()
