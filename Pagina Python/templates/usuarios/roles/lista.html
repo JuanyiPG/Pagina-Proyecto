@@ -1,0 +1,50 @@
+{% extends 'usuarios/base.html' %}
+
+{% block content %}
+
+<div class="page">
+
+    <div class="page-header">
+        <h3>Roles</h3>
+
+        <div class="actions">
+            <input type="text" placeholder=" Buscar...">
+            <a href="{% url 'usuarios:crear_rol' %}" class="btn">+ Crear Rol</a>
+        </div>
+    </div>
+
+
+    <div class="table-card">
+
+        <div class="table-top">
+            <span><strong>{{ roles|length }}</strong> registros</span>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for rol in roles %}
+                <tr>
+                    <td>{{ rol.id_rol }}</td>
+                    <td>{{ rol.nom_rol }}</td>
+                    <td>
+                        <a href="{% url 'usuarios:editar_rol' id=rol.id_rol %}" class="edit">Editar</a>
+                        <a href="{% url 'usuarios:eliminar_rol' id=rol.id_rol %}" class="delete">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}
