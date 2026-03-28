@@ -1,0 +1,55 @@
+{% extends 'usuarios/base.html' %}
+
+{% block content %}
+
+<div class="page">
+
+    <!-- ENCABEZADO -->
+    <div class="page-header">
+        <h3>Editar Usuario</h3>
+    </div>
+
+    <!-- TARJETA -->
+    <div class="form-card">
+
+        <form method="POST">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" name="username" value="{{usuario.username}}">
+        </div>
+
+        <div class="form-group">
+            <label>Contraseña</label>
+            <input type="text" name="contrasena" value="{{usuario.contrasena}}">
+        </div>
+
+        <div class="form-group">
+            <label>Rol</label>
+            <select name="id_rol">
+                {% for rol in roles %}
+                <option value="{{rol.id_rol}}"
+                {% if rol.id_rol == usuario.id_rol_fk.id_rol %}
+                selected
+                {% endif %}
+                >
+                {{rol.nom_rol}}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- BOTONES -->
+        <div class="form-actions">
+            <button type="submit" class="btn-save">Actualizar</button>
+            <a href="{% url 'usuarios:lista_usuarios' %}" class="btn-cancel">Cancelar</a>
+        </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
