@@ -15,7 +15,7 @@ def lista_provee(request):
         return redirect('inventario:lista_provee') 
 
     proveedores = Proveedor.objects.all()
-    return render(request, "proveedor/lista.html", {'proveedor': proveedores})
+    return render(request, "inventario/proveedor/lista.html", {'proveedor': proveedores})
 
 def editar_provee(request, id):
     proveedor = get_object_or_404(Proveedor, id_provee=id)
@@ -25,7 +25,7 @@ def editar_provee(request, id):
         proveedor.num_tel = request.POST.get('num_tel')
         proveedor.save()
         return redirect('inventario:lista_provee')
-    return render(request, 'proveedor/editar.html', {'proveedor': proveedor})
+    return render(request, 'inventario/proveedor/editar.html', {'proveedor': proveedor})
 
 def eliminar_provee(request, id):
     get_object_or_404(Proveedor, id_provee=id).delete()
@@ -73,7 +73,7 @@ def editar_mmtp(request, id):
         mmtp.save()
         return redirect('inventario:lista_mmtp') 
 
-    return render(request, 'movimiento_matp/editar.html', {
+    return render(request, 'inventario/movimiento_matp/editar.html', {
         'mmtp': mmtp,
         'estampados': Estampado.objects.all(),
         'proveedores': Proveedor.objects.all()
@@ -103,7 +103,7 @@ def lista_estampado(request):
             archivo_img.seek(0)
 
             if Estampado.objects.filter(imagen_hash=nuevo_hash).exists():
-                return render(request, "estampado/lista.html", {
+                return render(request, "inventario/estampado/lista.html", {
                     'estampados': Estampado.objects.all(),
                     'error': '¡Atención! Este diseño ya existe en el inventario.',
                     'query': query
@@ -126,7 +126,7 @@ def lista_estampado(request):
     else:
         estampados = Estampado.objects.all()
 
-    return render(request, "estampado/lista.html", {
+    return render(request, "inventario/estampado/lista.html", {
         'estampados': estampados, 
         'query': query # Enviamos 'query' para que el texto no se borre del input al buscar
     })
@@ -160,7 +160,7 @@ def editar_estampado(request, id):
         estampado.save() # Guarda todos los cambios en MySQL
         return redirect('inventario:lista_estampado')
 
-    return render(request, 'estampado/editar.html', {'estampado': estampado})
+    return render(request, 'inventario/estampado/editar.html', {'estampado': estampado})
 
 
 def eliminar_estampado(request, id):
