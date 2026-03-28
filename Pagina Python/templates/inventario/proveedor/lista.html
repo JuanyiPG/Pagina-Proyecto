@@ -1,38 +1,61 @@
-{% extends 'usuarios/base.html' %}
-{% block contenido %}
-<div class="container-wide">
-    <h2>🤝 Gestión de Proveedores</h2>
-    <div class="form-card">
-        <form method="POST">
-            {% csrf_token %}
-            <div class="form-grid">
-                <div><label>Nombre del Proveedor</label><input type="text" name="nom_provee" required></div>
-                <div><label>Fecha de Ingreso</label><input type="date" name="fech_ingre" required></div>
-                <div><label>Teléfono de Contacto</label><input type="text" name="num_tel" required></div>
-            </div>
-            <div class="form-actions">
-                <button type="submit" class="btn-save">🤝 Agregar Proveedor</button>
-            </div>
-        </form>
-    </div>
-    <table>
-        <thead><tr><th>ID</th><th>Nombre</th><th>Ingreso</th><th>Teléfono</th><th>Acciones</th></tr></thead>
-        <tbody>
-            {% for p in proveedor %}
-            <tr>
-                <td>{{ p.id_provee }}</td>
-                <td><strong>{{ p.nom_provee }}</strong></td>
-                <td>{{ p.fech_ingre }}</td>
-                <td>{{ p.num_tel }}</td>
-                <td>
-                   
-                        <a href="{% url 'inventario:editar_provee' p.id_provee %}" class="btn-edit">Editar</a>
-                        <a href="{% url 'inventario:eliminar_provee' p.id_provee %}" class="btn-delete">Borrar</a>
+{% extends 'base.html' %}
+{% block content %}
+<div class="main-content">
+    <div class="container-wide">
+        <h2 style="color: #6a0f2e; margin-bottom: 25px;">🤝 Directorio de Proveedores</h2>
+        
+        <div class="form-card">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nombre o Razón Social</label>
+                        <input type="text" name="nom_provee" placeholder="Ej: Textiles del Norte S.A.S" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha de Vinculación</label>
+                        <input type="date" name="fech_ingre" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono Directo</label>
+                        <input type="text" name="num_tel" placeholder="Ej: 310 000 0000" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-save" style="width: 100%; margin-top: 10px;">➕ Registrar Nuevo Proveedor</button>
+            </form>
+        </div>
 
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        <div class="table-responsive">
+            <table class="table-inventory">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre de Empresa</th>
+                        <th>Fecha Ingreso</th>
+                        <th>Contacto</th>
+                        <th style="text-align: center;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in proveedor %}
+                    <tr>
+                        <td>{{ p.id_provee }}</td>
+                        <td><strong>{{ p.nom_provee }}</strong></td>
+                        <td>{{ p.fech_ingre }}</td>
+                        <td>{{ p.num_tel }}</td>
+                        <td style="text-align: center;">
+                            <a href="{% url 'editar_provee' p.id_provee %}" class="edit" style="margin-right: 15px; text-decoration: none; color: #2d6cdf; font-weight: bold;">Editar</a>
+                            <a href="{% url 'eliminar_provee' p.id_provee %}" class="delete" style="text-decoration: none; color: #d33; font-weight: bold;" onclick="return confirm('¿Eliminar este proveedor?')">Borrar</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #999; padding: 20px;">No hay proveedores registrados.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 {% endblock %}
