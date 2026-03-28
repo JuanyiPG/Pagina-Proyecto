@@ -1,0 +1,26 @@
+{% extends 'usuarios/base.html' %}
+
+{% block contenido %}
+<div class="edit-container">
+    <h2>🤝 Editar Proveedor</h2>
+    <div class="form-card">
+        <form method="POST">
+            {% csrf_token %}
+            
+            <label>Nombre o Razón Social:</label>
+            <input type="text" name="nom_provee" value="{{ proveedor.nom_provee }}" required>
+            
+            <label>Fecha de Registro:</label>
+            <input type="date" name="fech_ingre" value="{{ proveedor.fech_ingre|date:'Y-m-d' }}" required>
+            
+            <label>Teléfono de Contacto:</label>
+            <input type="text" name="num_tel" value="{{ proveedor.num_tel }}" required>
+
+            <div class="form-actions" style="flex-direction: column; gap: 10px;">
+                <button type="submit" class="btn-save" style="width: 100%;">💾 Guardar Cambios</button>
+                <a href="{% url 'lista_provee' %}" style="text-align: center; color: #666; text-decoration: none; font-size: 14px;">Regresar a la lista</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
