@@ -58,7 +58,7 @@ ROOT_URLCONF = 'LuxyFashion.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
+        'DIRS': [BASE_DIR / 'templates'],  # <--- CAMBIA ESTO
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
