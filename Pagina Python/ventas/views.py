@@ -55,7 +55,7 @@ def crear_variacion(request, producto_id, pedido_id):
             id_prod_fk_detval = producto
         )
 
-        return redirect('carrito')
+        return redirect('ventas:ver_carrito')
 
     return render(request, 'personalizar.html', {
         #lo que este entre las '', es para poder llamar los datos en el HTML, ejemplo producto.nom y el 
@@ -123,7 +123,7 @@ def lista_producto(request):
     if rol_usuario in ['Administrador', 'Empleado']:
         return render(request, 'ventas/producto/lista_product.html', {'productos': productos})
     else:
-        return render(request, 'ventas/PAGINAS_LUXY_PROD/PAGINA_PROD.html', {'productos': productos})
+        return render(request, 'PAGINAS_LUXY_PROD/PAGINA_PROD.html', {'productos': productos})
 
 #@solo_personal
 def crear_producto(request): 
