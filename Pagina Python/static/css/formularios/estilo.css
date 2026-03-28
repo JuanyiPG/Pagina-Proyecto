@@ -1,0 +1,436 @@
+/* RESET */
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* BODY */
+body{
+    background: #f5f6fa;
+    margin-left: 240px;
+}
+
+/* ===== SIDEBAR ===== */
+nav{
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 240px;
+    height: 100vh;
+    background: linear-gradient(180deg, #6a0f2e, #3d061a);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 3px 0 15px rgba(0,0,0,0.15);
+}
+
+/* LOGO */
+nav h1{
+    color: white;
+    padding: 22px 20px;
+    font-size: 20px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* LINKS */
+nav a{
+    display: flex;
+    align-items: center;
+    color: #f3e8ef;
+    text-decoration: none;
+    padding: 14px 22px;
+    font-size: 14px;
+    transition: all 0.25s ease;
+    border-left: 4px solid transparent;
+}
+
+/* HOVER */
+nav a:hover{
+    background: rgba(255,255,255,0.08);
+    padding-left: 28px;
+    border-left: 4px solid #ffffff;
+}
+
+/* ACTIVO */
+nav a.active{
+    background: #7e1a3f;
+    border-left: 4px solid white;
+}
+
+/* LOGOUT */
+.logout-box{
+    margin-top: auto;
+    padding: 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.logout-box button{
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    background: white;
+    color: #7e1a3f;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.logout-box button:hover{
+    background: #f1f1f1;
+    transform: scale(1.03);
+}
+
+/* CONTENIDO */
+.main-content{
+    padding: 30px;
+}
+
+/* HEADER */
+.header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* PAGE */
+.page{
+    width: 100%;
+}
+
+/* TITULOS */
+h2, h3{
+    color: #7e1a3f;
+    margin-bottom: 10px;
+}
+
+/* HEADER DE PAGINA */
+.page-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* BUSCADOR + BOTON */
+.actions{
+    display: flex;
+    gap: 10px;
+}
+
+.actions input{
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    outline: none;
+}
+
+.actions input:focus{
+    border-color: #7e1a3f;
+}
+
+/* BOTON PRINCIPAL */
+.btn{
+    background: linear-gradient(135deg, #7e1a3f, #a8325f);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.btn:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(126,26,63,0.3);
+}
+
+/* TARJETAS */
+.card, .table-card, .form-card{
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+/* INFO TABLA */
+.table-top{
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+/* TABLA */
+table{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* HEADER TABLA */
+th{
+    background: #7e1a3f;
+    color: white;
+    padding: 14px;
+    text-align: left;
+    font-size: 13px;
+}
+
+/* CELDAS */
+td{
+    padding: 14px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+}
+
+/* HOVER FILAS */
+tr:hover{
+    background: #f9fafb;
+}
+
+/* BOTONES TABLA */
+.edit{
+    background: #f3e8ef;
+    color: #7e1a3f;
+    padding: 6px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 12px;
+    transition: 0.2s;
+}
+
+.edit:hover{
+    background: #e4d2db;
+}
+
+.delete{
+    background: #ffe6e6;
+    color: #b30000;
+    padding: 6px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 12px;
+    transition: 0.2s;
+}
+
+.delete:hover{
+    background: #ffd6d6;
+}
+
+/* FORMULARIO */
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* GRUPO */
+.form-group{
+    display: flex;
+    flex-direction: column;
+}
+
+/* LABEL */
+label{
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #7e1a3f;
+}
+
+/* INPUTS */
+input, select{
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    outline: none;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+input:focus, select:focus{
+    border-color: #7e1a3f;
+    box-shadow: 0 0 0 2px rgba(126,26,63,0.1);
+}
+
+/* BOTONES FORM */
+.form-actions{
+    display: flex;
+    gap: 10px;
+}
+
+/* GUARDAR */
+.btn-save{
+    background: linear-gradient(135deg, #7e1a3f, #a8325f);
+    color: white;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    flex: 1;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-save:hover{
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* CANCELAR */
+.btn-cancel{
+    background: #eee;
+    color: #333;
+    padding: 12px;
+    border-radius: 10px;
+    text-decoration: none;
+    flex: 1;
+    text-align: center;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-cancel:hover{
+    background: #ddd;
+}
+
+/* =======================================================
+   SECCIÓN: INVENTARIO (Estampados, Proveedores, MMTP)
+   ======================================================= */
+
+/* Contenedor principal para que nada se esconda tras el sidebar */
+.container-wide {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Tarjetas de Formulario - Unificadas */
+.form-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+}
+
+/* Rejilla para que los inputs se vean alineados */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+/* Estilos de inputs específicos para estas apps */
+.form-card label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #7e1a3f;
+    font-size: 14px;
+}
+
+.form-card input, 
+.form-card select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    outline: none;
+    font-size: 14px;
+}
+
+.form-card input:focus {
+    border-color: #7e1a3f;
+}
+
+/* GALERÍA DE ESTAMPADOS */
+.estampados-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 25px;
+}
+
+.card-item {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.card-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(106, 15, 46, 0.1);
+}
+
+.card-img {
+    height: 180px;
+    width: 100%;
+    object-fit: cover;
+    background: #f9f9f9;
+}
+
+.card-info {
+    padding: 15px;
+}
+
+.card-info h3 { margin: 0; font-size: 16px; color: #333; }
+.card-info .price { color: #7e1a3f; font-weight: bold; font-size: 18px; margin: 8px 0; }
+
+/* TABLAS DE PROVEEDOR Y MMTP */
+.table-responsive {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+}
+
+.table-inventory {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-inventory th {
+    background: #7e1a3f;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-size: 13px;
+}
+
+.table-inventory td {
+    padding: 12px;
+    border-bottom: 1px solid #f1f1f1;
+    font-size: 14px;
+}
+.btn-save {
+    background-color: #7e1a3f; /* Color bordó principal */
+    color: #ffffff !important;  /* ¡Importante! Asegura que la letra sea blanca */
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.btn-save:hover {
+    background-color: #6a0f2e; /* Un tono más oscuro al pasar el mouse */
+}
+
+/* Estilo para el área de carga de imagen */
+.upload-area label.btn-save {
+    background-color: #555; /* Gris oscuro para diferenciarlo del botón de envío */
+}
+
+.upload-area label.btn-save:hover {
+    background-color: #333;
+}
