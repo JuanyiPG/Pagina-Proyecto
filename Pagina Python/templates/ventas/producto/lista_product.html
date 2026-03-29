@@ -106,6 +106,7 @@ td:nth-child(6) {
                 <th>Nombre</th>
                 <th>descripción</th>
                 <th>Categoria</th>
+                <th>Precio</th>
                 <th>Estado</th>
                 <th>Acciones</th>
             </tr>
@@ -123,8 +124,8 @@ td:nth-child(6) {
                 <td>{{producto.nom_produc}}</td>
                 <td>{{producto.desc_produc}}</td>
                 <td>{{producto.categoria_produc}}</td>
-                <td>{{producto.estado_produc}}</td>
                 <td>{{producto.precio}}</td>
+                <td>{{producto.estado_produc}}</td>
                 <td>
                     <a href="{% url 'ventas:editar_producto' producto.id_produc %}">Editar</a>
                     <a href="{% url 'ventas:eliminar_producto' producto.id_produc %}">Eliminar</a>
