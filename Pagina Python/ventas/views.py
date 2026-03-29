@@ -132,6 +132,7 @@ def crear_producto(request):
         #POST para textos plano, FILES, para img, pdf, etc
         imagen_produc = request.FILES.get('imagen_produc')
         nom_produc = request.POST.get('nom_produc')
+        gen_produc = request.POST.get('gen_produc')
         desc_produc = request.POST.get('desc_produc')
         categoria_produc = request.POST.get('cat_produc')
         estado_produc = request.POST.get('estado_produc')
@@ -160,7 +161,7 @@ def crear_producto(request):
                     'error': 'ERROR: Esta prenda ya ha sido subida anteriormente.'
             })
         
-        Producto.objects.create(imagen_product=imagen_produc, imagen_hash=nuevo_hash, nom_produc=nom_produc,
+        Producto.objects.create(imagen_product=imagen_produc, imagen_hash=nuevo_hash, nom_produc=nom_produc, gen_produc=gen_produc,
                                 desc_produc=desc_produc, categoria_produc=categoria_produc,estado_produc=estado_produc, precio=valor )
         
         return redirect('ventas:lista_producto_admin')
@@ -183,6 +184,7 @@ def editar_producto(request, id):
             nueva_imagen.seek(0)
 
         producto.nom_produc = request.POST.get('nom_produc')
+        producto.gen_produc = request.POST.get('gen_produc')
         producto.desc_produc = request.POST['desc_produc']
         producto.categoria_produc = request.POST.get('categoria_produc')
         producto.estado_produc = request.POST['estado_produc']

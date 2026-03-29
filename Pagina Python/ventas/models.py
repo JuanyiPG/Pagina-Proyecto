@@ -21,6 +21,7 @@ class Producto(models.Model) :
     #para duplicados, guarda la imagen en capacidad de pixeles 
     imagen_hash = models.CharField(max_length=64, unique=True, editable=False, null=True)
     nom_produc = models.CharField(max_length=50)
+    genero_produc = models.CharField(max_length=50)
     desc_produc = models.CharField(max_length=200)
     categoria_produc = models.CharField(max_length=50)
     estado_produc = models.CharField(max_length=50)
