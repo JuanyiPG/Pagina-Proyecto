@@ -144,9 +144,9 @@
                 <div class="contenedor-opciones-color">
                     {% for c in colores %}
                         <div class="color-picker">
-                            <input type="radio" name="color" id="color-{{c}}" value="{{c}}" style="display:none;" required>
+                            <input type="adio" name="color" id="color-{{c}}" value="{{c}}" style="display:none;" required>
                             <label for="color-{{c}}" class="color-option"
-                                style="background-color:{% if c == 'rojo' %}red{% elif c == 'azul' %}blue{% elif c == 'blanco' %}white{% elif c == 'gris' %}gray{% else %}#ccc{% endif %};">
+                                style="background-rcolor:{% if c == 'rojo' %}red{% elif c == 'azul' %}blue{% elif c == 'blanco' %}white{% elif c == 'gris' %}gray{% else %}#ccc{% endif %};">
                             </label>
                         </div>
                     {% endfor %}

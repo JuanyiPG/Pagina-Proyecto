@@ -139,6 +139,15 @@
         </div>
 
         <div class="form-group">
+            <label for="gen_produc">Genero</label>
+            <select name="gen_produc" id="gen_produc">
+                <option value="Hombre" {% if producto.gen_produc == 'Hombre' %} selected {% endif %}>Hombre</option>
+                <option value="Mujer" {% if producto.gen_produc == 'Mujer' %} selected {% endif %}>Mujer</option>
+                <option value="Unisex" {% if producto.gen_produc == 'Unisex' %} selected {% endif %}>Unisex</option>
+            </select>
+        </div>
+
+        <div class="form-group">
             <label>Categoría</label>
             <input type="text" class="readonly-field" name="categoria_produc" value="{{ producto.categoria_produc }}" readonly>
         </div>
