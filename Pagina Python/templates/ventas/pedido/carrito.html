@@ -3,6 +3,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>Mi Carrito - Luxy Fashion</title>
     <style>
         body { font-family: Arial; background: #f4eeee; margin: 0; }
@@ -29,7 +30,7 @@
         .fila-resumen { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 16px; color: #555; }
         .total-final { margin-top: 15px; padding-top: 15px; border-top: 2px dashed #eee; font-size: 22px; font-weight: bold; }
         
-        /* Botones y Spinner */
+/* Botones y Spinner */
         .btn-comprar { 
             display: flex; justify-content: center; align-items: center;
             width: 100%; padding: 15px; background: rgb(87,16,29); 
@@ -45,11 +46,38 @@
             border-radius: 50%; border-top-color: #fff;
             animation: spin 1s ease-in-out infinite;
             display: none; margin-right: 10px;
+            text-decoration: none;
         }
 
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        .carrito-vacio { text-align: center; color: #666; margin-top: 50px; }
+        .carrito-vacio { 
+            text-align: center; 
+            color: #666; margin-top: 50px;
+            text-decoration: none !important;
+        }
+
+        .acciones-carrito {
+        display: flex;
+        gap: 15px; /* Espacio entre los dos botones */
+        justify-content: flex-end; /* Los alinea a la derecha */
+        padding: 10px;
+}
+
+        .btn-accion {
+        text-decoration: none;
+    color: #57101d;
+    transition: transform 0.2s, color 0.2s;
+}
+
+    .btn-eliminar{
+        margin-left: 60em;
+    }
+
+.btn-accion:hover {
+    transform: scale(1.2);
+    color: #a31c36; /* Un rojo más claro al pasar el mouse */
+}
 
     </style>
 </head>
@@ -69,28 +97,26 @@
                 <div class="info-prod">
                     <p class="nombre-p">{{ item.id_prod_fk_detval.nom_produc }}</p>
                     <p>Talla: <strong>{{ item.talla }}</strong> | Cantidad: {{ item.cant }}</p>
-                    <p>Subtotal: <strong>${{ item.valor_total }}</strong></p>
+                    <p>Subtotal: <strong>${{ item.valor_total|floatformat:3 }}</strong></p>
                 </div>
                 
-                <div class="borrar">
+                <div class="acciones-carrito">
                     <a href="{% url 'ventas:eliminar_carrito' id_det_valor=item.id_det_valor %}" 
-                        style="color: #57101d;"
-                        onclick="return confirm('¿Desea remover este producto?')">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16" style="margin-left:60em;">
-                            <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
-                        </svg>
-                    </a>
-                </div>
+                    class="btn-accion btn-eliminar" 
+                    title="Eliminar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+            <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
+        </svg>
+    </a>
 
-                <div class="borrar">
-                    <a href="{% url 'ventas:editar_carrito' id_det_valor=item.id_det_valor %}" 
-                        style="color: #57101d;"
-                        onclick="return confirm('¿Desea editar este producto?')">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16" style="margin-left: 20px">
-                            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
-                        </svg>
-                    </a>
-                </div>
+    <a href="{% url 'ventas:editar_carrito' id_det_valor=item.id_det_valor %}" 
+                class="btn-accion btn-editar" 
+                title="Editar">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
+        </svg>
+    </a>
+</div>
 
             </div>
             {% endfor %} <div class="resumen-pago">
@@ -133,9 +159,54 @@
         texto.innerText = 'Procesando...'; // Cambia el texto
     });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Alerta para ELIMINAR
+    document.querySelectorAll('.btn-eliminar').forEach(boton => {
+        boton.addEventListener('click', function(e) {
+            e.preventDefault(); // Detiene el enlace
+            const url = this.href;
 
-{% if messages %}
-    {% for message in messages %}<script>alert("{{ message }}");</script>{% endfor %}
-{% endif %}
+            Swal.fire({
+                title: '¿Remover producto?',
+                text: "Esta acción quitará el producto de tu carrito.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#57101d', // Tu color personalizado
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, remover',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url; // Si confirma, redirige
+                }
+            });
+        });
+    });
+
+    // Alerta para EDITAR
+    document.querySelectorAll('.btn-editar').forEach(boton => {
+        boton.addEventListener('click', function(e) {
+            e.preventDefault();
+            const url = this.href;
+
+            Swal.fire({
+                title: '¿Editar producto?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#57101d',
+                confirmButtonText: 'Ir a editar',
+                cancelButtonText: 'Volver'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        });
+    });
+});
+</script>
+
 </body>
 </html>

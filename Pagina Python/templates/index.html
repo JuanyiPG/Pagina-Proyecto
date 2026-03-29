@@ -79,36 +79,68 @@
         pointer-events: none;
     }
 
-    .mosaico {
-        width: 100%;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-        gap: 25px;
-        padding: 40px 5%;
-        background-color: #ffffff;
-        justify-items: center;
-    }
+.mosaico-fashion {
+    max-width: 1100px;
+    margin: 50px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 40px; /* Más espacio entre filas para que respire el diseño */
+}
 
-    .mosaico img {
-        width: 100%;
-        height: 350px;
-        object-fit: cover;
-        border-radius: 5px;
-        transition: transform .4s ease, filter .4s ease;
-    }
+.mosaico-fila {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr; /* La grande es un poco más ancha que el bloque de pequeñas */
+    gap: 15px;
+    align-items: stretch; /* Obliga a que ambos lados tengan la misma altura */
+}
 
-    .mosaico img:hover {
-        transform: scale(1.05);
-        filter: brightness(1.15);
-        box-shadow: 0px 15px 30px rgba(0,0,0,0.2);
-    }
+/* Patrón invertido */
+.mosaico-fila.grande-der {
+    grid-template-columns: 1fr 1.2fr;
+}
 
-    .mosaico p {
-        margin-top: 15px;
-        font-size: 18px;
-        font-family: 'Times New Roman', serif;
-        color: #2c2c2c;
-    }
+/* Cuadrícula de 4 pequeñas */
+.mosaico-pequenas {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2x2 */
+    grid-template-rows: repeat(2, 1fr);
+    gap: 15px;
+}
+
+/* --- LA TARJETA (El cuadro que se mueve) --- */
+.tarjeta-mosaico {
+    position: relative;
+    overflow: hidden;
+    border-radius: 2px; /* Bordes finos, no robustos */
+    background-color: #f8f8f8;
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s ease;
+    cursor: pointer;
+}
+
+/* Efecto hover en TODO el cuadro */
+.tarjeta-mosaico:hover {
+    transform: translateY(-8px); /* Se eleva todo el cuadro */
+    box-shadow: 0 15px 30px rgba(87, 16, 29, 0.15); /* Sombra con tu color vino muy tenue */
+    z-index: 10;
+}
+
+/* Imagen dentro de la tarjeta */
+.tarjeta-mosaico img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Para que no se estiren */
+    display: block;
+    transition: filter 0.3s ease;
+}
+
+/* Ajustes de altura para que la grande y las 4 pequeñas midan lo mismo */
+.item-grande {
+    height: 600px; /* Ajusta esta altura según tus fotos */
+}
+
+.item-pequeno {
+    height: 300px; /* Aproximadamente la mitad de la grande menos el gap */
+}
 </style>
 
 <main>
@@ -149,25 +181,37 @@
     </section>
 
     <!-- MOSAICO -->
-    <section class="mosaico">
-        <img src="{% static 'IMG/index.jpeg' %}">
-        <img src="{% static 'IMG/index2.jpg' %}">
-        <img src="{% static 'IMG/index5.jpg' %}">
-        <img src="{% static 'IMG/index3.jpg' %}">
-        <img src="{% static 'IMG/index4.jpg' %}">
-        <img src="{% static 'IMG/index6.jpg' %}">
-        <img src="{% static 'IMG/index7.jpeg' %}">
-        <img src="{% static 'IMG/index8.jpeg' %}">
-        <img src="{% static 'IMG/index9.jpg' %}">
-        <img src="{% static 'IMG/index10.jpg' %}">
-    </section>
+    <section class="mosaico-fashion">
+    
+    <div class="mosaico-fila grande-izq">
+        <div class="tarjeta-mosaico item-grande">
+            <img src="{% static 'IMG/index5.jpg' %}" alt="Principal">
+        </div>
+        <div class="mosaico-pequenas">
+            <div class="tarjeta-mosaico item-pequeno"><img src="{% static 'IMG/index1.jpeg' %}"></div>
+            <div class="tarjeta-mosaico item-pequeno"><img src="{% static 'IMG/index2.jpeg' %}"></div>
+            <div class="tarjeta-mosaico item-pequeno"><img src="{% static 'IMG/index3.jpeg' %}"></div>
+            <div class="tarjeta-mosaico item-pequeno"><img src="{% static 'IMG/index4.webp' %}"></div>
+        </div>
+    </div>
+
+    <div class="mosaico-fila grande-der">
+        <div class="mosaico-pequenas">
+            <div class="tarjeta-mosaico item-pequeno"><img src="{% static 'IMG/index7.jpeg' %}"></div>
+            <div class="tarjeta-mosaico item-pequeno"><img src="{% static 'IMG/index8.jpeg' %}"></div>
+            <div class="tarjeta-mosaico item-pequeno"><img src="{% static 'IMG/index9.webp' %}"></div>
+            <div class="tarjeta-mosaico item-pequeno"><img src="{% static 'IMG/index10.jpg' %}"></div>
+        </div>
+        <div class="tarjeta-mosaico item-grande">
+            <img src="{% static 'IMG/index6.jpg' %}" alt="Secundaria">
+        </div>
+    </div>
+
+</section>
 
     <a href="{% url 'ventas:lista_product' %}"><button class="ver-mas-final">Ver más</button></a>
 
     <hr>
-
-    <!-- LINKS -->
-    <a href="{% url 'ventas:lista_abono' %}">Haz click aqui para el abono</a><br>
 
 </main>
 

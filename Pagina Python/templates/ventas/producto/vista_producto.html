@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+
 {% load static %}
 
 {% block contenido %} <style>
@@ -10,7 +10,7 @@
         display: flex;
         gap: 30px;
         background: white;
-        padding: 30px;
+        padding: 20px;
         border-radius: 12px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         margin-top: 20px;
@@ -64,7 +64,6 @@
         gap: 10px;
         margin-top: 15px;
     }
-
     .color-option {
         display: inline-block;
         width: 30px;
@@ -74,8 +73,13 @@
         cursor: pointer;
     }
 
+    .color-option:hover {
+    transform: scale(1.1); /* Efecto visual al pasar el mouse */
+}
+
     input[type="radio"]:checked + .color-option {
         border-color: black;
+        border-radius: 20px;
     }
 
     .readonly input {
@@ -84,6 +88,13 @@
         font-weight: bold;
         outline: none;
     }
+
+    .bg-azul{background-color: blue;}
+    .bg-blanco{background-color: white;}
+    .bg-gris{background-color: gray;}
+    .bg-rojo{background-color: red;}
+    .bg-default { background-color: #eee; }
+
 </style>
 
 <div class="con-pro-cli">
@@ -123,6 +134,11 @@
                 {% endfor %}
             </div>
 
+            <div style="margin-top: 20px;">
+                <label for="cantidad_id" style="font-weight: bold;">Cantidad:</label>
+                <input type="number" name="cantidad" id="cantidad_id" value="1" min="1" style="width: 70px; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+            </div>
+
             <div style="margin-top: 15px;">
                 <label style="font-weight: bold;">Colores disponibles:</label>
                 <div class="contenedor-opciones-color">
@@ -130,17 +146,11 @@
                         <div class="color-picker">
                             <input type="radio" name="color" id="color-{{c}}" value="{{c}}" style="display:none;" required>
                             <label for="color-{{c}}" class="color-option"
-                            <div class="{% if c == 'rojo' %}bg-rojo{% elif c == 'azul' %}bg-azul{% elif c == 'blanco' %}bg-blanco{% elif c == 'gris' %}bg-gris{% else %}bg-default{% endif %}">
-                            </div>
+                                style="background-color:{% if c == 'rojo' %}red{% elif c == 'azul' %}blue{% elif c == 'blanco' %}white{% elif c == 'gris' %}gray{% else %}#ccc{% endif %};">
                             </label>
                         </div>
                     {% endfor %}
                 </div>
-            </div>
-
-            <div style="margin-top: 20px;">
-                <label for="cantidad_id" style="font-weight: bold;">Cantidad:</label>
-                <input type="number" name="cantidad" id="cantidad_id" value="1" min="1" style="width: 70px; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
             </div>
 
             <div style="margin-top: 30px;">
@@ -152,6 +162,5 @@
     </div>
 </div>
 
-<script src="{% static 'js/cliente.js' %}"></script>
 
 {% endblock %}

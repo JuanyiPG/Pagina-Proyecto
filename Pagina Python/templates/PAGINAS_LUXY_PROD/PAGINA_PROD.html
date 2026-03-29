@@ -21,6 +21,12 @@
 
         .principal { display: flex; margin-top: 80px; min-height: 100vh; }
 
+        video {
+            width: 100%;
+            margin-top: 50px;
+            margin-bottom: -70px;
+}
+
         /* Filtros lateral fijo */
         .filtros {
             padding: 20px; background: white; width: 220px;
@@ -76,11 +82,18 @@
             <a href="#"><img src="{% static 'IMG/logo.png' %}" height="60px"></a>
         </div>
         <div class="menu-superior">
-            <a href="#">Inicio</a>
+            <a href="{% url 'index' %}">Inicio</a>
+            {% if request.session.usuario_id %}
+            <a href="{% url 'usuarios:logout' %}">Cerrar sesión</a>
+            {% else %}
             <a href="{% url 'usuarios:login' %}">Iniciar sesión</a>
+            {% endif %}
             <a href="{% url 'ventas:ver_carrito' %}">🛒</a>
         </div>
     </header>
+    <video autoplay muted loop class="VPP">
+    <source src="{% static 'videos/VideoPClien.mp4' %}" type="video/mp4">
+</video>
 
 </aside>
     <div class="principal">
@@ -177,6 +190,34 @@
 
         actualizarContador();
     </script>
+    {% if messages %}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            {% for message in messages %}
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center',
+                    showConfirmButton: false,
+                    timer: 3500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+
+                Toast.fire({
+                    icon: '{{ message.tags }}', // success, error, info, warning
+                    title: '{{ message }}',
+                    background: '#fff',
+                    color: '#57101d',
+                    iconColor: '#a31c36', // Rojo pasión para combinar con LuxyFashion
+                });
+            {% endfor %}
+        });
+    </script>
+{% endif %}
 </body>
 </html>
 {% endblock %}

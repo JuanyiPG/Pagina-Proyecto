@@ -41,14 +41,13 @@ def solo_personal(view_func):
 # ================================================================
 
 @never_cache
-@login_requerido_custom
 @solo_personal
 def lista_roles(request):
     roles = Rol.objects.all()
     return render(request, 'usuarios/roles/lista.html', {'roles': roles})
 
 
-@login_requerido_custom
+
 @solo_personal
 def crear_rol(request):
     if request.method == 'POST':
@@ -58,7 +57,6 @@ def crear_rol(request):
     return render(request, 'usuarios/roles/crear.html')
 
 
-@login_requerido_custom
 @solo_personal
 def editar_rol(request, id):
     rol = get_object_or_404(Rol, id_rol=id)
@@ -71,7 +69,6 @@ def editar_rol(request, id):
     return render(request, 'usuarios/roles/editar.html', {'rol': rol})
 
 
-@login_requerido_custom
 @solo_personal
 def eliminar_rol(request, id):
     rol = get_object_or_404(Rol, id_rol=id)
@@ -84,14 +81,12 @@ def eliminar_rol(request, id):
 # ================================================================
 
 @never_cache
-@login_requerido_custom
 @solo_personal
 def lista_usuarios(request): # Se cambió @login_required nativo por el tuyo
     usuarios = Usuario.objects.all()
     return render(request, 'usuarios/usuario/lista.html', {'usuarios': usuarios})
 
 
-@login_requerido_custom
 @solo_personal
 def crear_usuario(request):
     roles = Rol.objects.all()
@@ -113,7 +108,6 @@ def crear_usuario(request):
     return render(request, 'usuarios/usuario/crear.html', {'roles': roles})
 
 
-@login_requerido_custom
 @solo_personal
 def editar_usuario(request, id):
     usuario = get_object_or_404(Usuario, id_usuario=id)
@@ -136,7 +130,6 @@ def editar_usuario(request, id):
     })
 
 
-@login_requerido_custom
 @solo_personal
 def eliminar_usuario(request, id):
     usuario = get_object_or_404(Usuario, id_usuario=id)
@@ -149,14 +142,12 @@ def eliminar_usuario(request, id):
 # ================================================================
 
 @never_cache
-@login_requerido_custom
 @solo_personal
 def lista_empleados(request):
     empleados = Empleado.objects.all()
     return render(request, 'usuarios/empleados/lista.html', {'empleados': empleados})
 
 
-@login_requerido_custom
 @solo_personal
 def crear_empleado(request):
     usuarios = Usuario.objects.all()
@@ -184,7 +175,6 @@ def crear_empleado(request):
     return render(request, 'usuarios/empleados/crear.html', {'usuarios': usuarios})
 
 
-@login_requerido_custom
 @solo_personal
 def editar_empleado(request, id):
     empleado = get_object_or_404(Empleado, id_emple=id)
@@ -216,7 +206,6 @@ def editar_empleado(request, id):
     })
 
 
-@login_requerido_custom
 @solo_personal
 def eliminar_empleado(request, id):
     empleado = get_object_or_404(Empleado, id_emple=id)
@@ -229,14 +218,12 @@ def eliminar_empleado(request, id):
 # ================================================================
 
 @never_cache
-@login_requerido_custom
 @solo_personal
 def lista_clientes(request):
     clientes = Cliente.objects.all()
     return render(request, 'usuarios/clientes/lista.html', {'clientes': clientes})
 
 
-@login_requerido_custom
 @solo_personal
 def crear_cliente(request):
     usuarios = Usuario.objects.all()
@@ -257,7 +244,6 @@ def crear_cliente(request):
     return render(request, 'usuarios/clientes/crear.html', {'usuarios': usuarios})
 
 
-@login_requerido_custom
 @solo_personal
 def editar_cliente(request, id):
     cliente = get_object_or_404(Cliente, id_clien=id)
@@ -282,7 +268,6 @@ def editar_cliente(request, id):
     })
 
 
-@login_requerido_custom
 @solo_personal
 def eliminar_cliente(request, id):
     cliente = get_object_or_404(Cliente, id_clien=id)
@@ -306,6 +291,7 @@ def login_view(request):
                 request.session.flush() 
 
                 request.session['usuario_id'] = usuario.id_usuario
+                request.session['username'] = usuario.username
                 request.session['rol'] = usuario.id_rol_fk.nom_rol
 
                 messages.success(request, f"Bienvenido, {usuario.username}")

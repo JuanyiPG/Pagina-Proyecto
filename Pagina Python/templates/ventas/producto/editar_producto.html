@@ -1,3 +1,5 @@
+{% extends 'base.html' %}
+
 {% block content %}
 <!DOCTYPE html>
 <html lang="es">
@@ -139,6 +141,11 @@
         <div class="form-group">
             <label>Categoría</label>
             <input type="text" class="readonly-field" name="categoria_produc" value="{{ producto.categoria_produc }}" readonly>
+        </div>
+
+        <div class="form-group">
+            <label>Precio</label>
+            <input type="text" name="precio" step="any" value="{{ producto.precio }}">
         </div>
 
         <div class="form-group">

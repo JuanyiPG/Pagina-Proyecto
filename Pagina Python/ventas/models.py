@@ -25,7 +25,7 @@ class Producto(models.Model) :
     categoria_produc = models.CharField(max_length=50)
     estado_produc = models.CharField(max_length=50)
     dias_produccion = models.PositiveIntegerField(default=1)
-    precio = models.DecimalField(max_digits=12, decimal_places= 2)
+    precio = models.DecimalField(max_digits=12, decimal_places= 3)
 
 
 class Det_mov_matp(models.Model) : 

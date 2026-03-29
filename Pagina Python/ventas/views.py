@@ -118,12 +118,11 @@ def eliminar_variacion (request, detalle_id):
 
 def lista_producto(request): 
     productos = Producto.objects.all()
-    rol_usuario = request.session.get('rol')
-
-    if rol_usuario in ['Administrador', 'Empleado']:
-        return render(request, 'ventas/producto/lista_product.html', {'productos': productos})
-    else:
-        return render(request, 'PAGINAS_LUXY_PROD/PAGINA_PROD.html', {'productos': productos})
+    return render(request, 'PAGINAS_LUXY_PROD/PAGINA_PROD.html', {'productos': productos})
+    
+def lista_producto_admin(request):
+    productos = Producto.objects.all()
+    return render(request, 'ventas/producto/lista_product.html', {'productos': productos})
 
 #@solo_personal
 def crear_producto(request): 
@@ -140,7 +139,7 @@ def crear_producto(request):
 
         #Converir String a Decimal
         try: 
-            precio_limpio = precio.replace('$', '').replace(',', '').strip()
+            precio_limpio = precio.replace('$', '').replace(',', '.', '""').strip()
             valor = Decimal(precio_limpio)
         except(InvalidOperation, TypeError):
             valor = Decimal('0.00')
@@ -164,7 +163,7 @@ def crear_producto(request):
         Producto.objects.create(imagen_product=imagen_produc, imagen_hash=nuevo_hash, nom_produc=nom_produc,
                                 desc_produc=desc_produc, categoria_produc=categoria_produc,estado_produc=estado_produc, precio=valor )
         
-        return redirect('ventas:lista_product')
+        return redirect('ventas:lista_producto_admin')
     return render(request, 'ventas/producto/form_producto.html')
 
 
@@ -187,15 +186,16 @@ def editar_producto(request, id):
         producto.desc_produc = request.POST['desc_produc']
         producto.categoria_produc = request.POST.get('categoria_produc')
         producto.estado_produc = request.POST['estado_produc']
-        producto.precio = request.POST['precio']
+        precio = request.POST['precio']
         try: 
-            precio_limpio = producto.precio.replace('$', '').replace(',', '').strip()
+            precio_limpio = precio.replace('$', '').replace(',', '.').strip()
             valor = Decimal(precio_limpio)
         except(InvalidOperation, TypeError):
             valor = Decimal('0.00')
 
+        producto.precio = valor
         producto.save()
-        return redirect('ventas:lista_product')
+        return redirect('ventas:lista_producto_admin')
     return render(request, 'ventas/producto/editar_producto.html', {'producto': producto})
 
 
@@ -473,28 +473,31 @@ def eliminar_pedido(request, id):
 
 @login_requerido_custom
 def ver_carrito(request):
-    # 1. Usamos tu función para obtener el cliente correctamente
+    
     try:
         cliente = obtener_cliente_actual(request)
     except Cliente.DoesNotExist:
-        # En vez de mandar un error 404, pintamos el carrito vacío y mandamos un mensaje
+
         return render(request, 'ventas/pedido/carrito.html', {
             'items': [], 
             'total_productos': 0, 
             'error_perfil': "No tienes un perfil de Cliente asociado a tu usuario."
         })
 
-    # 2. El resto del código continúa exactamente igual
-    pedido = Pedido.objects.filter(id_clien_fk=cliente).exclude(estado_ped='Cancelado').first()
+    pedido = Pedido.objects.filter(id_clien_fk=cliente, estado_ped='Carrito').first()
 
     if not pedido:
         return render(request, 'ventas/pedido/carrito.html', {'items': [], 'total_productos': 0})
+    
+    decimal = Decimal('0.000')
 
     items = Det_valor.objects.filter(id_ped_fk_detval=pedido)
-    total_productos = items.aggregate(Sum('valor_total'))['valor_total__sum'] or 0
-    total_abonado = Abono.objects.filter(id_pedido_fk_abono=pedido).aggregate(Sum('monto_abono'))['monto_abono__sum'] or 0
-    
-    saldo_pendiente = max(0, total_productos - total_abonado)
+    total_products = items.aggregate(Sum('valor_total'))['valor_total__sum'] or 0
+    total_productos = Decimal(total_products).quantize(decimal)
+
+    total_abono = Abono.objects.filter(id_pedido_fk_abono=pedido).aggregate(Sum('monto_abono'))['monto_abono__sum'] or 0
+    total_abonado = Decimal(total_abono).quantize(decimal)
+    saldo_pendiente = max(0, total_productos - total_abonado).quantize(decimal)
 
     if saldo_pendiente <= 0 and pedido.estado_ped in ['PAGADO', 'Confirmado', 'Confirmada']:
         return render(request, 'ventas/pedido/carrito.html', {'items': [], 'total_productos': 0})
@@ -512,7 +515,7 @@ def eliminar_del_carrito(request, id_det_valor):
     cliente = obtener_cliente_actual(request)
 
     if not cliente: 
-        messages.error(request, "Perfil de cliente no encontrado.inst")
+        messages.error(request, "Perfil de cliente no encontrado.")
         return redirect('login')
     
     detalle = get_object_or_404(Det_valor, id_det_valor=id_det_valor)
