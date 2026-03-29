@@ -38,7 +38,7 @@ class Pedido(models.Model):
     id_pedido = models.AutoField(primary_key=True)
     fecha_ped = models.DateField(auto_now_add=True)
     subtotal_ped = models.DecimalField(max_digits=12, decimal_places= 2)
-    valor_ped = models.DecimalField(max_digits=12, decimal_places=2)
+    valor_ped = models.DecimalField(max_digits=12, decimal_places=3)
     estado_ped = models.CharField(max_length=50)
     metodo_pago = models.CharField(max_length= 50)
     fecha_entrega = models.DateField(blank=True, null=True)
