@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 import os 
+from decimal import Decimal, InvalidOperation
 import hashlib
 from .models import Estampado, Proveedor, Movimiento_matp
 from django.db.models import Q 
@@ -90,10 +91,16 @@ def lista_estampado(request):
     
     if request.method == 'POST':
         nombre = request.POST.get('nombre_estamp')
-        costo = request.POST.get('costo_adi')
+        precio = request.POST.get('costo_adi')
         tipo = request.POST.get('tipo_estamp')
         archivo_img = request.FILES.get('archivo_imagen')
-
+        
+        try: 
+            limpiar = precio.replace('$', '').replace(',','.').strip()
+            costo = Decimal(limpiar)
+        except(InvalidOperation, TypeError):
+            costo = Decimal('0.000')
+        
         nuevo_hash = None
         if archivo_img:
             hasher = hashlib.sha256()
@@ -154,7 +161,14 @@ def editar_estampado(request, id):
 
         # Actualizamos los demás campos de texto
         estampado.nombre_estamp = request.POST.get('nombre_estamp')
-        estampado.costo_adi = request.POST.get('costo_adi')
+        costo = request.POST.get('costo_adi')
+        try: 
+            limpiar = costo.replace('$','').replace(',','.').strip()
+            precio_adi = Decimal(limpiar)
+        except(InvalidOperation, TypeError): 
+            precio_adi = Decimal('0.000')
+        
+        estampado.costo_adi = precio_adi
         estampado.tipo_estamp = request.POST.get('tipo_estamp')
         
         estampado.save() # Guarda todos los cambios en MySQL
