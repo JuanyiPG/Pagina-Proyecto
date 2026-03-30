@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
@@ -120,6 +121,6 @@
     <p>&copy; 2025 Fashion Luxy - Todos los derechos reservados</p>
 </footer>
 
-<script th:src="@{/js/cliente.js?v=2}" defer></script>
+<script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>
