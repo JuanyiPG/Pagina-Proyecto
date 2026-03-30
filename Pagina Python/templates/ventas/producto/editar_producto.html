@@ -1,178 +1,137 @@
 {% extends 'base.html' %}
+{% load l10n %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LuxyFashion | Editar Producto</title>
-    <style>
-        :root {
-            --primary-color: #2c3e50;
-            --accent-color: #e67e22;
-            --error-color: #e74c3c;
-            --success-color: #27ae60;
-            --disabled-bg: #f4f4f4;
-        }
+<style>
+    /* Estética unificada LuxyFashion */
+    .main-content { padding: 30px; font-family: 'Segoe UI', sans-serif; background-color: #fcfcfc; }
+    .container-small { max-width: 600px; margin: auto; }
+    
+    .form-card { 
+        background: white; padding: 30px; border-radius: 15px; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 40px; 
+    }
+    
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #444; font-size: 14px; }
+    
+    .form-group input, .form-group select, .form-group textarea { 
+        width: 100%; padding: 12px; border: 1.5px solid #eee; border-radius: 8px; outline: none; 
+        font-size: 14px; transition: 0.3s;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-        }
+    .form-group input:focus, .form-group select:focus { border-color: #6a0f2e; }
 
-        .container {
-            background-color: #ffffff;
-            width: 100%;
-            max-width: 500px;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
+    /* Campos de solo lectura */
+    .readonly-field { background-color: #f4f4f4; color: #888; cursor: not-allowed; border: 1.5px solid #ececec; }
 
-        h2 {
-            text-align: center;
-            color: var(--primary-color);
-            margin-bottom: 25px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
+    /* Botones Estilo LuxyFashion */
+    .btn-main { 
+        background-color: #6a0f2e; color: white; border: none; padding: 15px; 
+        border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; width: 100%;
+        font-size: 16px; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .btn-main:hover { background-color: #4d0a21; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(106, 15, 46, 0.2); }
 
-        .form-group {
-            margin-bottom: 18px;
-        }
+    /* Contenedor de Imagen Actual */
+    .current-img-container {
+        margin: 20px 0; padding: 20px; border: 1.5px dashed #ddd; 
+        border-radius: 12px; text-align: center; background: #fafafa;
+    }
+    .img-preview { max-width: 200px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 10px; }
+</style>
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: 600;
-        }
+<div class="main-content">
+    <div class="container-small">
+        <h2 style="text-align: center; color: #6a0f2e; margin-bottom: 30px; font-weight: 800;"> EDITAR PRENDA</h2>
 
-        input[type="text"], 
-        textarea, 
-        select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 14px;
-            box-sizing: border-box; /* Evita que el padding ensanche el input */
-        }
+        <div class="form-card">
+            <form action="{% url 'ventas:editar_producto' producto.pk %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
 
-        /* Estilo para campos no editables */
-        .readonly-field {
-            background-color: var(--disabled-bg);
-            color: #888;
-            cursor: not-allowed;
-            border: 1px solid #eee;
-        }
+                <div class="current-img-container">
+                    <label style="color: #666; display: block; margin-bottom: 10px;">Vista Previa Actual</label>
+                    {% if producto.imagen_product %}
+                        <img src="{{ producto.imagen_product.url }}" alt="{{ producto.nom_produc }}" class="img-preview">
+                        <p style="font-size: 11px; color: #888;">Archivo: {{ producto.imagen_product.name|truncatechars:30 }}</p>
+                    {% else %}
+                        <p style="color: #999; font-style: italic;">Sin imagen registrada</p>
+                    {% endif %}
+                </div>
 
-        .btn {
-            width: 100%;
-            padding: 15px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: opacity 0.3s;
-            border: none;
-            margin-top: 10px;
-            color: white;
-        }
+                <div class="form-group">
+                    <label>Nombre del Producto</label>
+                    <input type="text" class="readonly-field" name="nom_produc" value="{{ producto.nom_produc }}" readonly>
+                </div>
 
-        .btn-update {
-            background-color: var(--success-color);
-        }
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Género</label>
+                        <select name="gen_produc">
+                            <option value="Hombre" {% if producto.gen_produc == 'Hombre' %} selected {% endif %}>Hombre</option>
+                            <option value="Mujer" {% if producto.gen_produc == 'Mujer' %} selected {% endif %}>Mujer</option>
+                            <option value="Unisex" {% if producto.gen_produc == 'Unisex' %} selected {% endif %}>Unisex</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Estado</label>
+                        <select name="estado_produc">
+                            <option value="Nuevo" {% if producto.estado_produc == 'Nuevo' %}selected{% endif %}>Nuevo</option>
+                            <option value="En Stock" {% if producto.estado_produc == 'En Stock' %}selected{% endif %}>En Stock</option>
+                            <option value="Agotado" {% if producto.estado_produc == 'Agotado' %}selected{% endif %}>Agotado</option>
+                        </select>
+                    </div>
+                </div>
 
-        .btn-delete {
-            background-color: var(--error-color);
-            margin-top: 20px;
-            font-size: 14px;
-            padding: 10px;
-        }
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <input type="text" class="readonly-field" name="categoria_produc" value="{{ producto.categoria_produc }}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Precio ($)</label>
+                        <input type="number" step="0.01" name="precio" value="{{ producto.precio|unlocalize }}" required>
+                    </div>
+                </div>
 
-        .btn:hover {
-            opacity: 0.9;
-        }
+                <div class="form-group">
+                    <label>Descripción Corta</label>
+                    <textarea name="desc_produc" rows="3" placeholder="Detalles de la prenda...">{{ producto.desc_produc }}</textarea>
+                </div>
 
-        .divider {
-            margin: 30px 0 20px;
-            border: 0;
-            border-top: 1px solid #eee;
-        }
+                <div class="form-group" style="background: #fdfdfd; padding: 15px; border-radius: 8px; border: 1px solid #eee;">
+                    <label>Actualizar Imagen (Opcional)</label>
+                    <input type="file" name="imagen_product" id="file-upload" accept="image/*" onchange="preview(this)">
+                    
+                    <div id="preview_box" style="display: none; margin-top: 15px; text-align: center;">
+                        <p style="font-size: 12px; color: #6a0f2e; font-weight: bold;">Nueva imagen seleccionada:</p>
+                        <img id="img_preview" src="#" style="max-width: 150px; border-radius: 8px; border: 2px solid #6a0f2e;">
+                    </div>
+                </div>
 
-        .img-current {
-            display: block;
-            margin: 10px auto;
-            max-width: 150px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h2>Editar Prenda</h2>
-
-    <form action="{% url 'ventas:editar_producto' producto.pk %}" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-
-        <div class="form-group" style="text-align: center;">
-            <label>Imagen Actual</label>
-            {% if producto.imagen_product %}
-                <img src="{{ producto.imagen_product.url }}" alt="{{ producto.nom_produc }}" style="max-width: 200px; display: block; margin: 0 auto;">
-            {% else %}
-                <p style="font-size: 0.8em; color: #999;">Sin imagen registrada</p>
-            {% endif %}
+                <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 12px;">
+                    <button type="submit" class="btn-main"> Guardar Cambios</button>
+                    <a href="{% url 'ventas:form_producto' %}" style="text-align: center; color: #888; text-decoration: none; font-size: 14px; font-weight: 600;">
+                        ← Cancelar y Volver
+                    </a>
+                </div>
+            </form>
         </div>
-
-        <div class="form-group">
-            <label>Nombre del Producto</label>
-            <input type="text" class="readonly-field" name="nom_produc" value="{{ producto.nom_produc }}" readonly>
-        </div>
-
-        <div class="form-group">
-            <label for="gen_produc">Genero</label>
-            <select name="gen_produc" id="gen_produc">
-                <option value="Hombre" {% if producto.gen_produc == 'Hombre' %} selected {% endif %}>Hombre</option>
-                <option value="Mujer" {% if producto.gen_produc == 'Mujer' %} selected {% endif %}>Mujer</option>
-                <option value="Unisex" {% if producto.gen_produc == 'Unisex' %} selected {% endif %}>Unisex</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Categoría</label>
-            <input type="text" class="readonly-field" name="categoria_produc" value="{{ producto.categoria_produc }}" readonly>
-        </div>
-
-        <div class="form-group">
-            <label>Precio</label>
-            <input type="text" name="precio" step="any" value="{{ producto.precio }}">
-        </div>
-
-        <div class="form-group">
-            <label for="estado_produc">Estado</label>
-            <select id="estado_produc" name="estado_produc">
-                <option value="Nuevo" {% if producto.estado_produc == 'Nuevo' %}selected{% endif %}>Nuevo</option>
-                <option value="En Stock" {% if producto.estado_produc == 'En Stock' %}selected{% endif %}>En Stock</option>
-                <option value="Agotado" {% if producto.estado_produc == 'Agotado' %}selected{% endif %}>Agotado</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="desc_produc">Descripción Corta</label>
-            <textarea id="desc_produc" name="desc_produc" rows="4">{{ producto.desc_produc }}</textarea>
-        </div>
-
-        <button type="submit" class="btn btn-update">GUARDAR CAMBIOS</button>
-    </form>
+    </div>
 </div>
 
+<script>
+    function preview(input) {
+        const box = document.getElementById('preview_box');
+        const img = document.getElementById('img_preview');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                img.src = e.target.result;
+                box.style.display = 'block';
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
 {% endblock %}

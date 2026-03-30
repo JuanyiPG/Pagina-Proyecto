@@ -1,8 +1,45 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="main-content">
-    <div class="container-wide">
-        <h2 style="color: #6a0f2e; margin-bottom: 25px;">🤝 Directorio de Proveedores</h2>
+<style>
+    :root {
+        --luxy-burgundy: #800020;
+        --luxy-copper: #6e0a32;
+        --luxy-hazelnut: #64093d;
+        --luxy-cream: #F5F5F5;
+    }
+
+    .table-container {
+        margin: 2rem auto;
+        padding: 1.5rem;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .title-section {
+        color: var(--luxy-burgundy);
+        border-left: 6px solid var(--luxy-copper);
+        padding-left: 20px;
+        margin-bottom: 30px;
+    }
+
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        overflow: hidden;
+        border-radius: 8px 8px 0 0;
+    }
+
+
+</style>
+
+<div class="table-container">
+    <div class="title-section">
+        <h2 style="margin:0;">Gestion de Proveedores</h2>
+        <small style="color: var(--luxy-hazelnut);">Registro detallado de los proveedores ingresados</small>
+    </div>
         
         <div class="form-card">
             <form method="POST">
