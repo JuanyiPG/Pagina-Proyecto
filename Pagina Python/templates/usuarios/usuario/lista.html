@@ -1,51 +1,119 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="main-content">
+    <div class="container-wide">
+        <h2 style="color: #6a0f2e; margin-bottom: 25px;"> Gestión de Usuarios</h2>
+        
+        <div class="form-card" style="margin-bottom: 40px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+            <h3 style="font-size: 18px; margin-bottom: 20px; color: #333;">Registrar Nuevo Usuario</h3>
+            <form method="POST" action="{% url 'usuarios:crear_usuario' %}">
+                {% csrf_token %}
+                <div class="form-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    
+                    <div class="form-group">
+                        <label style="display: block; margin-bottom: 8px; font-weight: bold;">Nombre de Usuario</label>
+                        <input type="text" name="username" placeholder="Ej: mauricio.vargas" required 
+                               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    </div>
 
-<div class="page">
+                    <div class="form-group">
+                        <label style="display: block; margin-bottom: 8px; font-weight: bold;">Contraseña</label>
+                        <div style="position: relative;">
+                            <input type="password" name="contrasena" id="passwordField" placeholder="********" required 
+                                   style="width: 100%; padding: 10px; padding-right: 40px; border: 1px solid #ddd; border-radius: 5px;">
+                            <span id="togglePassword" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 18px; user-select: none;">
+                                mostrar
+                            </span>
+                        </div>
+                    </div>
 
-    <div class="page-header">
-        <h3>Usuarios</h3>
+                    <div class="form-group">
+                        <label style="display: block; margin-bottom: 8px; font-weight: bold;">Asignar Rol</label>
+                        <select name="id_rol" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; background: white;">
+                            <option value="">Seleccione un rol...</option>
+                            {% for rol in roles %}
+                                <option value="{{ rol.id_rol }}">{{ rol.nom_rol }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-save" style="width: 100%; margin-top: 25px; padding: 12px; background: #6a0f2e; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
+                    Guardar Usuario
+                </button>
+            </form>
+        </div>
 
-        <div class="actions">
-            <input type="text" placeholder=" Buscar...">
-            <a href="{% url 'usuarios:crear_usuario' %}" class="btn">+ Crear Usuario</a>
+        <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 30px;">
+
+        <div class="table-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+                <h3 style="font-size: 18px; margin: 0;">Usuarios Registrados ({{ usuarios|length }})</h3>
+                
+                <div style="position: relative; width: 300px;">
+                    <input type="text" id="searchUser" placeholder=" Buscar por username o rol..." 
+                           style="width: 100%; padding: 10px 15px; border: 1px solid #ddd; border-radius: 25px; outline: none; border: 1px solid #6a0f2e;">
+                </div>
+            </div>
+
+            <div class="table-responsive" style="overflow-x: auto;">
+                <table class="table-inventory" id="usersTable" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f8f9fa; text-align: left;">
+                            <th style="padding: 12px; border-bottom: 2px solid #eee;">ID</th>
+                            <th style="padding: 12px; border-bottom: 2px solid #eee;">Username</th>
+                            <th style="padding: 12px; border-bottom: 2px solid #eee;">Rol Asignado</th>
+                            <th style="padding: 12px; border-bottom: 2px solid #eee;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in usuarios %}
+                        <tr style="border-bottom: 1px solid #eee;">
+                            <td style="padding: 12px;">{{ u.id_usuario }}</td>
+                            <td class="user-name" style="padding: 12px;"><strong>{{ u.username }}</strong></td>
+                            <td class="user-role" style="padding: 12px;">
+                                <span style="background: #f3f4f6; color: #374151; padding: 4px 10px; border-radius: 15px; font-size: 12px; font-weight: bold; border: 1px solid #d1d5db;">
+                                    {{ u.id_rol_fk.nom_rol }}
+                                </span>
+                            </td>
+                            <td style="padding: 12px; display: flex; gap: 10px;">
+                                <a href="{% url 'usuarios:editar_usuario' u.id_usuario %}" class="edit" style="color: #2d6cdf; font-weight: bold; text-decoration: none;">Editar</a>
+                                <a href="{% url 'usuarios:eliminar_usuario' u.id_usuario %}" class="delete" style="color: #d33; font-weight: bold; text-decoration: none;" onclick="return confirm('¿Seguro que quieres eliminar este usuario?')">Borrar</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr id="noResultsRow">
+                            <td colspan="4" style="text-align: center; padding: 30px; color: #999;">No hay usuarios en el sistema.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-
-    <div class="table-card">
-
-        <div class="table-top">
-            <span><strong>{{ usuarios|length }}</strong> registros</span>
-        </div>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Username</th>
-                    <th>Rol</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for usuario in usuarios %}
-                <tr>
-                    <td>{{ usuario.id_usuario }}</td>
-                    <td>{{ usuario.username }}</td>
-                    <td>{{ usuario.id_rol_fk }}</td>
-                    <td>
-                        <a href="{% url 'usuarios:editar_usuario' id=usuario.id_usuario %}" class="edit">Editar</a>
-                        <a href="{% url 'usuarios:eliminar_usuario' id=usuario.id_usuario %}" class="delete">Eliminar</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-    </div>
-
 </div>
 
+<script>
+    // 1. Lógica para Ver/Ocultar Contraseña
+    const togglePassword = document.querySelector('#togglePassword');
+    const password = document.querySelector('#passwordField');
+
+    togglePassword.addEventListener('click', function () {
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        this.textContent = type === 'password' ? 'no mostrar' : 'mostrar';
+    });
+
+    // 2. Lógica de Búsqueda en Tiempo Real
+    document.getElementById('searchUser').addEventListener('keyup', function() {
+        let filter = this.value.toLowerCase();
+        let rows = document.querySelectorAll('#usersTable tbody tr:not(#noResultsRow)');
+        
+        rows.forEach(row => {
+            let text = row.innerText.toLowerCase();
+            row.style.display = text.includes(filter) ? "" : "none";
+        });
+    });
+</script>
 {% endblock %}

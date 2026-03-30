@@ -1,57 +1,117 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="main-content">
+    <div class="container-wide">
+        <h2 style="color: #6a0f2e; margin-bottom: 25px;"> Gestión de Clientes</h2>
+        
+        <div class="form-card" style="margin-bottom: 40px;">
+            <h3 style="font-size: 18px; margin-bottom: 20px;">Registrar Nuevo Cliente</h3>
+            <form method="POST" action="{% url 'usuarios:crear_cliente' %}">
+                {% csrf_token %}
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input type="text" name="nom_clien" placeholder="Nombre completo" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Dirección</label>
+                        <input type="text" name="dir_clien" placeholder="Ej: Calle 10 #20-30" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <input type="text" name="tel_clien" placeholder="Número de contacto" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Correo</label>
+                        <input type="email" name="correo_clien" placeholder="ejemplo@correo.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Usuario</label>
+                        <select name="id_usuario_fk_clien" required>
+                            <option value="">Seleccione un usuario...</option>
+                            {% for u in usuarios %}
+                                <option value="{{ u.id_usuario }}">{{ u.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn-save" style="width: 100%; margin-top: 15px;"> Guardar Cliente</button>
+            </form>
+        </div>
 
-<div class="page">
+        <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 30px;">
 
-    <div class="page-header">
-        <h3>Clientes</h3>
+        <div class="table-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="font-size: 18px; margin: 0;">Clientes Registrados</h3>
+                
+                <div style="position: relative; width: 300px;">
+                    <input type="text" id="searchInput" placeholder="Buscar por nombre o correo..." 
+                           style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 20px; outline: none;">
+                </div>
+            </div>
 
-        <div class="actions">
-            <input type="text" placeholder=" Buscar...">
-            <a href="{% url 'usuarios:crear_cliente' %}" class="btn">+ Crear Cliente</a>
+            <div class="table-responsive">
+                <table class="table-inventory" id="clientsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Contacto</th>
+                            <th>Correo</th>
+                            <th>Usuario</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in clientes %}
+                        <tr>
+                            <td>{{ c.id_clien }}</td>
+                            <td class="client-name"><strong>{{ c.nom_clien }}</strong></td>
+                            <td>
+                                <div style="font-size: 13px;">📞 {{ c.tel_clien }}</div>
+                                <div style="font-size: 11px; color: #666;">🏠 {{ c.dir_clien }}</div>
+                            </td>
+                            <td class="client-email">{{ c.correo_clien }}</td>
+                            <td>
+                                <span style="background: #fdf2f8; color: #9d174d; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">
+                                    {{ c.id_usuario_fk.username }}
+                                </span>
+                            </td>
+                            <td style="display: flex; gap: 10px;">
+                                <a href="{% url 'usuarios:editar_cliente' c.id_clien %}" class="edit" style="text-decoration: none; color: #2d6cdf; font-weight: bold;">Editar</a>
+                                <a href="{% url 'usuarios:eliminar_cliente' c.id_clien %}" class="delete" style="text-decoration: none; color: #d33; font-weight: bold;" onclick="return confirm('¿Eliminar cliente?')">Borrar</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr id="noResultsRow">
+                            <td colspan="6" style="text-align: center; padding: 20px; color: #999;">No hay clientes en el sistema.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-
-    <div class="table-card">
-
-        <div class="table-top">
-            <span><strong>{{ clientes|length }}</strong> registros</span>
-        </div>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Dirección</th>
-                    <th>Teléfono</th>
-                    <th>Correo</th>
-                    <th>Usuario</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for cliente in clientes %}
-                <tr>
-                    <td>{{ cliente.id_clien }}</td>
-                    <td>{{ cliente.nom_clien }}</td>
-                    <td>{{ cliente.dir_clien }}</td>
-                    <td>{{ cliente.tel_clien }}</td>
-                    <td>{{ cliente.correo_clien }}</td>
-                    <td>{{ cliente.id_usuario_fk.username }}</td>
-                    <td>
-                        <a href="{% url 'usuarios:editar_cliente' id=cliente.id_clien %}" class="edit">Editar</a>
-                        <a href="{% url 'usuarios:eliminar_cliente' id=cliente.id_clien %}" class="delete">Eliminar</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-    </div>
-
 </div>
+
+<script>
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        let filter = this.value.toLowerCase();
+        let rows = document.querySelectorAll('#clientsTable tbody tr:not(#noResultsRow)');
+        
+        rows.forEach(row => {
+            let name = row.querySelector('.client-name').textContent.toLowerCase();
+            let email = row.querySelector('.client-email').textContent.toLowerCase();
+            
+            if (name.includes(filter) || email.includes(filter)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    });
+</script>
 
 {% endblock %}

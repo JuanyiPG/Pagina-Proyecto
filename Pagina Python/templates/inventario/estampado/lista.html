@@ -64,8 +64,8 @@
                     <h3 style="margin: 0; font-size: 17px;">{{ e.nombre_estamp }}</h3>
                     <p class="price" style="margin: 10px 0; color: #7e1a3f; font-weight: bold; font-size: 18px;">${{ e.costo_adi }}</p>
                     <div style="display: flex; justify-content: space-between; border-top: 1px solid #eee; padding-top: 10px;">
-                        <a href="{% url 'editar_estampado' e.id_estamp %}" style="color: #2d6cdf; text-decoration: none; font-weight: bold; font-size: 13px;">📝 Editar</a>
-                        <a href="{% url 'eliminar_estampado' e.id_estamp %}" style="color: #d33; text-decoration: none; font-weight: bold; font-size: 13px;">🗑️ Borrar</a>
+                        <a href="{% url 'inventario:editar_estampado' e.id_estamp %}" style="color: #2d6cdf; text-decoration: none; font-weight: bold; font-size: 13px;">📝 Editar</a>
+                        <a href="{% url 'inventario:eliminar_estampado' e.id_estamp %}" style="color: #d33; text-decoration: none; font-weight: bold; font-size: 13px;">🗑️ Borrar</a>
                     </div>
                 </div>
             </div>

@@ -1,6 +1,5 @@
-
+{% include 'includes/header.html' %}
 {% load static %}
-
 {% block contenido %} <style>
     body { font-family: Arial; background: #f4eeee; margin: 0; }
     
@@ -143,14 +142,14 @@
                 <label style="font-weight: bold;">Colores disponibles:</label>
                 <div class="contenedor-opciones-color">
                     {% for c in colores %}
-                        <div class="color-picker">
-                            <input type="radio" name="color" id="color-{{c}}" value="{{c}}" style="display:none;" required>
-                            <label for="color-{{c}}" class="color-option"
-                                style="background-color:{% if c == 'rojo' %}red{% elif c == 'azul' %}blue{% elif c == 'blanco' %}white{% elif c == 'gris' %}gray{% else %}#ccc{% endif %};">
-                            </label>
-                        </div>
-                    {% endfor %}
+                    <div class="color-picker">
+                    <input type="radio" name="color" id="color-{{c}}" value="{{c}}" style="display:none;" required>
+                    <label for="color-{{c}}" class="color-option"
+                        style="background-color: {% if c == 'rojo' %} red {% elif c == 'azul' %}blue{% elif c == 'blanco' %}white{% elif c == 'gris' %}gray{% else %}#ccc{% endif %};">
+                    </label>
                 </div>
+            {% endfor %}
+            </div>
             </div>
 
             <div style="margin-top: 30px;">
@@ -161,6 +160,6 @@
         </form>
     </div>
 </div>
-
+{% include 'includes/footer.html' %}
 
 {% endblock %}

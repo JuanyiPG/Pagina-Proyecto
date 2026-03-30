@@ -1,71 +1,154 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="main-content">
+    <div class="container-wide">
+        <h2 style="color: #6a0f2e; margin-bottom: 25px;">Gestión de Empleados</h2>
+        
+        <div class="form-card" style="margin-bottom: 40px;">
+            <h3 style="font-size: 18px; margin-bottom: 20px;">Registrar Nuevo Empleado</h3>
+            <form method="POST" action="{% url 'usuarios:crear_empleado' %}">
+                {% csrf_token %}
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nombre Completo</label>
+                        <input type="text" name="nom_emple" placeholder="Ej: Juan Pérez" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <input type="text" name="tel_emple" placeholder="300..." required>
+                    </div>
+                    <div class="form-group">
+                        <label>Correo Electrónico</label>
+                        <input type="email" name="correo_emple" placeholder="correo@ejemplo.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Dirección</label>
+                        <input type="text" name="dir_emple" placeholder="Calle..." required>
+                    </div>
 
-<div class="page">
+                    <div class="form-group">
+                        <label>RH</label>
+                        <input type="text" name="rh_emple" placeholder="O+" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha de Nacimiento</label>
+                        <input type="date" name="fecha_naci_emple" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de Documento</label>
+                        <select name="tipo_ident" required>
+                            <option value="CC">Cédula de Ciudadanía</option>
+                            <option value="CE">Cédula de Extranjería</option>
+                            <option value="TI">Tarjeta de Identidad</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Número de Documento</label>
+                        <input type="text" name="num_ident" required>
+                    </div>
 
-    <div class="page-header">
-        <h3>Empleados</h3>
+                    <div class="form-group">
+                        <label>Fecha de Ingreso</label>
+                        <input type="date" name="fecha_ing_emple" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Salario</label>
+                        <input type="number" name="salari_emple" step="0.01" placeholder="0.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Estado</label>
+                        <select name="estado_emple" required>
+                            <option value="Activo">Activo</option>
+                            <option value="Inactivo">Inactivo</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Usuario Asignado</label>
+                        <select name="id_usuario_fk_emple" required>
+                            <option value="">Seleccione usuario...</option>
+                            {% for u in usuarios %}
+                                <option value="{{ u.id_usuario }}">{{ u.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn-save" style="width: 100%; margin-top: 20px;"> Guardar Empleado</button>
+            </form>
+        </div>
 
-        <div class="actions">
-            <input type="text" placeholder=" Buscar...">
-            <a href="{% url 'usuarios:crear_empleado' %}" class="btn">+ Crear Empleado</a>
+        <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 30px;">
+
+        <div class="table-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="font-size: 18px; margin: 0;">Lista de Empleados ({{ empleados|length }})</h3>
+                
+                <div style="position: relative; width: 350px;">
+                    <input type="text" id="searchEmpleado" placeholder="Buscar por nombre, documento o usuario..." 
+                           style="width: 100%; padding: 10px 15px; border: 1px solid #ddd; border-radius: 25px; outline: none;">
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table-inventory" id="empleadosTable">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Identificación</th>
+                            <th>Contacto</th>
+                            <th>Salario</th>
+                            <th>Estado</th>
+                            <th>Usuario</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for e in empleados %}
+                        <tr>
+                            <td class="emp-name"><strong>{{ e.nom_emple }}</strong></td>
+                            <td class="emp-doc">{{ e.tipo_ident }}: {{ e.num_ident }}</td>
+                            <td>
+                                <div style="font-size: 12px;">📞 {{ e.tel_emple }}</div>
+                                <div style="font-size: 11px; color: #666;">📧 {{ e.correo_emple }}</div>
+                            </td>
+                            <td>${{ e.salari_emple }}</td>
+                            <td>
+                                <span style="padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; 
+                                    {% if e.estado_emple == 'Activo' %} background: #e6fffa; color: #2c7a7b; {% else %} background: #fff5f5; color: #c53030; {% endif %}">
+                                    {{ e.estado_emple }}
+                                </span>
+                            </td>
+                            <td class="emp-user">
+                                <span style="background: #f3e8ef; color: #7e1a3f; padding: 2px 8px; border-radius: 4px; font-size: 12px;">
+                                    {{ e.id_usuario_fk.username }}
+                                </span>
+                            </td>
+                            <td style="display: flex; gap: 8px;">
+                                <a href="{% url 'usuarios:editar_empleado' id=e.id_emple %}" class="edit" style="color: #2d6cdf; font-weight: bold; text-decoration: none;">Editar</a>
+                                <a href="{% url 'usuarios:eliminar_empleado' id=e.id_emple %}" class="delete" style="color: #d33; font-weight: bold; text-decoration: none;" onclick="return confirm('¿Eliminar empleado?')">Borrar</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr id="noResultsRow">
+                            <td colspan="7" style="text-align: center; padding: 20px; color: #999;">No hay empleados registrados.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-
-    <div class="table-card">
-
-        <div class="table-top">
-            <span><strong>{{ empleados|length }}</strong> registros</span>
-        </div>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Teléfono</th>
-                    <th>Correo</th>
-                    <th>Dirección</th>
-                    <th>RH</th>
-                    <th>F. Nacimiento</th>
-                    <th>Tipo Doc</th>
-                    <th>N° Doc</th>
-                    <th>F. Ingreso</th>
-                    <th>Salario</th>
-                    <th>Estado</th>
-                    <th>Usuario</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for empleado in empleados %}
-                <tr>
-                    <td>{{ empleado.id_emple }}</td>
-                    <td>{{ empleado.nom_emple }}</td>
-                    <td>{{ empleado.tel_emple }}</td>
-                    <td>{{ empleado.correo_emple }}</td>
-                    <td>{{ empleado.dir_emple }}</td>
-                    <td>{{ empleado.rh_emple }}</td>
-                    <td>{{ empleado.fecha_naci_emple }}</td>
-                    <td>{{ empleado.tipo_ident }}</td>
-                    <td>{{ empleado.num_ident }}</td>
-                    <td>{{ empleado.fecha_ing_emple }}</td>
-                    <td>{{ empleado.salari_emple }}</td>
-                    <td>{{ empleado.estado_emple }}</td>
-                    <td>{{ empleado.id_usuario_fk.username }}</td>
-                    <td>
-                        <a href="{% url 'usuarios:editar_empleado' id=empleado.id_emple %}" class="edit">Editar</a>
-                        <a href="{% url 'usuarios:eliminar_empleado' id=empleado.id_emple %}" class="delete">Eliminar</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-    </div>
-
 </div>
 
+<script>
+    document.getElementById('searchEmpleado').addEventListener('keyup', function() {
+        let filter = this.value.toLowerCase();
+        let rows = document.querySelectorAll('#empleadosTable tbody tr:not(#noResultsRow)');
+        
+        rows.forEach(row => {
+            let text = row.innerText.toLowerCase();
+            row.style.display = text.includes(filter) ? "" : "none";
+        });
+    });
+</script>
 {% endblock %}

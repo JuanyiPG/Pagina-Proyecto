@@ -1,55 +1,68 @@
 {% extends 'base.html' %}
-
 {% block content %}
 
-<div class="page">
+<div class="main-content">
+    <div class="container-wide" style="max-width: 500px;">
+        
+        <h2 style="color: #6a0f2e; margin-bottom: 25px; text-align: center;">
+             Editar Usuario
+        </h2>
+        
+        <div class="form-card">
+            <form method="POST">
+                {% csrf_token %}
 
-    <!-- ENCABEZADO -->
-    <div class="page-header">
-        <h3>Editar Usuario</h3>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Username</label>
+                    <input type="text" name="username" value="{{ usuario.username }}" required>
+                </div>
+
+                <!-- CONTRASEÑA CON MOSTRAR/OCULTAR -->
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Contraseña</label>
+                    <div style="position: relative;">
+                        <input type="password" id="password" name="contrasena" value="{{ usuario.contrasena }}" required>
+                        <span onclick="togglePassword()" 
+                              style="position: absolute; right: 10px; top: 8px; cursor: pointer;">
+                            👁️
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label>Rol</label>
+                    <select name="id_rol" required>
+                        {% for rol in roles %}
+                        <option value="{{ rol.id_rol }}"
+                        {% if rol.id_rol == usuario.id_rol_fk.id_rol %}
+                        selected
+                        {% endif %}
+                        >
+                        {{ rol.nom_rol }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 12px;">
+                    <button type="submit" class="btn-save"> Actualizar</button>
+                    <a href="{% url 'usuarios:lista_usuarios' %}" 
+                       style="text-align: center; color: #666; text-decoration: none; font-size: 14px;">
+                         Cancelar
+                    </a>
+                </div>
+
+            </form>
+        </div>
     </div>
-
-    <!-- TARJETA -->
-    <div class="form-card">
-
-        <form method="POST">
-        {% csrf_token %}
-
-        <div class="form-group">
-            <label>Username</label>
-            <input type="text" name="username" value="{{usuario.username}}">
-        </div>
-
-        <div class="form-group">
-            <label>Contraseña</label>
-            <input type="text" name="contrasena" value="{{usuario.contrasena}}">
-        </div>
-
-        <div class="form-group">
-            <label>Rol</label>
-            <select name="id_rol">
-                {% for rol in roles %}
-                <option value="{{rol.id_rol}}"
-                {% if rol.id_rol == usuario.id_rol_fk.id_rol %}
-                selected
-                {% endif %}
-                >
-                {{rol.nom_rol}}
-                </option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <!-- BOTONES -->
-        <div class="form-actions">
-            <button type="submit" class="btn-save">Actualizar</button>
-            <a href="{% url 'usuarios:lista_usuarios' %}" class="btn-cancel">Cancelar</a>
-        </div>
-
-        </form>
-
-    </div>
-
 </div>
+
+<!-- SCRIPT PARA MOSTRAR / OCULTAR -->
+<script>
+function togglePassword() {
+    const input = document.getElementById("password");
+    input.type = input.type === "password" ? "text" : "password";
+}
+</script>
 
 {% endblock %}
