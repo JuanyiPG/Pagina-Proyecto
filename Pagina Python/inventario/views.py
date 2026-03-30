@@ -35,24 +35,20 @@ def eliminar_provee(request, id):
 # --- MOVIMIENTOS MATP ---
 def lista_mmtp(request):
     if request.method == "POST":
-        id_est = request.POST.get('id_estamp_fk_invent')
         id_pro = request.POST.get('id_proveedor_fk')
 
-        if id_est and id_pro:
+        if id_pro:
             Movimiento_matp.objects.create(
                 tipo_mmtp=request.POST.get('tipo_mmtp'),
                 talla_mmtp=request.POST.get('talla_mmtp'),
                 color_mmtp=request.POST.get('color_mmtp', ''), 
                 fecha_mmtp=request.POST.get('fecha_mmtp'),
                 stock_mmtp=request.POST.get('stock_mmtp'),
-                id_estamp_fk_invent=get_object_or_404(Estampado, id_estamp=id_est),
                 id_proveedor_fk=get_object_or_404(Proveedor, id_provee=id_pro)
             )
             return redirect('inventario:lista_mmtp')
-
     return render(request, "inventario/movimiento_matp/lista.html", {
         'mmtp': Movimiento_matp.objects.all(), 
-        'estampados': Estampado.objects.all(), 
         'proveedores': Proveedor.objects.all()
     })
 
@@ -65,18 +61,14 @@ def editar_mmtp(request, id):
         mmtp.color_mmtp = request.POST.get('color_mmtp', '') # Evita el MultiValueDictKeyError
         mmtp.fecha_mmtp = request.POST.get('fecha_mmtp')
         mmtp.stock_mmtp = request.POST.get('stock_mmtp')
-        
-        id_est = request.POST.get('id_estamp_fk_invent')
+
         id_pro = request.POST.get('id_proveedor_fk')
-        
-        mmtp.id_estamp_fk_invent = get_object_or_404(Estampado, id_estamp=id_est)
         mmtp.id_proveedor_fk = get_object_or_404(Proveedor, id_provee=id_pro)
         mmtp.save()
         return redirect('inventario:lista_mmtp') 
 
     return render(request, 'inventario/movimiento_matp/editar.html', {
         'mmtp': mmtp,
-        'estampados': Estampado.objects.all(),
         'proveedores': Proveedor.objects.all()
     })
 
