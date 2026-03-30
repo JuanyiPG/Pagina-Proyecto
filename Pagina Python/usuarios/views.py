@@ -84,7 +84,11 @@ def eliminar_rol(request, id):
 @solo_personal
 def lista_usuarios(request): # Se cambió @login_required nativo por el tuyo
     usuarios = Usuario.objects.all()
-    return render(request, 'usuarios/usuario/lista.html', {'usuarios': usuarios})
+    roles = Rol.objects.all()
+    return render(request, 'usuarios/usuario/lista.html', {
+        'usuarios': usuarios,
+        'roles': roles
+    })
 
 
 @solo_personal
@@ -145,12 +149,17 @@ def eliminar_usuario(request, id):
 @solo_personal
 def lista_empleados(request):
     empleados = Empleado.objects.all()
-    return render(request, 'usuarios/empleados/lista.html', {'empleados': empleados})
+    usuarios = Usuario.objects.all()
+    return render(request, 'usuarios/empleados/lista.html', {
+            'empleados': empleados,
+            'usuarios': usuarios
+        })
 
 
 @solo_personal
 def crear_empleado(request):
     usuarios = Usuario.objects.all()
+    
 
     if request.method == 'POST':
         id_usuario_seleccionado = request.POST.get('id_usuario_fk_emple')
@@ -214,14 +223,18 @@ def eliminar_empleado(request, id):
 
 
 # ================================================================
-# 🛍️ CRUD DE CLIENTES
+#  CRUD DE CLIENTES
 # ================================================================
 
 @never_cache
 @solo_personal
 def lista_clientes(request):
     clientes = Cliente.objects.all()
-    return render(request, 'usuarios/clientes/lista.html', {'clientes': clientes})
+    usuarios = Usuario.objects.all()
+    return render(request, 'usuarios/clientes/lista.html', {
+        'clientes': clientes,
+        'usuarios': usuarios
+    })
 
 
 @solo_personal
