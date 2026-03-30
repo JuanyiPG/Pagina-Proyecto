@@ -1,26 +1,36 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<div class="edit-container">
-    <h2>🤝 Editar Proveedor</h2>
-    <div class="form-card">
-        <form method="POST">
-            {% csrf_token %}
-            
-            <label>Nombre o Razón Social:</label>
-            <input type="text" name="nom_provee" value="{{ proveedor.nom_provee }}" required>
-            
-            <label>Fecha de Registro:</label>
-            <input type="date" name="fech_ingre" value="{{ proveedor.fech_ingre|date:'Y-m-d' }}" required>
-            
-            <label>Teléfono de Contacto:</label>
-            <input type="text" name="num_tel" value="{{ proveedor.num_tel }}" required>
+<div class="main-content">
+    <div class="container-wide" style="max-width: 600px;">
+        <h2 style="color: #6a0f2e; margin-bottom: 25px; text-align: center;">🤝 Editar Proveedor</h2>
+        
+        <div class="form-card">
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Nombre o Razón Social</label>
+                    <input type="text" name="nom_provee" value="{{ proveedor.nom_provee }}" required>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Fecha de Registro</label>
+                        <input type="date" name="fech_ingre" value="{{ proveedor.fech_ingre|date:'Y-m-d' }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Teléfono de Contacto</label>
+                        <input type="text" name="num_tel" value="{{ proveedor.num_tel }}" required>
+                    </div>
+                </div>
 
-            <div class="form-actions" style="flex-direction: column; gap: 10px;">
-                <button type="submit" class="btn-save" style="width: 100%;">💾 Guardar Cambios</button>
-                <a href="{% url 'inventario:lista_provee' %}" style="text-align: center; color: #666; text-decoration: none; font-size: 14px;">Regresar a la lista</a>
-            </div>
-        </form>
+                <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 12px;">
+                    <button type="submit" class="btn-save">💾 Guardar Cambios</button>
+                    <a href="{% url 'lista_provee' %}" style="text-align: center; color: #666; text-decoration: none; font-size: 14px;">🔙 Regresar a la lista</a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}
