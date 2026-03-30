@@ -33,33 +33,20 @@
                     </div>
                 </div>
 
-                <div class="form-grid" style="grid-template-columns: 1fr 1fr; margin-top: 15px;">
-                    <div class="form-group">
-                        <label>Diseño de Estampado</label>
-                        <select name="id_estamp_fk_invent" required>
-                            {% for e in estampados %}
-                                <option value="{{ e.id_estamp }}" {% if e.id_estamp == mmtp.id_estamp_fk_invent.id_estamp %}selected{% endif %}>
-                                    {{ e.nombre_estamp }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Proveedor</label>
-                        <select name="id_proveedor_fk" required>
-                            {% for p in proveedores %}
-                                <option value="{{ p.id_provee }}" {% if p.id_provee == mmtp.id_proveedor_fk.id_provee %}selected{% endif %}>
-                                    {{ p.nom_provee }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <label>Proveedor</label>
+                    <select name="id_proveedor_fk" required>
+                        {% for p in proveedores %}
+                            <option value="{{ p.id_provee }}" {% if p.id_provee == mmtp.id_proveedor_fk.id_provee %}selected{% endif %}>
+                                {{ p.nom_provee }}
+                            </option>
+                        {% endfor %}
+                    </select>
                 </div>
 
                 <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 12px;">
                     <button type="submit" class="btn-save">💾 Actualizar Datos del Movimiento</button>
-                    <a href="{% url 'lista_mmtp' %}" style="text-align: center; color: #666; text-decoration: none; font-size: 14px;">🔙 Cancelar y Volver al Listado</a>
+                    <a href="{% url 'inventario:lista_mmtp' %}" style="text-align: center; color: #666; text-decoration: none; font-size: 14px;">🔙 Cancelar y Volver al Listado</a>
                 </div>
             </form>
         </div>
