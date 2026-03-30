@@ -1,3 +1,4 @@
+import re
 from django.utils import timezone
 from decimal import Decimal, InvalidOperation
 from django.contrib import messages
@@ -140,7 +141,7 @@ def crear_producto(request):
 
         #Converir String a Decimal
         try: 
-            precio_limpio = precio.replace('$', '').replace(',', '.', '""').strip()
+            precio_limpio = re.sub(r'[^\d]', '', precio)
             valor = Decimal(precio_limpio)
         except(InvalidOperation, TypeError):
             valor = Decimal('0.00')
@@ -190,7 +191,7 @@ def editar_producto(request, id):
         producto.estado_produc = request.POST['estado_produc']
         precio = request.POST['precio']
         try: 
-            precio_limpio = precio.replace('$', '').replace(',', '.').strip()
+            precio_limpio = re.sub(r'[^\d]', '', precio)
             valor = Decimal(precio_limpio)
         except(InvalidOperation, TypeError):
             valor = Decimal('0.00')
@@ -259,46 +260,41 @@ def lista_abono(request):
 
 @login_requerido_custom
 def crear_abono(request, pedido_id):
-    cliente = obtener_cliente_actual(request)
-    if not cliente: 
-        return redirect('login')
-    
+    # ... (código inicial de cliente y pedido igual) ...
     pedido = get_object_or_404(Pedido, id_pedido=pedido_id)
     
-    # 1. Calculamos totales actuales
+    # Totales actuales
     items = Det_valor.objects.filter(id_ped_fk_detval=pedido)
     total_productos = items.aggregate(Sum('valor_total'))['valor_total__sum'] or 0
-    
     total_abonado_previo = Abono.objects.filter(id_pedido_fk_abono=pedido).aggregate(Sum('monto_abono'))['monto_abono__sum'] or 0
     saldo_pendiente = total_productos - total_abonado_previo
 
     if request.method == 'POST':
-        monto_str = request.POST.get('monto_abono', '0')
-        # Si no llega método, ponemos uno por defecto para evitar el error 1048
+        monto_raw = request.POST.get('monto_abono', '0')
         metodo = request.POST.get('metodo_pago', 'Efectivo')
 
+        # 1. LIMPIEZA AGRESIVA (La clave de todo)
+        # Esto quita puntos, comas, $ y deja solo los números puros
+        valor_limpio = re.sub(r'[^\d]', '', str(monto_raw))
+        
         try:
-            # Limpieza del valor ingresado
-            valor_ingresado = int(monto_str.replace('$', '').replace('.', '').replace(',', '').strip())
+            valor_ingresado = Decimal(valor_limpio) if valor_limpio else Decimal('0')
             
-            # VALIDACIÓN: No permitir abonos de 0 o negativos
+            # 2. VALIDACIONES
             if valor_ingresado <= 0:
                 messages.error(request, "El monto debe ser mayor a 0.")
                 return redirect('ventas:crear_abono', pedido_id=pedido_id)
 
-            # VALIDACIÓN: No permitir pagar más de lo que se debe
             if valor_ingresado > saldo_pendiente:
-                messages.error(request, f"El monto (${valor_ingresado}) supera el saldo pendiente (${saldo_pendiente}).")
+                messages.error(request, f"El monto (${valor_ingresado}) supera el saldo (${saldo_pendiente}).")
                 return redirect('ventas:crear_abono', pedido_id=pedido_id)
 
+            # 3. GUARDADO SEGURO
             with transaction.atomic():
-                # Verificamos si es el primer abono para descontar inventario
                 tiene_abonos = Abono.objects.filter(id_pedido_fk_abono=pedido).exists()
                 if not tiene_abonos:
-                    # Solo restamos del inventario la primera vez que pone dinero
                     gestionar_inventario(pedido, 'RESTAR')
 
-                # REGISTRAMOS EL ABONO EXACTO
                 Abono.objects.create(
                     id_pedido_fk_abono=pedido,
                     monto_abono=valor_ingresado,
@@ -306,24 +302,23 @@ def crear_abono(request, pedido_id):
                     descripcion=request.POST.get('descripcion', 'Abono parcial')
                 )
                 
-                # Calculamos cuánto lleva pagado en total sumando el nuevo abono
                 total_pagado_ahora = total_abonado_previo + valor_ingresado
-
-                # CAMBIO DE ESTADO: Solo si llegó al total exacto
                 if total_pagado_ahora >= total_productos:
-                    # Cambiamos a 'Confirmado' o 'PAGADO' (según uses en tus filtros)
                     pedido.estado_ped = 'Confirmado' 
                     pedido.save()
-                    messages.success(request, "¡Felicidades! Has completado el pago de tu pedido.")
+                    messages.success(request, "¡Pago completado con éxito!")
                 else:
-                    messages.success(request, f"Abono de ${valor_ingresado} registrado con éxito.")
+                    messages.success(request, f"Abono de ${valor_ingresado} registrado.")
 
+            # ESTO ES LO QUE TE FALTA: El redirect debe estar fuera del bloque atomic 
+            # pero dentro del IF POST exitoso.
             return redirect('ventas:ver_carrito')
-            
-        except ValueError:
-            messages.error(request, "Por favor, ingresa un número válido.")
+
+        except (InvalidOperation, ValueError) as e:
+            messages.error(request, f"Error en el formato del número: {e}")
             return redirect('ventas:crear_abono', pedido_id=pedido_id)
 
+    # Si es GET, mostramos el formulario
     return render(request, 'ventas/abono/form_abono.html', {
         'pedido': pedido,
         'total_productos': total_productos,
@@ -485,20 +480,23 @@ def ver_carrito(request):
             'total_productos': 0, 
             'error_perfil': "No tienes un perfil de Cliente asociado a tu usuario."
         })
+    
+    estados = ['Carrito', 'Confirmado']
 
-    pedido = Pedido.objects.filter(id_clien_fk=cliente, estado_ped='Carrito').first()
+    decimal = Decimal('0.000')
+    pedido = Pedido.objects.filter(id_clien_fk=cliente, estado_ped__in = estados).first()
 
     if not pedido:
         return render(request, 'ventas/pedido/carrito.html', {'items': [], 'total_productos': 0})
     
-    decimal = Decimal('0.000')
+    decimal = Decimal(str('0.000')).quantize()
 
     items = Det_valor.objects.filter(id_ped_fk_detval=pedido)
     total_products = items.aggregate(Sum('valor_total'))['valor_total__sum'] or 0
     total_productos = Decimal(total_products).quantize(decimal)
 
     total_abono = Abono.objects.filter(id_pedido_fk_abono=pedido).aggregate(Sum('monto_abono'))['monto_abono__sum'] or 0
-    total_abonado = Decimal(total_abono).quantize(decimal)
+    total_abonado = Decimal(str(total_abono)).quantize(decimal)
     saldo_pendiente = max(0, total_productos - total_abonado).quantize(decimal)
 
     if saldo_pendiente <= 0 and pedido.estado_ped in ['PAGADO', 'Confirmado', 'Confirmada']:
