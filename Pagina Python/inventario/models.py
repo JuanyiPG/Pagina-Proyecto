@@ -23,5 +23,4 @@ class Movimiento_matp(models.Model):
     color_mmtp = models.CharField(max_length=100)
     fecha_mmtp = models.DateField()
     stock_mmtp = models.DecimalField(max_digits=10, decimal_places=2)
-    id_estamp_fk_invent = models.ForeignKey(Estampado, on_delete=models.CASCADE)
     id_proveedor_fk = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
