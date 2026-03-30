@@ -5,9 +5,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luxy Fashion</title>
+    <title>Luxy Fashion | Catálogo</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f4eeee; margin: 0; padding: 0; }
+        /* --- ESTILOS BASE --- */
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4eeee; margin: 0; padding: 0; overflow-x: hidden; }
 
         header {
             background: linear-gradient(to right, #f9f9f9, #540a1f);
@@ -17,63 +18,115 @@
             box-sizing: border-box;
         }
 
-        .menu-superior a { margin-left: 20px; text-decoration: none; color: white; font-size: 14px; }
+        .menu-superior a { margin-left: 20px; text-decoration: none; color: white; font-size: 14px; font-weight: bold; }
 
-        .principal { display: flex; margin-top: 80px; min-height: 100vh; }
-
-        video {
-            width: 100%;
-            margin-top: 50px;
-            margin-bottom: -70px;
-}
-
-        /* Filtros lateral fijo */
-        .filtros {
-            padding: 20px; background: white; width: 220px;
-            border-right: 1px solid #efeeee; position: sticky;
-            top: 80px; height: calc(100vh - 80px);
+        /* Ajuste en principal para que el sticky funcione correctamente */
+        .principal { 
+            display: flex; 
+            min-height: 100vh; 
+            align-items: flex-start; /* Alinea al inicio para que el sticky tenga base */
         }
 
-        .filtros li { list-style: none; margin-bottom: 12px; cursor: pointer; color: #540a1f; }
-        .filtros li:hover { text-decoration: underline; }
+        video.VPP {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+            margin-top: 80px;
+            display: block;
+        }
 
-        /* CONTENEDOR DE GRID CORREGIDO */
+        /* --- FILTROS LATERALES FIJOS (CORREGIDO) --- */
+        .filtros {
+            padding: 30px 20px; 
+            background: white; 
+            width: 220px;
+            border-right: 1px solid #efeeee; 
+            /* Sticky hace que se quede pegado al bajar */
+            position: -webkit-sticky; /* Soporte para Safari */
+            position: sticky;
+            top: 80px; /* Se queda pegado justo debajo del header */
+            height: calc(100vh - 80px); /* Ocupa el alto restante de la pantalla */
+            box-sizing: border-box;
+            flex-shrink: 0;
+            z-index: 100;
+        }
+
+        .filtros h3 { color: rgb(87, 16, 29); text-transform: uppercase; font-size: 16px; margin-bottom: 20px; }
+        .filtros ul { padding: 0; }
+        .filtros li { list-style: none; margin-bottom: 15px; cursor: pointer; color: #540a1f; font-size: 14px; transition: 0.3s; }
+        .filtros li:hover { font-weight: bold; }
+
+        /* --- GRID DE PRODUCTOS --- */
         .container {
             display: grid;
-            /* Crea 4 columnas iguales, pero se ajusta si la pantalla es pequeña */
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
-            gap: 25px;
-            padding: 30px;
-            flex: 1; /* Esto hace que ocupe el resto del espacio al lado de los filtros */
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 20px;
+            padding: 20px 15px 40px 15px; 
+            flex: 1;
+            align-content: start;
         }
 
+        /* --- TARJETA CON EFECTO HOVER --- */
         .card {
-            background: white; padding: 15px;
-            display: flex; flex-direction: column;
-            transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            background: white; 
+            position: relative; 
+            overflow: hidden; 
+            transition: 0.4s ease; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            height: 420px; 
+            border-radius: 2px;
         }
 
-        .card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(84, 10, 31, 0.15); }
 
-        .imagen-container { position: relative; width: 100%; }
+        .imagen-container { position: relative; width: 100%; height: 100%; }
 
         .card img {
-            width: 100%; height: 350px;
-            object-fit: cover; /* Mantiene la proporción de la foto sin deformar */
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            transition: transform 0.5s ease;
         }
 
-        .corazon { position: absolute; top: 10px; right: 10px; font-size: 20px; cursor: pointer; color: #540a1f; }
+        .card:hover img { transform: scale(1.1); }
 
-        .nombre { font-size: 14px; margin: 15px 0 5px; min-height: 40px; }
-        .precio-actual { font-weight: bold; color: #540a1f; font-size: 18px; }
-        
-        .btn-carrito {
-            width: 100%; padding: 10px; background: rgb(87, 16, 29);
-            color: white; border: none; cursor: pointer; margin-top: auto;
+        .product-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            text-align: center;
+            transform: translateY(100%); 
+            transition: transform 0.4s ease;
+            z-index: 10;
         }
 
-        footer { background: rgb(87, 16, 29); color: white; padding: 40px 20px; text-align: center; }
-    </style>
+        .card:hover .product-info { transform: translateY(0); }
+
+        .corazon { 
+            position: absolute; 
+            top: 10px; 
+            right: 10px; 
+            font-size: 18px; 
+            cursor: pointer; 
+            color: #540a1f; 
+            background: rgba(255,255,255,0.8); 
+            width: 32px; 
+            height: 32px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 50%; 
+            z-index: 11;
+        }
+
+        .nombre strong { color: #333; font-size: 14px; text-transform: uppercase; display: block; }
+        .precio-actual { font-weight: bold; color: #540a1f; font-size: 17px; margin-top: 5px; display: block; }
+        .gen-tag { font-size: 10px; color: #888; margin-top: 5px; text-transform: uppercase; }
+
+        </style>
 </head>
 <body>
 
@@ -84,21 +137,21 @@
         <div class="menu-superior">
             <a href="{% url 'index' %}">Inicio</a>
             {% if request.session.usuario_id %}
-            <a href="{% url 'usuarios:logout' %}">Cerrar sesión</a>
+                <a href="{% url 'usuarios:logout' %}">Cerrar sesión</a>
             {% else %}
-            <a href="{% url 'usuarios:login' %}">Iniciar sesión</a>
+                <a href="{% url 'usuarios:login' %}">Iniciar sesión</a>
             {% endif %}
-            <a href="{% url 'ventas:ver_carrito' %}">🛒</a>
+            <a href="{% url 'ventas:ver_carrito' %}">🛒 <span id="contador-carrito">0</span></a>
         </div>
     </header>
-    <video autoplay muted loop class="VPP">
-    <source src="{% static 'videos/VideoPClien.mp4' %}" type="video/mp4">
-</video>
 
-</aside>
+    <video autoplay muted loop class="VPP">
+        <source src="{% static 'videos/VideoPClien.mp4' %}" type="video/mp4">
+    </video>
+
     <div class="principal">
-        <div class="filtros">
-            <h3 style="color:rgb(87, 16, 29);">Filtros</h3>
+        <aside class="filtros">
+            <h3>Filtros</h3>
             <hr>
             <ul>
                 <li onclick="filtrar('todos')">Todos</li><hr>
@@ -106,118 +159,46 @@
                 <li onclick="filtrar('Mujer')">Mujer</li><hr>
                 <li onclick="filtrar('chaqueta')">Chaquetas</li><hr>
             </ul>
-        </div>
+        </aside>
 
-        <div class="container">
+        <main class="container">
             {% for producto in productos %}
                 <div class="card {{ producto.categoria_produc }}"> 
                     <a href="{% url 'ventas:producto_sin_personalizar' producto.id_produc %}">
                         <div class="imagen-container">
-                        {% if producto.imagen_product %}
-                            <img src="{{ producto.imagen_product.url }}" alt="{{ producto.nom_produc }}">
-                        {% else %}
-                            <img src="{% static 'img/default.jpg' %}" alt="No image">
-                        {% endif %}
-                        <div class="corazon">♡</div>
-                    </div>
+                            {% if producto.imagen_product %}
+                                <img src="{{ producto.imagen_product.url }}" alt="{{ producto.nom_produc }}">
+                            {% else %}
+                                <img src="{% static 'img/default.jpg' %}" alt="No image">
+                            {% endif %}
+                            <div class="corazon">♡</div>
+                        </div>
                     </a>
                     
-                    <div class="nombre">
-                        <p hidden> {{ producto.id_produc }}</p><br>
-                        <strong>{{ producto.nom_produc }}</strong>
-                    </div>
-                    
-                    <p class="precios">
+                    <div class="product-info">
+                        <div class="nombre">
+                            <strong>{{ producto.nom_produc }}</strong>
+                        </div>
                         <span class="precio-actual">${{ producto.precio }}</span>
-                    </p>
-                    
-                    <p style="font-size: 12px; color: gray;">+ Más colores</p>
-                    
-                    <button class="btn-carrito">Añadir al carrito</button>
+                        <div class="gen-tag">{{ producto.gen_produc }}</div>
+                    </div>
                 </div>
             {% empty %}
                 <div style="grid-column: 1 / -1; text-align: center; padding: 50px;">
-                    <h3>No hay productos disponibles actualmente en Luxy Fashion.</h3>
+                    <h3>No hay productos disponibles.</h3>
                 </div>
             {% endfor %}
-        </div>
+        </main>
     </div>
 
-    <footer>
-        <div class="footer-contenido">
-            <h1>LUXY FASHION</h1>
-            <p>Ropa moderna y elegante de alta calidad.</p>
-        </div>
-        <div class="footer-copy">
-            ©️ 2026 Luxy Fashion | Todos los derechos reservados
-        </div>
-    </footer>
-
     <script>
-        // Función de filtrado
         function filtrar(categoria) {
             let productos = document.querySelectorAll(".card");
-            productos.forEach(function(producto) {
-                if (categoria === "todos" || producto.classList.contains(categoria)) {
-                    producto.style.display = "flex"; // Usamos flex para mantener el diseño interno
-                } else {
-                    producto.style.display = "none";
-                }
+            productos.forEach(p => {
+                p.style.display = (categoria === "todos" || p.classList.contains(categoria)) ? "block" : "none";
             });
         }
-
-        // Lógica del carrito (LocalStorage)
-        let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-        const contadorHTML = document.getElementById("contador-carrito");
-
-        function actualizarContador() {
-            contadorHTML.textContent = carrito.length;
-        }
-
-        document.querySelectorAll(".btn-carrito").forEach(boton => {
-            boton.addEventListener("click", function() {
-                let card = boton.closest(".card");
-                let nombre = card.querySelector(".nombre strong").textContent;
-                let precio = card.querySelector(".precio-actual").textContent;
-                let imagen = card.querySelector("img").src;
-
-                carrito.push({nombre, precio, imagen});
-                localStorage.setItem("carrito", JSON.stringify(carrito));
-                actualizarContador();
-                alert("¡Producto añadido!");
-            });
-        });
-
-        actualizarContador();
     </script>
-    {% if messages %}
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            {% for message in messages %}
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'center',
-                    showConfirmButton: false,
-                    timer: 3500,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                });
-
-                Toast.fire({
-                    icon: '{{ message.tags }}', // success, error, info, warning
-                    title: '{{ message }}',
-                    background: '#fff',
-                    color: '#57101d',
-                    iconColor: '#a31c36', // Rojo pasión para combinar con LuxyFashion
-                });
-            {% endfor %}
-        });
-    </script>
-{% endif %}
 </body>
 </html>
 {% endblock %}
