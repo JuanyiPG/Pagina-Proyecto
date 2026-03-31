@@ -187,3 +187,7 @@ def eliminar_estampado(request, id):
     estampado.delete()
     
     return redirect('inventario:lista_estampado')
+from django.shortcuts import render
+
+def modelo(request):
+    return render(request, 'inventario/modelo/index.html')
