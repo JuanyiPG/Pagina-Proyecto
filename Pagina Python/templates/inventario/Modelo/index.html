@@ -1,82 +1,306 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luxy Fashion - Personalizador 3D</title>
+    <title>Editor 3D | Luxy Fashion</title>
     <style>
-        body { margin: 0; background-color: #f0f0f0; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
-        #container3d { width: 100vw; height: 100vh; }
-
-        /* Panel de Controles */
-        #ui-panel {
-            position: absolute; top: 20px; left: 20px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px; border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            z-index: 10; width: 260px;
+        :root { 
+            --primary: #6a0f2e; 
+            --primary-light: #fdf8f9; 
+            --primary-border: #f2d7e0;
+            --bg: #f4eeee; 
+            --info: #0c5460; 
+            --info-bg: #d1ecf1; 
+        }
+        
+        /* RESET Y ELIMINACIÓN DE SCROLL GLOBAL */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: var(--bg); 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            overflow: hidden; 
+        }
+        
+        header { 
+            background: white; 
+            height: 80px; 
+            padding: 0 40px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            z-index: 1000;
         }
 
-        h2 { margin: 0 0 15px 0; font-size: 20px; color: #1a1a1a; text-align: center; }
-        label { display: block; font-size: 13px; font-weight: 600; margin: 12px 0 5px; color: #444; }
-
-        /* Inputs y Botones */
-        .btn-upload {
-            border: 2px solid #333; color: #333; background: white;
-            padding: 10px; border-radius: 8px; font-weight: bold;
-            display: block; text-align: center; cursor: pointer; transition: 0.3s;
+        /* LOGO CON ENLACE */
+        .logo-link img {
+            height: 65px;
+            transition: transform 0.3s;
         }
-        .btn-upload:hover { background: #333; color: white; }
+        .logo-link:hover img { transform: scale(1.05); }
 
-        input[type="file"] { display: none; }
-        input[type="color"] { width: 100%; height: 40px; border: none; cursor: pointer; background: none; }
-
-        .btn-action {
-            width: 100%; padding: 12px; margin-top: 10px; border: none;
-            border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s;
+        .main-wrapper { 
+            flex: 1; 
+            display: flex; 
+            padding: 20px; 
+            gap: 20px; 
+            height: calc(100vh - 80px); 
+            box-sizing: border-box;
         }
-        .btn-save { background-color: #28a745; color: white; }
-        .btn-cancel { background-color: #dc3545; color: white; }
-        .btn-action:hover { opacity: 0.8; }
 
-        #loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #888; }
+        /* ÁREA DEL MODELO 3D */
+        #container3d { 
+            flex: 1.5; 
+            background: white; 
+            border-radius: 25px; 
+            position: relative; 
+            overflow: hidden; 
+            border: 1px solid #eee;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        /* PANEL LATERAL CONFIGURABLE */
+        .form-pro { 
+            flex: 0 0 400px; 
+            background: white; 
+            padding: 25px; 
+            border-radius: 25px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1); 
+            display: flex; 
+            flex-direction: column;
+            max-height: 100%;
+            box-sizing: border-box;
+        }
+
+        .instrucciones-box {
+            background: var(--info-bg); 
+            color: var(--info); 
+            padding: 15px; 
+            border-radius: 15px;
+            margin-bottom: 20px; 
+            border-left: 5px solid var(--info); 
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        /* SCROLL INTERNO PARA OPCIONES */
+        .controles-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+            margin-bottom: 20px;
+        }
+
+        .controles-scroll::-webkit-scrollbar { width: 5px; }
+        .controles-scroll::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 10px; }
+
+        /* TABS */
+        .control-tabs { 
+            display: flex; 
+            background: #f1f3f5; 
+            padding: 5px; 
+            border-radius: 15px; 
+            gap: 5px; 
+            margin-bottom: 20px; 
+        }
+        
+        .tab-btn {
+            flex: 1; padding: 12px 5px; border: none; background: transparent;
+            color: #666; border-radius: 10px; cursor: pointer; font-weight: bold; 
+            font-size: 0.7rem; text-transform: uppercase; transition: 0.3s;
+        }
+        .tab-btn.active { background: white; color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+
+        .panel-opcion { display: none; padding: 10px 0; }
+        .panel-opcion.active { display: block; animation: fadeIn 0.3s; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* ESTILO DEL CATÁLOGO */
+        .galeria-disenos {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 5px;
+        }
+
+        .diseno-item {
+            border: 1px solid #eee;
+            border-radius: 12px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: 0.3s;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px;
+        }
+
+        .diseno-item img {
+            width: 100%;
+            height: 85px;
+            object-fit: contain;
+            margin-bottom: 5px;
+        }
+
+        .diseno-nombre {
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: #444;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        .diseno-item:hover { border-color: var(--primary-border); background: var(--primary-light); }
+        .diseno-item.selected { border-color: var(--primary); background: var(--primary-light); box-shadow: 0 0 5px rgba(106,15,46,0.2); }
+
+        .label-style { font-weight: 700; font-size: 0.9rem; color: #333; display: block; margin-bottom: 8px; }
+        
+        input[type="color"] { width: 100%; height: 45px; border: none; border-radius: 10px; cursor: pointer; }
+        input[type="range"] { width: 100%; accent-color: var(--primary); margin-bottom: 20px; }
+
+        /* BOTONES FINALES */
+        .acciones-footer { display: flex; flex-direction: column; gap: 10px; }
+
+        .btn-main { 
+            padding: 16px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; 
+            width: 100%; text-transform: uppercase; transition: 0.3s; text-align: center; text-decoration: none; display: block;
+            font-size: 0.9rem;
+        }
+        .btn-guardar { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(106, 15, 46, 0.2); }
+        .btn-guardar:hover { background: #4e0a22; transform: translateY(-1px); }
+
+        /* BOTÓN CANCELAR REFORZADO */
+        .btn-cancelar { 
+            background: #f8f9fa; 
+            color: #666; 
+            border: 1px solid #ddd;
+            font-size: 0.85rem; 
+        }
+        .btn-cancelar:hover { background: #e9ecef; color: var(--primary); border-color: var(--primary-border); }
+
+        footer { 
+            background: #5e0925; 
+            color: white; 
+            padding: 12px; 
+            text-align: center; 
+            font-size: 0.75rem; 
+            margin: 20px -25px -25px -25px; 
+            border-radius: 0 0 25px 25px;
+        }
+
+        #btn-limpiar-estampados { display: none; }
     </style>
 </head>
 <body>
 
-<div id="loading">Cargando experiencia 3D...</div>
+<header>
+    <a href="{% url 'ventas:lista_product' %}" class="logo-link">
+        <img src="{% static 'img/Logo_Luxy_Fashion.jpg' %}" alt="Logo Luxy Fashion">
+    </a>
+    <h3 style="color: var(--primary); margin: 0; font-weight: 800;">Personalización: {{ producto.nom_produc }}</h3>
+</header>
 
-<div id="ui-panel">
-    <h2>Luxy Fashion</h2>
+<div class="main-wrapper">
+    <div id="container3d"></div>
 
-    <label>1. Color de la Prenda:</label>
-    <input type="color" id="colorPicker" value="#ffffff">
+    <div class="form-pro">
+        <div class="instrucciones-box">
+            <strong style="display: block; margin-bottom: 5px;">🎮 Controles:</strong>
+            • <b>Rotar:</b> Clic izquierdo y arrastra.<br>
+            • <b>Estampar:</b> Selecciona un diseño + Mantén <b>'A'</b> + Clic.<br>
+            • <b>Borrar:</b> Pestaña "Original" limpia todo.
+        </div>
 
-    <label>2. Sube tu Logo:</label>
-    <label class="btn-upload" for="imageInput">Cargar Imagen</label>
-    <input type="file" id="imageInput" accept="image/*">
+        <div class="controles-scroll">
+            <div class="control-tabs">
+                <button class="tab-btn active" onclick="showTab('tab-ninguno', this); limpiarEstampados();">Original</button>
+                <button class="tab-btn" onclick="showTab('tab-propio', this)">Subir Foto</button>
+                <button class="tab-btn" onclick="showTab('tab-lista', this)">Catálogo</button>
+            </div>
 
-    <label>3. Tamaño del Estampado:</label>
-    <input type="range" id="sizeSlider" min="1" max="150" value="20" style="width:100%;">
+            <div id="tab-ninguno" class="panel-opcion active">
+                <p style="color: #999; font-size: 0.85rem; text-align: center; font-style: italic;">Modo de limpieza activado.</p>
+            </div>
 
-    <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
+            <div id="tab-propio" class="panel-opcion">
+                <span class="label-style">Cargar desde tu dispositivo:</span>
+                <input type="file" id="imageInput" accept="image/*">
+            </div>
 
-    <button id="btnCancel" class="btn-action btn-cancel">Cancelar Ubicación</button>
-    <button id="btnSave" class="btn-action btn-save">Guardar Diseño</button>
+            <div id="tab-lista" class="panel-opcion">
+                <span class="label-style">Galería de Estampados:</span>
+                <div class="galeria-disenos">
+                    {% for est in estampados %}
+                        <div class="diseno-item" onclick="seleccionarEstampado('{{ est.imagen_estamp.url }}', this)">
+                            <img src="{{ est.imagen_estamp.url }}" alt="{{ est.nombre_estamp }}">
+                            <div class="diseno-nombre">{{ est.nombre_estamp }}</div>
+                        </div>
+                    {% empty %}
+                        <p style="grid-column: span 2; font-size: 0.75rem; color: #bbb; text-align: center; padding: 10px;">
+                            No hay diseños en el inventario.
+                        </p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #f0f0f0; margin: 20px 0;">
+
+            <span class="label-style">Color de la Prenda:</span>
+            <input type="color" id="color-input-global" value="#ffffff">
+
+            <span class="label-style" style="margin-top: 20px;">Escala del Estampado:</span>
+            <input type="range" id="sizeSlider" min="10" max="200" value="60">
+        </div>
+
+        <div class="acciones-footer">
+            <button id="btn-limpiar-estampados"></button>
+            <button class="btn-main btn-guardar">✅ Guardar Diseño</button>
+            <a href="{% url 'ventas:producto_sin_personalizar' producto.id_produc %}" class="btn-main btn-cancelar">❌ Salir sin Cambios</a>
+            
+            <footer>
+                &copy; 2026 Luxy Fashion | SENA
+            </footer>
+        </div>
+    </div>
 </div>
 
-<div id="container3d"></div>
-
 <script type="importmap">
-    {
-        "imports": {
-            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-        }
-    }
+    { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }
 </script>
 
-<script type="module" src="/js/main.js"></script>
+<script type="module">
+    import { modelo } from "{% static 'js/main.js' %}";
+    window.onload = () => { modelo(); };
+</script>
 
+<script>
+    function showTab(tabId, btn) {
+        document.querySelectorAll('.panel-opcion').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    function limpiarEstampados() {
+        const btn = document.getElementById('btn-limpiar-estampados');
+        if(btn) btn.click();
+    }
+
+    function seleccionarEstampado(url, elemento) {
+        document.querySelectorAll('.diseno-item').forEach(i => i.classList.remove('selected'));
+        elemento.classList.add('selected');
+        // Notifica al main.js la nueva textura seleccionada
+        window.dispatchEvent(new CustomEvent('cambioEstampadoManual', { detail: url }));
+    }
+</script>
 </body>
 </html>
