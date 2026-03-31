@@ -288,20 +288,31 @@
 
     <div class="principal">
         <aside class="filtros">
-            <h3>Filtros</h3>
-            <hr>
-            <ul>
-                <li onclick="filtrar('todos')">Todos</li><hr>
-                <li onclick="filtrar('Hombre')">Hombre</li><hr>
-                <li onclick="filtrar('Mujer')">Mujer</li><hr>
-                <li onclick="filtrar('chaqueta')">Chaquetas</li><hr>
-            </ul>
-        </aside>
+    <h3>Filtros</h3>
+    <hr>
+    <ul>
+        <li onclick="filtrar('todos')" style="cursor:pointer;">Todos</li><hr>
+
+        {% regroup productos by gen_produc as genero_list %}
+        {% for genero in genero_list %}
+            <li onclick="filtrar('{{ genero.grouper|slugify }}')" style="cursor:pointer;">
+                {{ genero.grouper }}
+            </li><hr>
+        {% endfor %}
+
+        {% regroup productos by categoria_produc as categoria_list %}
+        {% for categoria in categoria_list %}
+            <li onclick="filtrar('{{ categoria.grouper|slugify }}')" style="cursor:pointer;">
+                {{ categoria.grouper }}
+            </li><hr>
+        {% endfor %}
+    </ul>
+</aside>
 
         <main class="container">
             {% for producto in productos %}
-                <div class="card {{ producto.categoria_produc }}"> 
-                    <a href="{% url 'ventas:producto_sin_personalizar' producto.id_produc %}">
+                <div class="card {{ producto.gen_produc|slugify }} {{ producto.categoria_produc|slugify }}"> 
+                <a href="{% url 'ventas:producto_sin_personalizar' producto.id_produc %}">
                         <div class="imagen-container">
                             {% if producto.imagen_product %}
                                 <img src="{{ producto.imagen_product.url }}" alt="{{ producto.nom_produc }}">
@@ -331,13 +342,24 @@
 {% include 'includes/footer.html' %}
 
     <script>
-        function filtrar(categoria) {
-            let productos = document.querySelectorAll(".card");
-            productos.forEach(p => {
-                p.style.display = (categoria === "todos" || p.classList.contains(categoria)) ? "block" : "none";
-            });
+function filtrar(criterio) {
+    let productos = document.querySelectorAll(".card");
+    
+    // Normalizamos el criterio (quitar espacios, tildes y poner minúsculas)
+    let criterioSlug = criterio.toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Quita tildes
+        .replace(/\s+/g, '-'); // Cambia espacios por guiones
+
+    productos.forEach(p => {
+        // Si es 'todos' o si la tarjeta tiene la clase exacta
+        if (criterio === "todos" || p.classList.contains(criterioSlug)) {
+            p.style.display = "block";
+        } else {
+            p.style.display = "none";
         }
-    </script>
+    });
+}
+</script>
 </body>
 </html>
 {% endblock %}

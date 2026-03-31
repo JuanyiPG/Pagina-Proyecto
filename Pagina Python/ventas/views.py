@@ -122,7 +122,7 @@ def lista_producto(request):
     return render(request, 'PAGINAS_LUXY_PROD/PAGINA_PROD.html', {'productos': productos})
     
 
-#@solo_personal
+@solo_personal
 def lista_producto_admin(request): 
     nuevo_hash = None
     materiales_db = Movimiento_matp.objects.all()
@@ -181,7 +181,7 @@ def lista_producto_admin(request):
         'productos': productos
     })
 
-
+@solo_personal
 def editar_producto(request, id): 
     producto = get_object_or_404(Producto, id_produc=id)
     if request.method == 'POST': 
@@ -215,7 +215,7 @@ def editar_producto(request, id):
         return redirect('ventas:lista_producto_admin')
     return render(request, 'ventas/producto/editar_producto.html', {'producto': producto})
 
-
+@solo_personal
 def eliminar_producto(request, product_id): 
     producto = get_object_or_404(Producto, id_produc=product_id)
     if request.method == 'POST':
@@ -539,7 +539,7 @@ def eliminar_del_carrito(request, id_det_valor):
     
     if detalle.id_ped_fk_detval.estado_ped != 'Carrito':
         messages.error(request, "No puedes eliminar productos de un pedido ya confirmado.")
-        return redirect('ventas:lista_pedido')
+        return redirect('ventas:ver_carrito')
 
     with transaction.atomic():
         
@@ -577,7 +577,7 @@ def editar_carrito(request, id_det_valor):
 
 #------------- DET_MOV_MATP ---------------------------------
 
-
+@solo_personal
 def gestionar_inventario(pedido, operacion):
     detalles = Det_valor.objects.filter(id_ped_fk_detval=pedido)
     materiales_faltantes = [] # Lista para guardar los materiales faltantes
