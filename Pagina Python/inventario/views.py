@@ -3,6 +3,7 @@ import os
 from decimal import Decimal, InvalidOperation
 import hashlib
 from .models import Estampado, Proveedor, Movimiento_matp
+from ventas.models import Producto 
 from django.db.models import Q 
 
 # --- PROVEEDORES ---
@@ -187,7 +188,14 @@ def eliminar_estampado(request, id):
     estampado.delete()
     
     return redirect('inventario:lista_estampado')
-from django.shortcuts import render
 
-def modelo(request):
-    return render(request, 'inventario/modelo/index.html')
+
+def modelo(request, producto_id):
+    producto = get_object_or_404(Producto, id_produc=producto_id)
+    # Traemos todos los diseños guardados en el inventario
+    estampados = Estampado.objects.all() 
+    
+    return render(request, 'inventario/modelo/index.html', {
+        'producto': producto,
+        'estampados': estampados  # ESTE NOMBRE debe ser igual al del {% for est in estampados %}
+    })
