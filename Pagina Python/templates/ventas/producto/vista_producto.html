@@ -1,296 +1,296 @@
 {% load static %}
-
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ producto.nom_produc }} | Luxy Fashion</title>
-</head>
-<body>
-
-<header style="background: white; height: 80px; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; width: 100%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 1000;">
-    <div>
-        <a href="{% url 'ventas:lista_product' %}">
-            <img src="{% static 'img/Logo_Luxy_Fashion.jpg' %}" height="60" alt="Logo">
-        </a>
-    </div>
-</header>
-
+{% block contenido %} 
 <style>
-    :root { 
-        --primary: #6a0f2e; 
-        --bg: #f4eeee; 
-        --info: #0c5460; 
-        --info-bg: #d1ecf1; 
+    :root {
+        --primary: #6a0f2e;
+        --primary-light: #fdf8f9;
+        --accent: #f2d7e0;
+        --text: #333;
+        --gray-light: #f4eeee;
     }
-    
+
     body { 
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-        background: var(--bg); 
+        background: var(--gray-light); 
         margin: 0; 
-        color: #333;
-    }
-    
-    .con-pro-cli {
-        display: flex; 
-        gap: 30px; 
-        background: white; 
-        padding: 30px; 
-        border-radius: 20px; 
-        box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
-        margin: 120px auto 40px auto; 
-        max-width: 1200px;
-    }
-
-    .visual-area { 
-        flex: 1.5; 
-        position: relative; 
-        height: 600px; 
-        background: #eee; 
-        border-radius: 15px; 
-        overflow: hidden; 
-    }
-
-    #container3d, .img-prin-pro img { 
-        width: 100%; 
-        height: 100%; 
-        border-radius: 15px; 
-        object-fit: cover; 
-    }
-
-    #container3d { 
-        display: none; 
-        background: #f8f9fa; 
-    }
-
-    .form-pro { 
-        flex: 1; 
         display: flex; 
         flex-direction: column; 
-        padding-left: 15px; 
+        min-height: 100vh;
+    }
+    
+    header { 
+        background: white; height: 80px; padding: 0 40px; 
+        display: flex; justify-content: space-between; align-items: center; 
+        position: fixed; top: 0; width: 100%; box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+        z-index: 1000;
+        box-sizing: border-box;
+    }
+    
+    .main-wrapper {
+        flex: 1;
+        padding: 40px 20px;
+        margin-top: 80px;
     }
 
-    /* MENSAJE DE INSTRUCCIONES ESTILIZADO */
-    .mensaje-guia {
-        background: var(--info-bg); 
-        color: var(--info); 
-        padding: 18px; 
+    .con-pro-cli {
+        display: flex;
+        gap: 40px;
+        background: white;
+        padding: 40px;
+        border-radius: 25px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    /* Galería de miniaturas */
+    .imgs-of-produc {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .thumb {
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+        background: #f9f9f9;
         border-radius: 12px;
-        margin-bottom: 20px; 
-        border-left: 6px solid var(--info); 
-        font-size: 0.95em; 
-        display: none;
-        line-height: 1.5;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: 0.3s;
     }
 
-    .panel-premium { 
-        display: none; 
-        background: #fdfdfd; 
-        padding: 20px; 
-        border-radius: 15px; 
-        border: 1px solid #eaeaea; 
-        margin-bottom: 20px; 
-    }
-    
-    .grid-tallas { 
-        display: flex; 
-        gap: 10px; 
-        flex-wrap: wrap; 
-        margin-top: 10px; 
+    .thumb:hover, .thumb.active {
+        border-color: var(--primary);
+        transform: scale(1.05);
     }
 
-    .btn-talla { 
-        padding: 12px 20px; 
-        border: 1px solid #ddd; 
-        border-radius: 8px; 
-        cursor: pointer; 
-        background: white; 
-        font-weight: bold; 
-        transition: 0.2s;
+    /* Imagen Principal */
+    .img-prin-pro {
+        flex: 1;
+        background: #fdfdfd;
+        border-radius: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        height: 500px;
+        border: 1px solid #f0f0f0;
     }
 
-    input[type="radio"]:checked + .btn-talla { 
-        background: var(--primary); 
-        color: white; 
-        border-color: var(--primary); 
+    .img-prin-pro img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
     }
 
-    .input-text { 
-        width: 100%; 
-        padding: 12px; 
-        border-radius: 10px; 
-        border: 1px solid #ddd; 
-        margin-top: 5px; 
-        box-sizing: border-box; 
+    .form-pro {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
     }
 
-    .btn-main { 
-        padding: 16px; 
-        border: none; 
-        border-radius: 10px; 
-        font-weight: bold; 
-        cursor: pointer; 
-        width: 100%; 
-        margin-bottom: 12px; 
-        text-transform: uppercase; 
-        transition: all 0.3s ease;
+    .product-title {
+        font-size: 32px;
+        font-family: 'Georgia', serif;
+        color: var(--text);
+        margin: 0 0 10px 0;
     }
-    
-    #btn-iniciar { background: #333; color: white; }
-    #btn-iniciar:hover { background: #000; }
-    
-    #btn-cancelar-3d { display: none; background: #c0392b; color: white; }
-    
-    #btn-limpiar-estampados { 
-        background: #555; 
-        color: white; 
-        font-size: 0.85em; 
-        margin-top: 15px; 
-    }
-    #btn-limpiar-estampados:hover { background: #222; }
 
-    footer { 
-        background-color: #5e0925; 
-        color: #fff; 
-        padding: 30px; 
-        text-align: center; 
-        margin-top: 40px; 
+    .product-price {
+        font-size: 28px;
+        color: var(--primary);
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    /* Botón Personalizar */
+    .btn-personalizar {
+        background-color: var(--primary-light);
+        color: var(--primary);
+        border: 2px solid var(--primary);
+        padding: 12px 24px;
+        border-radius: 50px;
+        font-weight: 800;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: fit-content;
+        font-size: 14px;
+        text-transform: uppercase;
+        transition: 0.3s;
+        margin-bottom: 25px;
+    }
+
+    .btn-personalizar:hover {
+        background-color: var(--primary);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Tallas */
+    .btn-talla {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50px;
+        height: 50px;
+        border: 1px solid #ddd;
+        background: white;
+        color: #555;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+    input[type="radio"]:checked + .btn-talla {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+        box-shadow: 0 4px 10px rgba(106, 15, 46, 0.2);
+    }
+
+    /* COLORES - CORRECCIÓN CRÍTICA */
+    .color-circle {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid #eee;
+        cursor: pointer;
+        transition: 0.3s;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    input[type="radio"]:checked + .color-circle {
+        border: 3px solid var(--primary);
+        transform: scale(1.15);
+        box-shadow: 0 0 12px rgba(106, 15, 46, 0.3);
+    }
+
+    /* Botón Carrito */
+    .btn-carrito {
+        background-color: var(--primary);
+        color: white;
+        padding: 20px;
+        border: none;
+        border-radius: 15px;
+        font-weight: bold;
+        cursor: pointer;
+        width: 100%;
+        font-size: 16px;
+        text-transform: uppercase;
+        transition: 0.3s;
+        margin-top: 10px;
+    }
+
+    .btn-carrito:hover {
+        background-color: #4e0a22;
+        transform: translateY(-2px);
+    }
+
+    footer {
+        background-color: #5e0925;
+        color: #fff;
+        padding: 30px;
+        text-align: center;
+        margin-top: 50px;
     }
 </style>
 
-<div class="con-pro-cli">
-    <div class="visual-area">
-        <div id="loading-text" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); display:none; font-weight:bold; color: var(--primary); z-index: 10;">
-            CARGANDO MODELO 3D...
-        </div>
-        <div class="img-prin-pro" id="foto-producto">
-            <img src="{{ producto.imagen_product.url }}" alt="{{ producto.nom_produc }}">
-        </div>
-        <div id="container3d"></div>
-    </div>
+<header>
+    <a href="{% url 'ventas:lista_product' %}">
+        <img src="{% static 'img/Logo_Luxy_Fashion.jpg' %}" height="60" alt="Logo Luxy Fashion">
+    </a>
+</header>
 
-    <div class="form-pro">
-        <h1>{{ producto.nom_produc }}</h1>
-        <p style="color: var(--primary); font-weight: bold; font-size: 28px; margin-top: 0;">
-            ${{ producto.precio }}
-        </p>
-
-        <div id="instrucciones" class="mensaje-guia">
-            <p style="margin-top:0; font-weight: bold;">✨ Guía del Diseñador:</p>
-            <ul style="padding-left: 20px; margin-bottom: 0;">
-                <li><b>Rotar:</b> Arrastra con el mouse para girar la prenda.</li>
-                <li><b>Ubicar:</b> Mantén presionada la tecla <b>'A'</b> y mueve el mouse.</li>
-                <li><b>Fijar:</b> Haz clic para pegar el logo (Máximo <b>2</b> diseños).</li>
-                <li><b>Vista:</b> Doble clic para volver al tamaño original.</li>
-            </ul>
+<div class="main-wrapper">
+    <div class="con-pro-cli">
+        
+        <div class="imgs-of-produc">
+            <img src="{{ producto.imagen_product.url }}" class="thumb active" onclick="changeImg(this.src, this)">
+            <img src="{{ producto.imagen_product.url }}" class="thumb" onclick="changeImg(this.src, this)">
+            <img src="{{ producto.imagen_product.url }}" class="thumb" onclick="changeImg(this.src, this)">
         </div>
 
-        <button type="button" class="btn-main" id="btn-iniciar">✨ Personalizar en 3D</button>
-        <button type="button" class="btn-main" id="btn-cancelar-3d">❌ Salir del Editor</button>
-
-        <div class="panel-premium" id="panel-3d">
-            <label style="font-weight: bold;">1. Sube tu Logo o Imagen:</label>
-            <input type="file" id="imageInput" accept="image/*" class="input-text" style="border:none; background: #eee; margin-bottom: 10px;">
-            
-            <label style="font-weight: bold; margin-top:15px; display:block;">2. Ajustar tamaño del estampado:</label>
-            <input type="range" id="sizeSlider" min="10" max="200" value="50" style="width:100%; accent-color: var(--primary); cursor: pointer;">
-
-            <button type="button" id="btn-limpiar-estampados" class="btn-main">
-                🗑️ Limpiar todos los estampados
-            </button>
+        <div class="img-prin-pro">
+            <img id="main-product-img" src="{% if producto.imagen_product %}{{ producto.imagen_product.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}" alt="{{ producto.nom_produc }}">
         </div>
 
-        <form action="{% url 'ventas:producto_sin_personalizar' producto.id_produc %}" method="POST">
-            {% csrf_token %}
-            
-            <div style="margin-bottom: 20px;">
-                <label style="font-weight: bold;">Descripción personalizado (Opcional):</label>
-                <input type="text" name="texto_personalizado" class="input-text" placeholder="Ej: Ajustada en la cintura">
-            </div>
+        <div class="form-pro">
+            <h1 class="product-title">{{ producto.nom_produc }}</h1>
+            <div class="product-price">$ {{ producto.precio }}</div>
 
-            <div style="margin-bottom: 20px;">
-                <label style="font-weight: bold;">Color de la Prenda:</label>
-                <div style="display:flex; align-items:center; gap:10px; margin-top:10px;">
-                    <input type="color" name="color" id="color-input-global" value="#ffffff" style="width:45px; height:45px; border:none; cursor:pointer; border-radius: 50%;">
-                    <span id="hex-label" style="font-weight:bold; font-family:monospace; color: #666;">#FFFFFF</span>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0 25px 0;">
+
+            {% if "camiseta" in producto.nom_produc|lower %}
+                <a href="{% url 'inventario:modelo' producto.id_produc %}" class="btn-personalizar">
+                    ✨ Personalizar en 3D
+                </a>
+            {% endif %}
+
+            <form action="{% url 'ventas:producto_sin_personalizar' producto.id_produc %}" method="POST">
+                {% csrf_token %}
+
+                <div style="margin-bottom: 25px;">
+                    <label style="display:block; margin-bottom: 12px; font-weight: bold; color: #555; font-size: 13px;">TALLA:</label>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        {% for t in tallas %}
+                            <label>
+                                <input type="radio" name="talla" value="{{t}}" style="display:none;" required>
+                                <span class="btn-talla">{{t}}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
 
-            <div style="margin-bottom: 25px;">
-                <label style="font-weight: bold;">Selecciona tu Talla:</label>
-                <div class="grid-tallas">
-                    {% for t in tallas %}
-                        <label>
-                            <input type="radio" name="talla" value="{{t}}" required style="display:none;">
-                            <span class="btn-talla">{{t}}</span>
+                <div style="margin-bottom: 25px;">
+                    <label style="display: block; margin-bottom: 12px; font-weight: bold; color: #555; font-size: 13px;">COLOR:</label>
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                        {% for c in colores %}
+                        <label title="{{ c|capfirst }}">
+                            <input type="radio" name="color" value="{{c}}" style="display:none;" required>
+                            <span class="color-circle" 
+                                  style="background-color: {% if c|lower == 'rojo' %}#d90429{% elif c|lower == 'azul' %}#0077b6{% elif c|lower == 'blanco' %}#ffffff{% elif c|lower == 'gris' %}#8d99ae{% elif c|lower == 'negro' %}#2b2d42{% else %}{{c}}{% endif %};">
+                            </span>
                         </label>
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
 
-            <div style="margin-bottom: 25px;">
-                <label style="font-weight: bold;">Cantidad:</label>
-                <input type="number" name="cantidad" value="1" min="1" class="input-text" style="width:100px; display:block;">
-            </div>
+                <div style="margin-bottom: 30px; display: flex; align-items: center; gap: 15px;">
+                    <label style="font-weight: bold; color: #555; font-size: 13px;">CANTIDAD:</label>
+                    <input type="number" name="cantidad" value="1" min="1" 
+                           style="width: 70px; padding: 12px; border-radius: 12px; border: 1px solid #ddd; text-align: center; font-weight: bold; font-size: 16px;">
+                </div>
 
-            <button type="submit" class="btn-main" style="background: var(--primary); color: white; font-size: 1.1em;">
-                🛍️ Añadir al Carrito
-            </button>
-        </form>
+                <button type="submit" class="btn-carrito">
+                    🛍️ Añadir al Carrito
+                </button>
+            </form>
+        </div>
     </div>
 </div>
 
 <footer>
-    <p>&copy; 2026 Luxy Fashion. Todos los derechos reservados.</p>
+    <p>&copy; 2026 Luxy Fashion | SENA</p>
 </footer>
 
-<script type="importmap">
-    {
-        "imports": {
-            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-        }
+<script>
+    // Función para intercambiar imágenes de la galería
+    function changeImg(src, el) {
+        const mainImg = document.getElementById('main-product-img');
+        mainImg.src = src;
+        
+        // Quitar clase activa de todas las miniaturas y ponerla en la seleccionada
+        document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
     }
 </script>
 
-<script type="module">
-    import { modelo } from "{% static 'js/main.js' %}";
-
-    const btnIniciar = document.getElementById('btn-iniciar');
-    const btnCancelar = document.getElementById('btn-cancelar-3d');
-    const colorInput = document.getElementById('color-input-global');
-
-    // Función para activar el editor 3D
-    btnIniciar.addEventListener('click', () => {
-        document.getElementById('foto-producto').style.display = 'none';
-        document.getElementById('container3d').style.display = 'block';
-        document.getElementById('panel-3d').style.display = 'block';
-        document.getElementById('instrucciones').style.display = 'block';
-        document.getElementById('loading-text').style.display = 'block';
-        
-        btnCancelar.style.display = 'block';
-        btnIniciar.style.display = 'none';
-
-        // Pequeño retraso para asegurar que el contenedor sea visible antes de cargar Three.js
-        setTimeout(() => {
-            modelo();
-            document.getElementById('loading-text').style.display = 'none';
-            window.dispatchEvent(new Event('resize'));
-        }, 150);
-    });
-
-    // Actualizar etiqueta Hexadecimal y disparar evento al JS
-    colorInput.addEventListener('input', (e) => {
-        const val = e.target.value;
-        document.getElementById('hex-label').innerText = val.toUpperCase();
-        // Avisamos a main.js que el color cambió
-        window.dispatchEvent(new CustomEvent('cambioColorManual', { detail: val }));
-    });
-
-    // Salir del editor recargando la página para limpiar memoria
-    btnCancelar.onclick = () => location.reload();
-</script>
-
-</body>
-</html>
+{% endblock %}
