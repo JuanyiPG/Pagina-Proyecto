@@ -298,8 +298,11 @@ def login_view(request):
 
                 if usuario.id_rol_fk.nom_rol in ['Administrador', 'Empleado']:
                     return redirect('usuarios:lista_roles')
+                elif usuario.id_rol_fk.nom_rol in ['Cliente']:
+                    return redirect('ventas:lista_product')
                 else:
                     return redirect('index') 
+                
 
             else:
                 messages.error(request, "Contraseña incorrecta.")

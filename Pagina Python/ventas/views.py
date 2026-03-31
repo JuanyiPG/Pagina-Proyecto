@@ -470,43 +470,47 @@ def eliminar_pedido(request, id):
 
 @login_requerido_custom
 def ver_carrito(request):
-    
     try:
         cliente = obtener_cliente_actual(request)
     except Cliente.DoesNotExist:
+        return render(request, 'ventas/pedido/carrito.html', {'items': [], 'total_productos': 0})
 
-        return render(request, 'ventas/pedido/carrito.html', {
-            'items': [], 
-            'total_productos': 0, 
-            'error_perfil': "No tienes un perfil de Cliente asociado a tu usuario."
-        })
-    
-    estados = ['Carrito', 'Confirmado']
-
-    decimal = Decimal('0.000')
-    pedido = Pedido.objects.filter(id_clien_fk=cliente, estado_ped__in = estados).first()
+    # 1. BUSQUEDA DEL PEDIDO ACTIVO
+    # Buscamos el pedido que NO esté cancelado ni entregado.
+    pedido = Pedido.objects.filter(
+        id_clien_fk=cliente
+    ).exclude(estado_ped__in=['Entregado', 'Cancelado', 'Completado']).order_by('-id_pedido').first()
 
     if not pedido:
         return render(request, 'ventas/pedido/carrito.html', {'items': [], 'total_productos': 0})
-    
-    decimal = Decimal(str('0.000')).quantize()
 
+    # 2. CÁLCULOS DE VALORES (Punto 2: Que se vea el abono)
+    formato = Decimal('0.00')
     items = Det_valor.objects.filter(id_ped_fk_detval=pedido)
-    total_products = items.aggregate(Sum('valor_total'))['valor_total__sum'] or 0
-    total_productos = Decimal(total_products).quantize(decimal)
+    
+    total_raw = items.aggregate(Sum('valor_total'))['valor_total__sum'] or 0
+    total_productos = Decimal(str(total_raw)).quantize(formato)
 
-    total_abono = Abono.objects.filter(id_pedido_fk_abono=pedido).aggregate(Sum('monto_abono'))['monto_abono__sum'] or 0
-    total_abonado = Decimal(str(total_abono)).quantize(decimal)
-    saldo_pendiente = max(0, total_productos - total_abonado).quantize(decimal)
+    abono_raw = Abono.objects.filter(id_pedido_fk_abono=pedido).aggregate(Sum('monto_abono'))['monto_abono__sum'] or 0
+    total_abonado = Decimal(str(abono_raw)).quantize(formato)
+    
+    saldo_pendiente = (total_productos - total_abonado).quantize(formato)
 
-    if saldo_pendiente <= 0 and pedido.estado_ped in ['PAGADO', 'Confirmado', 'Confirmada']:
+    # 3. EL FILTRO "MÁGICO" (Punto 3: Se quita solo cuando ya está pagado totalmente)
+    # Si el saldo es 0 o menor, Y el pedido ya fue confirmado/pagado, 
+    # entonces ya no debe estar en el carrito.
+    if saldo_pendiente <= 0 and pedido.estado_ped != 'Carrito':
         return render(request, 'ventas/pedido/carrito.html', {'items': [], 'total_productos': 0})
 
+    # Si llega aquí, significa que:
+    # - O el pedido es nuevo ('Carrito')
+    # - O todavía debe plata (saldo_pendiente > 0)
     return render(request, 'ventas/pedido/carrito.html', {
         'pedido': pedido,
-        'items': items,
+        'items': items, 
         'total_productos': total_productos,
-        'saldo_pendiente': saldo_pendiente,
+        'total_abonado': total_abonado,
+        'saldo_pendiente': max(0, saldo_pendiente),
         'tiene_abonos': total_abonado > 0
     })
 
@@ -559,24 +563,30 @@ def editar_carrito(request, id_det_valor):
         return redirect('ventas:producto_sin_personalizar', producto_id=id_producto)
 
 #------------- DET_MOV_MATP ---------------------------------
-def matp_producto(request, producto_id): 
-    producto = get_object_or_404(Producto, id_produc = producto_id)
-    materiales = Movimiento_matp.objects.all()
+def matp_producto(request, producto_id):
+    producto = get_object_or_404(Producto, id_produc=producto_id)
+    materiales_db = Movimiento_matp.objects.all()
 
-    if request.method == 'POST': 
-        id_material = request.POST.get('material')
-        cantidad = request.POST.get('cantidad')
+    if request.method == 'POST':
+        # Obtenemos las listas de los campos que tienen [] en el nombre
+        ids_materiales = request.POST.getlist('material_ids[]')
+        cantidades = request.POST.getlist('cantidades[]')
 
-        Det_mov_matp.objects.create(
-            producto = producto,
-            materia_prima = id_material,
-            cantidad_usada = cantidad
-        )
+        # Usamos zip para recorrer ambas listas al mismo tiempo
+        # id_mat = 5, cant = 10.5
+        for id_mat, cant in zip(ids_materiales, cantidades):
+            if id_mat and cant: # Validación básica de que no vengan vacíos
+                Det_mov_matp.objects.create(
+                    producto = producto,
+                    materia_prima_id = id_mat, 
+                    cantidad_usada = cant
+                )
 
         return redirect('detalle_producto', producto_id=producto.id_produc)
-    return render(request, 'ventas/admin/registrar_producto.html',{
+
+    return render(request, 'ventas/admin/registrar_producto.html', {
         'producto': producto,
-        'materiales': materiales
+        'materiales': materiales_db
     })
 
 def gestionar_inventario(pedido, operacion):

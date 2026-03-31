@@ -44,6 +44,7 @@ def lista_mmtp(request):
                 color_mmtp=request.POST.get('color_mmtp', ''), 
                 fecha_mmtp=request.POST.get('fecha_mmtp'),
                 stock_mmtp=request.POST.get('stock_mmtp'),
+                mat_mmtp = request.POST.get('mat_mmtp'),
                 id_proveedor_fk=get_object_or_404(Proveedor, id_provee=id_pro)
             )
             return redirect('inventario:lista_mmtp')
@@ -61,6 +62,7 @@ def editar_mmtp(request, id):
         mmtp.color_mmtp = request.POST.get('color_mmtp', '') # Evita el MultiValueDictKeyError
         mmtp.fecha_mmtp = request.POST.get('fecha_mmtp')
         mmtp.stock_mmtp = request.POST.get('stock_mmtp')
+        mmtp.mat_mmtp = request.POST.get('mat_mmtp')
 
         id_pro = request.POST.get('id_proveedor_fk')
         mmtp.id_proveedor_fk = get_object_or_404(Proveedor, id_provee=id_pro)
