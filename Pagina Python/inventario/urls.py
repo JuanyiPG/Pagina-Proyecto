@@ -18,5 +18,8 @@ urlpatterns=[
     path('estampados/', views.lista_estampado, name="lista_estampado"),
     path('estampados/editar/<int:id>/', views.editar_estampado, name="editar_estampado"),
     path('estampados/eliminar/<int:id>/', views.eliminar_estampado, name="eliminar_estampado"),
-    path('modelo/', views.modelo,  name="modelo")
+    
+    
+    path('modelo/<int:producto_id>/', views.modelo, name='modelo'),
 ]
+
