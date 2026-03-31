@@ -220,7 +220,7 @@ def eliminar_producto(request, product_id):
     producto = get_object_or_404(Producto, id_produc=product_id)
     if request.method == 'POST':
         producto.delete()
-        return redirect('ventas:lista_product')
+        return redirect('ventas:lista_producto_admin')
     return render(request, 'ventas/producto/eliminar_producto.html', {'producto':producto})
 
 #----------------- PRODUCTO SIN VARIACION ---------------------
