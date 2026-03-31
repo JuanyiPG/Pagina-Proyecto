@@ -17,7 +17,6 @@ urlpatterns = [
     path('lista_producto/admin', views.lista_producto_admin, name='lista_producto_admin'),
     path('eliminar_producto/<int:product_id>', views.eliminar_producto, name='eliminar_producto'),
     path('editar_producto/<int:id>', views.editar_producto, name='editar_producto'),
-    path('form_producto/', views.crear_producto, name='form_producto'),
     path('producto_sin_personalizar/<int:producto_id>/', views.producto_sin_personalizar, name='producto_sin_personalizar'),
 
     #----------------------- CARRITO ---------------------------------------------------------
