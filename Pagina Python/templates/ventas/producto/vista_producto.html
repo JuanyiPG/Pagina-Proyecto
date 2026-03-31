@@ -1,203 +1,296 @@
-
 {% load static %}
-{% block contenido %} <style>
-    body { font-family: Arial; background: #f4eeee; margin: 0; }
-    header { 
-            background: white; height: 80px; padding: 0 20px; 
-            display: flex; justify-content: space-between; align-items: center; 
-            position: fixed; top: 0; width: 100%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
-            z-index: 1000;
-        }
-    
-    main { padding: 40px; } /* Ya no necesitas margin-top: 100px si base.html ya tiene menú */
 
-    .con-pro-cli {
-        display: flex;
-        gap: 30px;
-        background: white;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        margin-top: 100px;
-    }
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ producto.nom_produc }} | Luxy Fashion</title>
+</head>
+<body>
 
-    .imgs-of-produc {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .imgs-of-produc img {
-        width: 80px;
-        height: 80px;
-        object-fit: cover;
-        border-radius: 8px;
-        cursor: pointer;
-        border: 1px solid #eee;
-    }
-
-    .img-prin-pro img {
-        width: 400px;
-        height: 450px;
-        object-fit: cover;
-        border-radius: 12px;
-    }
-
-    .form-pro {
-        flex: 1;
-        padding-left: 20px;
-    }
-
-    /* Estilos de botones de tallas y colores */
-    .btn-talla {
-        display: inline-block;
-        padding: 10px 15px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        margin-right: 5px;
-        cursor: pointer;
-    }
-
-    input[type="radio"]:checked + .btn-talla {
-        background: black;
-        color: white;
-        border-color: black;
-    }
-
-    .contenedor-opciones-color {
-        display: flex;
-        gap: 10px;
-        margin-top: 15px;
-    }
-    .color-option {
-        display: inline-block;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        border: 2px solid #ddd;
-        cursor: pointer;
-    }
-
-    .color-option:hover {
-    transform: scale(1.1); /* Efecto visual al pasar el mouse */
-}
-
-    input[type="radio"]:checked + .color-option {
-        border-color: black;
-        border-radius: 20px;
-    }
-
-    .readonly input {
-        border: none;
-        background: transparent;
-        font-weight: bold;
-        outline: none;
-    }
-
-    footer {
-  background-color: #5e0925;
-  color: #fff;
-  padding: 20px 10px;
-  text-align: center;
-  margin-top: 20px;
-}
-
-.footer-contenido {
-    max-width: 900px;
-    margin: auto;
-}
-
-.redes {
-    margin-bottom: 15px;
-}
-
-.red-social {
-  display: inline-block;
-  margin: 0 10px;
-  padding: 8px 15px;
-  border: 1px solid #fff;
-  border-radius: 20px;
-  text-decoration: none;
-  color: #fff;
-  font-size: 14px;
-  transition: all 0.3s ease;
-}
-
-.red-social:hover {
-  background-color: #b35d85;
-  border-color: #b35d85;
-  color: #fff;
-}
-
-</style>
-<header>
-    <div><a href="{% url 'ventas:lista_product' %}"><img src="{% static 'img/Logo_Luxy_Fashion.jpg' %}" height="60" alt="Logo"></a></div>
+<header style="background: white; height: 80px; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; width: 100%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 1000;">
+    <div>
+        <a href="{% url 'ventas:lista_product' %}">
+            <img src="{% static 'img/Logo_Luxy_Fashion.jpg' %}" height="60" alt="Logo">
+        </a>
+    </div>
 </header>
 
-<div class="con-pro-cli">
+<style>
+    :root { 
+        --primary: #6a0f2e; 
+        --bg: #f4eeee; 
+        --info: #0c5460; 
+        --info-bg: #d1ecf1; 
+    }
     
-    <div class="imgs-of-produc">
-        <img id="img1" src="{{ producto.imagen_product.url }}" alt="Vista 1">
-        <img id="img2" src="{{ producto.imagen_product.url }}" alt="Vista 2">
-        <img id="img3" src="{{ producto.imagen_product.url }}" alt="Vista 3">
-    </div>
+    body { 
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        background: var(--bg); 
+        margin: 0; 
+        color: #333;
+    }
+    
+    .con-pro-cli {
+        display: flex; 
+        gap: 30px; 
+        background: white; 
+        padding: 30px; 
+        border-radius: 20px; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
+        margin: 120px auto 40px auto; 
+        max-width: 1200px;
+    }
 
-    <div class="img-prin-pro">
-        {% if producto.imagen_product %}
+    .visual-area { 
+        flex: 1.5; 
+        position: relative; 
+        height: 600px; 
+        background: #eee; 
+        border-radius: 15px; 
+        overflow: hidden; 
+    }
+
+    #container3d, .img-prin-pro img { 
+        width: 100%; 
+        height: 100%; 
+        border-radius: 15px; 
+        object-fit: cover; 
+    }
+
+    #container3d { 
+        display: none; 
+        background: #f8f9fa; 
+    }
+
+    .form-pro { 
+        flex: 1; 
+        display: flex; 
+        flex-direction: column; 
+        padding-left: 15px; 
+    }
+
+    /* MENSAJE DE INSTRUCCIONES ESTILIZADO */
+    .mensaje-guia {
+        background: var(--info-bg); 
+        color: var(--info); 
+        padding: 18px; 
+        border-radius: 12px;
+        margin-bottom: 20px; 
+        border-left: 6px solid var(--info); 
+        font-size: 0.95em; 
+        display: none;
+        line-height: 1.5;
+    }
+
+    .panel-premium { 
+        display: none; 
+        background: #fdfdfd; 
+        padding: 20px; 
+        border-radius: 15px; 
+        border: 1px solid #eaeaea; 
+        margin-bottom: 20px; 
+    }
+    
+    .grid-tallas { 
+        display: flex; 
+        gap: 10px; 
+        flex-wrap: wrap; 
+        margin-top: 10px; 
+    }
+
+    .btn-talla { 
+        padding: 12px 20px; 
+        border: 1px solid #ddd; 
+        border-radius: 8px; 
+        cursor: pointer; 
+        background: white; 
+        font-weight: bold; 
+        transition: 0.2s;
+    }
+
+    input[type="radio"]:checked + .btn-talla { 
+        background: var(--primary); 
+        color: white; 
+        border-color: var(--primary); 
+    }
+
+    .input-text { 
+        width: 100%; 
+        padding: 12px; 
+        border-radius: 10px; 
+        border: 1px solid #ddd; 
+        margin-top: 5px; 
+        box-sizing: border-box; 
+    }
+
+    .btn-main { 
+        padding: 16px; 
+        border: none; 
+        border-radius: 10px; 
+        font-weight: bold; 
+        cursor: pointer; 
+        width: 100%; 
+        margin-bottom: 12px; 
+        text-transform: uppercase; 
+        transition: all 0.3s ease;
+    }
+    
+    #btn-iniciar { background: #333; color: white; }
+    #btn-iniciar:hover { background: #000; }
+    
+    #btn-cancelar-3d { display: none; background: #c0392b; color: white; }
+    
+    #btn-limpiar-estampados { 
+        background: #555; 
+        color: white; 
+        font-size: 0.85em; 
+        margin-top: 15px; 
+    }
+    #btn-limpiar-estampados:hover { background: #222; }
+
+    footer { 
+        background-color: #5e0925; 
+        color: #fff; 
+        padding: 30px; 
+        text-align: center; 
+        margin-top: 40px; 
+    }
+</style>
+
+<div class="con-pro-cli">
+    <div class="visual-area">
+        <div id="loading-text" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); display:none; font-weight:bold; color: var(--primary); z-index: 10;">
+            CARGANDO MODELO 3D...
+        </div>
+        <div class="img-prin-pro" id="foto-producto">
             <img src="{{ producto.imagen_product.url }}" alt="{{ producto.nom_produc }}">
-        {% else %}
-            <img src="{% static 'img/default.jpg' %}" alt="No image">
-        {% endif %}
+        </div>
+        <div id="container3d"></div>
     </div>
 
     <div class="form-pro">
+        <h1>{{ producto.nom_produc }}</h1>
+        <p style="color: var(--primary); font-weight: bold; font-size: 28px; margin-top: 0;">
+            ${{ producto.precio }}
+        </p>
+
+        <div id="instrucciones" class="mensaje-guia">
+            <p style="margin-top:0; font-weight: bold;">✨ Guía del Diseñador:</p>
+            <ul style="padding-left: 20px; margin-bottom: 0;">
+                <li><b>Rotar:</b> Arrastra con el mouse para girar la prenda.</li>
+                <li><b>Ubicar:</b> Mantén presionada la tecla <b>'A'</b> y mueve el mouse.</li>
+                <li><b>Fijar:</b> Haz clic para pegar el logo (Máximo <b>2</b> diseños).</li>
+                <li><b>Vista:</b> Doble clic para volver al tamaño original.</li>
+            </ul>
+        </div>
+
+        <button type="button" class="btn-main" id="btn-iniciar">✨ Personalizar en 3D</button>
+        <button type="button" class="btn-main" id="btn-cancelar-3d">❌ Salir del Editor</button>
+
+        <div class="panel-premium" id="panel-3d">
+            <label style="font-weight: bold;">1. Sube tu Logo o Imagen:</label>
+            <input type="file" id="imageInput" accept="image/*" class="input-text" style="border:none; background: #eee; margin-bottom: 10px;">
+            
+            <label style="font-weight: bold; margin-top:15px; display:block;">2. Ajustar tamaño del estampado:</label>
+            <input type="range" id="sizeSlider" min="10" max="200" value="50" style="width:100%; accent-color: var(--primary); cursor: pointer;">
+
+            <button type="button" id="btn-limpiar-estampados" class="btn-main">
+                🗑️ Limpiar todos los estampados
+            </button>
+        </div>
+
         <form action="{% url 'ventas:producto_sin_personalizar' producto.id_produc %}" method="POST">
             {% csrf_token %}
-
-            <div class="readonly">
-                <input type="text" class="nombre" name="nomPedido" value="{{ producto.nom_produc }}" readonly style="font-size: 25px; width: 100%; font-family: Georgia;">
+            
+            <div style="margin-bottom: 20px;">
+                <label style="font-weight: bold;">Descripción personalizado (Opcional):</label>
+                <input type="text" name="texto_personalizado" class="input-text" placeholder="Ej: Ajustada en la cintura">
             </div>
 
-            <label for="valor" class="subinfo" style="font-family: Georgia; margin-top: 10px; display:block;">Valor:</label>
-            <div class="readonly">
-                $<input type="text" class="valor" name="valor" value="{{ producto.precio }}" readonly style="font-family: Georgia;">
-            </div>
-
-            <div style="margin-top: 15px;">
-                <label style="display:block; margin-bottom: 8px; font-weight: bold;">Tallas disponibles:</label>
-                {% for t in tallas %}
-                    <input type="radio" name="talla" id="talla-{{t}}" value="{{t}}" style="display:none;" required>
-                    <label for="talla-{{t}}" class="btn-talla">{{t}}</label>
-                {% endfor %}
-            </div>
-
-            <div style="margin-top: 20px;">
-                <label for="cantidad_id" style="font-weight: bold;">Cantidad:</label>
-                <input type="number" name="cantidad" id="cantidad_id" value="1" min="1" style="width: 70px; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
-            </div>
-
-            <div style="margin-top: 15px;">
-                <label style="font-weight: bold;">Colores disponibles:</label>
-                <div class="contenedor-opciones-color">
-                    {% for c in colores %}
-                    <div class="color-picker">
-                    <input type="radio" name="color" id="color-{{c}}" value="{{c}}" style="display:none;" required>
-                    <label for="color-{{c}}" class="color-option"
-                        style="background-color: {% if c == 'rojo' %} red {% elif c == 'azul' %}blue{% elif c == 'blanco' %}white{% elif c == 'gris' %}gray{% else %}#ccc{% endif %};">
-                    </label>
+            <div style="margin-bottom: 20px;">
+                <label style="font-weight: bold;">Color de la Prenda:</label>
+                <div style="display:flex; align-items:center; gap:10px; margin-top:10px;">
+                    <input type="color" name="color" id="color-input-global" value="#ffffff" style="width:45px; height:45px; border:none; cursor:pointer; border-radius: 50%;">
+                    <span id="hex-label" style="font-weight:bold; font-family:monospace; color: #666;">#FFFFFF</span>
                 </div>
-            {% endfor %}
-            </div>
             </div>
 
-            <div style="margin-top: 30px;">
-                <button type="submit" style="background-color: #6a0f2e; color: white; padding: 15px 35px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px;">
-                    🛍️ Añadir al Carrito
-                </button>
+            <div style="margin-bottom: 25px;">
+                <label style="font-weight: bold;">Selecciona tu Talla:</label>
+                <div class="grid-tallas">
+                    {% for t in tallas %}
+                        <label>
+                            <input type="radio" name="talla" value="{{t}}" required style="display:none;">
+                            <span class="btn-talla">{{t}}</span>
+                        </label>
+                    {% endfor %}
+                </div>
             </div>
+
+            <div style="margin-bottom: 25px;">
+                <label style="font-weight: bold;">Cantidad:</label>
+                <input type="number" name="cantidad" value="1" min="1" class="input-text" style="width:100px; display:block;">
+            </div>
+
+            <button type="submit" class="btn-main" style="background: var(--primary); color: white; font-size: 1.1em;">
+                🛍️ Añadir al Carrito
+            </button>
         </form>
     </div>
 </div>
-{% include 'includes/footer.html' %}
 
-{% endblock %}
+<footer>
+    <p>&copy; 2026 Luxy Fashion. Todos los derechos reservados.</p>
+</footer>
+
+<script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+</script>
+
+<script type="module">
+    import { modelo } from "{% static 'js/main.js' %}";
+
+    const btnIniciar = document.getElementById('btn-iniciar');
+    const btnCancelar = document.getElementById('btn-cancelar-3d');
+    const colorInput = document.getElementById('color-input-global');
+
+    // Función para activar el editor 3D
+    btnIniciar.addEventListener('click', () => {
+        document.getElementById('foto-producto').style.display = 'none';
+        document.getElementById('container3d').style.display = 'block';
+        document.getElementById('panel-3d').style.display = 'block';
+        document.getElementById('instrucciones').style.display = 'block';
+        document.getElementById('loading-text').style.display = 'block';
+        
+        btnCancelar.style.display = 'block';
+        btnIniciar.style.display = 'none';
+
+        // Pequeño retraso para asegurar que el contenedor sea visible antes de cargar Three.js
+        setTimeout(() => {
+            modelo();
+            document.getElementById('loading-text').style.display = 'none';
+            window.dispatchEvent(new Event('resize'));
+        }, 150);
+    });
+
+    // Actualizar etiqueta Hexadecimal y disparar evento al JS
+    colorInput.addEventListener('input', (e) => {
+        const val = e.target.value;
+        document.getElementById('hex-label').innerText = val.toUpperCase();
+        // Avisamos a main.js que el color cambió
+        window.dispatchEvent(new CustomEvent('cambioColorManual', { detail: val }));
+    });
+
+    // Salir del editor recargando la página para limpiar memoria
+    btnCancelar.onclick = () => location.reload();
+</script>
+
+</body>
+</html>
