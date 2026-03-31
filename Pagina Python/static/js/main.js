@@ -5,11 +5,11 @@ import { DecalGeometry } from 'three/addons/geometries/DecalGeometry.js';
 
 export function modelo() {
     const container = document.getElementById("container3d");
-    if (!container || container.firstChild) return;
+    if (!container) return;
 
     // --- CONFIGURACIÓN DE ESCENA ---
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf8f9fa);
+    scene.background = new THREE.Color(0xffffff);
 
     const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
     const posicionInicial = { x: 0, y: 0.5, z: 6.5 }; 
@@ -21,8 +21,8 @@ export function modelo() {
     container.appendChild(renderer.domElement);
 
     // --- LUCES ---
-    scene.add(new THREE.AmbientLight(0xffffff, 1.8));
-    const lightFront = new THREE.DirectionalLight(0xffffff, 1.2);
+    scene.add(new THREE.AmbientLight(0xffffff, 2.0));
+    const lightFront = new THREE.DirectionalLight(0xffffff, 1.5);
     lightFront.position.set(5, 5, 5);
     scene.add(lightFront);
 
@@ -30,15 +30,13 @@ export function modelo() {
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    controls.minDistance = 3.0;
-    controls.maxDistance = 12.0;
 
-    // --- VARIABLES DE ESTADO Y MOTOR DE ESTAMPADO ---
+    // --- VARIABLES DE ESTADO ---
     let meshCamiseta = [];
     let ultimaTextura = null;
     let decalVistaPrevia = null;
     let teclaAPresionada = false;
-    let contadorEstampados = 0; // Límite de 2
+    let contadorEstampados = 0;
 
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
@@ -48,7 +46,9 @@ export function modelo() {
     const loader = new GLTFLoader();
     loader.load('/static/models/t_shirt.glb', (gltf) => {
         const model = gltf.scene;
-        model.scale.set(7.5, 7.5, 7.5); 
+        
+        // DISMINUCIÓN DEL MODELO (de 7.5 a 6.0)
+        model.scale.set(6.0, 6.0, 6.0); 
         scene.add(model);
 
         const box = new THREE.Box3().setFromObject(model);
@@ -60,13 +60,14 @@ export function modelo() {
                 meshCamiseta.push(child);
                 child.material = new THREE.MeshStandardMaterial({
                     color: 0xffffff,
-                    roughness: 0.8,
-                    metalness: 0.0,
+                    roughness: 0.7,
+                    metalness: 0.1,
                     side: THREE.DoubleSide
                 });
             }
         });
 
+        // Color inicial si existe el input
         const colorInput = document.getElementById('color-input-global');
         if (colorInput) aplicarColor(colorInput.value);
     });
@@ -85,13 +86,6 @@ export function modelo() {
             controls.enabled = true; 
             eliminarPrevisualizacion();
         }
-    });
-
-    // --- RESET DE CÁMARA (Doble Clic) ---
-    container.addEventListener('dblclick', () => {
-        camera.position.set(posicionInicial.x, posicionInicial.y, posicionInicial.z);
-        controls.target.set(0, 0, 0);
-        controls.update();
     });
 
     // --- MOVIMIENTO PARA PREVISUALIZAR ---
@@ -114,13 +108,11 @@ export function modelo() {
         }
     });
 
-    // --- CLIC PARA FIJAR EL ESTAMPADO (CON LÍMITE) ---
+    // --- CLIC PARA FIJAR EL ESTAMPADO ---
     renderer.domElement.addEventListener('click', () => {
         if (!decalVistaPrevia || !teclaAPresionada) return;
-
         if (contadorEstampados >= 2) {
-            alert("¡Límite alcanzado! Solo puedes agregar un máximo de 2 estampados.");
-            eliminarPrevisualizacion();
+            alert("Límite de 2 estampados alcanzado.");
             return;
         }
         
@@ -130,7 +122,7 @@ export function modelo() {
         contadorEstampados++;
     });
 
-    // --- MOTOR DE DECAL ---
+    // --- MOTOR DE DECAL (ESTAMPADOS) ---
     function crearDecal(hit, esPrevia) {
         const malla = hit.object;
         const posicion = hit.point;
@@ -147,8 +139,7 @@ export function modelo() {
         });
 
         const slider = document.getElementById('sizeSlider');
-        const vSlider = slider ? parseInt(slider.value) : 50;
-        const size = vSlider / 50; 
+        const size = (slider ? parseInt(slider.value) : 60) / 50; 
         const dimensiones = new THREE.Vector3(size, size, 1.0);
 
         const m = new THREE.Matrix4();
@@ -163,7 +154,7 @@ export function modelo() {
         if (esPrevia) decalVistaPrevia = decalMesh;
     }
 
-    // --- BOTÓN LIMPIAR ESTAMPADOS ---
+    // --- LIMPIAR TODO ---
     const btnLimpiar = document.getElementById('btn-limpiar-estampados');
     if (btnLimpiar) {
         btnLimpiar.onclick = () => {
@@ -192,22 +183,35 @@ export function modelo() {
         meshCamiseta.forEach(m => m.material.color.set(hex));
     }
 
-    // Eventos de UI
+    // --- EVENTOS DE INTERFAZ ---
     document.getElementById('imageInput').addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = (ev) => {
-                ultimaTextura = textureLoader.load(ev.target.result);
-                ultimaTextura.colorSpace = THREE.SRGBColorSpace;
+                textureLoader.load(ev.target.result, (tex) => {
+                    tex.colorSpace = THREE.SRGBColorSpace;
+                    ultimaTextura = tex;
+                });
             };
             reader.readAsDataURL(file);
         }
     });
 
-    window.addEventListener('cambioColorManual', (event) => aplicarColor(event.detail));
+    document.getElementById('color-input-global').addEventListener('input', (e) => {
+        aplicarColor(e.target.value);
+    });
 
-    // --- ANIMACIÓN ---
+    // ESCUCHA PARA EL CATÁLOGO (EVENTO PERSONALIZADO)
+    window.addEventListener('cambioEstampadoManual', (event) => {
+        const urlImagen = event.detail;
+        textureLoader.load(urlImagen, (tex) => {
+            tex.colorSpace = THREE.SRGBColorSpace;
+            ultimaTextura = tex;
+        });
+    });
+
+    // --- CICLO DE ANIMACIÓN ---
     function animate() {
         requestAnimationFrame(animate);
         controls.update();
@@ -221,5 +225,3 @@ export function modelo() {
         renderer.setSize(container.clientWidth, container.clientHeight);
     });
 }
-
-window.iniciarModelo3D = modelo;
