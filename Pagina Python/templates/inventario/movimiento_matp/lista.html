@@ -128,6 +128,7 @@
                         <th>ID</th>
                         <th>Tipo</th>
                         <th>Talla</th>
+                        <th>Material</th>
                         <th>Color</th>
                         <th>Stock</th>
                         <th>Proveedor</th>
@@ -135,25 +136,33 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for m in mmtp %}
-                    <tr>
-                        <td>{{ m.id_mmtp }}</td>
-                        <td><strong>{{ m.tipo_mmtp }}</strong></td>
-                        <td>{{ m.talla_mmtp }}</td>
-                        <td>{{ m.color_mmtp }}</td>
-                        <td>{{ m.stock_mmtp }}</td>
-                        <td>{{ m.id_proveedor_fk.nom_provee }}</td>
-                        <td style="display: flex; gap: 10px;">
-                            <a href="{% url 'inventario:editar_mmtp' m.id_mmtp %}" class="edit" style="text-decoration: none; color: #2d6cdf; font-weight: bold;">Editar</a>
-                            <a href="{% url 'inventario:eliminar_mmtp' m.id_mmtp %}" class="delete" style="text-decoration: none; color: #d33; font-weight: bold;" onclick="return confirm('¿Desea eliminar este movimiento?')">Borrar</a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="8" style="text-align: center; color: #999; padding: 20px;">No hay movimientos registrados.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
+    {% for m in mmtp %}
+    <tr style="{% if m.stock_mmtp < 0 %} background-color: #ffe6e6; {% elif m.stock_mmtp == 0 %} background-color: #fff3cd; {% endif %} transition: background-color 0.3s;">
+        <td>{{ m.id_mmtp }}</td>
+        <td><strong>{{ m.tipo_mmtp }}</strong></td>
+        <td>{{ m.talla_mmtp }}</td>
+        <td>{{ m.mat_mmtp }}</td>
+        <td>{{ m.color_mmtp }}</td>
+        
+        <td style="font-weight: bold; {% if m.stock_mmtp < 0 %} color: #d33; {% elif m.stock_mmtp == 0 %} color: #856404; {% endif %}">
+            {{ m.stock_mmtp }}
+            {% if m.stock_mmtp < 0 %}
+                <br><small style="font-size: 0.7rem; color: #a00;">REABASTECER</small>
+            {% endif %}
+        </td>
+        
+        <td>{{ m.id_proveedor_fk.nom_provee }}</td>
+        <td style="display: flex; gap: 10px;">
+            <a href="{% url 'inventario:editar_mmtp' m.id_mmtp %}" class="edit" style="text-decoration: none; color: #2d6cdf; font-weight: bold;">Editar</a>
+            <a href="{% url 'inventario:eliminar_mmtp' m.id_mmtp %}" class="delete" style="text-decoration: none; color: #d33; font-weight: bold;" onclick="return confirm('¿Desea eliminar este movimiento?')">Borrar</a>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="8" style="text-align: center; color: #999; padding: 20px;">No hay movimientos registrados.</td>
+    </tr>
+    {% endfor %}
+</tbody>
             </table>
         </div>
     </div>

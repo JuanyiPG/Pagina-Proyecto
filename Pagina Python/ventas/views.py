@@ -121,13 +121,12 @@ def lista_producto(request):
     productos = Producto.objects.all()
     return render(request, 'PAGINAS_LUXY_PROD/PAGINA_PROD.html', {'productos': productos})
     
-def lista_producto_admin(request):
-    productos = Producto.objects.all()
-    return render(request, 'ventas/producto/lista_product.html', {'productos': productos})
 
 #@solo_personal
-def crear_producto(request): 
+def lista_producto_admin(request): 
     nuevo_hash = None
+    materiales_db = Movimiento_matp.objects.all()
+    productos = Producto.objects.all()
 
     if request.method == 'POST': 
         #POST para textos plano, FILES, para img, pdf, etc
@@ -158,15 +157,29 @@ def crear_producto(request):
 
             #Verificar si ya existe el hash
             if Producto.objects.filter(imagen_hash=nuevo_hash).exists():
-                return render(request, 'ventas/producto/form_producto.html',{
+                return render(request, 'ventas/producto/lista_product.html',{
                     'error': 'ERROR: Esta prenda ya ha sido subida anteriormente.'
             })
         
-        Producto.objects.create(imagen_product=imagen_produc, imagen_hash=nuevo_hash, nom_produc=nom_produc, gen_produc=gen_produc,
+        nuevo_p = Producto.objects.create(imagen_product=imagen_produc, imagen_hash=nuevo_hash, nom_produc=nom_produc, gen_produc=gen_produc,
                                 desc_produc=desc_produc, categoria_produc=categoria_produc,estado_produc=estado_produc, precio=valor )
         
+        ids_materiales = request.POST.getlist('material_ids[]')
+        cantidades = request.POST.getlist('cantidades[]')
+
+        for id_mat, cant in zip(ids_materiales, cantidades):
+            if id_mat and cant:
+                Det_mov_matp.objects.create(
+                    producto = nuevo_p, # Aquí usamos el objeto que acabamos de guardar
+                    materia_prima_id = id_mat, 
+                    cantidad_usada = cant
+                )
+
         return redirect('ventas:lista_producto_admin')
-    return render(request, 'ventas/producto/form_producto.html')
+    return render(request, 'ventas/producto/lista_product.html',{
+        'materiales': materiales_db,
+        'productos': productos
+    })
 
 
 def editar_producto(request, id): 
@@ -188,6 +201,7 @@ def editar_producto(request, id):
         producto.gen_produc = request.POST.get('gen_produc')
         producto.desc_produc = request.POST['desc_produc']
         producto.categoria_produc = request.POST.get('categoria_produc')
+        
         producto.estado_produc = request.POST['estado_produc']
         precio = request.POST['precio']
         try: 
@@ -260,7 +274,6 @@ def lista_abono(request):
 
 @login_requerido_custom
 def crear_abono(request, pedido_id):
-    # ... (código inicial de cliente y pedido igual) ...
     pedido = get_object_or_404(Pedido, id_pedido=pedido_id)
     
     # Totales actuales
@@ -563,31 +576,7 @@ def editar_carrito(request, id_det_valor):
         return redirect('ventas:producto_sin_personalizar', producto_id=id_producto)
 
 #------------- DET_MOV_MATP ---------------------------------
-def matp_producto(request, producto_id):
-    producto = get_object_or_404(Producto, id_produc=producto_id)
-    materiales_db = Movimiento_matp.objects.all()
 
-    if request.method == 'POST':
-        # Obtenemos las listas de los campos que tienen [] en el nombre
-        ids_materiales = request.POST.getlist('material_ids[]')
-        cantidades = request.POST.getlist('cantidades[]')
-
-        # Usamos zip para recorrer ambas listas al mismo tiempo
-        # id_mat = 5, cant = 10.5
-        for id_mat, cant in zip(ids_materiales, cantidades):
-            if id_mat and cant: # Validación básica de que no vengan vacíos
-                Det_mov_matp.objects.create(
-                    producto = producto,
-                    materia_prima_id = id_mat, 
-                    cantidad_usada = cant
-                )
-
-        return redirect('detalle_producto', producto_id=producto.id_produc)
-
-    return render(request, 'ventas/admin/registrar_producto.html', {
-        'producto': producto,
-        'materiales': materiales_db
-    })
 
 def gestionar_inventario(pedido, operacion):
     detalles = Det_valor.objects.filter(id_ped_fk_detval=pedido)
@@ -603,14 +592,14 @@ def gestionar_inventario(pedido, operacion):
 
                 if operacion == 'RESTAR':
                     # Restamos de todos modos
-                    material.stock_movi_mtp -= cantidad_total
+                    material.stock_mmtp-= cantidad_total
                     
                     # Si el stock bajó de cero, lo anotamos en la lista de faltantes
-                    if material.stock_movi_mtp < 0:
-                        materiales_faltantes.append(f"{material.tipo_movi_mtp} (Faltan {abs(material.stock_movi_mtp)} unidades)")
+                    if material.stock_mmtp < 0:
+                        materiales_faltantes.append(f"{material.tipo_mmtp} (Faltan {abs(material.stock_mmtp)} unidades)")
                 
                 elif operacion == 'SUMAR':
-                    material.stock_movi_mtp += cantidad_total
+                    material.stock_mmtp += cantidad_total
                 
                 material.save()
     

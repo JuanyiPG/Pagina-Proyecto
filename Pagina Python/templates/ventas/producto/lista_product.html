@@ -84,7 +84,7 @@
     </div>
 
         <div class="form-card">
-            <form action="{% url 'ventas:form_producto' %}" method="POST" enctype="multipart/form-data">
+            <form action="{% url 'ventas:lista_producto_admin' %}" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="form-grid">
                     <div class="form-group">
@@ -122,6 +122,40 @@
                     <textarea name="desc_produc" rows="2" placeholder="Breve descripción de la prenda..."></textarea>
                 </div>
 
+                <div class="form-group">
+            <label>Materiales y Cantidades</label>
+            <div id="contenedor-materiales">
+                <div class="fila-material" style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <select name="material_ids[]" style="flex: 2;">
+                        <option value="">Seleccionar Material...</option>
+                        {% for mat in materiales %}
+                            <option value="{{ mat.id_mmtp }}">{{ mat.mat_mmtp }}</option>
+                            {% empty %}
+                        <option value="">No hay materiales en la base de datos</option>
+                        {% endfor %}
+                    </select>
+                    <input type="number" name="cantidades[]" placeholder="Cant." style="flex: 1;" step="0.01">
+                    <button type="button" class="btn-remove" onclick="eliminarFila(this)" style="background: #ff4d4d; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px;">X</button>
+                </div>
+            </div>
+            <button type="button" onclick="agregarFila()" style="background: #4CAF50; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; margin-top: 5px;">
+                + Agregar otro material
+            </button>
+        </div>
+        
+        <template id="template-fila">
+    <div class="fila-material" style="display: flex; gap: 10px; margin-bottom: 10px;">
+        <select name="material_ids[]" style="flex: 2;">
+            <option value="">Seleccionar Material...</option>
+            {% for mat in materiales %}
+                <option value="{{ mat.id_mmtp }}">{{ mat.mat_mmtp }}</option>
+            {% endfor %}
+        </select>
+        <input type="number" name="cantidades[]" placeholder="Cant." style="flex: 1;" step="0.01">
+        <button type="button" class="btn-remove" onclick="eliminarFila(this)" style="background: #ff4d4d; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px;">X</button>
+    </div>
+</template>
+
                 <div class="upload-area" style="border: 2px dashed #ddd; padding: 20px; text-align: center; border-radius: 12px; background: #fafafa; margin-bottom: 20px;">
                     <input type="file" name="imagen_produc" id="file-upload" accept="image/*" required onchange="preview(this)" style="display: none;">
                     
@@ -135,18 +169,19 @@
                 </div>
 
                 <button type="submit" class="btn-main" style="width: 100%;">
-                     Registrar Prenda en Inventario
+                    Registrar Prenda en Inventario
                 </button>
             </form>
         </div>
-
         <div style="max-width: 600px; margin: 0 auto 40px auto;">
             <div style="display: flex; gap: 10px;">
                 <input type="text" id="product-search" placeholder="Buscar por nombre o categoría..." 
-                       style="flex: 1; padding: 12px 20px; border-radius: 25px; border: 1.5px solid #ececec; outline: none;">
+                    style="flex: 1; padding: 12px 20px; border-radius: 25px; border: 1.5px solid #ececec; outline: none;">
                 <button type="button" class="btn-main" style="padding: 0 25px;">Buscar</button>
             </div>
         </div>
+
+        <!----LISTA -------------------->
 
         <div class="productos-grid" id="productos-grid">
             {% for p in productos %}
@@ -178,6 +213,38 @@
         </div>
     </div>
 </div>
+
+<script>
+    function agregarFila() {
+        const contenedor = document.getElementById('contenedor-materiales');
+        const template = document.getElementById('template-fila').content;
+        const clon = template.cloneNode(true);
+        contenedor.appendChild(clon);
+    }
+
+    function eliminarFila(boton) {
+        const filas = document.querySelectorAll('.fila-material');
+        if (filas.length > 1) {
+            boton.parentElement.remove();
+        } else {
+            alert("Debes incluir al menos un material.");
+        }
+    }
+
+    function mostrarVistaPrevia(event) {
+        const input = event.target;
+        const reader = new FileReader();
+        reader.onload = function(){
+            const dataURL = reader.result;
+            const output = document.getElementById('img-preview');
+            const placeholder = document.getElementById('placeholder-text');
+            output.src = dataURL;
+            output.style.display = 'block';
+            placeholder.style.display = 'none';
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+</script>
 
 <script>
     // Vista previa de imagen
