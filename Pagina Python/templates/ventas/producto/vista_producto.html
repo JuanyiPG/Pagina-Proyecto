@@ -1,7 +1,13 @@
-{% include 'includes/header.html' %}
+
 {% load static %}
 {% block contenido %} <style>
     body { font-family: Arial; background: #f4eeee; margin: 0; }
+    header { 
+            background: white; height: 80px; padding: 0 20px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            position: fixed; top: 0; width: 100%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            z-index: 1000;
+        }
     
     main { padding: 40px; } /* Ya no necesitas margin-top: 100px si base.html ya tiene menú */
 
@@ -12,7 +18,7 @@
         padding: 20px;
         border-radius: 12px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        margin-top: 20px;
+        margin-top: 100px;
     }
 
     .imgs-of-produc {
@@ -88,13 +94,45 @@
         outline: none;
     }
 
-    .bg-azul{background-color: blue;}
-    .bg-blanco{background-color: white;}
-    .bg-gris{background-color: gray;}
-    .bg-rojo{background-color: red;}
-    .bg-default { background-color: #eee; }
+    footer {
+  background-color: #5e0925;
+  color: #fff;
+  padding: 20px 10px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.footer-contenido {
+    max-width: 900px;
+    margin: auto;
+}
+
+.redes {
+    margin-bottom: 15px;
+}
+
+.red-social {
+  display: inline-block;
+  margin: 0 10px;
+  padding: 8px 15px;
+  border: 1px solid #fff;
+  border-radius: 20px;
+  text-decoration: none;
+  color: #fff;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.red-social:hover {
+  background-color: #b35d85;
+  border-color: #b35d85;
+  color: #fff;
+}
 
 </style>
+<header>
+    <div><a href="{% url 'ventas:lista_product' %}"><img src="{% static 'img/Logo_Luxy_Fashion.jpg' %}" height="60" alt="Logo"></a></div>
+</header>
 
 <div class="con-pro-cli">
     

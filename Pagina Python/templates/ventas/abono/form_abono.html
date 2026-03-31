@@ -138,15 +138,15 @@ body {
                     <div class="row text-center mb-3">
                         <div class="col-4">
                             <small class="text-muted d-block">Total</small>
-                            <strong>${{ total_productos|floatformat:3}}</strong>
+                            <strong>${{ total_productos}}</strong>
                         </div>
                         <div class="col-4 border-start border-end">
                             <small class="text-muted d-block">Abonado</small>
-                            <span class="text-success"><strong>${{ total_abonado|floatformat:3 }}</strong></span>
+                            <span class="text-success"><strong>${{ total_abonado }}</strong></span>
                         </div>
                         <div class="col-4">
                             <small class="text-muted d-block">Pendiente</small>
-                            <span class="text-danger"><strong>${{ saldo_pendiente|floatformat:3 }}</strong></span>
+                            <span class="text-danger"><strong>${{ saldo_pendiente }}</strong></span>
                         </div>
                     </div>
 
@@ -162,7 +162,7 @@ body {
                                 placeholder="¿Cuánto deseas pagar?" 
                                 required>
                             <div class="form-text">
-                                No puedes superar el saldo pendiente de <strong>${{ saldo_pendiente|floatformat:3 }}</strong>.
+                                No puedes superar el saldo pendiente de <strong>${{ saldo_pendiente }}</strong>.
                             </div>
                         </div>
 

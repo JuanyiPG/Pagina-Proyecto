@@ -126,6 +126,118 @@
         .precio-actual { font-weight: bold; color: #540a1f; font-size: 17px; margin-top: 5px; display: block; }
         .gen-tag { font-size: 10px; color: #888; margin-top: 5px; text-transform: uppercase; }
 
+        footer {
+  background-color: #5e0925;
+  color: #fff;
+  padding: 20px 10px;
+  text-align: center;
+}
+
+.footer-contenido {
+    max-width: 900px;
+    margin: auto;
+}
+
+.redes {
+    margin-bottom: 15px;
+}
+
+.red-social {
+  display: inline-block;
+  margin: 0 10px;
+  padding: 8px 15px;
+  border: 1px solid #fff;
+  border-radius: 20px;
+  text-decoration: none;
+  color: #fff;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.red-social:hover {
+  background-color: #b35d85;
+  border-color: #b35d85;
+  color: #fff;
+}
+
+/* Contenedor principal */
+.notification-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* El botón de la campana */
+.bell-button {
+    color: #555;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+/* El puntito de notificación */
+.bell-dot {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 8px;
+    height: 8px;
+    background-color: #ff4d4d;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+/* El menú desplegable (oculto por defecto) */
+.notification-dropdown {
+    position: absolute;
+    top: 130%; /* Aparece un poco más abajo del icono */
+    right: 0;
+    width: 250px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1); /* Sombra suave */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    padding: 8px 0;
+}
+
+/* Mostrar al pasar el mouse por el contenedor */
+.notification-wrapper:hover .notification-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Items individuales */
+.notification-item {
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #333;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-empty {
+    padding: 15px;
+    font-size: 14px;
+    color: #999;
+    text-align: center;
+}
+
+/* Triangulito superior */
+.dropdown-arrow {
+    position: absolute;
+    top: -6px;
+    right: 12px;
+    width: 12px;
+    height: 12px;
+    background: white;
+    transform: rotate(45deg);
+}
         </style>
 </head>
 <body>
@@ -134,13 +246,39 @@
         <div class="logo">
             <a href="{% url 'index' %}"><img src="{% static 'IMG/logo.png' %}" height="60px"></a>
         </div>
+        
         <div class="menu-superior">
             {% if request.session.usuario_id %}
                 <a href="{% url 'usuarios:logout' %}">Cerrar sesión</a>
             {% else %}
                 <a href="{% url 'usuarios:login' %}">Iniciar sesión</a>
             {% endif %}
+            <div class="notification-wrapper">
+
             <a href="{% url 'ventas:ver_carrito' %}">🛒 <span id="contador-carrito">0</span></a>
+            <!------ NOTIFICACIONES ------>
+        <a href="#" class="bell-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4 4 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4 4 0 0 0-3.203-3.92zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5 5 0 0 1 13 6c0 .88.32 4.2 1.22 6"/>
+        </svg>
+        {% if messages %}
+            <span class="bell-dot"></span>
+        {% endif %}
+        </a>
+
+        <div class="notification-dropdown">
+            <div class="dropdown-arrow"></div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="notification-item {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="notification-empty">No hay novedades</div>
+        {% endif %}
+    </div>
+</div>
         </div>
     </header>
 
@@ -189,6 +327,8 @@
             {% endfor %}
         </main>
     </div>
+
+{% include 'includes/footer.html' %}
 
     <script>
         function filtrar(categoria) {

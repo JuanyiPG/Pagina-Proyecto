@@ -150,6 +150,7 @@
             <label for="nom_produc">Nombre del Producto</label>
             <input type="text" id="nom_produc" name="nom_produc" required placeholder="Ej. Chaqueta de Cuero">
         </div>
+
         <div class="form-group">
             <label for="gen_produc">Genero</label>
             <select name="gen_produc" id="gen_produc">
@@ -173,7 +174,7 @@
             </select>
         </div>
 
-        <div>
+        <div class="form-group">
             <label for="precio">Precio</label>
             <input type="number" id="precio" name="precio" placeholder="200.000">
         </div>
@@ -181,6 +182,25 @@
         <div class="form-group">
             <label for="desc_produc">Descripción Corta</label>
             <textarea id="desc_produc" name="desc_produc" rows="3" placeholder="Detalles de materiales, talla..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Materiales y Cantidades</label>
+            <div id="contenedor-materiales">
+                <div class="fila-material" style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <select name="material_ids[]" style="flex: 2;">
+                        <option value="">Seleccionar Material...</option>
+                        {% for mat in materiales %}
+                            <option value="{{ mat.id }}">{{ mat.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="number" name="cantidades[]" placeholder="Cant." style="flex: 1;" step="0.01">
+                    <button type="button" class="btn-remove" onclick="eliminarFila(this)" style="background: #ff4d4d; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px;">X</button>
+                </div>
+            </div>
+            <button type="button" onclick="agregarFila()" style="background: #4CAF50; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; margin-top: 5px;">
+                + Agregar otro material
+            </button>
         </div>
 
         <div class="form-group">
@@ -196,6 +216,51 @@
         <button type="submit" class="btn-submit">REGISTRAR PRENDA</button>
     </form>
 </div>
+
+<template id="template-fila">
+    <div class="fila-material" style="display: flex; gap: 10px; margin-bottom: 10px;">
+        <select name="material_ids[]" style="flex: 2;">
+            <option value="">Seleccionar Material...</option>
+            {% for mat in materiales %}
+                <option value="{{ mat.id }}">{{ mat.nombre }}</option>
+            {% endfor %}
+        </select>
+        <input type="number" name="cantidades[]" placeholder="Cant." style="flex: 1;" step="0.01">
+        <button type="button" class="btn-remove" onclick="eliminarFila(this)" style="background: #ff4d4d; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px;">X</button>
+    </div>
+</template>
+
+<script>
+    function agregarFila() {
+        const contenedor = document.getElementById('contenedor-materiales');
+        const template = document.getElementById('template-fila').content;
+        const clon = template.cloneNode(true);
+        contenedor.appendChild(clon);
+    }
+
+    function eliminarFila(boton) {
+        const filas = document.querySelectorAll('.fila-material');
+        if (filas.length > 1) {
+            boton.parentElement.remove();
+        } else {
+            alert("Debes incluir al menos un material.");
+        }
+    }
+
+    function mostrarVistaPrevia(event) {
+        const input = event.target;
+        const reader = new FileReader();
+        reader.onload = function(){
+            const dataURL = reader.result;
+            const output = document.getElementById('img-preview');
+            const placeholder = document.getElementById('placeholder-text');
+            output.src = dataURL;
+            output.style.display = 'block';
+            placeholder.style.display = 'none';
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+</script>
 
 <script>
     function mostrarVistaPrevia(event) {
