@@ -32,5 +32,7 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('registro/', views.registro_view, name='registro'),
     path('logout/', views.logout_view, name='logout'),
+    path('empleado/', views.panel_empleado, name='base_emple'),
+    path('admin/estadisticas/', views.estadisticas_admin, name='estadisticas_admin'),
 
 ]

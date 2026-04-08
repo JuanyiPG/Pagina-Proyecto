@@ -5,10 +5,14 @@ from django.contrib.auth.hashers import check_password, make_password
 from django.db import transaction
 from django.contrib import messages
 from django.views.decorators.cache import never_cache
+from usuarios.models import Empleado, Cliente
+from inventario.models import Proveedor
+from ventas.models import Producto
 
 # ================================================================
 # 🛡️ DECORADORES DE SEGURIDAD CUSTOM (SIN USAR AUTH DE DJANGO)
 # ================================================================
+
 
 def login_requerido_custom(view_func):
     @wraps(view_func)
@@ -309,8 +313,10 @@ def login_view(request):
 
                 messages.success(request, f"Bienvenido, {usuario.username}")
 
-                if usuario.id_rol_fk.nom_rol in ['Administrador', 'Empleado']:
+                if usuario.id_rol_fk.nom_rol in ['Administrador']:
                     return redirect('usuarios:lista_roles')
+                elif usuario.id_rol_fk.nom_rol in ['Empleado']:
+                    return redirect('usuarios:base_emple')
                 elif usuario.id_rol_fk.nom_rol in ['Cliente']:
                     return redirect('ventas:lista_product')
                 else:
@@ -370,3 +376,22 @@ def registro_view(request):
             messages.error(request, 'Error al registrar: ' + str(e))
             
     return render(request, 'usuarios/login.html')
+
+def panel_empleado(request):
+    return render(request, 'usuarios/empleados/base_emple.html')
+
+def estadisticas_admin(request):
+
+    total_empleados = Empleado.objects.count()
+    total_clientes = Cliente.objects.count()
+    total_productos = Producto.objects.count()
+    total_proveedores = Proveedor.objects.count()
+
+    context = {
+        'total_empleados': total_empleados,
+        'total_clientes': total_clientes,
+        'total_productos': total_productos,
+        'total_proveedores': total_proveedores,
+    }
+
+    return render(request, 'usuarios/empleados/estadisticas.html', context)
