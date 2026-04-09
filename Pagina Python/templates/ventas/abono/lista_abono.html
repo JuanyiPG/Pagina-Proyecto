@@ -22,6 +22,7 @@
         border: 1px solid #f0f0f0;
     }
 
+    /* Título devuelto a su estado original */
     .title-section {
         color: var(--luxy-burgundy);
         border-left: 6px solid var(--luxy-copper);
@@ -33,10 +34,12 @@
         width: 100%;
         border-collapse: collapse;
         overflow: hidden;
+        border-radius: 8px 8px 0 0;
     }
 
-    .custom-table thead {
-        border-bottom: 2px solid var(--luxy-burgundy);
+    /* HEADER DE LA TABLA CORREGIDO: Fondo vinotinto y letra blanca */
+    .custom-table thead tr {
+        background-color: var(--luxy-burgundy);
     }
 
     .custom-table th {
@@ -46,7 +49,7 @@
         text-transform: uppercase;
         font-size: 11px;
         letter-spacing: 1.5px;
-        color: var(--luxy-burgundy);
+        color: white; /* Letra blanca */
     }
 
     .custom-table td {
@@ -78,7 +81,6 @@
         text-transform: uppercase;
     }
 
-    /* Badge para estados vacíos */
     .empty-state {
         text-align: center;
         padding: 50px !important;
