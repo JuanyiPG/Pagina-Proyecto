@@ -19,9 +19,8 @@ class Proveedor(models.Model):
 class Movimiento_matp(models.Model):
     id_mmtp = models.AutoField(primary_key=True)
     tipo_mmtp = models.CharField(max_length=100)
-    talla_mmtp = models.CharField(max_length=50, null= True, blank=True)
-    color_mmtp = models.CharField(max_length=100)
-    fecha_mmtp = models.DateField()
-    stock_mmtp = models.DecimalField(max_digits=10, decimal_places=2)
     mat_mmtp = models.CharField(max_length=100)
+    fecha_mmtp = models.DateField()
+    color_mmtp = models.CharField(max_length=100)
+    stock_mmtp = models.DecimalField(max_digits=10, decimal_places=2)
     id_proveedor_fk = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
