@@ -274,13 +274,31 @@ def editar_empleado(request, id):
     return render(request, 'usuarios/empleados/editar.html', {'empleado': empleado, 'roles': roles})
 
 
-# ... El resto de CRUD Clientes, login, logout y registro ya usan make_password correctamente en tu código original ...
 @solo_personal
 def eliminar_empleado(request, id):
+    # 1. Buscamos el empleado por su ID
     empleado = get_object_or_404(Empleado, id_emple=id)
-    empleado.delete()
-    return redirect('usuarios:lista_empleados')
+    
+    try:
+        # Usamos transaction.atomic para que si falla el borrado de uno, no se borre ninguno
+        with transaction.atomic():
+            # 2. Accedemos al usuario relacionado usando el nombre correcto del campo: id_usuario_fk
+            usuario_relacionado = empleado.id_usuario_fk
+            
+            # 3. Borramos primero el empleado (opcional, el orden depende de tu DB, 
+            # pero usualmente borramos el perfil y luego la cuenta)
+            empleado.delete()
+            
+            # 4. Borramos el usuario
+            if usuario_relacionado:
+                usuario_relacionado.delete()
+            
+            messages.success(request, "✅ Empleado y sus credenciales de acceso eliminados correctamente.")
+            
+    except Exception as e:
+        messages.error(request, f"❌ Error al intentar eliminar: {e}")
 
+    return redirect('usuarios:lista_empleados')
 
 # ================================================================
 #  CRUD DE CLIENTES
