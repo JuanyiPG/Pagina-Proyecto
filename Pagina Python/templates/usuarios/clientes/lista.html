@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="main-content">
 <style>
     :root {
         --luxy-burgundy: #800020;
@@ -10,12 +9,14 @@
         --luxy-cream: #F5F5F5;
     }
 
+    /* Contenedor principal ajustado a la izquierda */
     .table-container {
-        margin: 2rem auto;
+        margin: 0; 
         padding: 1.5rem;
         background-color: white;
         border-radius: 12px;
         box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        width: 100%;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
@@ -26,108 +27,134 @@
         margin-bottom: 30px;
     }
 
-    .custom-table {
-        width: 100%;
-        border-collapse: collapse;
-        overflow: hidden;
-        border-radius: 8px 8px 0 0;
+    /* Estilos de formulario elegantes */
+    .form-group label {
+        display: block;
+        font-size: 11px;
+        font-weight: bold;
+        color: var(--luxy-burgundy);
+        margin-bottom: 5px;
+        text-transform: uppercase;
     }
 
+    .form-group input, .form-group select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+    }
 
+    .btn-save {
+        background: #6a0f2e;
+        color: white;
+        border: none;
+        padding: 10px 25px;
+        border-radius: 4px;
+        font-weight: 600;
+        cursor: pointer;
+        width: fit-content;
+        min-width: 180px;
+        text-transform: uppercase;
+        font-size: 11px;
+        letter-spacing: 1px;
+        transition: 0.3s ease;
+    }
+
+    .btn-save:hover {
+        background: #4d0a21;
+        transform: translateY(-1px);
+    }
 </style>
 
 <div class="table-container">
     <div class="title-section">
-        <h2 style="margin:0;">Gestion de Clientes</h2>
+        <h2 style="margin:0;">Gestión de Clientes</h2>
         <small style="color: var(--luxy-hazelnut);">Registro detallado de los clientes ingresados</small>
     </div>
         
-        <div class="form-card" style="margin-bottom: 40px;">
-            <form method="POST" action="{% url 'usuarios:crear_cliente' %}">
-                {% csrf_token %}
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Nombre</label>
-                        <input type="text" name="nom_clien" placeholder="Nombre completo" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Dirección</label>
-                        <input type="text" name="dir_clien" placeholder="Ej: Calle 10 #20-30" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Teléfono</label>
-                        <input type="text" name="tel_clien" placeholder="Número de contacto" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Correo</label>
-                        <input type="email" name="correo_clien" placeholder="ejemplo@correo.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Usuario</label>
-                        <select name="id_usuario_fk_clien" required>
-                            <option value="">Seleccione un usuario...</option>
-                            {% for u in usuarios %}
-                                <option value="{{ u.id_usuario }}">{{ u.username }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+    <div class="form-card" style="margin-bottom: 40px; background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #eee; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+        <form method="POST" action="{% url 'usuarios:crear_cliente' %}">
+            {% csrf_token %}
+            <div class="form-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text" name="nom_clien" placeholder="Nombre completo" required>
                 </div>
-                <button type="submit" class="btn-save" style="width: 100%; margin-top: 15px;"> Guardar Cliente</button>
-            </form>
+                <div class="form-group">
+                    <label>Dirección</label>
+                    <input type="text" name="dir_clien" placeholder="Ej: Calle 10 #20-30" required>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="text" name="tel_clien" placeholder="Número de contacto" required>
+                </div>
+                <div class="form-group">
+                    <label>Correo</label>
+                    <input type="email" name="correo_clien" placeholder="ejemplo@correo.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Usuario</label>
+                    <select name="id_usuario_fk_clien" required>
+                        <option value="">Seleccione un usuario...</option>
+                        {% for u in usuarios %}
+                            <option value="{{ u.id_usuario }}">{{ u.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn-save" style="margin-top: 20px;">Guardar Cliente</button>
+        </form>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 30px;">
+
+    <div class="table-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+            <h3 style="font-size: 18px; margin: 0;">Clientes Registrados ({{ clientes|length }})</h3>
+            <input type="text" id="searchInput" placeholder=" Buscar..." 
+                   style="width: 250px; padding: 8px 15px; border: 1px solid #6a0f2e; border-radius: 20px; outline: none;">
         </div>
 
-        <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 30px;">
-
-        <div class="table-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="font-size: 18px; margin: 0;">Clientes Registrados</h3>
-                
-                <div style="position: relative; width: 300px;">
-                    <input type="text" id="searchInput" placeholder="Buscar por nombre o correo..." 
-                           style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 20px; outline: none;">
-                </div>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table-inventory" id="clientsTable">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Contacto</th>
-                            <th>Correo</th>
-                            <th>Usuario</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for c in clientes %}
-                        <tr>
-                            <td>{{ c.id_clien }}</td>
-                            <td class="client-name"><strong>{{ c.nom_clien }}</strong></td>
-                            <td>
-                                <div style="font-size: 13px;">📞 {{ c.tel_clien }}</div>
-                                <div style="font-size: 11px; color: #666;">🏠 {{ c.dir_clien }}</div>
-                            </td>
-                            <td class="client-email">{{ c.correo_clien }}</td>
-                            <td>
-                                <span style="background: #fdf2f8; color: #9d174d; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">
-                                    {{ c.id_usuario_fk.username }}
-                                </span>
-                            </td>
-                            <td style="display: flex; gap: 10px;">
-                                <a href="{% url 'usuarios:editar_cliente' c.id_clien %}" class="edit" style="text-decoration: none; color: #2d6cdf; font-weight: bold;">Editar</a>
-                                <a href="{% url 'usuarios:eliminar_cliente' c.id_clien %}" class="delete" style="text-decoration: none; color: #d33; font-weight: bold;" onclick="return confirm('¿Eliminar cliente?')">Borrar</a>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr id="noResultsRow">
-                            <td colspan="6" style="text-align: center; padding: 20px; color: #999;">No hay clientes en el sistema.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+        <div class="table-responsive" style="overflow-x: auto;">
+            <table class="table-inventory" id="clientsTable" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #6a0f2e; color: white; text-align: left;">
+                        <th style="padding: 12px; font-size: 11px; text-transform: uppercase;">ID</th>
+                        <th style="padding: 12px; font-size: 11px; text-transform: uppercase;">Nombre</th>
+                        <th style="padding: 12px; font-size: 11px; text-transform: uppercase;">Contacto</th>
+                        <th style="padding: 12px; font-size: 11px; text-transform: uppercase;">Correo</th>
+                        <th style="padding: 12px; font-size: 11px; text-transform: uppercase;">Usuario</th>
+                        <th style="padding: 12px; font-size: 11px; text-transform: uppercase;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in clientes %}
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 12px;">{{ c.id_clien }}</td>
+                        <td class="client-name" style="padding: 12px;"><strong>{{ c.nom_clien }}</strong></td>
+                        <td style="padding: 12px;">
+                            <div style="font-size: 13px;">📞 {{ c.tel_clien }}</div>
+                            <div style="font-size: 11px; color: #666;">🏠 {{ c.dir_clien }}</div>
+                        </td>
+                        <td class="client-email" style="padding: 12px; font-size: 13px;">{{ c.correo_clien }}</td>
+                        <td style="padding: 12px;">
+                            <span style="background: #fdf2f8; color: #9d174d; padding: 4px 10px; border-radius: 15px; font-size: 11px; font-weight: bold; border: 1px solid #f9a8d4;">
+                                {{ c.id_usuario_fk.username }}
+                            </span>
+                        </td>
+                        <td style="padding: 12px; display: flex; gap: 10px;">
+                            <a href="{% url 'usuarios:editar_cliente' c.id_clien %}" style="text-decoration: none; color: #2d6cdf; font-weight: bold; font-size: 13px;">Editar</a>
+                            <a href="{% url 'usuarios:eliminar_cliente' c.id_clien %}" style="text-decoration: none; color: #d33; font-weight: bold; font-size: 13px;" onclick="return confirm('¿Eliminar cliente?')">Borrar</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr id="noResultsRow">
+                        <td colspan="6" style="text-align: center; padding: 30px; color: #999;">No hay clientes en el sistema.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
@@ -140,14 +167,8 @@
         rows.forEach(row => {
             let name = row.querySelector('.client-name').textContent.toLowerCase();
             let email = row.querySelector('.client-email').textContent.toLowerCase();
-            
-            if (name.includes(filter) || email.includes(filter)) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
+            row.style.display = (name.includes(filter) || email.includes(filter)) ? "" : "none";
         });
     });
 </script>
-
 {% endblock %}

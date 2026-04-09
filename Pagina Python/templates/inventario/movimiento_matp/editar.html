@@ -3,53 +3,58 @@
 
 {% block content %}
 <div class="main-content">
-    <div class="container-wide" style="max-width: 800px;">
-        <h2 style="color: #6a0f2e; margin-bottom: 25px; text-align: center;">📦 Editar Movimiento #{{ mmtp.id_mmtp }}</h2>
-        
-        <div class="form-card">
-            <form method="POST">
-                {% csrf_token %}
-                
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Tipo de Movimiento</label>
-                        <input type="text" name="tipo_mmtp" value="{{ mmtp.tipo_mmtp }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Talla</label>
-                        <input type="text" name="talla_mmtp" value="{{ mmtp.talla_mmtp }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Color</label>
-                        <input type="text" name="color_mmtp" value="{{ mmtp.color_mmtp }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Fecha</label>
-                        <input type="date" name="fecha_mmtp" value="{{ mmtp.fecha_mmtp|date:'Y-m-d' }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Cantidad (Stock)</label>
-                        <input type="number" step="0.01" name="stock_mmtp" value="{{ mmtp.stock_mmtp|unlocalize }}" required>
-                    </div>
-                </div>
+    <div class="page-header" style="border-bottom: 2px solid #6a0f2e; margin-bottom: 25px;">
+        <h2 style="color: #6a0f2e; font-weight: bold; margin: 0;">📦 Editar Movimiento #{{ mmtp.id_mmtp }}</h2>
+        <p style="color: #666; margin: 5px 0 10px 0;">Modifique los detalles del registro de materia prima</p>
+    </div>
 
+    <div class="form-card">
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div class="form-grid">
                 <div class="form-group">
-                    <label>Proveedor</label>
-                    <select name="id_proveedor_fk" required>
-                        {% for p in proveedores %}
-                            <option value="{{ p.id_provee }}" {% if p.id_provee == mmtp.id_proveedor_fk.id_provee %}selected{% endif %}>
-                                {{ p.nom_provee }}
-                            </option>
-                        {% endfor %}
-                    </select>
+                    <label>Tipo de Movimiento</label>
+                    <input type="text" name="tipo_mmtp" value="{{ mmtp.tipo_mmtp }}" required placeholder="Ej: Entrada">
                 </div>
+                
+                <div class="form-group">
+                    <label>Color</label>
+                    <input type="text" name="color_mmtp" value="{{ mmtp.color_mmtp }}" required placeholder="Color de la tela/material">
+                </div>
+                
+                <div class="form-group">
+                    <label>Fecha del Registro</label>
+                    <input type="date" name="fecha_mmtp" value="{{ mmtp.fecha_mmtp|date:'Y-m-d' }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Magnitud / Stock</label>
+                    <input type="number" step="0.01" name="stock_mmtp" value="{{ mmtp.stock_mmtp|unlocalize }}" required>
+                </div>
+            </div>
 
-                <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 12px;">
-                    <button type="submit" class="btn-save">💾 Actualizar Datos del Movimiento</button>
-                    <a href="{% url 'inventario:lista_mmtp' %}" style="text-align: center; color: #666; text-decoration: none; font-size: 14px;">🔙 Cancelar y Volver al Listado</a>
-                </div>
-            </form>
-        </div>
+            <div class="form-group" style="margin-top: 15px; margin-bottom: 25px;">
+                <label>Proveedor Asociado</label>
+                <select name="id_proveedor_fk" required>
+                    {% for p in proveedores %}
+                        <option value="{{ p.id_provee }}" {% if p.id_provee == mmtp.id_proveedor_fk.id_provee %}selected{% endif %}>
+                            {{ p.nom_provee }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 20px; padding-top: 10px; border-top: 1px solid #eee;">
+                <button type="submit" class="btn-save">
+                    💾 Guardar Cambios en Movimiento
+                </button>
+                
+                <a href="{% url 'inventario:lista_mmtp' %}" class="delete" style="text-decoration: none; font-size: 14px;">
+                    ✖ Cancelar y Volver
+                </a>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock %}

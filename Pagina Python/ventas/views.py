@@ -577,7 +577,6 @@ def editar_carrito(request, id_det_valor):
 
 #------------- DET_MOV_MATP ---------------------------------
 
-@solo_personal
 def gestionar_inventario(pedido, operacion):
     detalles = Det_valor.objects.filter(id_ped_fk_detval=pedido)
     materiales_faltantes = [] # Lista para guardar los materiales faltantes

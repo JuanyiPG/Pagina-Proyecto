@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-tin1l8h#zk^n7ei6zu+($)=su#76^$e4hs$o01!3_%4(z+g3cs
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'inventario',
     'usuarios',
     'ventas',
@@ -83,7 +84,7 @@ DATABASES = {
         'NAME': 'LUXY_FASHION',
         'USER':'root',
         'PASSWORD': '',
-        'ROOT':'localhost',
+        'HOST':'localhost',
         'PORT': '3306',
     }
 }

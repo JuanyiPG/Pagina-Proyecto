@@ -1,21 +1,23 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<div class="main-content">
 <style>
     :root {
         --luxy-burgundy: #800020;
         --luxy-copper: #6e0a32;
         --luxy-hazelnut: #64093d;
         --luxy-cream: #F5F5F5;
+        --blanco: #ffffff;
     }
 
     .table-container {
-        margin: 2rem auto;
+        margin: 0;
         padding: 1.5rem;
         background-color: white;
         border-radius: 12px;
         box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-family: 'Segoe UI', sans-serif;
+        width: 100%;
     }
 
     .title-section {
@@ -25,74 +27,149 @@
         margin-bottom: 30px;
     }
 
-    .custom-table {
-        width: 100%;
-        border-collapse: collapse;
-        overflow: hidden;
-        border-radius: 8px 8px 0 0;
+    /* Estilos del Formulario */
+    .form-card { 
+        background: #fcfcfc; 
+        padding: 25px; 
+        border-radius: 15px; 
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+        margin-bottom: 40px; 
+        border: 1px solid #eee;
     }
 
+    .form-grid { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+        gap: 20px; 
+    }
 
+    .form-group label { 
+        display: block; 
+        margin-bottom: 8px; 
+        font-weight: 600; 
+        color: var(--luxy-hazelnut); 
+        font-size: 13px; 
+        text-transform: uppercase;
+    }
+
+    .form-group input { 
+        width: 100%; 
+        padding: 12px; 
+        border: 1.5px solid #ececec; 
+        border-radius: 8px; 
+        outline: none; 
+        transition: 0.3s;
+    }
+
+    .form-group input:focus { border-color: var(--luxy-burgundy); }
+
+    .btn-save { 
+        background-color: var(--luxy-burgundy); 
+        color: white; 
+        border: none; 
+        padding: 14px; 
+        border-radius: 8px; 
+        font-weight: bold; 
+        cursor: pointer; 
+        transition: 0.3s; 
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .btn-save:hover { background-color: #4d0a21; transform: translateY(-2px); }
+
+    /* Estilos de la Tabla */
+    .table-responsive { overflow-x: auto; margin-top: 20px; }
+
+    .table-inventory {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+    }
+
+    .table-inventory th {
+        background-color: #f8f9fa;
+        color: var(--luxy-burgundy);
+        padding: 15px;
+        text-align: left;
+        border-bottom: 2px solid #eee;
+        font-size: 14px;
+    }
+
+    .table-inventory td {
+        padding: 15px;
+        border-bottom: 1px solid #f0f0f0;
+        color: #444;
+        font-size: 14px;
+    }
+
+    .table-inventory tr:hover { background-color: #fff9fa; }
+
+    .edit { color: #2d6cdf; text-decoration: none; font-weight: bold; }
+    .delete { color: #d33; text-decoration: none; font-weight: bold; }
 </style>
 
 <div class="table-container">
     <div class="title-section">
-        <h2 style="margin:0;">Gestion de Proveedores</h2>
-        <small style="color: var(--luxy-hazelnut);">Registro detallado de los proveedores ingresados</small>
+        <h2 style="margin:0;">Gestión de Proveedores</h2>
+        <small style="color: var(--luxy-hazelnut);">Socios comerciales y proveedores de materia prima</small>
     </div>
         
-        <div class="form-card">
-            <form method="POST">
-                {% csrf_token %}
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Nombre o Razón Social</label>
-                        <input type="text" name="nom_provee" placeholder="Ej: Textiles del Norte S.A.S" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Fecha de Vinculación</label>
-                        <input type="date" name="fech_ingre" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Teléfono Directo</label>
-                        <input type="text" name="num_tel" placeholder="Ej: 310 000 0000" required>
-                    </div>
+    <div class="form-card">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Nombre o Razón Social</label>
+                    <input type="text" name="nom_provee" placeholder="Ej: Textiles del Norte S.A.S" required>
                 </div>
-                <button type="submit" class="btn-save" style="width: 100%; margin-top: 10px;">➕ Registrar Nuevo Proveedor</button>
-            </form>
-        </div>
+                <div class="form-group">
+                    <label>Fecha de Vinculación</label>
+                    <input type="date" name="fech_ingre" required>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono Directo</label>
+                    <input type="text" name="num_tel" placeholder="Ej: 310 000 0000" required>
+                </div>
+            </div>
+            <button type="submit" class="btn-save" style="width: 100%; margin-top: 25px;">
+                ➕ Registrar Nuevo Proveedor
+            </button>
+        </form>
+    </div>
 
-        <div class="table-responsive">
-            <table class="table-inventory">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre de Empresa</th>
-                        <th>Fecha Ingreso</th>
-                        <th>Contacto</th>
-                        <th style="text-align: center;">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for p in proveedor %}
-                    <tr>
-                        <td>{{ p.id_provee }}</td>
-                        <td><strong>{{ p.nom_provee }}</strong></td>
-                        <td>{{ p.fech_ingre }}</td>
-                        <td>{{ p.num_tel }}</td>
-                        <td style="text-align: center;">
-                            <a href="{% url 'inventario:editar_provee' p.id_provee %}" class="edit" style="margin-right: 15px; text-decoration: none; color: #2d6cdf; font-weight: bold;">Editar</a>
-                            <a href="{% url 'inventario:eliminar_provee' p.id_provee %}" class="delete" style="text-decoration: none; color: #d33; font-weight: bold;" onclick="return confirm('¿Eliminar este proveedor?')">Borrar</a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="5" style="text-align: center; color: #999; padding: 20px;">No hay proveedores registrados.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    <div class="table-responsive">
+        <table class="table-inventory">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre de Empresa</th>
+                    <th>Fecha Ingreso</th>
+                    <th>Contacto</th>
+                    <th style="text-align: center;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in proveedor %}
+                <tr>
+                    <td><span style="color: #999;">#{{ p.id_provee }}</span></td>
+                    <td><strong>{{ p.nom_provee }}</strong></td>
+                    <td>{{ p.fech_ingre }}</td>
+                    <td><span style="background: #f0f0f0; padding: 4px 8px; border-radius: 5px;">{{ p.num_tel }}</span></td>
+                    <td style="text-align: center;">
+                        <a href="{% url 'inventario:editar_provee' p.id_provee %}" class="edit" style="margin-right: 15px;">Editar</a>
+                        <a href="{% url 'inventario:eliminar_provee' p.id_provee %}" class="delete" onclick="return confirm('¿Eliminar este proveedor?')">Borrar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center; color: #999; padding: 40px;">
+                        No hay proveedores registrados actualmente.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}
