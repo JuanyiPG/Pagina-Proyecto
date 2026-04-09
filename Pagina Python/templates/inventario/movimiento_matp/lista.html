@@ -1,123 +1,70 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="main-content">
-<style>
-    :root {
-        --luxy-burgundy: #800020;
-        --luxy-copper: #6e0a32;
-        --luxy-hazelnut: #64093d;
-        --luxy-cream: #F5F5F5;
-    }
+    
+    <div class="table-container">
+        <div class="title-section" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px;">
+            <div class="titl-inf">
+                <h2 style="margin:0; color: #6a0f2e; font-size: 20px;">Movimiento de materia prima</h2>
+                <small style="color: #888; font-size: 13px;">Gestión de inventario y flujos de material</small>
+            </div>
+            
+            <div class="csv" style="display: flex; gap: 8px;">
+                <button type="button" id="boton" class="btn-save" style="background-color: #6a0f2e !important; min-width: auto; padding: 8px 16px; font-size: 12px;">
+                    <i class="fas fa-file-excel"></i> IMPORTAR
+                </button>
+                <input type="file" id="input-archivo" style="display: none;" accept=".xlsx, .csv">
 
-    .table-container {
-        margin: 2rem auto;
-        padding: 1.5rem;
-        background-color: white;
-        border-radius: 12px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    .title-section {
-        color: var(--luxy-burgundy);
-        border-left: 6px solid var(--luxy-copper);
-        padding-left: 20px;
-        margin-bottom: 30px;
-    }
-
-    .custom-table {
-        width: 100%;
-        border-collapse: collapse;
-        overflow: hidden;
-        border-radius: 8px 8px 0 0;
-    }
-
-    .custom-table thead {
-        background-color: var(--luxy-burgundy);
-        color: white;
-    }
-
-    .custom-table th {
-        padding: 15px;
-        text-align: left;
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 0.75rem;
-        letter-spacing: 1.2px;
-    }
-
-    .custom-table td {
-        padding: 14px 15px;
-        border-bottom: 1px solid #f0f0f0;
-        color: #333;
-        font-size: 0.95rem;
-    }
-
-    .custom-table tbody tr:hover {
-        background-color: rgba(184, 115, 51, 0.08); 
-        transition: background-color 0.2s ease;
-    }
-
-    .monto-destacado {
-        font-weight: bold;
-        color: var(--luxy-burgundy);
-    }
-
-    .metodo-tag {
-        background-color: var(--luxy-cream);
-        color: var(--luxy-hazelnut);
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 0.85rem;
-        border: 1px solid #e0e0e0;
-    }
-</style>
-
-<div class="table-container">
-    <div class="title-section">
-        <h2 style="margin:0;">Movimiento de materia prima</h2>
-        <small style="color: var(--luxy-hazelnut);">Registro detallado de los movimientos de materia prima</small>
-    </div>
+                <a href="{% url 'inventario:descarga_reporte_mmtp' %}" class="btn-save" style="text-decoration: none; padding: 8px 16px; min-width: auto; font-size: 12px;">
+                    <i class="fas fa-file-pdf"></i> REPORTE PDF
+                </a>
+            </div>
+        </div>
         
-        <div class="form-card">
+        <div class="form-card" style="border: 1px solid #eee; box-shadow: none; margin-bottom: 35px !important; padding: 20px !important;">
             <form method="POST">
                 {% csrf_token %}
-                <div class="form-grid">
+                <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;">
                     <div class="form-group">
-                        <label>Tipo de Movimiento</label>
-                        <input type="text" name="tipo_mmtp" placeholder="Entrada/Salida" required>
+                        <label>Tipo</label>
+                        <select name="tipo_mmtp" required>
+                            <option value="" disabled selected>Seleccione...</option>
+                            <option value="ENTRADA">Entrada</option>
+                            <option value="SALIDA">Salida</option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label>Talla</label>
-                        <input type="text" name="talla_mmtp" placeholder="S, M, L, XL...">
+                        <label>Material</label>
+                        <input type="text" name="mat_mmtp" placeholder="Ej: Seda" required>
                     </div>
                     <div class="form-group">
-                        <label>Nombre Material</label>
-                        <input type="text" name="mat_mmtp" placeholder="Algodon">
+                        <label>Color</label>
+                        <input type="text" name="color_mmtp" placeholder="Ej: Negro" required>
                     </div>
                     <div class="form-group">
-                        <label>Color de Prenda</label>
-                        <input type="text" name="color_mmtp" placeholder="Ej: Azul Turquí" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Fecha Registro</label>
+                        <label>Fecha</label>
                         <input type="date" name="fecha_mmtp" required>
                     </div>
                     <div class="form-group">
-                        <label>Cantidad (Stock)</label>
+                        <label>Magnitud</label>
                         <input type="number" step="0.01" name="stock_mmtp" required placeholder="0.00">
                     </div>
                     <div class="form-group">
-                        <label>Proveedor Responsable</label>
+                        <label>Proveedor</label>
                         <select name="id_proveedor_fk" required>
-                            <option value="">Seleccione proveedor...</option>
+                            <option value="">Seleccione...</option>
                             {% for p in proveedores %}
                                 <option value="{{ p.id_provee }}">{{ p.nom_provee }}</option>
                             {% endfor %}
                         </select>
                     </div>
                 </div>
-                <button type="submit" class="btn-save" style="width: 100%; margin-top: 10px;">💾 Guardar en Inventario</button>
+                
+                <div style="margin-top: 15px; text-align: left;">
+                    <button type="submit" class="btn-save" style="min-width: 180px; padding: 10px 20px;">
+                        💾 GUARDAR REGISTRO
+                    </button>
+                </div>
             </form>
         </div>
 
@@ -127,44 +74,77 @@
                     <tr>
                         <th>ID</th>
                         <th>Tipo</th>
-                        <th>Talla</th>
                         <th>Material</th>
                         <th>Color</th>
-                        <th>Stock</th>
+                        <th>Magnitud</th>
                         <th>Proveedor</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-    {% for m in mmtp %}
-    <tr style="{% if m.stock_mmtp < 0 %} background-color: #ffe6e6; {% elif m.stock_mmtp == 0 %} background-color: #fff3cd; {% endif %} transition: background-color 0.3s;">
-        <td>{{ m.id_mmtp }}</td>
-        <td><strong>{{ m.tipo_mmtp }}</strong></td>
-        <td>{{ m.talla_mmtp }}</td>
-        <td>{{ m.mat_mmtp }}</td>
-        <td>{{ m.color_mmtp }}</td>
-        
-        <td style="font-weight: bold; {% if m.stock_mmtp < 0 %} color: #d33; {% elif m.stock_mmtp == 0 %} color: #856404; {% endif %}">
-            {{ m.stock_mmtp }}
-            {% if m.stock_mmtp < 0 %}
-                <br><small style="font-size: 0.7rem; color: #a00;">REABASTECER</small>
-            {% endif %}
-        </td>
-        
-        <td>{{ m.id_proveedor_fk.nom_provee }}</td>
-        <td style="display: flex; gap: 10px;">
-            <a href="{% url 'inventario:editar_mmtp' m.id_mmtp %}" class="edit" style="text-decoration: none; color: #2d6cdf; font-weight: bold;">Editar</a>
-            <a href="{% url 'inventario:eliminar_mmtp' m.id_mmtp %}" class="delete" style="text-decoration: none; color: #d33; font-weight: bold;" onclick="return confirm('¿Desea eliminar este movimiento?')">Borrar</a>
-        </td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="8" style="text-align: center; color: #999; padding: 20px;">No hay movimientos registrados.</td>
-    </tr>
-    {% endfor %}
-</tbody>
+                    {% for m in mmtp %}
+                    <tr style="{% if m.stock_mmtp < 0 %} background-color: #fff5f5; {% elif m.stock_mmtp == 0 %} background-color: #fffdf5; {% endif %}">
+                        <td>#{{ m.id_mmtp }}</td>
+                        <td><span class="metodo-tag">{{ m.tipo_mmtp }}</span></td>
+                        <td>{{ m.mat_mmtp }}</td>
+                        <td>{{ m.color_mmtp }}</td>
+                        <td style="font-weight: bold;">
+                            {{ m.stock_mmtp }}
+                        </td>
+                        <td>{{ m.id_proveedor_fk.nom_provee }}</td>
+                        <td>
+                            <a href="{% url 'inventario:editar_mmtp' m.id_mmtp %}" class="edit">Editar</a>
+                            <a href="{% url 'inventario:eliminar_mmtp' m.id_mmtp %}" class="delete" onclick="return confirm('¿Eliminar?')">Borrar</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: #999; padding: 30px;">Sin registros.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
             </table>
         </div>
     </div>
 </div>
+
+<script>
+    // Se mantiene la lógica del botón de importación (CSV)
+    const boton = document.getElementById('boton');
+    const input_oculto = document.getElementById('input-archivo');
+
+    if(boton && input_oculto) {
+        boton.addEventListener('click', () => input_oculto.click());
+        
+        input_oculto.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                const sobre = new FormData();
+                sobre.append('archivo_excel', this.files[0]);
+                fetch('/inventario/mmtp/api/import_archive/', {
+                    method: 'POST',
+                    body: sobre,
+                    headers: { "X-CSRFToken": getCookie('csrftoken') }
+                })
+                .then(res => res.json())
+                .then(datos => { alert(datos.msj); location.reload(); })
+                .catch(err => alert("Error al importar"));
+            }
+        });
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
 {% endblock %}
