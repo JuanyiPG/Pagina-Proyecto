@@ -603,3 +603,6 @@ def gestionar_inventario(pedido, operacion):
                 material.save()
     
     return materiales_faltantes
+def lista_abono_e(request):
+    # Tu lógica aquí
+    return render(request, 'ventas/abono/lista_abono_e.html')
