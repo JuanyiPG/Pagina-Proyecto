@@ -1,115 +1,136 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="main-content">
-    <style>
-        :root {
-            --luxy-burgundy: #800020;
-            --luxy-copper: #6e0a32;
-            --luxy-hazelnut: #64093d;
-            --luxy-cream: #F5F5F5;
-        }
+<style>
+    :root {
+        --luxy-burgundy: #800020;
+        --luxy-copper: #6e0a32;
+        --luxy-hazelnut: #64093d;
+        --luxy-cream: #F5F5F5;
+    }
 
-        .table-container {
-            margin: 2rem auto;
-            padding: 1.5rem;
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+    .main-container-fluid {
+        padding: 1.5rem;
+        font-family: 'Segoe UI', sans-serif;
+    }
 
-        .title-section {
-            color: var(--luxy-burgundy);
-            border-left: 6px solid var(--luxy-copper);
-            padding-left: 20px;
-            margin-bottom: 30px;
-        }
+    .table-container {
+        padding: 2rem;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+        border: 1px solid #f0f0f0;
+    }
 
-        .custom-table {
-            width: 100%;
-            border-collapse: collapse;
-            overflow: hidden;
-            border-radius: 8px 8px 0 0;
-        }
+    .title-section {
+        color: var(--luxy-burgundy);
+        border-left: 6px solid var(--luxy-copper);
+        padding-left: 20px;
+        margin-bottom: 35px;
+    }
 
-        .custom-table thead {
-            background-color: var(--luxy-burgundy);
-            color: white;
-        }
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        overflow: hidden;
+    }
 
-        .custom-table th {
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 1.2px;
-        }
+    .custom-table thead {
+        border-bottom: 2px solid var(--luxy-burgundy);
+    }
 
-        .custom-table td {
-            padding: 14px 15px;
-            border-bottom: 1px solid #f0f0f0;
-            color: #333;
-            font-size: 0.95rem;
-        }
+    .custom-table th {
+        padding: 15px;
+        text-align: left;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 11px;
+        letter-spacing: 1.5px;
+        color: var(--luxy-burgundy);
+    }
 
-        .custom-table tbody tr:hover {
-            background-color: rgba(184, 115, 51, 0.08); 
-            transition: background-color 0.2s ease;
-        }
+    .custom-table td {
+        padding: 16px 15px;
+        border-bottom: 1px solid #f5f5f5;
+        color: #444;
+        font-size: 14px;
+    }
 
-        .monto-destacado {
-            font-weight: bold;
-            color: var(--luxy-burgundy);
-        }
+    .custom-table tbody tr:hover {
+        background-color: #fffafb;
+        transition: 0.2s;
+    }
 
-        .metodo-tag {
-            background-color: var(--luxy-cream);
-            color: var(--luxy-hazelnut);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            border: 1px solid #e0e0e0;
-        }
-    </style>
+    .monto-destacado {
+        font-weight: 800;
+        color: var(--luxy-burgundy);
+        font-size: 16px;
+    }
 
+    .metodo-tag {
+        background-color: var(--luxy-cream);
+        color: var(--luxy-hazelnut);
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        border: 1px solid #e0e0e0;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    /* Badge para estados vacíos */
+    .empty-state {
+        text-align: center;
+        padding: 50px !important;
+        color: #999;
+        font-style: italic;
+    }
+</style>
+
+<div class="main-container-fluid">
     <div class="table-container">
         <div class="title-section">
-            <h2 style="margin:0;">Historial de Abonos</h2>
-            <small style="color: var(--luxy-hazelnut);">Registro detallado de pagos realizados</small>
+            <h2 style="margin:0; font-weight: bold;">Historial de Abonos</h2>
+            <p style="color: #666; margin: 5px 0 0 0; font-size: 14px;">Registro cronológico de pagos y saldos del pedido</p>
         </div>
 
-        <table class="custom-table">
-            <thead> 
-                <tr>
-                    <th>ID</th>
-                    <th>Fecha de Pago</th>
-                    <th>Monto Abonado</th>
-                    <th>Método</th>
-                    <th>Descripción / Estado</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for abono in abonos %} 
-                <tr>
-                    <td>#{{ abono.id }}</td>
-                    <td>{{ abono.fecha_abono|date:"d M, Y" }}</td>
-                    <td class="monto-destacado">${{ abono.monto_abono }}</td>
-                    <td><span class="metodo-tag">{{ abono.metodo_pago }}</span></td>
-                    <td style="font-style: italic; color: #666;">
-                        {{ abono.descripcion|default:"Sin descripción" }}
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5" style="text-align: center; padding: 30px; color: var(--luxy-hazelnut);">
-                        Aún no se han registrado abonos para este pedido.
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div style="overflow-x: auto;">
+            <table class="custom-table">
+                <thead> 
+                    <tr>
+                        <th>ID Pago</th>
+                        <th>Fecha de Abono</th>
+                        <th>Monto Recibido</th>
+                        <th>Método de Pago</th>
+                        <th>Descripción / Notas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for abono in abonos %} 
+                    <tr>
+                        <td><span style="color: #bbb; font-weight: bold;">#{{ abono.id }}</span></td>
+                        <td><strong>{{ abono.fecha_abono|date:"d F, Y" }}</strong></td>
+                        <td class="monto-destacado">${{ abono.monto_abono }}</td>
+                        <td><span class="metodo-tag">{{ abono.metodo_pago }}</span></td>
+                        <td style="color: #777;">
+                            {{ abono.descripcion|default:"Sin observaciones adicionales" }}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            <div style="font-size: 40px; margin-bottom: 10px;">💳</div>
+                            Aún no se han registrado abonos para este pedido.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 2px dashed #eee; text-align: right;">
+            <p style="color: #666; font-size: 14px; margin: 0;">Gracias por confiar en <strong>Luxy Fashion</strong></p>
+        </div>
     </div>
 </div>
 {% endblock %}

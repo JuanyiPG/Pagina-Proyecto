@@ -2,20 +2,23 @@
 
 {% block content %}
 <style>
-        :root {
+    :root {
         --luxy-burgundy: #800020;
         --luxy-copper: #6e0a32;
         --luxy-hazelnut: #64093d;
         --luxy-cream: #F5F5F5;
+        --blanco: #ffffff;
     }
 
+    /* Eliminamos márgenes automáticos para evitar el hueco blanco lateral */
     .table-container {
-        margin: 2rem auto;
+        margin: 0; 
         padding: 1.5rem;
         background-color: white;
         border-radius: 12px;
         box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-family: 'Segoe UI', sans-serif;
+        width: 100%;
     }
 
     .title-section {
@@ -25,125 +28,210 @@
         margin-bottom: 30px;
     }
 
-    .custom-table {
-        width: 100%;
-        border-collapse: collapse;
-        overflow: hidden;
-        border-radius: 8px 8px 0 0;
-    }
-    /* Estilos base para mantener la estética del catálogo */
-    .main-content { padding: 30px; font-family: 'Segoe UI', sans-serif; background-color: #fcfcfc; }
-    .container-wide { max-width: 1200px; margin: auto; }
-    
     /* Tarjeta del Formulario */
     .form-card { 
-        background: white; padding: 25px; border-radius: 15px; 
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 40px; 
+        background: white; 
+        padding: 25px; 
+        border-radius: 15px; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+        margin-bottom: 40px; 
+        border: 1px solid #eee;
     }
     
     .form-grid { 
-        display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
-        gap: 15px; margin-bottom: 20px; 
+        display: grid; 
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+        gap: 15px; 
+        margin-bottom: 20px; 
     }
     
-    .form-group label { display: block; margin-bottom: 5px; font-weight: 600; color: #6a0f2e; font-size: 14px; }
-    .form-group input, .form-group select, .form-group textarea { 
-        width: 100%; padding: 10px; border: 1.5px solid #eee; border-radius: 8px; outline: none; 
+    .form-group label { 
+        display: block; 
+        margin-bottom: 5px; 
+        font-weight: 600; 
+        color: #6a0f2e; 
+        font-size: 13px; 
+        text-transform: uppercase;
     }
 
-    /* Botones y Badges con el color corporativo #6a0f2e */
-    .btn-main { 
-        background-color: #6a0f2e; color: white; border: none; padding: 12px; 
-        border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; 
+    .form-group input, .form-group select, .form-group textarea { 
+        width: 100%; 
+        padding: 10px; 
+        border: 1.5px solid #eee; 
+        border-radius: 8px; 
+        outline: none; 
     }
-    .btn-main:hover { background-color: #4d0a21; transform: translateY(-2px); }
+
+    /* Botones Estilo Luxy */
+    .btn-main { 
+        background-color: #6a0f2e; 
+        color: white; 
+        border: none; 
+        padding: 12px; 
+        border-radius: 8px; 
+        font-weight: bold; 
+        cursor: pointer; 
+        transition: 0.3s; 
+        text-transform: uppercase;
+        font-size: 12px;
+        letter-spacing: 1px;
+    }
+
+    .btn-main:hover { 
+        background-color: #4d0a21; 
+        transform: translateY(-2px); 
+    }
     
     .badge-estado { 
-        position: absolute; top: 10px; right: 10px; background: #6a0f2e; 
-        color: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; z-index: 1; 
+        position: absolute; 
+        top: 10px; 
+        right: 10px; 
+        background: #6a0f2e; 
+        color: white; 
+        padding: 4px 10px; 
+        border-radius: 12px; 
+        font-size: 11px; 
+        z-index: 1; 
     }
 
     /* Grid de Productos */
     .productos-grid { 
-        display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+        display: grid; 
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
         gap: 25px; 
     }
     
     .card-item { 
-        background: white; border-radius: 15px; overflow: hidden; 
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; 
+        background: white; 
+        border-radius: 15px; 
+        overflow: hidden; 
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+        transition: 0.3s; 
+        border: 1px solid #eee;
     }
-    .card-item:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+
+    .card-item:hover { 
+        transform: translateY(-5px); 
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1); 
+    }
 </style>
 
-<div class="main-content">
 <div class="table-container">
     <div class="title-section">
-        <h2 style="margin:0;">Gestion de Productos</h2>
-        <small style="color: var(--luxy-hazelnut);">Registro detallado de los Productos ingresados</small>
+        <h2 style="margin:0;">Gestión de Productos</h2>
+        <small style="color: var(--luxy-hazelnut);">Inventario y registro de prendas de Luxy Fashion</small>
     </div>
 
-        <div class="form-card">
-            <form action="{% url 'ventas:lista_producto_admin' %}" method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Nombre de la Prenda</label>
-                        <input type="text" name="nom_produc" required placeholder="Ej: Chaqueta Bomber">
-                    </div>
-                    <div class="form-group">
-                        <label>Género</label>
-                        <select name="gen_produc">
-                            <option value="Hombre">Hombre</option>
-                            <option value="Mujer">Mujer</option>
-                            <option value="Unisex">Unisex</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Categoría</label>
-                        <input type="text" name="cat_produc" placeholder="Ej: Urbana, Formal">
-                    </div>
-                    <div class="form-group">
-                        <label>Precio</label>
-                        <input type="number" name="precio" required placeholder="0">
-                    </div>
-                    <div class="form-group">
-                        <label>Estado</label>
-                        <select name="estado_produc">
-                            <option value="Nuevo">Nuevo</option>
-                            <option value="En Stock">En Stock</option>
-                            <option value="Agotado">Agotado</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group" style="margin-bottom: 20px;">
-                    <label>Descripción del Producto</label>
-                    <textarea name="desc_produc" rows="2" placeholder="Breve descripción de la prenda..."></textarea>
-                </div>
-
+    <div class="form-card">
+        <form action="{% url 'ventas:lista_producto_admin' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-grid">
                 <div class="form-group">
-            <label>Materiales y Cantidades</label>
-            <div id="contenedor-materiales">
-                <div class="fila-material" style="display: flex; gap: 10px; margin-bottom: 10px;">
-                    <select name="material_ids[]" style="flex: 2;">
-                        <option value="">Seleccionar Material...</option>
-                        {% for mat in materiales %}
-                            <option value="{{ mat.id_mmtp }}">{{ mat.mat_mmtp }}</option>
-                            {% empty %}
-                        <option value="">No hay materiales en la base de datos</option>
-                        {% endfor %}
+                    <label>Nombre de la Prenda</label>
+                    <input type="text" name="nom_produc" required placeholder="Ej: Chaqueta Bomber">
+                </div>
+                <div class="form-group">
+                    <label>Género</label>
+                    <select name="gen_produc">
+                        <option value="Hombre">Hombre</option>
+                        <option value="Mujer">Mujer</option>
+                        <option value="Unisex">Unisex</option>
                     </select>
-                    <input type="number" name="cantidades[]" placeholder="Cant." style="flex: 1;" step="0.01">
-                    <button type="button" class="btn-remove" onclick="eliminarFila(this)" style="background: #ff4d4d; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px;">X</button>
+                </div>
+                <div class="form-group">
+                    <label>Categoría</label>
+                    <input type="text" name="cat_produc" placeholder="Ej: Urbana, Formal">
+                </div>
+                <div class="form-group">
+                    <label>Precio</label>
+                    <input type="number" name="precio" required placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label>Estado</label>
+                    <select name="estado_produc">
+                        <option value="Nuevo">Nuevo</option>
+                        <option value="En Stock">En Stock</option>
+                        <option value="Agotado">Agotado</option>
+                    </select>
                 </div>
             </div>
-            <button type="button" onclick="agregarFila()" style="background: #4CAF50; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; margin-top: 5px;">
-                + Agregar otro material
+
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label>Descripción del Producto</label>
+                <textarea name="desc_produc" rows="2" placeholder="Breve descripción de la prenda..."></textarea>
+            </div>
+
+            <div class="form-group" style="background: #fcfcfc; padding: 15px; border-radius: 10px; border: 1px solid #f0f0f0; margin-bottom: 20px;">
+                <label>Insumos / Materiales Requeridos</label>
+                <div id="contenedor-materiales">
+                    <div class="fila-material" style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <select name="material_ids[]" style="flex: 2;">
+                            <option value="">Seleccionar Material...</option>
+                            {% for mat in materiales %}
+                                <option value="{{ mat.id_mmtp }}">{{ mat.mat_mmtp }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="number" name="cantidades[]" placeholder="Cant." style="flex: 1;" step="0.01">
+                        <button type="button" onclick="eliminarFila(this)" style="background: #ff4d4d; color: white; border: none; padding: 5px 12px; cursor: pointer; border-radius: 4px;">✕</button>
+                    </div>
+                </div>
+                <button type="button" onclick="agregarFila()" style="background: #2d6cdf; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; font-size: 11px; font-weight: bold;">
+                    + AGREGAR MATERIAL
+                </button>
+            </div>
+
+            <div class="upload-area" style="border: 2px dashed #ddd; padding: 20px; text-align: center; border-radius: 12px; background: #fafafa; margin-bottom: 20px;">
+                <input type="file" name="imagen_produc" id="file-upload" accept="image/*" required onchange="preview(this)" style="display: none;">
+                <label for="file-upload" style="background-color: #555; color: white; padding: 10px 25px; border-radius: 5px; cursor: pointer; display: inline-block; font-size: 13px;">
+                    📷 SUBIR FOTO DEL PRODUCTO
+                </label>
+                <div id="preview_box" style="display: none; margin-top: 15px;">
+                    <img id="img_preview" src="#" style="max-width: 150px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-main" style="width: 100%;">
+                Registrar Prenda en Inventario
             </button>
+        </form>
+    </div>
+
+    <div style="max-width: 600px; margin: 0 auto 40px auto; display: flex; gap: 10px;">
+        <input type="text" id="product-search" placeholder="Buscar por nombre o categoría..." 
+               style="flex: 1; padding: 12px 25px; border-radius: 25px; border: 1.5px solid #ddd; outline: none; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+    </div>
+
+    <div class="productos-grid" id="productos-grid">
+        {% for p in productos %}
+        <div class="card-item product-card">
+            <div style="position: relative; height: 250px; overflow: hidden; background: #f9f9f9;">
+                <span class="badge-estado">{{ p.estado_produc }}</span>
+                {% if p.imagen_product %}
+                    <img src="{{ p.imagen_product.url }}" alt="{{ p.nom_produc }}" style="width: 100%; height: 100%; object-fit: cover;">
+                {% else %}
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #ccc; font-size: 12px;">Sin imagen</div>
+                {% endif %}
+            </div>
+            <div class="card-info" style="padding: 15px;">
+                <p class="product-cat" style="margin: 0; color: #888; font-size: 11px; text-transform: uppercase;">{{ p.gen_produc }} | {{ p.categoria_produc }}</p>
+                <h3 class="product-name" style="margin: 5px 0; font-size: 16px; color: #333; font-weight: 600;">{{ p.nom_produc }}</h3>
+                <p style="margin: 10px 0; color: var(--luxy-burgundy); font-weight: bold; font-size: 18px;">${{ p.precio }}</p>
+                
+                <div style="display: flex; justify-content: space-between; border-top: 1px solid #eee; padding-top: 12px; margin-top: 10px;">
+                    <a href="{% url 'ventas:editar_producto' p.id_produc %}" style="color: #2d6cdf; text-decoration: none; font-weight: bold; font-size: 12px;">EDITAR</a>
+                    <a href="{% url 'ventas:eliminar_producto' p.id_produc %}" style="color: #d33; text-decoration: none; font-weight: bold; font-size: 12px;" onclick="return confirm('¿Eliminar producto?')">BORRAR</a>
+                </div>
+            </div>
         </div>
-        
-        <template id="template-fila">
+        {% empty %}
+        <div id="no-results" style="grid-column: 1 / -1; text-align: center; padding: 50px; color: #999;">
+            No se encontraron productos en el inventario.
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<template id="template-fila">
     <div class="fila-material" style="display: flex; gap: 10px; margin-bottom: 10px;">
         <select name="material_ids[]" style="flex: 2;">
             <option value="">Seleccionar Material...</option>
@@ -152,69 +240,12 @@
             {% endfor %}
         </select>
         <input type="number" name="cantidades[]" placeholder="Cant." style="flex: 1;" step="0.01">
-        <button type="button" class="btn-remove" onclick="eliminarFila(this)" style="background: #ff4d4d; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px;">X</button>
+        <button type="button" onclick="eliminarFila(this)" style="background: #ff4d4d; color: white; border: none; padding: 5px 12px; cursor: pointer; border-radius: 4px;">✕</button>
     </div>
 </template>
 
-                <div class="upload-area" style="border: 2px dashed #ddd; padding: 20px; text-align: center; border-radius: 12px; background: #fafafa; margin-bottom: 20px;">
-                    <input type="file" name="imagen_produc" id="file-upload" accept="image/*" required onchange="preview(this)" style="display: none;">
-                    
-                    <label for="file-upload" style="background-color: #555; color: white; padding: 8px 20px; border-radius: 5px; cursor: pointer; display: inline-block;">
-                        📷 Seleccionar Foto del Producto
-                    </label>
-                    
-                    <div id="preview_box" style="display: none; margin-top: 15px;">
-                        <img id="img_preview" src="#" style="max-width: 120px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-main" style="width: 100%;">
-                    Registrar Prenda en Inventario
-                </button>
-            </form>
-        </div>
-        <div style="max-width: 600px; margin: 0 auto 40px auto;">
-            <div style="display: flex; gap: 10px;">
-                <input type="text" id="product-search" placeholder="Buscar por nombre o categoría..." 
-                    style="flex: 1; padding: 12px 20px; border-radius: 25px; border: 1.5px solid #ececec; outline: none;">
-                <button type="button" class="btn-main" style="padding: 0 25px;">Buscar</button>
-            </div>
-        </div>
-
-        <!----LISTA -------------------->
-
-        <div class="productos-grid" id="productos-grid">
-            {% for p in productos %}
-            <div class="card-item product-card">
-                <div style="position: relative; height: 220px; overflow: hidden; background: #f9f9f9;">
-                    <span class="badge-estado">{{ p.estado_produc }}</span>
-                    {% if p.imagen_product %}
-                        <img src="{{ p.imagen_product.url }}" alt="{{ p.nom_produc }}" style="width: 100%; height: 100%; object-fit: cover;">
-                    {% else %}
-                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #ccc;">Sin imagen</div>
-                    {% endif %}
-                </div>
-                <div class="card-info" style="padding: 15px;">
-                    <p class="product-cat" style="margin: 0; color: #888; font-size: 11px; text-transform: uppercase;">{{ p.gen_produc }} | {{ p.categoria_produc }}</p>
-                    <h3 class="product-name" style="margin: 5px 0; font-size: 16px; color: #333;">{{ p.nom_produc }}</h3>
-                    <p style="margin: 10px 0; color: #6a0f2e; font-weight: bold; font-size: 18px;">${{ p.precio }}</p>
-                    
-                    <div style="display: flex; justify-content: space-between; border-top: 1px solid #eee; padding-top: 10px; margin-top: 10px;">
-                        <a href="{% url 'ventas:editar_producto' p.id_produc %}" style="color: #2d6cdf; text-decoration: none; font-weight: bold; font-size: 13px;"> Editar</a>
-                        <a href="{% url 'ventas:eliminar_producto' p.id_produc %}" style="color: #d33; text-decoration: none; font-weight: bold; font-size: 13px;" onclick="return confirm('¿Eliminar producto?')"> Borrar</a>
-                    </div>
-                </div>
-            </div>
-            {% empty %}
-            <div id="no-results" style="grid-column: 1 / -1; text-align: center; padding: 50px; color: #999;">
-                No se encontraron productos en el inventario.
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</div>
-
 <script>
+    // Dinamismo de Materiales
     function agregarFila() {
         const contenedor = document.getElementById('contenedor-materiales');
         const template = document.getElementById('template-fila').content;
@@ -227,26 +258,10 @@
         if (filas.length > 1) {
             boton.parentElement.remove();
         } else {
-            alert("Debes incluir al menos un material.");
+            alert("El producto debe tener al menos un material asociado.");
         }
     }
 
-    function mostrarVistaPrevia(event) {
-        const input = event.target;
-        const reader = new FileReader();
-        reader.onload = function(){
-            const dataURL = reader.result;
-            const output = document.getElementById('img-preview');
-            const placeholder = document.getElementById('placeholder-text');
-            output.src = dataURL;
-            output.style.display = 'block';
-            placeholder.style.display = 'none';
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
-</script>
-
-<script>
     // Vista previa de imagen
     function preview(input) {
         const box = document.getElementById('preview_box');
@@ -261,7 +276,7 @@
         }
     }
 
-    // Lógica de búsqueda en tiempo real
+    // Búsqueda en tiempo real
     document.getElementById('product-search').addEventListener('input', function(e) {
         const term = e.target.value.toLowerCase();
         const cards = document.querySelectorAll('.product-card');
@@ -279,11 +294,8 @@
             }
         });
 
-        // Manejo de mensaje cuando no hay resultados en el filtro
         const noResultsMsg = document.getElementById('no-results');
-        if (noResultsMsg) {
-            noResultsMsg.style.display = hasResults ? 'none' : 'block';
-        }
+        if (noResultsMsg) noResultsMsg.style.display = hasResults ? 'none' : 'block';
     });
 </script>
 {% endblock %}

@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="main-content">
 <style>
     :root {
         --luxy-burgundy: #800020;
@@ -10,13 +9,15 @@
         --luxy-cream: #F5F5F5;
     }
 
+    /* Ajuste para que el contenedor NO se centre */
     .table-container {
-        margin: 2rem auto;
+        margin: 0; /* Cambiado de '2rem auto' a '0' */
         padding: 1.5rem;
         background-color: white;
         border-radius: 12px;
         box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        width: 100%;
+        max-width: 100%; /* Asegura que ocupe todo el ancho */
     }
 
     .title-section {
@@ -26,169 +27,115 @@
         margin-bottom: 30px;
     }
 
-    .custom-table {
-        width: 100%;
-        border-collapse: collapse;
-        overflow: hidden;
-        border-radius: 8px 8px 0 0;
-    }
-
-    .custom-table thead {
-        background-color: var(--luxy-burgundy);
-        color: white;
-    }
-
-    .custom-table th {
-        padding: 15px;
-        text-align: left;
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 0.75rem;
-        letter-spacing: 1.2px;
-    }
-
-    .custom-table td {
-        padding: 14px 15px;
-        border-bottom: 1px solid #f0f0f0;
-        color: #333;
-        font-size: 0.95rem;
-    }
-
-    .custom-table tbody tr:hover {
-        background-color: rgba(184, 115, 51, 0.08); 
-        transition: background-color 0.2s ease;
-    }
-
-    .monto-destacado {
+    /* Mantenemos tus estilos de labels elegantes */
+    .form-group label {
+        display: block;
+        font-size: 11px;
         font-weight: bold;
-        color: var(--luxy-burgundy);
+        color: #6a0f2e;
+        margin-bottom: 5px;
+        text-transform: uppercase;
     }
 
-    .metodo-tag {
-        background-color: var(--luxy-cream);
-        color: var(--luxy-hazelnut);
-        padding: 4px 8px;
+    /* Botón ajustado a la izquierda como querías */
+    .btn-save {
+        background: #6a0f2e;
+        color: white;
+        border: none;
+        padding: 8px 25px;
         border-radius: 4px;
-        font-size: 0.85rem;
-        border: 1px solid #e0e0e0;
+        font-weight: 600;
+        cursor: pointer;
+        width: fit-content;
+        min-width: 150px;
+        text-transform: uppercase;
+        font-size: 11px;
+        letter-spacing: 1px;
+        transition: 0.3s ease;
     }
 </style>
 
 <div class="table-container">
     <div class="title-section">
-        <h2 style="margin:0;">Gestion de Usuarios</h2>
+        <h2 style="margin:0;">Gestión de Usuarios</h2>
         <small style="color: var(--luxy-hazelnut);">Registro detallado de usuarios</small>
     </div>
         
-        <div class="form-card" style="margin-bottom: 40px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-            <form method="POST" action="{% url 'usuarios:crear_usuario' %}">
-                {% csrf_token %}
-                <div class="form-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-                    
-                    <div class="form-group">
-                        <label style="display: block; margin-bottom: 8px; font-weight: bold;">Nombre de Usuario</label>
-                        <input type="text" name="username" placeholder="Ej: mauricio.vargas" required 
-                               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
-                    </div>
+    <div class="form-card" style="margin-bottom: 40px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #eee;">
+        <form method="POST" action="{% url 'usuarios:crear_usuario' %}">
+            {% csrf_token %}
+            <div class="form-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                <div class="form-group">
+                    <label>Nombre de Usuario</label>
+                    <input type="text" name="username" placeholder="Ej: mauricio.vargas" required 
+                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                </div>
 
-                    <div class="form-group">
-                        <label style="display: block; margin-bottom: 8px; font-weight: bold;">Contraseña</label>
-                        <div style="position: relative;">
-                            <input type="password" name="contrasena" id="passwordField" placeholder="********" required 
-                                   style="width: 100%; padding: 10px; padding-right: 40px; border: 1px solid #ddd; border-radius: 5px;">
-                            <span id="togglePassword" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 18px; user-select: none;">
-                                mostrar
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label style="display: block; margin-bottom: 8px; font-weight: bold;">Asignar Rol</label>
-                        <select name="id_rol" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; background: white;">
-                            <option value="">Seleccione un rol...</option>
-                            {% for rol in roles %}
-                                <option value="{{ rol.id_rol }}">{{ rol.nom_rol }}</option>
-                            {% endfor %}
-                        </select>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <div style="position: relative;">
+                        <input type="password" name="contrasena" id="passwordField" placeholder="********" required 
+                               style="width: 100%; padding: 10px; padding-right: 40px; border: 1px solid #ddd; border-radius: 5px;">
+                        <span id="togglePassword" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 12px; color: #666;">
+                            mostrar
+                        </span>
                     </div>
                 </div>
-                
-                <button type="submit" class="btn-save" style="width: 100%; margin-top: 25px; padding: 12px; background: #6a0f2e; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
-                    Guardar Usuario
-                </button>
-            </form>
+
+                <div class="form-group">
+                    <label>Asignar Rol</label>
+                    <select name="id_rol" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; background: white;">
+                        <option value="">Seleccione un rol...</option>
+                        {% for rol in roles %}
+                            <option value="{{ rol.id_rol }}">{{ rol.nom_rol }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-save" style="margin-top: 25px;">
+                Guardar Usuario
+            </button>
+        </form>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 30px;">
+
+    <div class="table-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="font-size: 18px; margin: 0;">Usuarios Registrados</h3>
+            <input type="text" id="searchUser" placeholder=" Buscar..." style="width: 250px; padding: 8px 15px; border-radius: 20px; border: 1px solid #6a0f2e;">
         </div>
 
-        <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 30px;">
-
-        <div class="table-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
-                <h3 style="font-size: 18px; margin: 0;">Usuarios Registrados ({{ usuarios|length }})</h3>
-                
-                <div style="position: relative; width: 300px;">
-                    <input type="text" id="searchUser" placeholder=" Buscar por username o rol..." 
-                           style="width: 100%; padding: 10px 15px; border: 1px solid #ddd; border-radius: 25px; outline: none; border: 1px solid #6a0f2e;">
-                </div>
-            </div>
-
-            <div class="table-responsive" style="overflow-x: auto;">
-                <table class="table-inventory" id="usersTable" style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr style="background: #f8f9fa; text-align: left;">
-                            <th style="padding: 12px; border-bottom: 2px solid #eee;">ID</th>
-                            <th style="padding: 12px; border-bottom: 2px solid #eee;">Username</th>
-                            <th style="padding: 12px; border-bottom: 2px solid #eee;">Rol Asignado</th>
-                            <th style="padding: 12px; border-bottom: 2px solid #eee;">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for u in usuarios %}
-                        <tr style="border-bottom: 1px solid #eee;">
-                            <td style="padding: 12px;">{{ u.id_usuario }}</td>
-                            <td class="user-name" style="padding: 12px;"><strong>{{ u.username }}</strong></td>
-                            <td class="user-role" style="padding: 12px;">
-                                <span style="background: #f3f4f6; color: #374151; padding: 4px 10px; border-radius: 15px; font-size: 12px; font-weight: bold; border: 1px solid #d1d5db;">
-                                    {{ u.id_rol_fk.nom_rol }}
-                                </span>
-                            </td>
-                            <td style="padding: 12px; display: flex; gap: 10px;">
-                                <a href="{% url 'usuarios:editar_usuario' u.id_usuario %}" class="edit" style="color: #2d6cdf; font-weight: bold; text-decoration: none;">Editar</a>
-                                <a href="{% url 'usuarios:eliminar_usuario' u.id_usuario %}" class="delete" style="color: #d33; font-weight: bold; text-decoration: none;" onclick="return confirm('¿Seguro que quieres eliminar este usuario?')">Borrar</a>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr id="noResultsRow">
-                            <td colspan="4" style="text-align: center; padding: 30px; color: #999;">No hay usuarios en el sistema.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+        <div class="table-responsive">
+            <table style="width: 100%; border-collapse: collapse;" id="usersTable">
+                <thead>
+                    <tr style="background: #6a0f2e; color: white;">
+                        <th style="padding: 12px; font-size: 11px; text-transform: uppercase;">ID</th>
+                        <th style="padding: 12px; font-size: 11px; text-transform: uppercase;">Username</th>
+                        <th style="padding: 12px; font-size: 11px; text-transform: uppercase;">Rol</th>
+                        <th style="padding: 12px; font-size: 11px; text-transform: uppercase;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in usuarios %}
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 12px;">{{ u.id_usuario }}</td>
+                        <td style="padding: 12px;"><strong>{{ u.username }}</strong></td>
+                        <td style="padding: 12px;">
+                            <span style="background: #f3f4f6; padding: 4px 10px; border-radius: 15px; font-size: 11px; font-weight: bold; border: 1px solid #d1d5db;">
+                                {{ u.id_rol_fk.nom_rol }}
+                            </span>
+                        </td>
+                        <td style="padding: 12px; display: flex; gap: 10px;">
+                            <a href="{% url 'usuarios:editar_usuario' u.id_usuario %}" style="color: #2d6cdf; text-decoration: none; font-weight: bold; font-size: 13px;">Editar</a>
+                            <a href="{% url 'usuarios:eliminar_usuario' u.id_usuario %}" style="color: #d33; text-decoration: none; font-weight: bold; font-size: 13px;">Borrar</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
-
-
-<script>
-    // 1. Lógica para Ver/Ocultar Contraseña
-    const togglePassword = document.querySelector('#togglePassword');
-    const password = document.querySelector('#passwordField');
-
-    togglePassword.addEventListener('click', function () {
-        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-        password.setAttribute('type', type);
-        this.textContent = type === 'password' ? 'no mostrar' : 'mostrar';
-    });
-
-    // 2. Lógica de Búsqueda en Tiempo Real
-    document.getElementById('searchUser').addEventListener('keyup', function() {
-        let filter = this.value.toLowerCase();
-        let rows = document.querySelectorAll('#usersTable tbody tr:not(#noResultsRow)');
-        
-        rows.forEach(row => {
-            let text = row.innerText.toLowerCase();
-            row.style.display = text.includes(filter) ? "" : "none";
-        });
-    });
-</script>
 {% endblock %}

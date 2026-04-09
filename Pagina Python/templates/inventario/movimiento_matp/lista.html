@@ -1,73 +1,192 @@
 {% extends 'base.html' %}
-{% block content %}
-<div class="main-content">
-    
-    <div class="table-container">
-        <div class="title-section" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px;">
-            <div class="titl-inf">
-                <h2 style="margin:0; color: #6a0f2e; font-size: 20px;">Movimiento de materia prima</h2>
-                <small style="color: #888; font-size: 13px;">Gestión de inventario y flujos de material</small>
-            </div>
-            
-            <div class="csv" style="display: flex; gap: 8px;">
-                <button type="button" id="boton" class="btn-save" style="background-color: #6a0f2e !important; min-width: auto; padding: 8px 16px; font-size: 12px;">
-                    <i class="fas fa-file-excel"></i> IMPORTAR
-                </button>
-                <input type="file" id="input-archivo" style="display: none;" accept=".xlsx, .csv">
 
-                <a href="{% url 'inventario:descarga_reporte_mmtp' %}" class="btn-save" style="text-decoration: none; padding: 8px 16px; min-width: auto; font-size: 12px;">
-                    <i class="fas fa-file-pdf"></i> REPORTE PDF
-                </a>
-            </div>
+{% block content %}
+<style>
+    :root {
+        --luxy-burgundy: #800020;
+        --luxy-copper: #6e0a32;
+        --luxy-hazelnut: #64093d;
+    }
+
+    .main-container-fluid {
+        padding: 1.5rem;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .page-header {
+        border-left: 6px solid var(--luxy-copper);
+        padding-left: 20px;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* Estilo de los Botones de Acción */
+    .action-buttons { display: flex; gap: 10px; }
+    
+    .btn-action {
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: bold;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.3s;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-import { background: #f8f9fa; color: #333; border: 1px solid #ddd; }
+    .btn-import:hover { background: #eee; }
+    
+    .btn-pdf { background: var(--luxy-burgundy); color: white; }
+    .btn-pdf:hover { background: #4d0a21; }
+
+    /* Estilos del Formulario */
+    .form-card {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        margin-bottom: 35px;
+        border: 1px solid #f0f0f0;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 11px;
+        font-weight: bold;
+        color: var(--luxy-hazelnut);
+        margin-bottom: 5px;
+        text-transform: uppercase;
+    }
+
+    .form-group input, .form-group select {
+        width: 100%;
+        padding: 10px;
+        border: 1.5px solid #eee;
+        border-radius: 8px;
+        outline: none;
+        font-size: 13px;
+    }
+
+    .form-group input:focus, .form-group select:focus { border-color: var(--luxy-burgundy); }
+
+    /* Estilos de la Tabla */
+    .table-container { background: white; border-radius: 12px; overflow: hidden; }
+    
+    .table-inventory {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .table-inventory th {
+        background: #fcfcfc;
+        color: var(--luxy-burgundy);
+        padding: 15px;
+        text-align: left;
+        font-size: 13px;
+        border-bottom: 2px solid #eee;
+    }
+
+    .table-inventory td {
+        padding: 15px;
+        border-bottom: 1px solid #f9f9f9;
+        font-size: 14px;
+        color: #444;
+    }
+
+    .metodo-tag {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .tag-entrada { background: #e7f5e9; color: #2e7d32; }
+    .tag-salida { background: #ffebee; color: #c62828; }
+
+    .edit { color: #2d6cdf; text-decoration: none; font-weight: bold; margin-right: 10px; }
+    .delete { color: #d33; text-decoration: none; font-weight: bold; }
+</style>
+
+<div class="main-container-fluid">
+    <div class="page-header">
+        <div>
+            <h2 style="color: var(--luxy-burgundy); font-weight: bold; margin: 0;">Movimiento de Materia Prima</h2>
+            <p style="color: #666; margin: 5px 0 0 0; font-size: 14px;">Kardex y flujos de inventario textil</p>
         </div>
         
-        <div class="form-card" style="border: 1px solid #eee; box-shadow: none; margin-bottom: 35px !important; padding: 20px !important;">
-            <form method="POST">
-                {% csrf_token %}
-                <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;">
-                    <div class="form-group">
-                        <label>Tipo</label>
-                        <select name="tipo_mmtp" required>
-                            <option value="" disabled selected>Seleccione...</option>
-                            <option value="ENTRADA">Entrada</option>
-                            <option value="SALIDA">Salida</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Material</label>
-                        <input type="text" name="mat_mmtp" placeholder="Ej: Seda" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Color</label>
-                        <input type="text" name="color_mmtp" placeholder="Ej: Negro" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Fecha</label>
-                        <input type="date" name="fecha_mmtp" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Magnitud</label>
-                        <input type="number" step="0.01" name="stock_mmtp" required placeholder="0.00">
-                    </div>
-                    <div class="form-group">
-                        <label>Proveedor</label>
-                        <select name="id_proveedor_fk" required>
-                            <option value="">Seleccione...</option>
-                            {% for p in proveedores %}
-                                <option value="{{ p.id_provee }}">{{ p.nom_provee }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                
-                <div style="margin-top: 15px; text-align: left;">
-                    <button type="submit" class="btn-save" style="min-width: 180px; padding: 10px 20px;">
-                        💾 GUARDAR REGISTRO
-                    </button>
-                </div>
-            </form>
-        </div>
+        <div class="action-buttons">
+            <button type="button" id="boton" class="btn-action btn-import">
+                <i class="fas fa-file-excel"></i> IMPORTAR EXCEL
+            </button>
+            <input type="file" id="input-archivo" style="display: none;" accept=".xlsx, .csv">
 
+            <a href="{% url 'inventario:descarga_reporte_mmtp' %}" class="btn-action btn-pdf">
+                <i class="fas fa-file-pdf"></i> GENERAR REPORTE
+            </a>
+        </div>
+    </div>
+
+    <div class="form-card">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Tipo de Movimiento</label>
+                    <select name="tipo_mmtp" required>
+                        <option value="" disabled selected>Seleccione...</option>
+                        <option value="ENTRADA">Entrada (+)</option>
+                        <option value="SALIDA">Salida (-)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Material</label>
+                    <input type="text" name="mat_mmtp" placeholder="Ej: Lino Italiano" required>
+                </div>
+                <div class="form-group">
+                    <label>Color</label>
+                    <input type="text" name="color_mmtp" placeholder="Ej: Azul Medianoche" required>
+                </div>
+                <div class="form-group">
+                    <label>Fecha Registro</label>
+                    <input type="date" name="fecha_mmtp" required>
+                </div>
+                <div class="form-group">
+                    <label>Cantidad (Magnitud)</label>
+                    <input type="number" step="0.01" name="stock_mmtp" required placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label>Proveedor Responsable</label>
+                    <select name="id_proveedor_fk" required>
+                        <option value="">Seleccione proveedor...</option>
+                        {% for p in proveedores %}
+                            <option value="{{ p.id_provee }}">{{ p.nom_provee }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <div style="margin-top: 25px;">
+                <button type="submit" class="btn-pdf btn-action" style="width: 220px; justify-content: center;">
+                    💾 REGISTRAR MOVIMIENTO
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="table-container">
         <div class="table-responsive">
             <table class="table-inventory">
                 <thead>
@@ -76,30 +195,36 @@
                         <th>Tipo</th>
                         <th>Material</th>
                         <th>Color</th>
-                        <th>Magnitud</th>
+                        <th>Cantidad</th>
                         <th>Proveedor</th>
-                        <th>Acciones</th>
+                        <th style="text-align: center;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for m in mmtp %}
-                    <tr style="{% if m.stock_mmtp < 0 %} background-color: #fff5f5; {% elif m.stock_mmtp == 0 %} background-color: #fffdf5; {% endif %}">
-                        <td>#{{ m.id_mmtp }}</td>
-                        <td><span class="metodo-tag">{{ m.tipo_mmtp }}</span></td>
-                        <td>{{ m.mat_mmtp }}</td>
+                    <tr style="{% if m.stock_mmtp < 0 %} background-color: #fff5f5; {% endif %}">
+                        <td><span style="color: #999;">#{{ m.id_mmtp }}</span></td>
+                        <td>
+                            <span class="metodo-tag {% if m.tipo_mmtp == 'ENTRADA' %}tag-entrada{% else %}tag-salida{% endif %}">
+                                {{ m.tipo_mmtp }}
+                            </span>
+                        </td>
+                        <td><strong>{{ m.mat_mmtp }}</strong></td>
                         <td>{{ m.color_mmtp }}</td>
-                        <td style="font-weight: bold;">
-                            {{ m.stock_mmtp }}
+                        <td style="font-weight: bold; color: {% if m.tipo_mmtp == 'SALIDA' %}#d33{% else %}#2e7d32{% endif %};">
+                            {% if m.tipo_mmtp == 'SALIDA' %}-{% else %}+{% endif %}{{ m.stock_mmtp }}
                         </td>
                         <td>{{ m.id_proveedor_fk.nom_provee }}</td>
-                        <td>
+                        <td style="text-align: center;">
                             <a href="{% url 'inventario:editar_mmtp' m.id_mmtp %}" class="edit">Editar</a>
-                            <a href="{% url 'inventario:eliminar_mmtp' m.id_mmtp %}" class="delete" onclick="return confirm('¿Eliminar?')">Borrar</a>
+                            <a href="{% url 'inventario:eliminar_mmtp' m.id_mmtp %}" class="delete" onclick="return confirm('¿Eliminar este registro?')">Borrar</a>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="7" style="text-align: center; color: #999; padding: 30px;">Sin registros.</td>
+                        <td colspan="7" style="text-align: center; color: #999; padding: 40px;">
+                            No se han registrado movimientos de materia prima aún.
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -109,7 +234,7 @@
 </div>
 
 <script>
-    // Se mantiene la lógica del botón de importación (CSV)
+    // Lógica de importación CSV/Excel
     const boton = document.getElementById('boton');
     const input_oculto = document.getElementById('input-archivo');
 
@@ -120,14 +245,26 @@
             if (this.files.length > 0) {
                 const sobre = new FormData();
                 sobre.append('archivo_excel', this.files[0]);
+                
+                // Mostrar un estado de carga básico
+                boton.innerHTML = "⌛ PROCESANDO...";
+                boton.disabled = true;
+
                 fetch('/inventario/mmtp/api/import_archive/', {
                     method: 'POST',
                     body: sobre,
                     headers: { "X-CSRFToken": getCookie('csrftoken') }
                 })
                 .then(res => res.json())
-                .then(datos => { alert(datos.msj); location.reload(); })
-                .catch(err => alert("Error al importar"));
+                .then(datos => { 
+                    alert(datos.msj); 
+                    location.reload(); 
+                })
+                .catch(err => {
+                    alert("Error al importar el archivo. Verifique el formato.");
+                    boton.innerHTML = '<i class="fas fa-file-excel"></i> IMPORTAR EXCEL';
+                    boton.disabled = false;
+                });
             }
         });
     }
