@@ -17,6 +17,8 @@ def __str__(self):
 
 class Empleado(models.Model):
     id_emple = models.AutoField(primary_key=True)
+    foto_perfil = models.ImageField(upload_to='empleados/', null=True, blank=True)
+    hash_foto = models.CharField(max_length=64, null=True, blank=True)
     nom_emple = models.CharField(max_length=50)
     tel_emple = models.CharField(max_length=20)
     correo_emple = models.CharField(max_length=100)
