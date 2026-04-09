@@ -1,0 +1,115 @@
+{% extends 'base_emple.html' %}
+
+{% block content %}
+<div class="main-content">
+    <style>
+        :root {
+            --luxy-burgundy: #800020;
+            --luxy-copper: #6e0a32;
+            --luxy-hazelnut: #64093d;
+            --luxy-cream: #F5F5F5;
+        }
+
+        .table-container {
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .title-section {
+            color: var(--luxy-burgundy);
+            border-left: 6px solid var(--luxy-copper);
+            padding-left: 20px;
+            margin-bottom: 30px;
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .custom-table thead {
+            background-color: var(--luxy-burgundy);
+            color: white;
+        }
+
+        .custom-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1.2px;
+        }
+
+        .custom-table td {
+            padding: 14px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .custom-table tbody tr:hover {
+            background-color: rgba(184, 115, 51, 0.08); 
+            transition: background-color 0.2s ease;
+        }
+
+        .monto-destacado {
+            font-weight: bold;
+            color: var(--luxy-burgundy);
+        }
+
+        .metodo-tag {
+            background-color: var(--luxy-cream);
+            color: var(--luxy-hazelnut);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            border: 1px solid #e0e0e0;
+        }
+    </style>
+
+    <div class="table-container">
+        <div class="title-section">
+            <h2 style="margin:0;">Historial de Abonos</h2>
+            <small style="color: var(--luxy-hazelnut);">Registro detallado de pagos realizados</small>
+        </div>
+
+        <table class="custom-table">
+            <thead> 
+                <tr>
+                    <th>ID</th>
+                    <th>Fecha de Pago</th>
+                    <th>Monto Abonado</th>
+                    <th>Método</th>
+                    <th>Descripción / Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for abono in abonos %} 
+                <tr>
+                    <td>#{{ abono.id }}</td>
+                    <td>{{ abono.fecha_abono|date:"d M, Y" }}</td>
+                    <td class="monto-destacado">${{ abono.monto_abono }}</td>
+                    <td><span class="metodo-tag">{{ abono.metodo_pago }}</span></td>
+                    <td style="font-style: italic; color: #666;">
+                        {{ abono.descripcion|default:"Sin descripción" }}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 30px; color: var(--luxy-hazelnut);">
+                        Aún no se han registrado abonos para este pedido.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

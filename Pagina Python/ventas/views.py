@@ -357,7 +357,7 @@ def lista_det_val(request):
 
 def lista_pedido(request): 
     pedidos = Pedido.objects.all()
-    return render(request, 'ventas/pedido/lista_pedido.html', {'pedidos': pedidos})
+    return render(request, 'ventas/pedido/lista_pedidos.html', {'pedidos': pedidos})
 
     # Ahora redirigimos a la vista de "Personalizar" (crear_variacion) 
     # pasándole el ID del pedido que acabamos de encontrar o crear.

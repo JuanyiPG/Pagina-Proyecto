@@ -316,7 +316,7 @@ def login_view(request):
                 if usuario.id_rol_fk.nom_rol in ['Administrador']:
                     return redirect('usuarios:lista_roles')
                 elif usuario.id_rol_fk.nom_rol in ['Empleado']:
-                    return redirect('usuarios:base_emple')
+                    return redirect('ventas:lista_abono_e')
                 elif usuario.id_rol_fk.nom_rol in ['Cliente']:
                     return redirect('ventas:lista_product')
                 else:
@@ -378,7 +378,7 @@ def registro_view(request):
     return render(request, 'usuarios/login.html')
 
 def panel_empleado(request):
-    return render(request, 'usuarios/empleados/base_emple.html')
+    return render(request, 'ventas/abono/lista_abono_e.html')
 
 def estadisticas_admin(request):
 
