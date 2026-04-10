@@ -604,5 +604,15 @@ def gestionar_inventario(pedido, operacion):
     
     return materiales_faltantes
 def lista_abono_e(request):
-    # Tu lógica aquí
-    return render(request, 'ventas/abono/lista_abono_e.html')
+    abonos = Abono.objects.all()
+    return render(request, 'ventas/abono/lista_abono_e.html', {'abonos': abonos})
+
+
+def lista_producto_e(request):
+    productos = Producto.objects.all()
+    return render(request, 'ventas/producto/lista_producto_e.html', {'productos': productos})
+
+def lista_pedido_e(request):
+    pedidos = Pedido.objects.all()
+    # Fíjate que aquí usamos el nombre exacto del archivo: lista_pedidos_e.html
+    return render(request, 'ventas/pedido/lista_pedidos_e.html', {'pedidos': pedidos})

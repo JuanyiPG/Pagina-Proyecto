@@ -451,9 +451,10 @@ def registro_view(request):
             
     return render(request, 'usuarios/login.html')
 
+@solo_personal
 def panel_empleado(request):
     return render(request, 'ventas/abono/lista_abono_e.html')
-
+@solo_personal
 def estadisticas_admin(request):
 
     total_empleados = Empleado.objects.count()
@@ -469,3 +470,37 @@ def estadisticas_admin(request):
     }
 
     return render(request, 'usuarios/empleados/estadisticas.html', context)
+@solo_personal
+def editar_perfil(request):
+    usuario_id = request.session.get('usuario_id')
+    
+
+    usuario = get_object_or_404(Usuario, id_usuario=usuario_id)
+    
+
+    empleado = Empleado.objects.filter(id_usuario_fk=usuario).first()
+
+    if request.method == 'POST':
+        user_val = request.POST.get('username')
+        pass_val = request.POST.get('contrasena')
+        nueva_foto = request.FILES.get('foto_perfil')
+
+
+        if user_val:
+            usuario.username = user_val
+        if pass_val:
+            usuario.contrasena = make_password(pass_val)
+        usuario.save()
+
+        if empleado and nueva_foto:
+            empleado.foto_perfil = nueva_foto
+            empleado.save()
+        
+        messages.success(request, "Perfil actualizado con éxito.")
+        return redirect('usuarios:editar_perfil')
+
+    return render(request, 'usuarios/usuario/editar_perfil.html', {
+        'usuario': usuario,
+        'empleado': empleado
+    })
+

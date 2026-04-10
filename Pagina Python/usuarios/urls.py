@@ -34,5 +34,5 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('empleado/', views.panel_empleado, name='base_emple'),
     path('admin/estadisticas/', views.estadisticas_admin, name='estadisticas_admin'),
-
+    path('perfil/editar/', views.editar_perfil, name='editar_perfil'),
 ]

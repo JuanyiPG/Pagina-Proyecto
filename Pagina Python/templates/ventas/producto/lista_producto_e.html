@@ -1,0 +1,129 @@
+{% extends 'base_emple.html' %}
+
+{% block content %}
+<style>
+    :root {
+        --luxy-burgundy: #800020;
+        --luxy-copper: #6e0a32;
+        --luxy-hazelnut: #64093d;
+    }
+
+    .table-container {
+        margin: 0; 
+        padding: 1.5rem;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        font-family: 'Segoe UI', sans-serif;
+        width: 100%;
+    }
+
+    .title-section {
+        color: var(--luxy-burgundy);
+        border-left: 6px solid var(--luxy-copper);
+        padding-left: 20px;
+        margin-bottom: 30px;
+    }
+
+    .productos-grid { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+        gap: 25px; 
+    }
+
+    .card-item { 
+        background: white; 
+        border-radius: 15px; 
+        overflow: hidden; 
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+        transition: 0.3s; 
+        border: 1px solid #eee;
+    }
+
+    .card-item:hover { 
+        transform: translateY(-5px); 
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1); 
+    }
+
+    .badge-estado { 
+        position: absolute; 
+        top: 10px; 
+        right: 10px; 
+        background: #6a0f2e; 
+        color: white; 
+        padding: 4px 10px; 
+        border-radius: 12px; 
+        font-size: 11px; 
+        z-index: 1; 
+    }
+
+    #product-search {
+        max-width: 600px;
+        margin: 0 auto 40px auto;
+        display: flex;
+        padding: 12px 25px;
+        border-radius: 25px;
+        border: 1.5px solid #ddd;
+        outline: none;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        width: 100%;
+    }
+</style>
+
+<div class="table-container">
+    <div class="title-section">
+        <h2 style="margin:0;">Inventario de Productos</h2>
+        <small style="color: var(--luxy-hazelnut);">Listado de prendas con búsqueda en tiempo real</small>
+    </div>
+
+    <input type="text" id="product-search" placeholder="Buscar por nombre o categoría...">
+
+    <div class="productos-grid" id="productos-grid">
+        {% for p in productos %}
+        <div class="card-item product-card">
+            <div style="position: relative; height: 250px; overflow: hidden; background: #f9f9f9;">
+                <span class="badge-estado">{{ p.estado_produc }}</span>
+                {% if p.imagen_product %}
+                    <img src="{{ p.imagen_product.url }}" alt="{{ p.nom_produc }}" style="width: 100%; height: 100%; object-fit: cover;">
+                {% else %}
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #ccc; font-size: 12px;">Sin imagen</div>
+                {% endif %}
+            </div>
+            <div class="card-info" style="padding: 15px;">
+                <p class="product-cat" style="margin: 0; color: #888; font-size: 11px; text-transform: uppercase;">{{ p.gen_produc }} | {{ p.categoria_produc }}</p>
+                <h3 class="product-name" style="margin: 5px 0; font-size: 16px; color: #333; font-weight: 600;">{{ p.nom_produc }}</h3>
+                <p style="margin: 10px 0; color: var(--luxy-burgundy); font-weight: bold; font-size: 18px;">${{ p.precio }}</p>
+            </div>
+        </div>
+        {% empty %}
+        <div id="no-results" style="grid-column: 1 / -1; text-align: center; padding: 50px; color: #999;">
+            No se encontraron productos en el inventario.
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    // Búsqueda en tiempo real
+    document.getElementById('product-search').addEventListener('input', function(e) {
+        const term = e.target.value.toLowerCase();
+        const cards = document.querySelectorAll('.product-card');
+        let hasResults = false;
+
+        cards.forEach(card => {
+            const name = card.querySelector('.product-name').textContent.toLowerCase();
+            const category = card.querySelector('.product-cat').textContent.toLowerCase();
+            
+            if (name.includes(term) || category.includes(term)) {
+                card.style.display = 'block';
+                hasResults = true;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        const noResultsMsg = document.getElementById('no-results');
+        if (noResultsMsg) noResultsMsg.style.display = hasResults ? 'none' : 'block';
+    });
+</script>
+{% endblock %}

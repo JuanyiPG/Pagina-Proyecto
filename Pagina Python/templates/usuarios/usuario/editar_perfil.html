@@ -1,0 +1,184 @@
+{% extends 'base_emple.html' %} 
+{% load static %}
+
+{% block content %}
+<style>
+    :root {
+        --luxy-vinotinto: #6b0d24; /* Color de tu barra lateral */
+        --luxy-vinotinto-hover: #540a1c;
+        --fondo-gris: #f4f7f6;
+    }
+
+
+    .perfil-header-banner {
+        height: 140px;
+        background-color: var(--luxy-vinotinto); /* Eliminado el azul */
+        position: relative;
+    }
+
+
+    .foto-perfil-wrapper {
+        position: absolute;
+        bottom: -70px;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+    }
+
+    .foto-perfil-wrapper img {
+        width: 180px;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 5px solid #ffffff;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        background: white;
+    }
+
+
+    .custom-file-upload {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 6px 12px;
+        cursor: pointer;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        color: #666;
+    }
+
+
+    .form-cuerpo {
+        margin-top: 90px;
+        padding: 30px 50px;
+    }
+
+    .grid-campos {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+    }
+
+    .campo-full {
+        grid-column: span 2;
+    }
+
+    .luxy-label {
+        font-weight: 600;
+        color: #444;
+        margin-bottom: 8px;
+        display: block;
+        font-size: 0.9rem;
+    }
+
+    .luxy-input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #e1e1e1;
+        border-radius: 8px;
+        background: #fafafa;
+        transition: border 0.3s;
+    }
+
+    .luxy-input:focus {
+        border-color: var(--luxy-vinotinto);
+        outline: none;
+        background: #fff;
+    }
+
+    /* 6. Botones con los colores de tu interfaz */
+    .btns-container {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 40px;
+    }
+
+    .btn-luxy-save {
+        background-color: var(--luxy-vinotinto);
+        color: white;
+        border: none;
+        padding: 12px 40px;
+        border-radius: 6px;
+        font-weight: bold;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .btn-luxy-save:hover {
+        background-color: var(--luxy-vinotinto-hover);
+        transform: translateY(-2px);
+    }
+
+    .btn-luxy-cancel {
+        background-color: #e5e7eb;
+        color: #4b5563;
+        padding: 12px 40px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+    .btn-luxy-cancel:hover {
+        background-color: #d1d5db;
+    }
+</style>
+
+    <div class="perfil-header-banner">
+        <div class="foto-perfil-wrapper">
+            {% if empleado.foto_perfil %}
+                <img src="{{ empleado.foto_perfil.url }}" id="preview" alt="Perfil">
+            {% else %}
+                <img src="{% static 'img/default-avatar.png' %}" id="preview" alt="Perfil">
+            {% endif %}
+            
+            <br>
+            <label for="foto_perfil" class="custom-file-upload">
+                <i class="fas fa-camera"></i> Cambiar Foto
+            </label>
+        </div>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" class="form-cuerpo">
+        {% csrf_token %}
+        <input type="file" id="foto_perfil" name="foto_perfil" class="d-none" accept="image/*" onchange="previewImage(event)">
+
+        <div class="grid-campos">
+            <div>
+                <label class="luxy-label">Nombre de Usuario</label>
+                <input type="text" name="username" value="{{ usuario.username }}" class="luxy-input" required>
+            </div>
+
+            <div>
+                <label class="luxy-label">Rol del Sistema</label>
+                <input type="text" value="{{ usuario.id_rol_fk.nom_rol }}" class="luxy-input" readonly disabled>
+            </div>
+
+            <div class="campo-full">
+                <label class="luxy-label">Actualizar Contraseña</label>
+                <input type="password" name="contrasena" class="luxy-input" placeholder="Dejar vacío para no realizar cambios">
+                <small style="color: #999;">Mínimo 8 caracteres para mayor seguridad.</small>
+            </div>
+        </div>
+
+        <div class="btns-container">
+            <a href="{% url 'ventas:lista_pedido_e' %}" class="btn-luxy-cancel">CANCELAR</a>
+            <button type="submit" class="btn-luxy-save">GUARDAR CAMBIOS</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function previewImage(event) {
+        var reader = new FileReader();
+        reader.onload = function(){
+            var output = document.getElementById('preview');
+            output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
+{% endblock %}

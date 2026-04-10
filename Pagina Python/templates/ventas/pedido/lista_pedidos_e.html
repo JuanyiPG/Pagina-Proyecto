@@ -1,0 +1,167 @@
+{% extends 'base_emple.html' %}
+{% block content %}
+
+<div class="main-content">
+    <style>
+        :root {
+            --luxy-burgundy: #800020;
+            --luxy-copper: #6e0a32;
+            --luxy-hazelnut: #64093d;
+            --luxy-cream: #F5F5F5;
+        }
+
+        .table-container {
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .title-section {
+            color: var(--luxy-burgundy);
+            border-left: 6px solid var(--luxy-copper);
+            padding-left: 20px;
+            margin-bottom: 30px;
+        }
+
+        /* Estilo para la nueva barra de búsqueda */
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        .search-input:focus {
+            border-color: var(--luxy-burgundy);
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .custom-table thead {
+            background-color: var(--luxy-burgundy);
+            color: white;
+        }
+
+        .custom-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1.2px;
+        }
+
+        .custom-table td {
+            padding: 14px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .custom-table tbody tr:hover {
+            background-color: rgba(184, 115, 51, 0.08); 
+            transition: background-color 0.2s ease;
+        }
+    </style>
+
+    <div class="table-container">
+        <div class="title-section">
+            <h2 style="margin:0;">Historial de Pedidos</h2>
+            <small style="color: var(--luxy-hazelnut);">Registro detallado de pedidos realizados</small>
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="Buscar por nombre de cliente o ID de pedido...">
+        </div>
+
+        <div class="form-card">
+            <div style="overflow-x: auto;">
+                <table id="pedidosTable" style="width: 100%; border-collapse: collapse;">
+                    <thead style="background-color: #6a0f2e; color: white;">
+                        <tr>
+                            <th style="padding: 12px;">ID</th>
+                            <th style="padding: 12px;">Fecha</th>
+                            <th style="padding: 12px;">Sub Total</th>
+                            <th style="padding: 12px;">Valor Total</th>
+                            <th style="padding: 12px;">Estado</th>
+                            <th style="padding: 12px;">Método Pago</th>
+                            <th style="padding: 12px;">Cliente</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for pedido in pedidos %}
+                        <tr class="pedido-row" style="border-bottom: 1px solid #eee; text-align: center;">
+                            <td style="padding: 10px;"><strong>#{{ pedido.id_pedido }}</strong></td>
+                            <td>{{ pedido.fecha_ped|date:"d/m/Y" }}</td>
+                            <td>${{ pedido.subtotal_ped }}</td>
+                            <td style="color: #B87333; font-weight: bold;">
+                                ${{ pedido.valor_ped }}
+                            </td>
+                            <td>
+                                <span style="
+                                    background: #f5f5f5;
+                                    padding: 5px 10px;
+                                    border-radius: 20px;
+                                    font-size: 12px;
+                                    border: 1px solid #A67B5B;">
+                                    {{ pedido.estado_ped }}
+                                </span>
+                            </td>
+                            <td>{{ pedido.metodo_pago }}</td>
+                            <td class="cliente-nombre">{{ pedido.id_clien_fk.nom_clien }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr id="noResultsRow">
+                            <td colspan="7" style="padding: 20px; text-align: center;">
+                                No hay pedidos registrados.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const rows = document.querySelectorAll('.pedido-row');
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = searchInput.value.toLowerCase();
+
+            rows.forEach(row => {
+                const idPedido = row.querySelector('td:first-child').textContent.toLowerCase();
+                const nombreCliente = row.querySelector('.cliente-nombre').textContent.toLowerCase();
+
+                // Si el término coincide con el ID o con el nombre del cliente
+                if (idPedido.includes(searchTerm) || nombreCliente.includes(searchTerm)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

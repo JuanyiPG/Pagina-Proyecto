@@ -26,5 +26,7 @@ urlpatterns = [
     path('editar_carrito/<int:id_det_valor>/', views.editar_carrito, name='editar_carrito'),
     path('lista_pedido/', views.lista_pedido, name='lista_pedido'),
     path('abonos/', views.lista_abono_e, name='lista_abono_e'),
+    path('productos-empleado/', views.lista_producto_e, name='lista_producto_e'),
+    path('pedidos-empleado/', views.lista_pedido_e, name='lista_pedido_e'),
     
 ] 

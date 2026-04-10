@@ -242,43 +242,51 @@
 </head>
 <body>
 
-    <header>
+   <header style="background: linear-gradient(to right, #f9f9f9, #540a1f); height: 80px; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; width: 100%; z-index: 9999; box-sizing: border-box;">
         <div class="logo">
             <a href="{% url 'index' %}"><img src="{% static 'IMG/logo.png' %}" height="60px"></a>
         </div>
         
-        <div class="menu-superior">
+        <div class="menu-superior" style="display: flex; align-items: center; gap: 15px;">
+            
             {% if request.session.usuario_id %}
-                <a href="{% url 'usuarios:logout' %}">Cerrar sesión</a>
+                <a href="{% url 'usuarios:logout' %}" style="text-decoration: none; color: white; font-size: 14px; font-weight: bold;">Cerrar sesión</a>
             {% else %}
-                <a href="{% url 'usuarios:login' %}">Iniciar sesión</a>
+                <a href="{% url 'usuarios:login' %}" style="text-decoration: none; color: white; font-size: 14px; font-weight: bold;">Iniciar sesión</a>
             {% endif %}
-            <div class="notification-wrapper">
 
-            <a href="{% url 'ventas:ver_carrito' %}">🛒 <span id="contador-carrito">0</span></a>
-            <!------ NOTIFICACIONES ------>
-        <a href="#" class="bell-button">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4 4 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4 4 0 0 0-3.203-3.92zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5 5 0 0 1 13 6c0 .88.32 4.2 1.22 6"/>
-        </svg>
-        {% if messages %}
-            <span class="bell-dot"></span>
-        {% endif %}
-        </a>
+            <div style="display: flex; align-items: center; gap: 15px; margin-left: 10px; border-left: 1px solid rgba(255,255,255,0.3); padding-left: 15px;">
+                
+                <a href="{% url 'ventas:ver_carrito' %}" style="text-decoration: none; color: white; font-size: 16px;">
+                    🛒 <span id="contador-carrito" style="font-weight: bold;">0</span>
+                </a>
+                
+                <div class="notification-wrapper" style="position: relative; display: inline-block;">
+                    
+                    <a href="#" class="bell-button" style="color: white; display: flex; align-items: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4 4 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4 4 0 0 0-3.203-3.92zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5 5 0 0 1 13 6c0 .88.32 4.2 1.22 6"/>
+                        </svg>
+                        {% if messages %}
+                            <span class="bell-dot" style="position: absolute; top: 0; right: 0; width: 8px; height: 8px; background-color: #ff4d4d; border-radius: 50%; border: 2px solid white;"></span>
+                        {% endif %}
+                    </a>
 
-        <div class="notification-dropdown">
-            <div class="dropdown-arrow"></div>
-        {% if messages %}
-            {% for message in messages %}
-                <div class="notification-item {{ message.tags }}">
-                    {{ message }}
+                    <div class="notification-dropdown">
+                        <div class="dropdown-arrow"></div>
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="notification-item {{ message.tags }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="notification-empty">No hay novedades</div>
+                        {% endif %}
+                    </div>
                 </div>
-            {% endfor %}
-        {% else %}
-            <div class="notification-empty">No hay novedades</div>
-        {% endif %}
-    </div>
-</div>
+            </div>
+
         </div>
     </header>
 
