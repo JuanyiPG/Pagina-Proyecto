@@ -24,9 +24,8 @@ urlpatterns = [
     path('factura/<int:pedido_id>/', views.finalizar_pedido, name='finalizar_compra'),
     path('elim_carrito/<int:id_det_valor>/', views.eliminar_del_carrito, name='eliminar_carrito'),
     path('editar_carrito/<int:id_det_valor>/', views.editar_carrito, name='editar_carrito'),
-    path('lista_pedido/', views.lista_pedido, name='lista_pedido'),
-    path('abonos/', views.lista_abono_e, name='lista_abono_e'),
-    path('productos-empleado/', views.lista_producto_e, name='lista_producto_e'),
-    path('pedidos-empleado/', views.lista_pedido_e, name='lista_pedido_e'),
+    path('lista_pedido/', views.lista_var, name='lista_pedido'),
+    path('pedidos/', views.lista_var_e, name='lista_pedido_e'),
+    path('productos-empleado/', views.lista_producto_e, name='lista_producto_e')
     
 ] 

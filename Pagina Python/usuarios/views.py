@@ -370,7 +370,11 @@ def eliminar_cliente(request, id):
 # 🔐 AUTENTICACIÓN (LOGIN, LOGOUT, REGISTRO)
 # ================================================================
 
+from django.contrib import messages # Asegúrate de tener la importación
+
 def login_view(request):
+    storage = messages.get_messages(request)
+    storage.used = True
     if request.method == 'POST':
         user_post = request.POST.get('username')
         pass_post = request.POST.get('password')
@@ -379,23 +383,32 @@ def login_view(request):
             usuario = Usuario.objects.get(username=user_post)
             
             if check_password(pass_post, usuario.contrasena):
+                # --- SOLUCIÓN AL ERROR DE NOTIFICACIONES ---
+                # 1. Consumimos los mensajes existentes para limpiar la cola
+                storage = messages.get_messages(request)
+                for _ in storage:
+                    pass 
+                
+                # 2. Limpiamos la sesión
                 request.session.flush() 
 
+                # 3. Guardamos los nuevos datos
                 request.session['usuario_id'] = usuario.id_usuario
                 request.session['username'] = usuario.username
                 request.session['rol'] = usuario.id_rol_fk.nom_rol
 
+                # 4. Ahora el único mensaje en cola será el de éxito
                 messages.success(request, f"Bienvenido, {usuario.username}")
 
-                if usuario.id_rol_fk.nom_rol in ['Administrador']:
-                    return redirect('usuarios:lista_roles')
-                elif usuario.id_rol_fk.nom_rol in ['Empleado']:
-                    return redirect('ventas:lista_abono_e')
-                elif usuario.id_rol_fk.nom_rol in ['Cliente']:
+                # Redirecciones según el rol
+                if usuario.id_rol_fk.nom_rol == 'Administrador':
+                    return redirect('usuarios:estadisticas_admin')
+                elif usuario.id_rol_fk.nom_rol == 'Empleado':
+                    return redirect('usuarios:editar_perfil')
+                elif usuario.id_rol_fk.nom_rol == 'Cliente':
                     return redirect('ventas:lista_product')
                 else:
                     return redirect('index') 
-                
 
             else:
                 messages.error(request, "Contraseña incorrecta.")
