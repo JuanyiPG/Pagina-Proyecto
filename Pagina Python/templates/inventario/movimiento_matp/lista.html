@@ -201,33 +201,93 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for m in mmtp %}
-                    <tr style="{% if m.stock_mmtp < 0 %} background-color: #fff5f5; {% endif %}">
-                        <td><span style="color: #999;">#{{ m.id_mmtp }}</span></td>
-                        <td>
-                            <span class="metodo-tag {% if m.tipo_mmtp == 'ENTRADA' %}tag-entrada{% else %}tag-salida{% endif %}">
-                                {{ m.tipo_mmtp }}
-                            </span>
-                        </td>
-                        <td><strong>{{ m.mat_mmtp }}</strong></td>
-                        <td>{{ m.color_mmtp }}</td>
-                        <td style="font-weight: bold; color: {% if m.tipo_mmtp == 'SALIDA' %}#d33{% else %}#2e7d32{% endif %};">
-                            {% if m.tipo_mmtp == 'SALIDA' %}-{% else %}+{% endif %}{{ m.stock_mmtp }}
-                        </td>
-                        <td>{{ m.id_proveedor_fk.nom_provee }}</td>
-                        <td style="text-align: center;">
-                            <a href="{% url 'inventario:editar_mmtp' m.id_mmtp %}" class="edit">Editar</a>
-                            <a href="{% url 'inventario:eliminar_mmtp' m.id_mmtp %}" class="delete" onclick="return confirm('¿Eliminar este registro?')">Borrar</a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="7" style="text-align: center; color: #999; padding: 40px;">
-                            No se han registrado movimientos de materia prima aún.
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
+    {% for m in mmtp %}
+    <tr style="{% if m.stock_mmtp < 0 %} background-color: #fff5f5; {% endif %}">
+        <td><span style="color: #999;">#{{ m.id_mmtp }}</span></td>
+        <td>
+            <span class="metodo-tag {% if m.tipo_mmtp == 'ENTRADA' %}tag-entrada{% else %}tag-salida{% endif %}">
+                {{ m.tipo_mmtp }}
+            </span>
+        </td>
+        <td><strong>{{ m.mat_mmtp }}</strong></td>
+        <td>{{ m.color_mmtp }}</td>
+        <td style="font-weight: bold; color: {% if m.tipo_mmtp == 'SALIDA' %}#d33{% else %}#2e7d32{% endif %};">
+            {{ m.stock_mmtp }}
+        </td>
+        <td>{{ m.id_proveedor_fk.nom_provee }}</td>
+        <td style="text-align: center;">
+            <a href="{% url 'inventario:editar_mmtp' m.id_mmtp %}" class="edit">Editar</a>
+            <a href="{% url 'inventario:eliminar_mmtp' m.id_mmtp %}" class="delete" onclick="return confirm('¿Eliminar este registro?')">Borrar</a>
+            
+            <button type="button" 
+                    style="background: none; border: none; color: #7e1a3f; cursor: pointer; font-weight: bold; font-size: 13px;" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#historialModal{{ m.id_mmtp }}">
+                Historial
+            </button>
+
+            <div class="modal fade" id="historialModal{{ m.id_mmtp }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content" style="border-radius: 12px; border: none; overflow: hidden; text-align: left;">
+                        <div class="modal-header" style="background: #7e1a3f; color: white;">
+                            <h5 class="modal-title">Historial: {{ m.mat_mmtp }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
+                        </div>
+                        <div class="modal-body" style="padding: 0;">
+                            <div class="table-responsive">
+                                <table class="table" style="width: 100%; margin-bottom: 0;">
+                                    <thead style="background-color: #f9f9f9;">
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>Acción</th>
+                                            <th>Stock</th>
+                                            <th>Variación</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for registro in m.history.all %} 
+                                        <tr style="font-size: 13px;">
+                                            <td>{{ registro.history_date|date:"d/m/Y H:i" }}</td>
+                                            <td>
+                                                {% if registro.history_type == "+" %}
+                                                    <span style="color: green;">Creado</span>
+                                                {% elif registro.history_type == "~" %}
+                                                    <span style="color: blue;">Modificado</span>
+                                                {% else %}
+                                                    <span style="color: red;">Eliminado</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ registro.stock_mmtp }}</td>
+                                            <td>
+                                                {% with anterior=registro.prev_record %}
+                                                    {% if anterior %}
+                                                        {% if registro.stock_mmtp > anterior.stock_mmtp %}
+                                                            <span style="color: green;">+{{ registro.stock_mmtp }}</span>
+                                                        {% elif registro.stock_mmtp < anterior.stock_mmtp %}
+                                                            <span style="color: red;">↓ {{ registro.stock_mmtp }} </span>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <small>Inicial</small>
+                                                    {% endif %}
+                                                {% endwith %}
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="4" style="text-align: center; padding: 20px;">Sin historial disponible.</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </td>
+    </tr>
+    {% endfor %}
+</tbody>
             </table>
         </div>
     </div>

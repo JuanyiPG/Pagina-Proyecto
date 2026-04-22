@@ -21,7 +21,23 @@ def obtener_cliente_actual(request):
 
 def lista_var(request):
     variaciones = Variacion.objects.all()
-    return render(request, 'ventas/lista_var.html', {'variaciones': variaciones})
+    productos = Producto.objects.all()
+    abonos = Abono.objects.all()
+    return render(request, 'ventas/pedido/lista_pedidos.html', {
+        'variaciones': variaciones, 
+        'productos': productos,
+        'abonos': abonos
+        })
+
+def lista_var_e(request):
+    variaciones = Variacion.objects.all()
+    productos = Producto.objects.all()
+    abonos = Abono.objects.all()
+    return render(request, 'ventas/pedido/lista_pedidos_e.html', {
+        'variaciones': variaciones, 
+        'productos': productos,
+        'abonos': abonos
+        })
 
 @login_requerido_custom
 def crear_variacion(request, producto_id, pedido_id): 
@@ -247,15 +263,21 @@ def producto_sin_personalizar(request, producto_id):
                 defaults={'subtotal_ped': 0, 'valor_ped': 0, 'metodo_pago': 'Pendiente'}
             )
 
+
+            variacion = Variacion.objects.create(
+                talla_var = talla, 
+                cant_soli = cantidad, 
+                color_var = color,
+                costo_var = 0,
+                id_estam_fk_var = None
+            )
+
             Det_valor.objects.create(
                 id_ped_fk_detval=pedido, 
                 id_prod_fk_detval=producto,
-                talla=talla,
-                color = color,
-                cant=cantidad,
+                id_var_fk_detval=variacion,
                 valor_total=producto.precio * cantidad,
-                tipo_pedido='Estandar',
-                id_var_fk_detval=None
+                tipo_pedido='Estandar'
             )
 
         messages.success(request, f"{producto.nom_produc} añadido al carrito.")
@@ -355,13 +377,6 @@ def lista_det_val(request):
 
 #--------------------- CRUD PEDIDO -----------------
 
-def lista_pedido(request): 
-    pedidos = Pedido.objects.all()
-    return render(request, 'ventas/pedido/lista_pedidos.html', {'pedidos': pedidos})
-
-    # Ahora redirigimos a la vista de "Personalizar" (crear_variacion) 
-    # pasándole el ID del pedido que acabamos de encontrar o crear.
-    return redirect('crear_variacion', producto_id=producto.id_produc, pedido_id=pedido.id_pedido)
 
 @login_requerido_custom
 def finalizar_pedido(request, pedido_id):
@@ -499,7 +514,7 @@ def ver_carrito(request):
 
     # 2. CÁLCULOS DE VALORES (Punto 2: Que se vea el abono)
     formato = Decimal('0.00')
-    items = Det_valor.objects.filter(id_ped_fk_detval=pedido)
+    items = Det_valor.objects.filter(id_ped_fk_detval=pedido).select_related('id_var_fk_detval', 'id_prod_fk_detval')
     
     total_raw = items.aggregate(Sum('valor_total'))['valor_total__sum'] or 0
     total_productos = Decimal(str(total_raw)).quantize(formato)
@@ -587,7 +602,7 @@ def gestionar_inventario(pedido, operacion):
             
             for insumo in receta:
                 material = insumo.materia_prima
-                cantidad_total = insumo.cantidad_usada * item.cant
+                cantidad_total = insumo.cantidad_usada * item.id_var_fk_detval.cant_soli
 
                 if operacion == 'RESTAR':
                     # Restamos de todos modos
@@ -603,16 +618,13 @@ def gestionar_inventario(pedido, operacion):
                 material.save()
     
     return materiales_faltantes
-def lista_abono_e(request):
-    abonos = Abono.objects.all()
-    return render(request, 'ventas/abono/lista_abono_e.html', {'abonos': abonos})
+
+
+#---------------------- listas empleados --------------------------------------------------------
+
+
 
 
 def lista_producto_e(request):
     productos = Producto.objects.all()
     return render(request, 'ventas/producto/lista_producto_e.html', {'productos': productos})
-
-def lista_pedido_e(request):
-    pedidos = Pedido.objects.all()
-    # Fíjate que aquí usamos el nombre exacto del archivo: lista_pedidos_e.html
-    return render(request, 'ventas/pedido/lista_pedidos_e.html', {'pedidos': pedidos})

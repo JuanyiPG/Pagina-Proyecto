@@ -15,6 +15,7 @@ urlpatterns=[
     path('mmtp/eliminar/<int:id>/', views.eliminar_mmtp, name="eliminar_mmtp"),
     path('mmtp/api/import_archive/', views.carga_masiva, name='import_excel'),
     path('mmtp/PDF/reports', views.report_mmtp, name="descarga_reporte_mmtp"),
+    path('mmtp/historial/<int:id>', views.history_MatP, name="historial_mmtp"),
 
     # Estampados
     path('estampados/', views.lista_estampado, name="lista_estampado"),

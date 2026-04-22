@@ -38,12 +38,18 @@
             <span class="subtitle">Use su usuario y contraseña</span>
             
             {% if messages %}
-                {% for message in messages %}
-                    <p class="{% if message.tags == 'success' %}success-msg{% else %}error-msg{% endif %}">
-                        {{ message }}
-                    </p>
-                {% endfor %}
-            {% endif %}
+    {% for message in messages %}
+        {# 1. Solo procesamos el mensaje si NO es de éxito #}
+        {% if message.tags != 'success' %}
+            
+            {# 2. Aplicamos tus clases originales según el tipo de mensaje #}
+            <p class="{% if message.tags == 'info' or message.tags == 'success' %}success-msg{% else %}error-msg{% endif %}">
+                {{ message }}
+            </p>
+            
+        {% endif %}
+    {% endfor %}
+{% endif %}
 
             {% if error %}
                 <p class="error-msg">Datos incorrectos</p>

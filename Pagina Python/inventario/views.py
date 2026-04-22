@@ -6,6 +6,7 @@ from decimal import Decimal, InvalidOperation
 import hashlib
 from .models import Estampado, Proveedor, Movimiento_matp
 from ventas.models import Producto 
+from usuarios.models import Usuario
 from django.db.models import Q 
 import pandas as pd
 from rest_framework.decorators import api_view
@@ -97,6 +98,17 @@ def editar_mmtp(request, id):
 def eliminar_mmtp(request, id):
     get_object_or_404(Movimiento_matp, id_mmtp=id).delete()
     return redirect('inventario:lista_mmtp')
+
+#----------------------------- historial mov MatP -----------------------------------------------
+
+def history_MatP(request, id):
+    matP = get_object_or_404(Movimiento_matp, id_mmtp=id )
+    historial = matP.history.all()
+    return render(request, 'inventario/movimiento_matp/lista.html',{
+        'matP' : matP,
+        'historial': historial
+    })
+
 
 @api_view(['GET'])
 def report_mmtp(request):

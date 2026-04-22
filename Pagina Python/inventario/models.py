@@ -1,4 +1,6 @@
 from django.db import models
+from simple_history.models import HistoricalRecords 
+
 class Estampado(models.Model):
     id_estamp = models.AutoField(primary_key=True)
     nombre_estamp = models.CharField(max_length=100)
@@ -14,7 +16,7 @@ class Proveedor(models.Model):
     id_provee = models.AutoField(primary_key=True)
     nom_provee = models.CharField(max_length=100)
     fech_ingre = models.DateField()
-    num_tel = models.IntegerField()
+    num_tel = models.CharField(max_length=50)
 
 class Movimiento_matp(models.Model):
     id_mmtp = models.AutoField(primary_key=True)
@@ -24,3 +26,4 @@ class Movimiento_matp(models.Model):
     color_mmtp = models.CharField(max_length=100)
     stock_mmtp = models.DecimalField(max_digits=10, decimal_places=2)
     id_proveedor_fk = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
+    history = HistoricalRecords() #Crea el historial automaticamente

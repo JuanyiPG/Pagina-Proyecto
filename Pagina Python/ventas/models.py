@@ -2,16 +2,16 @@ from django.db import models
 from usuarios.models import Cliente 
 from inventario.models import Estampado, Movimiento_matp
 from django.db.models import Sum
+
     
 
 class Variacion(models.Model) :
     id_var = models.AutoField(primary_key=True)
-    talla_var = models.CharField(max_length=50)
-    cant_soli = models.IntegerField()
-    color_var = models.CharField(max_length=100)
-    mat_var = models.CharField(max_length=200)
-    costo_var = models.DecimalField(max_digits=12, decimal_places=2)
-    id_estam_fk_var = models.ForeignKey(Estampado, on_delete=models.CASCADE)
+    talla_var = models.CharField(max_length=50, null=True)
+    cant_soli = models.IntegerField(null=True)
+    color_var = models.CharField(max_length=100, null=True)
+    costo_var = models.DecimalField(max_digits=12, decimal_places=2, null=True)
+    id_estam_fk_var = models.ForeignKey(Estampado, on_delete=models.CASCADE, null=True )
 
 
 class Producto(models.Model) :
@@ -33,7 +33,8 @@ class Det_mov_matp(models.Model) :
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     materia_prima = models.ForeignKey(Movimiento_matp, on_delete=models.CASCADE)
     cantidad_usada = models.DecimalField(max_digits=10, decimal_places=2)
-
+    
+    
 class Pedido(models.Model):
     id_pedido = models.AutoField(primary_key=True)
     fecha_ped = models.DateField(auto_now_add=True)
@@ -78,10 +79,9 @@ class Abono(models.Model):
 class Det_valor(models.Model):
     id_det_valor = models.AutoField(primary_key=True)
     valor_total = models.DecimalField(max_digits=10, decimal_places=0)
-    cant = models.DecimalField(max_digits=12, decimal_places=2)
-    talla = models.CharField(max_length=100)
-    color = models.CharField(max_length=100)
     tipo_pedido = models.CharField(max_length=200)
     id_ped_fk_detval = models.ForeignKey(Pedido, on_delete=models.CASCADE)
     id_var_fk_detval = models.ForeignKey(Variacion, on_delete=models.CASCADE, null=True)
     id_prod_fk_detval = models.ForeignKey(Producto, on_delete=models.CASCADE)
+
+    
