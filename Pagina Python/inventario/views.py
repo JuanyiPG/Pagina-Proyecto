@@ -103,14 +103,14 @@ def report_mmtp(request):
     movimiento= Movimiento_matp.objects.all()
     logo_path = os.path.join(settings.BASE_DIR, 'static', 'IMG', 'logo.png')
 
-    # 2. Convertimos la imagen a Base64 para que el PDF no tenga que "buscar" archivos
+    
     try:
         with open(logo_path, "rb") as image_file:
             data = base64.b64encode(image_file.read()).decode('utf-8')
             logo_final = f"data:image/png;base64,{data}"
     except Exception as e:
         print(f"Error al cargar la imagen: {e}")
-        logo_final = "" # Si falla, enviamos vacío para que no rompa el código
+        logo_final = "" 
 
     context = {
         'movimientos': movimiento,
@@ -139,7 +139,6 @@ def carga_masiva(request):
     
     try:
         df = pd.read_excel(archivo)
-        # Convertimos la columna de fecha a formato solo fecha (sin hora)
         df['fecha_mmtp'] = pd.to_datetime(df['fecha_mmtp']).dt.date
         datos = df.to_dict(orient='records')
         

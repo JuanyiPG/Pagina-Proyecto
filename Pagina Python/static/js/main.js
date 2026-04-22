@@ -72,7 +72,7 @@ export function modelo() {
         if (colorInput) aplicarColor(colorInput.value);
     });
 
-    // --- LÓGICA DE TECLADO (TECLA A) ---
+    // --- LÓGICA DE TECLADO---
     window.addEventListener('keydown', (e) => {
         if (e.key.toLowerCase() === 'a') {
             teclaAPresionada = true;

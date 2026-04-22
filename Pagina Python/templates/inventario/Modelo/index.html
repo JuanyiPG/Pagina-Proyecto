@@ -263,7 +263,11 @@
 
         <div class="acciones-footer">
             <button id="btn-limpiar-estampados"></button>
-            <button class="btn-main btn-guardar">✅ Guardar Diseño</button>
+            <button class="btn-main btn-guardar">
+                <a href="{% url 'ventas:lista_product' %}" style="color: white;">
+                    ✅ Guardar Diseño
+                </a>
+            </button>
             <a href="{% url 'ventas:producto_sin_personalizar' producto.id_produc %}" class="btn-main btn-cancelar">❌ Salir sin Cambios</a>
             
             <footer>
