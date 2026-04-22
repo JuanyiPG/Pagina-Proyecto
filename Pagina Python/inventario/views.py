@@ -15,6 +15,8 @@ from rest_framework import status
 from .serializers import MovimientoSerializer
 from django.conf import settings
 import base64
+from .serializers import ProveedorSerializer
+from rest_framework import viewsets
 
 # --- PROVEEDORES ---
 def lista_provee(request):
@@ -272,3 +274,7 @@ def modelo(request, producto_id):
         'producto': producto,
         'estampados': estampados  
     })
+
+class ProveedorViewSet(viewsets.ModelViewSet):
+    queryset = Proveedor.objects.all()
+    serializer_class = ProveedorSerializer

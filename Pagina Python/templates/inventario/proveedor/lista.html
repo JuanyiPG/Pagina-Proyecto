@@ -113,6 +113,9 @@
     <div class="title-section">
         <h2 style="margin:0;">Gestión de Proveedores</h2>
         <small style="color: var(--luxy-hazelnut);">Socios comerciales y proveedores de materia prima</small>
+        <button id="btn-api-externa" class="btn-save">
+             Traer proveedores externos
+        </button>
     </div>
         
     <div class="form-card">
@@ -149,6 +152,9 @@
                     <th style="text-align: center;">Acciones</th>
                 </tr>
             </thead>
+            <button id="btn-importar" class="btn-save" style="background: green;">
+                 Importar proveedores externos
+            </button>
             <tbody>
                 {% for p in proveedor %}
                 <tr>
@@ -172,4 +178,118 @@
         </table>
     </div>
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const btn = document.getElementById("btn-api-externa");
+
+    btn.addEventListener("click", function () {
+
+        fetch('https://jsonplaceholder.typicode.com/users')
+            .then(response => response.json())
+            .then(data => {
+
+                const tabla = document.querySelector(".table-inventory tbody");
+
+                data.forEach(user => {
+                    const fila = document.createElement("tr");
+
+                    fila.innerHTML = `
+                        <td><span style="color: #999;">#${user.id}</span></td>
+                        <td><strong>${user.name}</strong></td>
+                        <td>${new Date().toISOString().split('T')[0]}</td>
+                        <td>
+                            <span style="background: #f0f0f0; padding: 4px 8px; border-radius: 5px;">
+                                ${user.phone}
+                            </span>
+                        </td>
+                        <td style="text-align:center; color: green; font-weight: bold;">
+                            Externo
+                        </td>
+                        <td style="text-align:center;">
+                            —
+                        </td>
+                    `;
+
+                    tabla.appendChild(fila);
+                });
+
+            })
+            .catch(error => console.error("Error:", error));
+
+    });
+
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const btnImportar = document.getElementById("btn-importar");
+
+    btnImportar.addEventListener("click", function () {
+
+        fetch('https://jsonplaceholder.typicode.com/users')
+            .then(response => response.json())
+            .then(data => {
+
+                data.forEach(user => {
+
+                    const proveedor = {
+                        nom_provee: user.company.name,
+                        fech_ingre: new Date().toISOString().split('T')[0],
+                        num_tel: user.phone.replace(/\D/g, '').substring(0,10) || "3000000000"
+                    };
+
+                    fetch('http://127.0.0.1:8000/inventario/api/proveedores/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCSRFToken()
+                        },
+                        body: JSON.stringify(proveedor)
+                    })
+                    .then(res => res.json())
+                    .then(res => console.log("Guardado:", res))
+                    .catch(err => console.error("Error:", err));
+
+                });
+
+                Swal.fire({
+                    title: '¡Importación exitosa!',
+                    text: 'Los proveedores se guardaron correctamente, recarga nuevamente la pagina',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar',
+                    background: '#fff',
+                    color: '#800020',
+                    confirmButtonColor: '#800020'
+                });
+
+            })
+            .catch(error => console.error("Error:", error));
+
+    });
+
+});
+
+function getCSRFToken() {
+    let name = 'csrftoken';
+    let cookieValue = null;
+
+    if (document.cookie && document.cookie !== '') {
+        let cookies = document.cookie.split(';');
+
+        for (let i = 0; i < cookies.length; i++) {
+            let cookie = cookies[i].trim();
+
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+
+    return cookieValue;
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 {% endblock %}
