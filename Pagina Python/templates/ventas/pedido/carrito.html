@@ -96,7 +96,7 @@
                 <img src="{% if item.id_prod_fk_detval.imagen_product %}{{ item.id_prod_fk_detval.imagen_product.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}" alt="Producto">
                 <div class="info-prod">
                     <p class="nombre-p">{{ item.id_prod_fk_detval.nom_produc }}</p>
-                    <p>Talla: <strong>{{ item.talla_var }}</strong> | Cantidad: {{ item.cant_soli }}</p>
+                    <p>Talla: <strong>{{ item.id_var_fk_detval.talla_var }}</strong> | Cantidad: {{ item.id_var_fk_detval.cant_soli }}</p>
                     <p>Subtotal: <strong>${{ item.valor_total }}</strong></p>
                 </div>
                 
