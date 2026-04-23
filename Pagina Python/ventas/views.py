@@ -20,23 +20,22 @@ def obtener_cliente_actual(request):
 #-------------------- CRUD VARIACION --------------------------
 
 def lista_var(request):
-    variaciones = Variacion.objects.all()
-    productos = Producto.objects.all()
-    abonos = Abono.objects.all()
+    # Traemos Det_valor porque es la tabla que une TODO (Pedido, Variacion, Producto)
+    detalles = Det_valor.objects.all()
+    
     return render(request, 'ventas/pedido/lista_pedidos.html', {
-        'variaciones': variaciones, 
-        'productos': productos,
-        'abonos': abonos
-        })
-
+        'detalles': detalles,
+    })
 def lista_var_e(request):
     variaciones = Variacion.objects.all()
     productos = Producto.objects.all()
     abonos = Abono.objects.all()
+    pedido = Pedido.objects.all()
     return render(request, 'ventas/pedido/lista_pedidos_e.html', {
         'variaciones': variaciones, 
         'productos': productos,
-        'abonos': abonos
+        'abonos': abonos,
+        'pedido': pedido
         })
 
 @login_requerido_custom
