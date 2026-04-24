@@ -129,7 +129,7 @@
                         </td>
                         <td style="padding: 12px; display: flex; gap: 10px;">
                             <a href="{% url 'usuarios:editar_usuario' u.id_usuario %}" style="color: #2d6cdf; text-decoration: none; font-weight: bold; font-size: 13px;">Editar</a>
-                            <a href="{% url 'usuarios:eliminar_usuario' u.id_usuario %}" style="color: #d33; text-decoration: none; font-weight: bold; font-size: 13px;">Borrar</a>
+                            <a href="{% url 'usuarios:eliminar_usuario' u.id_usuario %}"  style="color: #d33; text-decoration: none; font-weight: bold; font-size: 13px;"onclick="confirmarEliminacionUsuario(event, this.href)">Borrar</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -138,4 +138,27 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function confirmarEliminacionUsuario(event, url) {
+    event.preventDefault();
+
+    Swal.fire({
+        title: '¿Eliminar usuario?',
+        text: "Esta acción no se puede deshacer",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#6a0f2e',
+        cancelButtonColor: '#aaa',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        background: '#fff',
+        borderRadius: '12px'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
+</script>
 {% endblock %}

@@ -145,7 +145,7 @@
                         </td>
                         <td style="padding: 12px; display: flex; gap: 10px;">
                             <a href="{% url 'usuarios:editar_cliente' c.id_clien %}" style="text-decoration: none; color: #2d6cdf; font-weight: bold; font-size: 13px;">Editar</a>
-                            <a href="{% url 'usuarios:eliminar_cliente' c.id_clien %}" style="text-decoration: none; color: #d33; font-weight: bold; font-size: 13px;" onclick="return confirm('¿Eliminar cliente?')">Borrar</a>
+                            <a href="{% url 'usuarios:eliminar_cliente' c.id_clien %}" style="text-decoration: none; color: #d33; font-weight: bold; font-size: 13px;" onclick="confirmarEliminacionCliente(event, this.href)">Borrar</a>
                         </td>
                     </tr>
                     {% empty %}
@@ -158,7 +158,7 @@
         </div>
     </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.getElementById('searchInput').addEventListener('keyup', function() {
         let filter = this.value.toLowerCase();
@@ -170,5 +170,28 @@
             row.style.display = (name.includes(filter) || email.includes(filter)) ? "" : "none";
         });
     });
+</script>
+<script>
+function confirmarEliminacionCliente(event, url) {
+    event.preventDefault();
+
+    Swal.fire({
+        title: '¿Estás segura?',
+        text: 'Este cliente se eliminará definitivamente',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#800020',
+        cancelButtonColor: '#aaa',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        background: '#fff',
+        color: '#800020',
+        backdrop: 'rgba(0,0,0,0.5)'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
 </script>
 {% endblock %}

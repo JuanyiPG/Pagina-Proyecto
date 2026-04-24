@@ -164,7 +164,7 @@
                     <td><span style="background: #f0f0f0; padding: 4px 8px; border-radius: 5px;">{{ p.num_tel }}</span></td>
                     <td style="text-align: center;">
                         <a href="{% url 'inventario:editar_provee' p.id_provee %}" class="edit" style="margin-right: 15px;">Editar</a>
-                        <a href="{% url 'inventario:eliminar_provee' p.id_provee %}" class="delete" onclick="return confirm('¿Eliminar este proveedor?')">Borrar</a>
+                        <a href="{% url 'inventario:eliminar_provee' p.id_provee %}" class="delete" onclick="confirmarEliminacion(event, this.href)">Borrar</a>
                     </td>
                 </tr>
                 {% empty %}
@@ -178,6 +178,7 @@
         </table>
     </div>
 </div>
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -292,4 +293,27 @@ function getCSRFToken() {
 }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function confirmarEliminacion(event, url) {
+    event.preventDefault();
+
+    Swal.fire({
+        title: '¿Estás segura?',
+        text: 'Este proveedor se eliminará definitivamente',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#800020',
+        cancelButtonColor: '#aaa',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        background: '#fff',
+        color: '#800020',
+        backdrop: 'rgba(0,0,0,0.5)'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
+</script>
 {% endblock %}

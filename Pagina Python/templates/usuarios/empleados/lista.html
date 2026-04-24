@@ -225,7 +225,7 @@
                             <td style="padding: 12px;"><span style="background: #f3e8ef; padding: 3px 8px; border-radius: 4px; font-size: 11px;">{{ e.estado_emple }}</span></td>
                             <td style="padding: 12px;">
                                 <a href="{% url 'usuarios:editar_empleado' id=e.id_emple %}" style="color: #2d6cdf; text-decoration: none; font-size: 12px; font-weight: bold; margin-right: 10px;">Editar</a>
-                                <a href="{% url 'usuarios:eliminar_empleado' id=e.id_emple %}" style="color: #d33; text-decoration: none; font-size: 12px; font-weight: bold;" onclick="return confirm('¿Eliminar?')">Borrar</a>
+                                <a href="{% url 'usuarios:eliminar_empleado' id=e.id_emple %}" style="color: #d33; text-decoration: none; font-size: 12px; font-weight: bold;" onclick="confirmarEliminacionEmpleado(event, this.href)">Borrar</a>
                             </td>
                         </tr>
                         {% empty %}
@@ -237,7 +237,7 @@
         </div>
     </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     const fotoIn = document.getElementById('id_foto');
     const fotoPreview = document.getElementById('preview');
@@ -266,5 +266,28 @@
             document.getElementById('userBadge').style.display = 'none';
         }
     }
+</script>
+<script>
+function confirmarEliminacionEmpleado(event, url) {
+    event.preventDefault();
+
+    Swal.fire({
+        title: '¿Estás segura?',
+        text: 'Este empleado se eliminará definitivamente',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#7e1a3f',
+        cancelButtonColor: '#aaa',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        background: '#fff',
+        color: '#7e1a3f',
+        backdrop: 'rgba(0,0,0,0.5)'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
 </script>
 {% endblock %}

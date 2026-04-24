@@ -198,7 +198,7 @@
                 <p style="margin: 10px 0; color: var(--luxy-burgundy); font-weight: 800; font-size: 19px;">${{ e.costo_adi }}</p>
                 <div style="display: flex; justify-content: space-between; margin-top: 15px; padding-top: 15px; border-top: 1px solid #f5f5f5;">
                     <a href="{% url 'inventario:editar_estampado' e.id_estamp %}" style="color: #2d6cdf; text-decoration: none; font-size: 12px; font-weight: bold;">EDITAR</a>
-                    <a href="{% url 'inventario:eliminar_estampado' e.id_estamp %}" style="color: #d33; text-decoration: none; font-size: 12px; font-weight: bold;" onclick="return confirm('¿Eliminar este diseño?')">ELIMINAR</a>
+                    <a href="{% url 'inventario:eliminar_estampado' e.id_estamp %}" style="color: #d33; text-decoration: none; font-size: 12px; font-weight: bold;" onclick="confirmarEliminacionEstampado(event, this.href)">ELIMINAR</a>
                 </div>
             </div>
         </div>
@@ -225,5 +225,30 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+function confirmarEliminacionEstampado(event, url) {
+    event.preventDefault();
+
+    Swal.fire({
+        title: '¿Estás segura?',
+        text: 'Este diseño se eliminará definitivamente',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#800020',
+        cancelButtonColor: '#aaa',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        background: '#fff',
+        color: '#800020',
+        backdrop: 'rgba(0,0,0,0.5)'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
 </script>
 {% endblock %}
