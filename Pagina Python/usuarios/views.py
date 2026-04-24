@@ -30,11 +30,12 @@ def solo_personal(view_func):
         if 'usuario_id' not in request.session:
             return redirect('usuarios:login')
         
-        rol = request.session.get('rol')
+        # .title() asegura que 'administrador' o 'ADMINISTRADOR' funcionen como 'Administrador'
+        rol = str(request.session.get('rol', '')).title()
         if rol in ['Administrador', 'Empleado']:
             return view_func(request, *args, **kwargs)
         
-        messages.warning(request, "No tienes permisos para acceder a esta sección.")
+        messages.warning(request, "No tienes permisos para acceder.")
         return redirect('index') 
     return _wrapped_view
 
@@ -140,32 +141,42 @@ def lista_empleados(request):
 @solo_personal
 def crear_empleado(request):
     if request.method == 'POST':
-        foto = request.FILES.get('foto_perfil')
-        foto_hash = None
 
+        num_ident_val = request.POST.get('num_ident')
+        user_val = request.POST.get('username')
+        pass_val = request.POST.get('contrasena')
+        rol_id = request.POST.get('id_rol')
+        foto = request.FILES.get('foto_perfil')
+
+        # --- SECCIÓN DE VALIDACIONES  ---
+
+        if Empleado.objects.filter(num_ident=num_ident_val).exists():
+            messages.error(request, f"⚠️ La identificación {num_ident_val} ya está registrada. No se creó ni el empleado ni el usuario.")
+            return redirect('usuarios:lista_empleados')
+
+        if Usuario.objects.filter(username=user_val).exists():
+            messages.error(request, f"⚠️ El nombre de usuario '{user_val}' ya existe.")
+            return redirect('usuarios:lista_empleados')
+
+        # C. Validar credenciales vacías
+        if not user_val or not pass_val:
+            messages.error(request, "⚠️ Debes configurar el usuario.")
+            return redirect('usuarios:lista_empleados')
+
+        # D. Validar si la foto ya existe (Hash)
+        foto_hash = None
         if foto:
             content = foto.read()
             foto_hash = hashlib.sha256(content).hexdigest()
             foto.seek(0)
-
             if Empleado.objects.filter(hash_foto=foto_hash).exists():
                 messages.error(request, "⚠️ Esta fotografía ya está registrada.")
                 return redirect('usuarios:lista_empleados')
 
-        user_val = request.POST.get('username')
-        pass_val = request.POST.get('contrasena')
-        rol_id = request.POST.get('id_rol')
-
-        if not user_val or not pass_val:
-            messages.error(request, "⚠️ Debes configurar las credenciales de usuario en el modal.")
-            return redirect('usuarios:lista_empleados')
-
-        if Usuario.objects.filter(username=user_val).exists():
-            messages.error(request, f"El nombre de usuario '{user_val}' ya existe.")
-            return redirect('usuarios:lista_empleados')
-
+        # --- SECCIÓN DE GUARDADO (Solo llegamos aquí si todo lo anterior pasó) ---
         try:
             with transaction.atomic():
+                # Buscamos o creamos el Rol
                 try:
                     if rol_id:
                         rol_obj = Rol.objects.get(id_rol=rol_id)
@@ -174,13 +185,14 @@ def crear_empleado(request):
                 except Rol.DoesNotExist:
                     rol_obj = Rol.objects.create(nom_rol='Empleado')
 
-                # IMPLEMENTACIÓN DE MAKE_PASSWORD AQUÍ
+                # 1. Crear el Usuario
                 nuevo_usuario = Usuario.objects.create(
                     username=user_val,
-                    contrasena=make_password(pass_val), # Encriptado
+                    contrasena=make_password(pass_val),
                     id_rol_fk=rol_obj
                 )
 
+                # 2. Crear el Empleado vinculado al usuario
                 Empleado.objects.create(
                     nom_emple=request.POST.get('nom_emple'),
                     tel_emple=request.POST.get('tel_emple'), 
@@ -189,7 +201,7 @@ def crear_empleado(request):
                     rh_emple=request.POST.get('rh_emple'),
                     fecha_naci_emple=request.POST.get('fecha_naci_emple'),
                     tipo_ident=request.POST.get('tipo_ident'),
-                    num_ident=request.POST.get('num_ident'),
+                    num_ident=num_ident_val,
                     fecha_ing_emple=request.POST.get('fecha_ing_emple'),
                     salari_emple=request.POST.get('salari_emple'),
                     estado_emple=request.POST.get('estado_emple'),
@@ -199,12 +211,10 @@ def crear_empleado(request):
                 )
                 
                 messages.success(request, "✅ Empleado y usuario creados con éxito.")
-                return redirect('usuarios:lista_empleados')
-
+                
         except Exception as e:
             messages.error(request, f"Error crítico al registrar: {e}")
-            return redirect('usuarios:lista_empleados')
-
+            
     return redirect('usuarios:lista_empleados')
 
 @solo_personal
