@@ -101,10 +101,15 @@
         
         <td>
             <div class="img-thumbnail-container">
-                {% if d.id_prod_fk_detval.imagen_product %}
-                    <img src="{{ d.id_prod_fk_detval.imagen_product.url }}">
+                {# Cambiamos 'pedido.det_valor_set.first' por 'd' #}
+                {% if d.id_personalizacion_3d and d.id_personalizacion_3d.foto_frente %}
+                    <img src="{{ d.id_personalizacion_3d.foto_frente.url }}" alt="Diseño Personalizado">
+                {% elif d.id_prod_fk_detval.imagen_product %}
+                    <img src="{{ d.id_prod_fk_detval.imagen_product.url }}" alt="Producto Estándar">
                 {% else %}
-                    <span style="font-size: 10px;">Sin foto</span>
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #ccc; font-size: 10px;">
+                        Sin foto
+                    </div>
                 {% endif %}
             </div>
         </td>
