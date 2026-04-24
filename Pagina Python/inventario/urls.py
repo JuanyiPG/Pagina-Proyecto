@@ -27,7 +27,10 @@ urlpatterns=[
     path('estampados/editar/<int:id>/', views.editar_estampado, name="editar_estampado"),
     path('estampados/eliminar/<int:id>/', views.eliminar_estampado, name="eliminar_estampado"),
     
+  
+  
     path('modelo/<int:producto_id>/', views.modelo, name='modelo'),
+    path('guardar-diseno/', views.guardar_diseno_3d, name='guardar-diseno'), # ESTA ES LA LÍNEA CLAVE
 ]
 
 urlpatterns += router.urls
