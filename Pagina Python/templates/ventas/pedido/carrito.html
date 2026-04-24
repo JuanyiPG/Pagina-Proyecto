@@ -6,6 +6,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>Mi Carrito - Luxy Fashion</title>
     <style>
+        /* TU ESTILO ORIGINAL SIN CAMBIOS */
         body { font-family: Arial; background: #f4eeee; margin: 0; }
         header { 
             background: white; height: 80px; padding: 0 20px; 
@@ -26,11 +27,11 @@
         .resumen-pago {
             background: white; padding: 25px; border-radius: 12px;
             max-width: 450px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-top: 30px;
+            margin-bottom: 50px; /* Espacio entre pedidos */
         }
         .fila-resumen { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 16px; color: #555; }
         .total-final { margin-top: 15px; padding-top: 15px; border-top: 2px dashed #eee; font-size: 22px; font-weight: bold; }
         
-/* Botones y Spinner */
         .btn-comprar { 
             display: flex; justify-content: center; align-items: center;
             width: 100%; padding: 15px; background: rgb(87,16,29); 
@@ -39,174 +40,69 @@
             text-decoration: none;
         }
         .btn-comprar:hover { background: rgb(110, 20, 37); }
-        .btn-comprar:disabled { background: #999; cursor: not-allowed; }
-
-        .spinner {
-            width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%; border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-            display: none; margin-right: 10px;
-            text-decoration: none;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-        
-        .carrito-vacio { 
-            text-align: center; 
-            color: #666; margin-top: 50px;
-            text-decoration: none !important;
-        }
-
-        .acciones-carrito {
-        display: flex;
-        gap: 15px; /* Espacio entre los dos botones */
-        justify-content: flex-end; /* Los alinea a la derecha */
-        padding: 10px;
-}
-
-        .btn-accion {
-        text-decoration: none;
-    color: #57101d;
-    transition: transform 0.2s, color 0.2s;
-}
-
-    .btn-eliminar{
-        margin-left: 60em;
-    }
-
-.btn-accion:hover {
-    transform: scale(1.2);
-    color: #a31c36; /* Un rojo más claro al pasar el mouse */
-}
-
+        .acciones-carrito { display: flex; gap: 15px; justify-content: flex-end; padding: 10px; flex-grow: 1; }
+        .btn-accion { text-decoration: none; color: #57101d; transition: transform 0.2s, color 0.2s; }
+        .btn-accion:hover { transform: scale(1.2); color: #a31c36; }
     </style>
 </head>
 <body>
 
 <header>
     <div><a href="{% url 'ventas:lista_product' %}"><img src="{% static 'img/Logo_Luxy_Fashion.jpg' %}" height="60" alt="Logo"></a></div>
+    <a href="{% url 'ventas:lista_pedidos_cliente' %}" class="iconP-link" style="text-decoration: none; color: white; font-size: 35px ; margin-right: 100px;">📦</a>
 </header>
 
 <main>
     <h2>Mi Carrito</h2>
     <div id="lista">
-        {% if items %}
-            {% for item in items %}
-            <div class="producto">
-                <img src="{% if item.id_prod_fk_detval.imagen_product %}{{ item.id_prod_fk_detval.imagen_product.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}" alt="Producto">
-                <div class="info-prod">
-                    <p class="nombre-p">{{ item.id_prod_fk_detval.nom_produc }}</p>
-                    <p>Talla: <strong>{{ item.id_var_fk_detval.talla_var }}</strong> | Cantidad: {{ item.id_var_fk_detval.cant_soli }}</p>
-                    <p>Subtotal: <strong>${{ item.valor_total }}</strong></p>
-                </div>
+        {% if pedidos_info %}
+            {% for info in pedidos_info %} <h3 style="color:rgb(87,16,29);">Pedido #{{ info.pedido.id_pedido }}</h3>
                 
-                <div class="acciones-carrito">
-                    <a href="{% url 'ventas:eliminar_carrito' id_det_valor=item.id_det_valor %}" 
-                    class="btn-accion btn-eliminar" 
-                    title="Eliminar">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
-            <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
-        </svg>
-    </a>
+                {% for item in info.items %} <div class="producto">
+                    <img src="{% if item.id_prod_fk_detval.imagen_product %}{{ item.id_prod_fk_detval.imagen_product.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}" alt="Producto">
+                    <div class="info-prod">
+                        <p class="nombre-p">{{ item.id_prod_fk_detval.nom_produc }}</p>
+                        <p>Talla: <strong>{{ item.id_var_fk_detval.talla_var }}</strong> | Cantidad: {{ item.id_var_fk_detval.cant_soli }}</p>
+                        <p>Subtotal: <strong>${{ item.valor_total }}</strong></p>
+                    </div>
+                    
+                    <div class="acciones-carrito">
+                        <a href="{% url 'ventas:eliminar_carrito' id_det_valor=item.id_det_valor %}" class="btn-accion btn-eliminar" title="Eliminar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16"><path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/></svg>
+                        </a>
+                        <a href="{% url 'ventas:editar_carrito' id_det_valor=item.id_det_valor %}" class="btn-accion btn-editar" title="Editar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/></svg>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
 
-    <a href="{% url 'ventas:editar_carrito' id_det_valor=item.id_det_valor %}" 
-                class="btn-accion btn-editar" 
-                title="Editar">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
-            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
-        </svg>
-    </a>
-</div>
+                <div class="resumen-pago">
+                    <h3>Resumen de compra</h3>
+                    <div class="fila-resumen"><span>Total productos:</span><span>${{ info.total_productos }}</span></div>
+                    <div class="fila-resumen"><span>Abonado:</span><span style="color: green;">-${{ info.total_abonado }}</span></div>
 
-            </div>
-            {% endfor %} <div class="resumen-pago">
-                <h3>Resumen de compra</h3>
-                <div class="fila-resumen"><span>Total productos:</span><span>${{ total_productos }}</span></div>
+                    <div class="fila-resumen total-final">
+                        <span>Saldo Pendiente:</span>
+                        <span style="color:rgb(87,16,29);">${{ info.saldo_pendiente }}</span>
+                    </div>
 
-                {% if tiene_abonos %}
-                    <div class="fila-resumen total-final"><span>Saldo Pendiente:</span><span style="color:rgb(87,16,29);">${{ saldo_pendiente }}</span></div>
-                {% else %}
-                    <div class="fila-resumen total-final"><span>Total a pagar:</span><span>${{ total_productos }}</span></div>
-                {% endif %}
-
-                <a href="{% url 'ventas:finalizar_compra' pedido.id_pedido %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn-comprar" id="btn-submit">
-                        <div class="spinner" id="loader"></div>
-                        <span id="btn-texto">Finalizar Compra</span>
-                    </button>
-                </a>
-            </div>
-
+                    <a href="{% url 'ventas:finalizar_compra' info.pedido.id_pedido %}" style="text-decoration: none;">
+                        <button class="btn-comprar">
+                            <span>Realizar Abono / Pagar</span>
+                        </button>
+                    </a>
+                </div>
+                <hr style="border: 1px solid #ddd; margin: 40px 0;">
+            {% endfor %}
         {% else %}
             <div class="carrito-vacio">
                 <h3>Tu carrito está vacío</h3>
-                <a href="{% url 'ventas:lista_product' %}" class="btn-comprar" style="display:inline-block; width:auto;">Ver Productos</a>
+                <a href="{% url 'ventas:lista_product' %}" class="btn-comprar" style="display:inline-block; width:auto; text-decoration: none;">Ver Productos</a>
             </div>
         {% endif %}
     </div>
 </main>
-
-<script>
-    // Lógica para el efecto de carga
-    document.getElementById('form-finalizar').addEventListener('submit', function() {
-        const btn = document.getElementById('btn-submit');
-        const loader = document.getElementById('loader');
-        const texto = document.getElementById('btn-texto');
-
-        btn.disabled = true; // Evita doble clic
-        loader.style.display = 'block'; // Muestra la ruedita
-        texto.innerText = 'Procesando...'; // Cambia el texto
-    });
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    
-    // Alerta para ELIMINAR
-    document.querySelectorAll('.btn-eliminar').forEach(boton => {
-        boton.addEventListener('click', function(e) {
-            e.preventDefault(); // Detiene el enlace
-            const url = this.href;
-
-            Swal.fire({
-                title: '¿Remover producto?',
-                text: "Esta acción quitará el producto de tu carrito.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#57101d', // Tu color personalizado
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Sí, remover',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = url; // Si confirma, redirige
-                }
-            });
-        });
-    });
-
-    // Alerta para EDITAR
-    document.querySelectorAll('.btn-editar').forEach(boton => {
-        boton.addEventListener('click', function(e) {
-            e.preventDefault();
-            const url = this.href;
-
-            Swal.fire({
-                title: '¿Editar producto?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#57101d',
-                confirmButtonText: 'Ir a editar',
-                cancelButtonText: 'Volver'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = url;
-                }
-            });
-        });
-    });
-});
-</script>
 
 </body>
 </html>

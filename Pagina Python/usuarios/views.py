@@ -31,7 +31,7 @@ def solo_personal(view_func):
             return redirect('usuarios:login')
         
         rol = request.session.get('rol')
-        if rol in ['Administrador', 'Empleado']:
+        if rol in ['Administrador', 'Empleado', 'empleado']:
             return view_func(request, *args, **kwargs)
         
         messages.warning(request, "No tienes permisos para acceder a esta sección.")

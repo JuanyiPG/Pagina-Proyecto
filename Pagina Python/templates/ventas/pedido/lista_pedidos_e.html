@@ -95,98 +95,83 @@
                 </thead>
 
                 <tbody>
-                    {% for pedido in variaciones %}
-                    <tr style="text-align: center;">
-                        <td style="font-weight: bold;">#{{ pedido.id_var }}</td>
-                        
-                        <td>
-                            <div class="img-thumbnail-container">
-                                {% for p in productos %}
-                                    {% if p.imagen_product %}
-                                        <img src="{{ p.imagen_product.url }}" alt="{{ p.nom_produc }}">
-                                    {% else %}
-                                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #ccc; font-size: 10px;">Sin foto</div>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        </td>
+    {% for d in detalles %}
+    <tr style="text-align: center;">
+        <td style="font-weight: bold;">#{{ d.id_var_fk_detval.id_var }}</td>
+        
+        <td>
+            <div class="img-thumbnail-container">
+                {% if d.id_prod_fk_detval.imagen_product %}
+                    <img src="{{ d.id_prod_fk_detval.imagen_product.url }}">
+                {% else %}
+                    <span style="font-size: 10px;">Sin foto</span>
+                {% endif %}
+            </div>
+        </td>
 
-                        <td>
-                            {% for p in productos %}
-                                {{ p.nom_produc }}
-                            {% endfor %}
-                        </td>
+        <td>{{ d.id_prod_fk_detval.nom_produc }}</td>
+        <td>{{ d.id_var_fk_detval.color_var }}</td>
+        <td>{{ d.id_var_fk_detval.talla_var }}</td>
+        <td style="font-weight: bold;">{{ d.id_var_fk_detval.cant_soli }}</td>
 
-                        <td>{{ pedido.color_var }}</td>
-                        <td>{{ pedido.talla_var }}</td>
-                        <td style="font-weight: bold; color: var(--luxy-burgundy);">{{ pedido.cant_soli }}</td>
-                        {% for cliente in abonos %}
-                        <td>{{ cliente.id_pedido_fk_abono.id_clien_fk.nom_clien }}</td>
-                        {% endfor %}
-                        
-                        <td>
-                            <button type="button" class="btn" style="background-color: #800020; color: white; border-radius: 8px; padding: 8px 15px; font-weight: bold; border: none; font-size: 12px;" data-bs-toggle="modal" data-bs-target="#modalPagos{{ pedido.id_var }}">
-                                Ver Pagos 
-                            </button>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="8" style="padding: 40px; text-align: center; color: #999;">
-                            No hay pedidos registrados en el sistema.
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
+        <td>{{ d.id_ped_fk_detval.id_clien_fk.nom_clien }}</td>
+
+        <td>
+    <button type="button" class="btn" 
+        style="background-color: #800020; color: white; border-radius: 8px; padding: 8px 15px; font-weight: bold; border: none;" 
+        data-bs-toggle="modal" 
+        data-bs-target="#modalPagos{{ d.id_det_valor }}">
+        Ver Pagos 
+    </button>
+</td>
+    </tr>
+    {% endfor %}
+</tbody>
             </table>
         </div>
     </div>
 </div>
 
-{% for pedido in variaciones %}
-<div class="modal fade" id="modalPagos{{ pedido.id_var }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content" style="border-radius: 12px; border: none; overflow: hidden; text-align: left;">
-            <div class="modal-header" style="background: #7e1a3f; color: white; padding: 20px;">
-                <div style="border-left: 4px solid #f9f9f9; padding-left: 15px;">
-                    <h5 class="modal-title" style="font-weight: bold; margin: 0;">Historial de Abonos - Pedido #{{ pedido.id_var }}</h5>
-                    <small style="color: rgba(255,255,255,0.8);">Registro cronológico de pagos</small>
-                </div>
+{% for d in detalles %}
+<div class="modal fade" id="modalPagos{{ d.id_det_valor }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="border-radius: 15px; border: none;">
+            
+            <div class="modal-header" style="background-color: #800020; color: white; border-radius: 15px 15px 0 0;">
+                <h5 class="modal-title" style="margin:0;">
+                    Pagos de: {{ d.id_ped_fk_detval.id_clien_fk.nom_clien|default:"Cliente" }}
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
             </div>
 
-            <div class="modal-body" style="padding: 0;">
-                <div class="table-responsive">
-                    <table class="table" style="width: 100%; margin-bottom: 0;">
-                        <thead style="background-color: #f9f9f9; border-bottom: 1px solid #eee;">
-                            <tr style="font-size: 13px; color: #333; text-transform: uppercase;">
-                                <th style="padding: 15px;">ID Pago</th>
-                                <th style="padding: 15px;">Fecha</th>
-                                <th style="padding: 15px;">Monto</th>
-                                <th style="padding: 15px;">Método</th>
-                                <th style="padding: 15px;">Notas</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for abono in abonos %} 
-                            <tr style="font-size: 13px; border-bottom: 1px solid #f0f0f0;">
-                                <td style="padding: 12px 15px;"><span style="color: #bbb; font-weight: bold;">#{{ abono.id }}</span></td>
-                                <td style="padding: 12px 15px;">{{ abono.fecha_abono|date:"d/m/Y" }}</td>
-                                <td style="padding: 12px 15px; color: #7e1a3f; font-weight: bold;">${{ abono.monto_abono }}</td>
-                                <td style="padding: 12px 15px;">{{ abono.metodo_pago }}</td>
-                                <td style="padding: 12px 15px; color: #777;">{{ abono.descripcion|default:"-" }}</td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="5" style="text-align: center; padding: 40px; color: #999;">No hay abonos registrados.</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                <table class="table" style="width: 100%;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #eee;">
+                            <th>Fecha</th>
+                            <th>Monto</th>
+                            <th>Método</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for abono in d.id_ped_fk_detval.abono_set.all %}
+                        <tr>
+                            <td>{{ abono.fecha_abono|date:"d/m/Y" }}</td>
+                            <td style="color: #800020; font-weight: bold;">${{ abono.monto_abono }}</td>
+                            <td>{{ abono.metodo_pago }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" style="text-align: center; padding: 20px; color: #999;">
+                                No hay abonos registrados para este pedido.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-            <div class="modal-footer" style="border-top: 1px solid #eee; padding: 10px 20px;">
-                <p style="color: #999; font-size: 12px; margin: 0; width: 100%; text-align: right;"><strong>Luxy Fashion</strong></p>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
