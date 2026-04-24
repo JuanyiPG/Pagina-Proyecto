@@ -20,7 +20,6 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             position: relative;
         }
-        /* Contenedor de imagen para mantener proporciones */
         .contenedor-img {
             width: 140px; height: 140px; margin-right: 20px;
             background: #fff; border-radius: 8px; overflow: hidden;
@@ -28,23 +27,19 @@
             border: 1px solid #eee;
         }
         .producto img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        
-        .info-prod p { margin: 5px 0; }
         .nombre-p { font-weight: bold; font-size: 18px; color: rgb(87,16,29); }
-        
         .badge-3d {
             display: inline-block; background: #57101d; color: white;
             padding: 2px 8px; border-radius: 4px; font-size: 11px;
             text-transform: uppercase; margin-bottom: 5px;
         }
-
         .resumen-pago {
             background: white; padding: 25px; border-radius: 12px;
             max-width: 450px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-top: 30px;
+            margin-bottom: 50px;
         }
         .fila-resumen { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 16px; color: #555; }
         .total-final { margin-top: 15px; padding-top: 15px; border-top: 2px dashed #eee; font-size: 22px; font-weight: bold; }
-        
         .btn-comprar { 
             display: flex; justify-content: center; align-items: center;
             width: 100%; padding: 15px; background: rgb(87,16,29); 
@@ -53,12 +48,9 @@
             text-decoration: none;
         }
         .btn-comprar:hover { background: rgb(110, 20, 37); }
-        .btn-comprar:disabled { background: #999; cursor: not-allowed; }
-
         .acciones-carrito { display: flex; gap: 15px; position: absolute; right: 20px; bottom: 20px; }
         .btn-accion { text-decoration: none; color: #57101d; transition: 0.2s; }
         .btn-accion:hover { transform: scale(1.2); color: #a31c36; }
-
         .spinner {
             width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3);
             border-radius: 50%; border-top-color: #fff;
@@ -66,7 +58,6 @@
             display: none; margin-right: 10px;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        
         .carrito-vacio { text-align: center; color: #666; margin-top: 50px; }
     </style>
 </head>
@@ -74,76 +65,63 @@
 
 <header>
     <div><a href="{% url 'ventas:lista_product' %}"><img src="{% static 'img/Logo_Luxy_Fashion.jpg' %}" height="60" alt="Logo"></a></div>
+    <a href="{% url 'ventas:lista_pedidos_cliente' %}" class="iconP-link" style="text-decoration: none; font-size: 35px ; margin-right: 100px;">📦</a>
 </header>
 
 <main>
     <h2>Mi Carrito</h2>
     <div id="lista">
-        {% if items %}
-            {% for item in items %}
-            <div class="producto">
-                <div class="contenedor-img">
-                    {% if item.id_personalizacion_3d %}
-                        <img src="{{ item.id_personalizacion_3d.foto_frente.url }}" alt="Diseño Personalizado 3D">
-                    {% elif item.id_prod_fk_detval.imagen_product %}
-                        <img src="{{ item.id_prod_fk_detval.imagen_product.url }}" alt="Producto Estándar">
-                    {% else %}
-                        <img src="{% static 'img/default.jpg' %}" alt="Sin imagen">
-                    {% endif %}
-                </div>
-
-                <div class="info-prod">
-                    {% if item.id_personalizacion_3d %}
-                        <span class="badge-3d">Diseño Exclusivo 3D</span>
-                    {% endif %}
-                    <p class="nombre-p">{{ item.id_prod_fk_detval.nom_produc }}</p>
-                    
-                    <p>Talla: <strong>{{ item.id_var_fk_detval.talla_var }}</strong> | Cantidad: {{ item.id_var_fk_detval.cant_soli }}</p>
-                    
-                    <div style="font-size: 0.9rem; background: #f9f9f9; padding: 5px; border-radius: 5px; margin: 5px 0;">
-                        <p style="margin:0;">Base: ${{ item.id_prod_fk_detval.precio }}</p>
-                        {% if item.id_personalizacion_3d.estampado.costo_adi > 0 %}
-                            <p style="margin:0; color: #6a0f2e;">+ Estampado: ${{ item.id_personalizacion_3d.estampado.costo_adi }}</p>
+        {% if pedidos_info %}
+            {% for info in pedidos_info %}
+                <h3 style="color:rgb(87,16,29);">Pedido #{{ info.pedido.id_pedido }}</h3>
+                
+                {% for item in info.items %}
+                <div class="producto">
+                    <div class="contenedor-img">
+                        {% if item.id_personalizacion_3d %}
+                            <img src="{{ item.id_personalizacion_3d.foto_frente.url }}" alt="Diseño 3D">
+                        {% elif item.id_prod_fk_detval.imagen_product %}
+                            <img src="{{ item.id_prod_fk_detval.imagen_product.url }}" alt="Producto">
+                        {% else %}
+                            <img src="{% static 'img/default.jpg' %}" alt="Sin imagen">
                         {% endif %}
                     </div>
 
-                    <p>Subtotal: <strong>${{ item.valor_total }}</strong></p>
+                    <div class="info-prod">
+                        {% if item.id_personalizacion_3d %}
+                            <span class="badge-3d">Diseño Exclusivo 3D</span>
+                        {% endif %}
+                        <p class="nombre-p">{{ item.id_prod_fk_detval.nom_produc }}</p>
+                        <p>Talla: <strong>{{ item.id_var_fk_detval.talla_var }}</strong> | Cantidad: {{ item.id_var_fk_detval.cant_soli }}</p>
+                        <p>Subtotal: <strong>${{ item.valor_total }}</strong></p>
+                    </div>
+                    
+                    <div class="acciones-carrito">
+                        <a href="{% url 'ventas:editar_carrito' id_det_valor=item.id_det_valor %}" class="btn-accion btn-editar" title="Editar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/></svg>
+                        </a>
+                        <a href="{% url 'ventas:eliminar_carrito' id_det_valor=item.id_det_valor %}" class="btn-accion btn-eliminar" title="Eliminar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/></svg>
+                        </a>
+                    </div>
                 </div>
-                
-                <div class="acciones-carrito">
-                    <a href="{% url 'ventas:editar_carrito' id_det_valor=item.id_det_valor %}" class="btn-accion btn-editar" title="Editar">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
-                            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
-                        </svg>
-                    </a>
+                {% endfor %}
 
-                    <a href="{% url 'ventas:eliminar_carrito' id_det_valor=item.id_det_valor %}" class="btn-accion btn-eliminar" title="Eliminar">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                            <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
-                        </svg>
+                <div class="resumen-pago">
+                    <h3>Resumen de compra</h3>
+                    <div class="fila-resumen"><span>Total productos:</span><span>${{ info.total_productos }}</span></div>
+                    <div class="fila-resumen"><span>Abonado:</span><span style="color: green;">-${{ info.total_abonado }}</span></div>
+                    <div class="fila-resumen total-final">
+                        <span>Saldo Pendiente:</span>
+                        <span style="color:rgb(87,16,29);">${{ info.saldo_pendiente }}</span>
+                    </div>
+
+                    <a href="{% url 'ventas:finalizar_compra' info.pedido.id_pedido %}" style="text-decoration: none;">
+                        <button type="button" class="btn-comprar">Realizar Abono / Pagar</button>
                     </a>
                 </div>
-            </div>
+                <hr style="border: 1px solid #ddd; margin: 40px 0;">
             {% endfor %}
-
-            <div class="resumen-pago">
-                <h3>Resumen de compra</h3>
-                <div class="fila-resumen"><span>Total productos:</span><span>${{ total_productos }}</span></div>
-
-                {% if tiene_abonos %}
-                    <div class="fila-resumen total-final"><span>Saldo Pendiente:</span><span style="color:rgb(87,16,29);">${{ saldo_pendiente }}</span></div>
-                {% else %}
-                    <div class="fila-resumen total-final"><span>Total a pagar:</span><span>${{ total_productos }}</span></div>
-                {% endif %}
-
-                <a href="{% url 'ventas:finalizar_compra' pedido.id_pedido %}" style="text-decoration: none;">
-                    <button type="button" class="btn-comprar" id="btn-submit">
-                        <div class="spinner" id="loader"></div>
-                        <span id="btn-texto">Finalizar Compra</span>
-                    </button>
-                </a>
-            </div>
-
         {% else %}
             <div class="carrito-vacio">
                 <h3>Tu carrito está vacío</h3>
@@ -154,52 +132,19 @@
 </main>
 
 <script>
-    // Lógica para el efecto de carga al hacer clic en el botón de finalizar
-    document.getElementById('btn-submit')?.addEventListener('click', function(e) {
-        const btn = this;
-        const loader = document.getElementById('loader');
-        const texto = document.getElementById('btn-texto');
-
-        loader.style.display = 'block';
-        texto.innerText = 'Procesando...';
-        // No deshabilitamos el botón inmediatamente para permitir que el enlace funcione
-        setTimeout(() => btn.style.pointerEvents = 'none', 10);
-    });
-
     document.addEventListener('DOMContentLoaded', function() {
-        // Alerta para ELIMINAR
         document.querySelectorAll('.btn-eliminar').forEach(boton => {
             boton.addEventListener('click', function(e) {
                 e.preventDefault();
                 const url = this.href;
                 Swal.fire({
                     title: '¿Remover producto?',
-                    text: "Esta acción quitará el diseño de tu carrito.",
+                    text: "Esta acción quitará el producto de tu carrito.",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#57101d',
-                    cancelButtonColor: '#6c757d',
                     confirmButtonText: 'Sí, remover',
                     cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) window.location.href = url;
-                });
-            });
-        });
-
-        // Alerta para EDITAR
-        document.querySelectorAll('.btn-editar').forEach(boton => {
-            boton.addEventListener('click', function(e) {
-                e.preventDefault();
-                const url = this.href;
-                Swal.fire({
-                    title: '¿Editar producto?',
-                    text: "Volverás al editor para ajustar los detalles.",
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#57101d',
-                    confirmButtonText: 'Ir a editar',
-                    cancelButtonText: 'Volver'
                 }).then((result) => {
                     if (result.isConfirmed) window.location.href = url;
                 });
