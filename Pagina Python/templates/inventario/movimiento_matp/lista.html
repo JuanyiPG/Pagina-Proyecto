@@ -217,7 +217,7 @@
         <td>{{ m.id_proveedor_fk.nom_provee }}</td>
         <td style="text-align: center;">
             <a href="{% url 'inventario:editar_mmtp' m.id_mmtp %}" class="edit">Editar</a>
-            <a href="{% url 'inventario:eliminar_mmtp' m.id_mmtp %}" class="delete" onclick="return confirm('¿Eliminar este registro?')">Borrar</a>
+            <a href="{% url 'inventario:eliminar_mmtp' m.id_mmtp %}" class="delete" onclick="confirmarEliminacionMMTP(event, this.href)">Borrar</a>
             
             <button type="button" 
                     style="background: none; border: none; color: #7e1a3f; cursor: pointer; font-weight: bold; font-size: 13px;" 
@@ -343,5 +343,30 @@
         }
         return cookieValue;
     }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+function confirmarEliminacionMMTP(event, url) {
+    event.preventDefault();
+
+    Swal.fire({
+        title: '¿Estás segura?',
+        text: 'Este movimiento se eliminará definitivamente',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#800020',
+        cancelButtonColor: '#aaa',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        background: '#fff',
+        color: '#800020',
+        backdrop: 'rgba(0,0,0,0.5)'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
 </script>
 {% endblock %}
