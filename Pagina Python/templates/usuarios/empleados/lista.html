@@ -45,12 +45,14 @@
         </div>
 
         {% if messages %}
-            {% for message in messages %}
-                <div style="background: #fdeaea; color: #e74c3c; padding: 12px; border-radius: 8px; border: 1px solid #e74c3c; margin-bottom: 20px; text-align: center;">
-                    ⚠️ {{ message }}
-                </div>
-            {% endfor %}
+    {% for message in messages %}
+        {% if message.tags == 'error' %}  {# 👈 Solo entra si el mensaje es un error #}
+            <div style="background: #fdeaea; color: #e74c3c; padding: 12px; border-radius: 8px; border: 1px solid #e74c3c; margin-bottom: 20px; text-align: center;">
+                ⚠️ {{ message }}
+            </div>
         {% endif %}
+    {% endfor %}
+{% endif %}
 
         <div class="form-card">
             <form method="POST" action="{% url 'usuarios:crear_empleado' %}" enctype="multipart/form-data">
