@@ -1,25 +1,62 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.template.loader import get_template
-from xhtml2pdf import pisa
-import os 
-from decimal import Decimal, InvalidOperation
+import os
+import uuid
+import json
+import base64
 import hashlib
-from .models import Estampado, Proveedor, Movimiento_matp
-from ventas.models import Producto 
-from usuarios.models import Usuario
-from django.db.models import Q 
 import pandas as pd
+from decimal import Decimal
+
+# Django Core
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse, JsonResponse
+from django.utils import timezone
+from django.conf import settings
+from django.db import transaction
+from django.db.models import Q
+from django.core.files.base import ContentFile
+from django.template.loader import get_template
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
+
+# PDF y Reportes
+from xhtml2pdf import pisa
+
+# Django Rest Framework
+from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.http import HttpResponse
-from rest_framework import status
-from .serializers import MovimientoSerializer
-from django.conf import settings
-import base64
-from .serializers import ProveedorSerializer
-from rest_framework import viewsets
+
+# Modelos y Views de otras Apps (Luxy Fashion Bridge)
+from .models import Estampado, Proveedor, Movimiento_matp, PedidoPersonalizado
+from .serializers import MovimientoSerializer, ProveedorSerializer
+from django.contrib.auth.decorators import login_required
+
+# Importaciones desde Ventas (Para el Carrito)
+from ventas.models import Producto, Pedido, Det_valor, Cliente, Variacion
+from ventas.views import obtener_cliente_actual
+
+# Importaciones desde Usuarios (Para Seguridad)
+from usuarios.models import Usuario
+from usuarios.views import login_requerido_custom, solo_personal
+
+# Si tienes decoradores personalizados en usuarios/views.py
+# from usuarios.views import login_requerido_custom
+
+# --- FUNCIONES AUXILIARES ---
+
+def b64_to_file(data_url, name):
+    """Convierte una cadena base64 de Three.js en un archivo de imagen para Django."""
+    if not data_url or ';base64,' not in data_url:
+        return None
+    try:
+        format, imgstr = data_url.split(';base64,')
+        ext = format.split('/')[-1]
+        return ContentFile(base64.b64decode(imgstr), name=f"{name}.{ext}")
+    except Exception as e:
+        print(f"Error en b64_to_file: {e}")
+        return None
 
 # --- PROVEEDORES ---
+
 def lista_provee(request):
     if request.method == 'POST':
         Proveedor.objects.create(
@@ -28,7 +65,6 @@ def lista_provee(request):
             num_tel=request.POST.get('num_tel')
         )
         return redirect('inventario:lista_provee') 
-
     proveedores = Proveedor.objects.all()
     return render(request, "inventario/proveedor/lista.html", {'proveedor': proveedores})
 
@@ -47,23 +83,16 @@ def eliminar_provee(request, id):
     return redirect('inventario:lista_provee')
 
 # --- MOVIMIENTOS MATP ---
+
 def lista_mmtp(request):
     if request.method == "POST":
         tipo = request.POST.get('tipo_mmtp')
         id_pro = request.POST.get('id_proveedor_fk')
-    
-        if tipo not in ['ENTRADA', 'SALIDA']:
-            return render(request, "inventario/movimiento_matp/lista.html", {
-                'error': 'Tipo de movimiento no válido',
-                'mmtp': Movimiento_matp.objects.all(),
-                'proveedores': Proveedor.objects.all()
-            })
-
+        
         if id_pro:
             proveedor_instancia = get_object_or_404(Proveedor, id_provee=id_pro)
-            
             Movimiento_matp.objects.create(
-                tipo_mmtp=tipo, # Usamos la variable ya validada
+                tipo_mmtp=tipo,
                 color_mmtp=request.POST.get('color_mmtp', ''), 
                 fecha_mmtp=request.POST.get('fecha_mmtp'),
                 stock_mmtp=request.POST.get('stock_mmtp'),
@@ -79,14 +108,12 @@ def lista_mmtp(request):
 
 def editar_mmtp(request, id):
     mmtp = get_object_or_404(Movimiento_matp, id_mmtp=id)
-    
     if request.method == 'POST':
         mmtp.tipo_mmtp = request.POST.get('tipo_mmtp')
-        mmtp.color_mmtp = request.POST.get('color_mmtp', '') # Evita el MultiValueDictKeyError
+        mmtp.color_mmtp = request.POST.get('color_mmtp', '')
         mmtp.fecha_mmtp = request.POST.get('fecha_mmtp')
         mmtp.stock_mmtp = request.POST.get('stock_mmtp')
         mmtp.mat_mmtp = request.POST.get('mat_mmtp')
-
         id_pro = request.POST.get('id_proveedor_fk')
         mmtp.id_proveedor_fk = get_object_or_404(Proveedor, id_provee=id_pro)
         mmtp.save()
@@ -114,9 +141,8 @@ def history_MatP(request, id):
 
 @api_view(['GET'])
 def report_mmtp(request):
-    movimiento= Movimiento_matp.objects.all()
+    movimientos = Movimiento_matp.objects.all()
     logo_path = os.path.join(settings.BASE_DIR, 'static', 'IMG', 'logo.png')
-
     
     try:
         with open(logo_path, "rb") as image_file:
@@ -134,43 +160,33 @@ def report_mmtp(request):
     template= get_template('reportes/mmtp.html')
     html_string = template.render(context)
 
+    template = get_template('reportes/mmtp.html')
+    html_string = template.render({'movimientos': movimientos, 'Logo': logo_final})
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="Reporte_Movimiento_Materia_Prima.pdf"'
-
+    response['Content-Disposition'] = 'attachment; filename="Reporte_Movimiento.pdf"'
     pisa_status = pisa.CreatePDF(html_string, dest=response)
-    
-    if pisa_status.err:
-        return HttpResponse('Error al generar el PDF', status=500)
-    
     return response
-
 
 @api_view(['POST'])
 def carga_masiva(request):
     archivo = request.FILES.get('archivo_excel')
     if not archivo:
-        return Response({"error": "No hay archivo"}, status=status.HTTP_400_BAD_REQUEST)
-    
+        return Response({"error": "No hay archivo"}, status=400)
     try:
         df = pd.read_excel(archivo)
         df['fecha_mmtp'] = pd.to_datetime(df['fecha_mmtp']).dt.date
-        datos = df.to_dict(orient='records')
-        
-        serializador = MovimientoSerializer(data=datos, many=True)
-
+        serializador = MovimientoSerializer(data=df.to_dict(orient='records'), many=True)
         if serializador.is_valid():
             serializador.save()
-            return Response({"msj": "Carga masiva realizada con éxito"}, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializador.errors, status=status.HTTP_400_BAD_REQUEST)
-            
+            return Response({"msj": "Carga masiva exitosa"}, status=201)
+        return Response(serializador.errors, status=400)
     except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({"error": str(e)}, status=500)
 
 # --- ESTAMPADOS ---
+
 def lista_estampado(request):
     query = request.GET.get('q') 
-    
     if request.method == 'POST':
         nombre = request.POST.get('nombre_estamp')
         precio = request.POST.get('costo_adi')
@@ -178,110 +194,68 @@ def lista_estampado(request):
         archivo_img = request.FILES.get('archivo_imagen')
         
         try: 
-            limpiar = precio.replace('$', '').replace(',','.').strip()
-            costo = Decimal(limpiar)
-        except(InvalidOperation, TypeError):
-            costo = Decimal('0.000')
+            costo = Decimal(precio.replace('$', '').replace(',','.').strip())
+        except:
+            costo = Decimal('0.00')
         
         nuevo_hash = None
         if archivo_img:
             hasher = hashlib.sha256()
-            for chunk in archivo_img.chunks():
-                hasher.update(chunk)
+            for chunk in archivo_img.chunks(): hasher.update(chunk)
             nuevo_hash = hasher.hexdigest()
             archivo_img.seek(0)
-
             if Estampado.objects.filter(imagen_hash=nuevo_hash).exists():
                 return render(request, "inventario/estampado/lista.html", {
                     'estampados': Estampado.objects.all(),
-                    'error': '¡Atención! Este diseño ya existe en el inventario.',
+                    'error': '¡Atención! Este diseño ya existe.',
                     'query': query
                 })
 
         Estampado.objects.create(
-            nombre_estamp=nombre,
-            costo_adi=costo,
-            tipo_estamp=tipo,
-            imagen_estamp=archivo_img,
-            imagen_hash=nuevo_hash
+            nombre_estamp=nombre, costo_adi=costo, tipo_estamp=tipo,
+            imagen_estamp=archivo_img, imagen_hash=nuevo_hash
         )
         return redirect('inventario:lista_estampado')
-    if query:
-        # Si hay algo en el buscador, filtramos por nombre O por técnica
-        estampados = Estampado.objects.filter(
-            Q(nombre_estamp__icontains=query) | 
-            Q(tipo_estamp__icontains=query)
-        )
-    else:
-        estampados = Estampado.objects.all()
 
-    return render(request, "inventario/estampado/lista.html", {
-        'estampados': estampados, 
-        'query': query # Enviamos 'query' para que el texto no se borre del input al buscar
-    })
+    estampados = Estampado.objects.filter(Q(nombre_estamp__icontains=query) | Q(tipo_estamp__icontains=query)) if query else Estampado.objects.all()
+    return render(request, "inventario/estampado/lista.html", {'estampados': estampados, 'query': query})
 
 def editar_estampado(request, id):
     estampado = get_object_or_404(Estampado, id_estamp=id)
-    
     if request.method == "POST":
         nueva_img = request.FILES.get('archivo_imagen')
         if nueva_img:
-            # 1. Borramos la imagen anterior de la carpeta para limpiar
-            if estampado.imagen_estamp:
-                if os.path.exists(estampado.imagen_estamp.path):
-                    os.remove(estampado.imagen_estamp.path)
-            
-            # 2. Asignamos la nueva imagen 
+            if estampado.imagen_estamp and os.path.exists(estampado.imagen_estamp.path):
+                os.remove(estampado.imagen_estamp.path)
             estampado.imagen_estamp = nueva_img
-            
-            # 3. RECUERDA: Si cambias la imagen, ¡debes recalcular el HASH!
             hasher = hashlib.sha256()
-            for chunk in nueva_img.chunks():
-                hasher.update(chunk)
+            for chunk in nueva_img.chunks(): hasher.update(chunk)
             estampado.imagen_hash = hasher.hexdigest()
-            nueva_img.seek(0) # Siempre rebobinar
+            nueva_img.seek(0)
 
-        # Actualizamos los demás campos de texto
         estampado.nombre_estamp = request.POST.get('nombre_estamp')
-        costo = request.POST.get('costo_adi')
-        try: 
-            limpiar = costo.replace('$','').replace(',','.').strip()
-            precio_adi = Decimal(limpiar)
-        except(InvalidOperation, TypeError): 
-            precio_adi = Decimal('0.000')
+        try:
+            estampado.costo_adi = Decimal(request.POST.get('costo_adi').replace('$','').replace(',','.').strip())
+        except:
+            estampado.costo_adi = Decimal('0.00')
         
-        estampado.costo_adi = precio_adi
         estampado.tipo_estamp = request.POST.get('tipo_estamp')
-        
-        estampado.save() # Guarda todos los cambios en MySQL
+        estampado.save()
         return redirect('inventario:lista_estampado')
-
     return render(request, 'inventario/estampado/editar.html', {'estampado': estampado})
-
 
 def eliminar_estampado(request, id):
     estampado = get_object_or_404(Estampado, id_estamp=id)
-    
-    # 2. Verificamos si el estampado tiene una imagen asociada
-    if estampado.imagen_estamp:
-        # Obtenemos la ruta física en tu computadora (C:/xampp/htdocs/...)
-        ruta_archivo = estampado.imagen_estamp.path
-        
-        # 3. Si el archivo existe físicamente, lo borramos
-        if os.path.exists(ruta_archivo):
-            os.remove(ruta_archivo)
-    
-    # 4. Ahora sí, borramos el registro de la base de datos
+    if estampado.imagen_estamp and os.path.exists(estampado.imagen_estamp.path):
+        os.remove(estampado.imagen_estamp.path)
     estampado.delete()
-    
     return redirect('inventario:lista_estampado')
 
-
+# --- PERSONALIZACIÓN 3D ---
+@ensure_csrf_cookie
 def modelo(request, producto_id):
     producto = get_object_or_404(Producto, id_produc=producto_id)
-    # Traemos todos los diseños guardados en el inventario
     estampados = Estampado.objects.all() 
-    
     return render(request, 'inventario/modelo/index.html', {
         'producto': producto,
         'estampados': estampados  
@@ -290,3 +264,107 @@ def modelo(request, producto_id):
 class ProveedorViewSet(viewsets.ModelViewSet):
     queryset = Proveedor.objects.all()
     serializer_class = ProveedorSerializer
+
+def b64_to_file(data, filename):
+    """Convierte una cadena Base64 enviada por Three.js en un archivo de imagen real"""
+    if data and ';base64,' in data:
+        try:
+            format, imgstr = data.split(';base64,')
+            ext = format.split('/')[-1]
+            return ContentFile(base64.b64decode(imgstr), name=f"{filename}.{ext}")
+        except Exception as e:
+            print(f"Error al decodificar imagen 3D: {e}")
+    return None
+
+# inventario/views.py
+
+def guardar_diseno_3d(request):
+    if request.method == 'POST':
+        try:
+            # 1. Identificar al cliente (tu función de sesión manual)
+            cliente_usuario = obtener_cliente_actual(request)
+            if not cliente_usuario:
+                return JsonResponse({'status': 'error', 'message': 'Sesión no válida'}, status=401)
+
+            # 2. Cargar los datos que vienen del JavaScript
+            data = json.loads(request.body)
+            producto_id = data.get('producto_id')
+            color = data.get('color')
+            talla = data.get('talla', 'M')
+            cantidad = int(data.get('cantidad', 1))
+            estampado_id = data.get('estampado_id')
+            foto_frente_base64 = data.get('foto_frente')
+
+            # --- AQUÍ ESTABA EL ERROR: Necesitamos definir producto_base ---
+            producto_base = get_object_or_404(Producto, id_produc=producto_id)
+
+            # 3. Procesar la captura del 3D (Base64 a archivo real)
+            archivo_foto = None
+            if foto_frente_base64 and ';base64,' in foto_frente_base64:
+                format, imgstr = foto_frente_base64.split(';base64,')
+                ext = format.split('/')[-1]
+                nombre_archivo = f"diseno_{uuid.uuid4()}.{ext}"
+                archivo_foto = ContentFile(base64.b64decode(imgstr), name=nombre_archivo)
+
+            # 4. Buscar el estampado si existe
+            estampado_obj = None
+            if estampado_id:
+                try:
+                    estampado_obj = Estampado.objects.get(id_estamp=estampado_id)
+                except Estampado.DoesNotExist:
+                    estampado_obj = None
+
+            # 5. Guardar todo en la base de datos
+            with transaction.atomic():
+                # A. Crear la personalización (Donde se guarda la foto)
+                personalizacion = PedidoPersonalizado.objects.create(
+                    producto=producto_base,
+                    estampado=estampado_obj,
+                    color_hex=color,
+                    tipo_personalizacion="3D",
+                    foto_frente=archivo_foto,
+                    precio_final=producto_base.precio
+                )
+
+                # B. Crear la variación física
+                nueva_variacion = Variacion.objects.create(
+                    talla_var=talla,
+                    cant_soli=cantidad,
+                    color_var=color,
+                    mat_var="Algodón",
+                    costo_var=producto_base.precio,
+                    id_estam_fk_var=estampado_obj 
+                )
+
+                # C. Buscar o crear el carrito del cliente
+                pedido, _ = Pedido.objects.get_or_create(
+                    id_clien_fk=cliente_usuario,
+                    estado_ped='Carrito',
+                    defaults={'subtotal_ped': 0, 'valor_ped': 0, 'metodo_pago': 'Pendiente'}
+                )
+
+                # D. Crear el detalle final
+                Det_valor.objects.create(
+                    id_ped_fk_detval=pedido, 
+                    id_prod_fk_detval=producto_base,
+                    id_var_fk_detval=nueva_variacion,
+                    id_personalizacion_3d=personalizacion,
+                    valor_total=int(producto_base.precio * cantidad),
+                    tipo_pedido='Personalizado'
+                )
+
+            return JsonResponse({'status': 'success', 'message': '¡Diseño guardado correctamente!'})
+
+        except Exception as e:
+            print(f"Error detallado: {str(e)}") # Esto lo verás en tu terminal
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+    return JsonResponse({'status': 'error', 'message': 'Método no permitido'}, status=405)
+
+
+def eliminar_pedido_personalizado(request, id):
+    pedido = get_object_or_404(PedidoPersonalizado, id=id)
+    for img in [pedido.foto_frente, pedido.foto_espalda, pedido.foto_lateral]:
+        if img and os.path.exists(img.path): os.remove(img.path)
+    pedido.delete()
+    return redirect('ventas:ver_carrito')
