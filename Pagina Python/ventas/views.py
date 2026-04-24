@@ -9,13 +9,19 @@ from datetime import timedelta
 from usuarios.views import solo_personal, login_requerido_custom
 
 from django.shortcuts import get_object_or_404, redirect, render
-from .models import Abono,Pedido, Variacion, Det_valor, Producto, Estampado, Movimiento_matp,Det_mov_matp,Cliente
+from .models import Abono,Pedido, Variacion, Det_valor, Producto, Det_mov_matp,Cliente
+from inventario.models import Estampado, Movimiento_matp
 
 #---------------------- COMPROBAR LOGIN ------------------------------
 
 def obtener_cliente_actual(request):
     id_user = request.session.get('usuario_id')
-    return Cliente.objects.get(id_usuario_fk=id_user)
+    if not id_user:
+        return None
+    try:
+        return Cliente.objects.get(id_usuario_fk=id_user)
+    except Cliente.DoesNotExist:
+        return None
 
 #-------------------- CRUD VARIACION --------------------------
 
@@ -252,30 +258,37 @@ def producto_sin_personalizar(request, producto_id):
         
         try:
             cantidad = int(request.POST.get('cantidad', 1))
-        except ValueError:
+        except (ValueError, TypeError):
             cantidad = 1
 
         with transaction.atomic():
+            # 1. Obtener o crear el carrito
             pedido, creado = Pedido.objects.get_or_create(
                 id_clien_fk=cliente,
                 estado_ped='Carrito', 
-                defaults={'subtotal_ped': 0, 'valor_ped': 0, 'metodo_pago': 'Pendiente'}
+                defaults={
+                    'subtotal_ped': 0, 
+                    'valor_ped': 0, 
+                    'metodo_pago': 'Pendiente'
+                }
             )
 
-
+            # 2. Crear la variación (Asegúrate de que null=True esté en el modelo)
             variacion = Variacion.objects.create(
                 talla_var = talla, 
                 cant_soli = cantidad, 
                 color_var = color,
-                costo_var = 0,
-                id_estam_fk_var = None
+                mat_var = "Algodón", # Agregué un valor por defecto si es obligatorio
+                costo_var = producto.precio, 
+                id_estam_fk_var = None 
             )
 
+            # 3. Crear el detalle (Revisa que los nombres de campos coincidan con tu DB)
             Det_valor.objects.create(
                 id_ped_fk_detval=pedido, 
                 id_prod_fk_detval=producto,
                 id_var_fk_detval=variacion,
-                valor_total=producto.precio * cantidad,
+                valor_total=int(producto.precio * cantidad),
                 tipo_pedido='Estandar'
             )
 
