@@ -1,6 +1,27 @@
 from django.db import models
 from simple_history.models import HistoricalRecords 
 
+class PedidoPersonalizado(models.Model):
+    # 'ventas.Producto' le dice a Django: 
+    # Busca el modelo 'Producto' dentro de la carpeta 'ventas'
+    producto = models.ForeignKey('ventas.Producto', on_delete=models.CASCADE)
+    estampado = models.ForeignKey('Estampado', on_delete=models.SET_NULL, null=True, blank=True)
+    
+    # Datos de la personalización
+    color_hex = models.CharField(max_length=7, default="#ffffff")
+    tipo_personalizacion = models.CharField(max_length=20) 
+    
+    # Los 3 Renders del Modelo 3D
+    foto_frente = models.ImageField(upload_to='renders_3d/', null=True, blank=True)
+    foto_espalda = models.ImageField(upload_to='renders_3d/', null=True, blank=True)
+    foto_lateral = models.ImageField(upload_to='renders_3d/', null=True, blank=True)
+    
+    precio_final = models.DecimalField(max_digits=12, decimal_places=3)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Personalización de {self.producto} - {self.id}"
+
 class Estampado(models.Model):
     id_estamp = models.AutoField(primary_key=True)
     nombre_estamp = models.CharField(max_length=100)
