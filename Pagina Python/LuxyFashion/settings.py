@@ -45,8 +45,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware', # Debe estar arriba
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -112,39 +112,54 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
+# --- LOCALIZACIÓN ---
+# Cámbialo a Bogotá para que las cookies coincidan con tu hora local
 LANGUAGE_CODE = 'es-co'
-
-TIME_ZONE = 'UTC'
-
+TIME_ZONE = 'America/Bogota' 
 USE_I18N = True
-
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
-
+# --- ARCHIVOS ESTÁTICOS ---
 STATIC_URL = '/static/'
-
-# settings.py
-
-STATIC_URL = '/static/'
-
-# Esto le dice a Django: "Busca los archivos en la carpeta 'static' de la raíz"
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# URL para acceder a las imagines 
+# --- ARCHIVOS MULTIMEDIA ---
 MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
-#En dodne se crearan las carpetas y guardaran los archivos 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# --- CONFIGURACIÓN DE SESIÓN Y SEGURIDAD AJAX ---
+LOGIN_URL = 'usuarios:login'
+
+# Esto permite que JS lea la cookie del CSRF
+CSRF_COOKIE_HTTPONLY = False 
+# Obliga a Django a usar la sesión para verificar el CSRF en lugar de solo la cookie
+CSRF_USE_SESSIONS = True 
+
+# LuxyFashion/settings.py
+SESSION_COOKIE_DOMAIN = None
+CSRF_COOKIE_DOMAIN = None
+# Si usas HTTPS en producción pero HTTP en local, asegúrate de que esto sea False:
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 
 # settings.py
-LOGIN_URL = 'usuarios:login'
+
+# Esto asegura que Django acepte el token desde la cookie que JS está leyendo
+CSRF_COOKIE_NAME = "csrftoken"
+CSRF_HEADER_NAME = "HTTP_X_CSRFTOKEN"
+
+# Asegúrate de que esta línea esté presente:
+CSRF_USE_SESSIONS = False
+
+# Orígenes permitidos para evitar bloqueos
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+]
+
+# Duración de la sesión (Opcional: 1 día)
+SESSION_COOKIE_AGE = 86400
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
