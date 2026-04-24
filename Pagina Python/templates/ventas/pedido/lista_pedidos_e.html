@@ -100,15 +100,21 @@
                         <td style="font-weight: bold;">#{{ pedido.id_var }}</td>
                         
                         <td>
-                            <div class="img-thumbnail-container">
-                                {% for p in productos %}
-                                    {% if p.imagen_product %}
-                                        <img src="{{ p.imagen_product.url }}" alt="{{ p.nom_produc }}">
+                            <td>
+                                <div class="img-thumbnail-container">
+                                    {% if pedido.det_valor_set.first.id_personalizacion_3d %}
+                                        <img src="{{ pedido.det_valor_set.first.id_personalizacion_3d.foto_frente.url }}" 
+                                            alt="Diseño Personalizado">
+                                    {% elif pedido.det_valor_set.first.id_prod_fk_detval.imagen_product %}
+                                        <img src="{{ pedido.det_valor_set.first.id_prod_fk_detval.imagen_product.url }}" 
+                                            alt="Producto Estándar">
                                     {% else %}
-                                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #ccc; font-size: 10px;">Sin foto</div>
+                                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #ccc; font-size: 10px;">
+                                            Sin foto
+                                        </div>
                                     {% endif %}
-                                {% endfor %}
-                            </div>
+                                </div>
+                            </td>
                         </td>
 
                         <td>
