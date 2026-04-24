@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">🎨 Mis Diseños Personalizados</h2>
+    
+    <div class="row">
+        {% for diseno in disenos %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ diseno.producto.nom_produc }}</h5>
+                    <p class="card-text">
+                        <strong>Color base:</strong> 
+                        <span style="display:inline-block; width:15px; height:15px; background:{{ diseno.color }}; border:1px solid #000;"></span> 
+                        {{ diseno.color }}
+                    </p>
+                    <p class="card-text"><small class="text-muted">Guardado el: {{ diseno.fecha_creacion }}</small></p>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'inventario:modelo' diseno.producto.id %}?diseno_id={{ diseno.id }}" class="btn btn-outline-primary">
+                            👁️ Ver en 3D
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <p class="alert alert-info">Aún no has guardado ningún diseño personalizado.</p>
+            <a href="{% url 'ventas:lista_product' %}" class="btn btn-main">Ir a la tienda</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
