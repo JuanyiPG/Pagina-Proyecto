@@ -563,7 +563,7 @@ def ver_carrito(request): # O podrías llamarla ver_mis_pedidos
         return render(request, 'ventas/pedido/carrito.html', {'pedidos_info': []})
 
     # 2. PROCESAMOS CADA PEDIDO PARA SACAR SUS TOTALES
-    pedidos_info = []
+    pedidos_info = [] 
     formato = Decimal('0.00')
 
     for pedido in pedidos:
