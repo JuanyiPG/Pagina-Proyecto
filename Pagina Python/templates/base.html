@@ -10,6 +10,154 @@
     <title>Luxy Fashion</title>
 
     <link rel="stylesheet" href="{% static 'css/formularios/estilo.css' %}">
+<style>
+:root {
+    --luxy-burgundy: #5a0018;
+    --luxy-dark: #5a0018;
+    --luxy-light: #f8f6f8;
+    --blanco: #ffffff;
+    --gris: #888;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    background: linear-gradient(180deg, #5a0018);
+    color: white;
+    padding: 20px;
+}
+
+.sidebar h1 {
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+.menu a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    border-radius: 10px;
+    color: #ddd;
+    text-decoration: none;
+    margin-bottom: 8px;
+    transition: 0.3s;
+}
+
+.menu a:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    transform: translateX(5px);
+}
+
+/* ACTIVO */
+.menu a.active {
+    background: white;
+    color: var(--luxy-burgundy);
+    font-weight: bold;
+}
+
+/* MAIN */
+.main-content {
+    margin-left: 260px;
+    padding: 25px;
+    background: var(--luxy-light);
+    min-height: 100vh;
+}
+
+/* HEADER PRO */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.header-left h2 {
+    margin: 0;
+    color: var(--luxy-burgundy);
+}
+
+.header-left h5 {
+    margin: 0;
+    color: var(--gris);
+}
+
+/* HEADER RIGHT */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* FECHA */
+.fecha {
+    background: white;
+    padding: 8px 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    font-size: 14px;
+}
+
+/* NOTIFICACION */
+.notif {
+    position: relative;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.notif span {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    background: red;
+    color: white;
+    font-size: 10px;
+    border-radius: 50%;
+    padding: 3px 6px;
+}
+
+/* PERFIL */
+.perfil {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: white;
+    padding: 5px 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.perfil img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+}
+
+.perfil-info {
+    font-size: 12px;
+}
+
+/* BOTON LOGOUT */
+.logout-btn {
+    background: linear-gradient(135deg, #800020, #6a0f2e);
+    border: none;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    transition: 0.3s;
+}
+
+.logout-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+</style>
 </head>
 
 <body>
@@ -74,7 +222,7 @@
             {% csrf_token %}
             <button type="submit"
                 style="
-                    background: linear-gradient(135deg, #800020, #6a0f2e);
+                    background: linear-gradient(135deg, #5a0018, #6a0f2e);
                     border: none;
                     color: white;
                     padding: 12px 25px;
@@ -96,10 +244,35 @@
 
 
 <div class="main-content">
-    <div class="header">
-        <h2 style="Color: #800020">¡Bienvenido, Administrador!</h2>
-        <h5>Consola de administracíon</h5>
+<div class="header">
+
+    <div class="header-left">
+        <h2>¡Bienvenido, Administrador! </h2>
+        <h5>Consola de administración</h5>
     </div>
+
+    <div class="header-right">
+
+        <div class="fecha" id="fechaActual">
+            <i class="bi bi-calendar"></i> Cargando...
+        </div>
+
+        <div class="notif">
+            <i class="bi bi-bell"></i>
+            <span>3</span>
+        </div>
+
+        <div class="perfil">
+            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="">
+            <div class="perfil-info">
+                <strong>Administrador</strong><br>
+                <small>admin@luxy.com</small>
+            </div>
+        </div>
+
+    </div>
+
+</div>
 
     <hr>
 
@@ -107,6 +280,23 @@
     {% endblock %}
 
 </div>
+<script>
+const fecha = new Date();
+
+// Opciones en español
+const opciones = { 
+    day: 'numeric', 
+    month: 'long', 
+    year: 'numeric' 
+};
+
+// Formato: 24 de abril de 2026
+const fechaFormateada = fecha.toLocaleDateString('es-ES', opciones);
+
+// Insertar en el div
+document.getElementById('fechaActual').innerHTML = 
+    '<i class="bi bi-calendar"></i> ' + fechaFormateada;
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
