@@ -273,7 +273,7 @@ def producto_sin_personalizar(request, producto_id):
                 }
             )
 
-            # 2. Crear la variación (Asegúrate de que null=True esté en el modelo)
+            # 2. Crear la variación 
             variacion = Variacion.objects.create(
                 talla_var = talla, 
                 cant_soli = cantidad, 
@@ -283,7 +283,7 @@ def producto_sin_personalizar(request, producto_id):
                 id_estam_fk_var = None 
             )
 
-            # 3. Crear el detalle (Revisa que los nombres de campos coincidan con tu DB)
+            # 3. Crear el detalle 
             Det_valor.objects.create(
                 id_ped_fk_detval=pedido, 
                 id_prod_fk_detval=producto,
@@ -563,7 +563,7 @@ def ver_carrito(request): # O podrías llamarla ver_mis_pedidos
         return render(request, 'ventas/pedido/carrito.html', {'pedidos_info': []})
 
     # 2. PROCESAMOS CADA PEDIDO PARA SACAR SUS TOTALES
-    pedidos_info = []
+    pedidos_info = [] 
     formato = Decimal('0.00')
 
     for pedido in pedidos:
