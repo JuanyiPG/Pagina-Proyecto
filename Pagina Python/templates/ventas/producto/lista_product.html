@@ -154,6 +154,10 @@
                         <option value="Agotado">Agotado</option>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label>Dias de producción</label>
+                    <input type="number" name="dias_produccion" required placeholder="10" min="1">
+                </div>
             </div>
 
             <div class="form-group" style="margin-bottom: 20px;">
@@ -214,6 +218,16 @@
             </div>
             <div class="card-info" style="padding: 15px;">
                 <p class="product-cat" style="margin: 0; color: #888; font-size: 11px; text-transform: uppercase;">{{ p.gen_produc }} | {{ p.categoria_produc }}</p>
+                
+                {% for detalle in p.det_mov_matp_set.all %}
+    <p class="product-cat" style="margin: 0; color: #888; font-size: 11px; text-transform: uppercase;">
+        {{ detalle.materia_prima.mat_mmtp }} ({{ detalle.cantidad_usada }})
+    </p>
+{% empty %}
+    <p style="margin: 0; color: #ccc; font-size: 11px;">SIN MATERIALES</p>
+{% endfor %}
+                <p class="product-cat" style="margin: 0; color: #888; font-size: 11px; text-transform: uppercase;">dias producción {{ p.dias_produccion }}</p>
+
                 <h3 class="product-name" style="margin: 5px 0; font-size: 16px; color: #333; font-weight: 600;">{{ p.nom_produc }}</h3>
                 <p style="margin: 10px 0; color: var(--luxy-burgundy); font-weight: bold; font-size: 18px;">${{ p.precio }}</p>
                 
