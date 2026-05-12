@@ -90,8 +90,14 @@
                     </div>
                     <div class="form-group">
                         <label>Precio ($)</label>
-                        <input type="number" step="0.01" name="precio" value="{{ producto.precio|unlocalize }}" required>
+                        <input type="number" name="precio" value="{{ producto.precio|unlocalize }}" required>
                     </div>
+
+                    <div class="form-group">
+                    <label>Dias de producción</label>
+                    <input type="number" name="dias_produccion" value="{{ producto.dias_produccion }}">
+                    </div>
+
                 </div>
 
                 <div class="form-group">

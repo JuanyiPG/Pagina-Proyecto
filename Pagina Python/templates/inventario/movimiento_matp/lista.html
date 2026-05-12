@@ -192,7 +192,6 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Tipo</th>
                         <th>Material</th>
                         <th>Color</th>
                         <th>Cantidad</th>
@@ -204,16 +203,17 @@
     {% for m in mmtp %}
     <tr style="{% if m.stock_mmtp < 0 %} background-color: #fff5f5; {% endif %}">
         <td><span style="color: #999;">#{{ m.id_mmtp }}</span></td>
-        <td>
-            <span class="metodo-tag {% if m.tipo_mmtp == 'ENTRADA' %}tag-entrada{% else %}tag-salida{% endif %}">
-                {{ m.tipo_mmtp }}
-            </span>
-        </td>
         <td><strong>{{ m.mat_mmtp }}</strong></td>
         <td>{{ m.color_mmtp }}</td>
         <td style="font-weight: bold; color: {% if m.tipo_mmtp == 'SALIDA' %}#d33{% else %}#2e7d32{% endif %};">
-            {{ m.stock_mmtp }}
+
+            {% if m.stock_mmtp <= 0 %} 
+                0
+            {% else %}
+                {{m.stock_mmtp}}
+            {% endif%}
         </td>
+
         <td>{{ m.id_proveedor_fk.nom_provee }}</td>
         <td style="text-align: center;">
             <a href="{% url 'inventario:editar_mmtp' m.id_mmtp %}" class="edit">Editar</a>
@@ -239,45 +239,27 @@
                                     <thead style="background-color: #f9f9f9;">
                                         <tr>
                                             <th>Fecha</th>
-                                            <th>Acción</th>
-                                            <th>Stock</th>
+                                            <th>Stock actual</th>
                                             <th>Variación</th>
+                                            <th>Stock final</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for registro in m.history.all %} 
-                                        <tr style="font-size: 13px;">
-                                            <td>{{ registro.history_date|date:"d/m/Y H:i" }}</td>
-                                            <td>
-                                                {% if registro.history_type == "+" %}
-                                                    <span style="color: green;">Creado</span>
-                                                {% elif registro.history_type == "~" %}
-                                                    <span style="color: blue;">Modificado</span>
-                                                {% else %}
-                                                    <span style="color: red;">Eliminado</span>
-                                                {% endif %}
-                                            </td>
-                                            <td>{{ registro.stock_mmtp }}</td>
-                                            <td>
-                                                {% with anterior=registro.prev_record %}
-                                                    {% if anterior %}
-                                                        {% if registro.stock_mmtp > anterior.stock_mmtp %}
-                                                            <span style="color: green;">+{{ registro.stock_mmtp }}</span>
-                                                        {% elif registro.stock_mmtp < anterior.stock_mmtp %}
-                                                            <span style="color: red;">↓ {{ registro.stock_mmtp }} </span>
-                                                        {% endif %}
-                                                    {% else %}
-                                                        <small>Inicial</small>
-                                                    {% endif %}
-                                                {% endwith %}
-                                            </td>
-                                        </tr>
-                                        {% empty %}
-                                        <tr>
-                                            <td colspan="4" style="text-align: center; padding: 20px;">Sin historial disponible.</td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
+    {% for reg in m.historial_calculado %}
+    <tr>
+        <td>{{ reg.fecha|date:"d/m/Y H:i" }}</td>
+        <td>{{ reg.antes }}</td>
+        <td style="font-weight: bold;">
+            {% if reg.tipo == 'ENTRADA' %}
+                <span style="color: green;">+{{ reg.variacion }}</span>
+            {% else %}
+                <span style="color: red;">-{{ reg.variacion }}</span>
+            {% endif %}
+        </td>
+        <td style="background-color: #f8f9fa;">{{ reg.despues }}</td>
+    </tr>
+    {% endfor %}
+</tbody>
                                 </table>
                             </div>
                         </div>

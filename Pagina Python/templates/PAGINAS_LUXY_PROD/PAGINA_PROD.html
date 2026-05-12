@@ -299,22 +299,22 @@
     <h3>Filtros</h3>
     <hr>
     <ul>
-        <li onclick="filtrar('todos')" style="cursor:pointer;">Todos</li><hr>
+    <li onclick="filtrar('todos')" style="cursor:pointer;">Todos</li><hr>
 
-        {% regroup productos by gen_produc as genero_list %}
-        {% for genero in genero_list %}
-            <li onclick="filtrar('{{ genero.grouper|slugify }}')" style="cursor:pointer;">
-                {{ genero.grouper }}
-            </li><hr>
-        {% endfor %}
+    {% regroup productos|dictsort:"gen_produc" by gen_produc as genero_list %}
+    {% for genero in genero_list %}
+        <li onclick="filtrar('{{ genero.grouper|slugify }}')" style="cursor:pointer;">
+            {{ genero.grouper }}
+        </li><hr>
+    {% endfor %}
 
-        {% regroup productos by categoria_produc as categoria_list %}
-        {% for categoria in categoria_list %}
-            <li onclick="filtrar('{{ categoria.grouper|slugify }}')" style="cursor:pointer;">
-                {{ categoria.grouper }}
-            </li><hr>
-        {% endfor %}
-    </ul>
+    {% regroup productos|dictsort:"categoria_produc" by categoria_produc as categoria_list %}
+    {% for categoria in categoria_list %}
+        <li onclick="filtrar('{{ categoria.grouper|slugify }}')" style="cursor:pointer;">
+            {{ categoria.grouper }}
+        </li><hr>
+    {% endfor %}
+</ul>
 </aside>
 
         <main class="container">
