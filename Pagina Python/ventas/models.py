@@ -27,7 +27,7 @@ class Producto(models.Model):
     desc_produc = models.CharField(max_length=200)
     categoria_produc = models.CharField(max_length=50)
     estado_produc = models.CharField(max_length=50)
-    dias_produccion = models.PositiveIntegerField(default=1)
+    dias_produccion = models.PositiveIntegerField(default=10)
     precio = models.DecimalField(max_digits=12, decimal_places=2)
 
     def __str__(self):

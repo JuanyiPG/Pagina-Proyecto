@@ -27,22 +27,22 @@ def obtener_cliente_actual(request):
 
 def lista_var(request):
     # Traemos Det_valor porque es la tabla que une TODO (Pedido, Variacion, Producto)
-    detalles = Det_valor.objects.all()
+    detalles = Det_valor.objects.exclude(
+        id_ped_fk_detval__estado_ped='Cancelado'
+    ).select_related('id_ped_fk_detval', 'id_prod_fk_detval', 'id_var_fk_detval')
     
     return render(request, 'ventas/pedido/lista_pedidos.html', {
         'detalles': detalles,
     })
+
 def lista_var_e(request):
-    variaciones = Variacion.objects.all()
-    productos = Producto.objects.all()
-    abonos = Abono.objects.all()
-    pedido = Pedido.objects.all()
+    detalles = Det_valor.objects.exclude(
+        id_ped_fk_detval__estado_ped='Cancelado'
+    ).select_related('id_ped_fk_detval', 'id_prod_fk_detval', 'id_var_fk_detval')
+    
     return render(request, 'ventas/pedido/lista_pedidos_e.html', {
-        'variaciones': variaciones, 
-        'productos': productos,
-        'abonos': abonos,
-        'pedido': pedido
-        })
+        'detalles': detalles,
+    })
 
 @login_requerido_custom
 def crear_variacion(request, producto_id, pedido_id): 
@@ -138,9 +138,31 @@ def eliminar_variacion (request, detalle_id):
 
 #----------------- CRUD PRODUCTO ------------------------------
 
-def lista_producto(request): 
-    productos = Producto.objects.all()
-    return render(request, 'PAGINAS_LUXY_PROD/PAGINA_PROD.html', {'productos': productos})
+def lista_producto(request):
+    todos = Producto.objects.prefetch_related('det_mov_matp_set__materia_prima').all()
+    productos_visibles = []
+
+    for p in todos:
+        es_valido = True
+        detalles = p.det_mov_matp_set.all()
+        
+        if not detalles.exists():
+            es_valido = False
+        else:
+            for d in detalles:
+                h = d.materia_prima.history.all()
+                # Calculamos stock rápido
+                stock = sum(x.stock_mmtp if x.tipo_mmtp == 'ENTRADA' else -x.stock_mmtp for x in h)
+                if stock < d.cantidad_usada :
+                    es_valido = False
+                elif stock == 0: 
+                    es_valido = False
+                    break
+        
+        if es_valido:
+            productos_visibles.append(p)
+
+    return render(request, 'PAGINAS_LUXY_PROD/PAGINA_PROD.html', {'productos': productos_visibles})
     
 
 @solo_personal
@@ -158,6 +180,7 @@ def lista_producto_admin(request):
         categoria_produc = request.POST.get('cat_produc')
         estado_produc = request.POST.get('estado_produc')
         precio = request.POST.get('precio')
+        dias_produccion = request.POST.get('dias_produccion')
 
         #Converir String a Decimal
         try: 
@@ -183,7 +206,7 @@ def lista_producto_admin(request):
             })
         
         nuevo_p = Producto.objects.create(imagen_product=imagen_produc, imagen_hash=nuevo_hash, nom_produc=nom_produc, gen_produc=gen_produc,
-                                desc_produc=desc_produc, categoria_produc=categoria_produc,estado_produc=estado_produc, precio=valor )
+                                desc_produc=desc_produc, categoria_produc=categoria_produc,estado_produc=estado_produc, precio=valor, dias_produccion=dias_produccion )
         
         ids_materiales = request.POST.getlist('material_ids[]')
         cantidades = request.POST.getlist('cantidades[]')
@@ -222,6 +245,15 @@ def editar_producto(request, id):
         producto.gen_produc = request.POST.get('gen_produc')
         producto.desc_produc = request.POST['desc_produc']
         producto.categoria_produc = request.POST.get('categoria_produc')
+
+        dias = request.POST.get('dias_produccion')
+
+        if not dias or dias.strip() == "":
+            producto.dias_produccion = 10
+        else:
+            producto.dias_produccion = int(dias)
+
+        producto.save()
         
         producto.estado_produc = request.POST['estado_produc']
         precio = request.POST['precio']
@@ -273,7 +305,7 @@ def producto_sin_personalizar(request, producto_id):
                 }
             )
 
-            # 2. Crear la variación (Asegúrate de que null=True esté en el modelo)
+            # 2. Crear la variación 
             variacion = Variacion.objects.create(
                 talla_var = talla, 
                 cant_soli = cantidad, 
@@ -283,7 +315,7 @@ def producto_sin_personalizar(request, producto_id):
                 id_estam_fk_var = None 
             )
 
-            # 3. Crear el detalle (Revisa que los nombres de campos coincidan con tu DB)
+            # 3. Crear el detalle 
             Det_valor.objects.create(
                 id_ped_fk_detval=pedido, 
                 id_prod_fk_detval=producto,
@@ -320,14 +352,11 @@ def crear_abono(request, pedido_id):
         monto_raw = request.POST.get('monto_abono', '0')
         metodo = request.POST.get('metodo_pago', 'Efectivo')
 
-        # 1. LIMPIEZA AGRESIVA (La clave de todo)
-        # Esto quita puntos, comas, $ y deja solo los números puros
         valor_limpio = re.sub(r'[^\d]', '', str(monto_raw))
         
         try:
             valor_ingresado = Decimal(valor_limpio) if valor_limpio else Decimal('0')
             
-            # 2. VALIDACIONES
             if valor_ingresado <= 0:
                 messages.error(request, "El monto debe ser mayor a 0.")
                 return redirect('ventas:crear_abono', pedido_id=pedido_id)
@@ -336,7 +365,6 @@ def crear_abono(request, pedido_id):
                 messages.error(request, f"El monto (${valor_ingresado}) supera el saldo (${saldo_pendiente}).")
                 return redirect('ventas:crear_abono', pedido_id=pedido_id)
 
-            # 3. GUARDADO SEGURO
             with transaction.atomic():
                 tiene_abonos = Abono.objects.filter(id_pedido_fk_abono=pedido).exists()
                 if not tiene_abonos:
@@ -357,15 +385,12 @@ def crear_abono(request, pedido_id):
                 else:
                     messages.success(request, f"Abono de ${valor_ingresado} registrado.")
 
-            # ESTO ES LO QUE TE FALTA: El redirect debe estar fuera del bloque atomic 
-            # pero dentro del IF POST exitoso.
             return redirect('ventas:ver_carrito')
 
         except (InvalidOperation, ValueError) as e:
             messages.error(request, f"Error en el formato del número: {e}")
             return redirect('ventas:crear_abono', pedido_id=pedido_id)
 
-    # Si es GET, mostramos el formulario
     return render(request, 'ventas/abono/form_abono.html', {
         'pedido': pedido,
         'total_productos': total_productos,
@@ -397,7 +422,7 @@ def finalizar_pedido(request, pedido_id):
     if not cliente: 
         messages.error(request, "Perfil de cliente no encontrado.")
         return redirect('login')
-    # Buscamos el pedido que se creó en el paso anterior
+    
     pedido = get_object_or_404(Pedido, id_pedido=pedido_id)
     
     if request.method == 'POST':
@@ -411,9 +436,7 @@ def finalizar_pedido(request, pedido_id):
         if not detalles.exists():
             messages.error(request, "Tu carrito está vacío.")
             return redirect('ventas:lista_product')
-
-        # SUMAR TOTAL Y DÍAS DE PRODUCCIÓN
-        # Usamos aggregate para que la base de datos haga el trabajo pesado
+        
         resultados = detalles.aggregate(
             total=Sum('valor_total'),
             max_espera=Max('id_prod_fk_detval__dias_produccion')
@@ -455,6 +478,52 @@ def finalizar_pedido(request, pedido_id):
 
     return render(request, 'ventas/pedido/finalizar.html', {'pedido': pedido})
 
+from decimal import Decimal
+from django.db.models import Sum
+
+@login_requerido_custom
+def lista_pedidos_client(request):
+    cliente = obtener_cliente_actual(request)
+    if not cliente:
+        return redirect('login')
+    
+    pedidos_queryset = Pedido.objects.filter(
+        id_clien_fk=cliente
+    ).exclude(estado_ped__in=['Entregado', 'Cancelado']).order_by('-id_pedido')
+
+    formato = Decimal('0.00')
+    pedidos_con_detalles = []
+
+    for pedido in pedidos_queryset:
+        items = Det_valor.objects.filter(id_ped_fk_detval=pedido).select_related('id_prod_fk_detval')
+        primer_item = items.first()
+        
+        total_raw = items.aggregate(Sum('valor_total'))['valor_total__sum'] or 0
+        total_pedido = Decimal(str(total_raw)).quantize(formato)
+
+        abono_raw = Abono.objects.filter(id_pedido_fk_abono=pedido).aggregate(Sum('monto_abono'))['monto_abono__sum'] or 0
+        total_abonado = Decimal(str(abono_raw)).quantize(formato)
+        
+        saldo_pendiente = (total_pedido - total_abonado).quantize(formato)
+
+        
+        bloqueado = saldo_pendiente > 0
+
+        pedidos_con_detalles.append({
+            'objeto': pedido,
+            'foto': primer_item.id_prod_fk_detval.imagen_product.url if primer_item and primer_item.id_prod_fk_detval.imagen_product else None,
+            'total': total_pedido,
+            'abonado': total_abonado,
+            'saldo': max(0, saldo_pendiente),
+            'bloqueado': bloqueado 
+        })
+
+    return render(request, 'ventas/pedido/lista_ped_cliente.html', {
+        'pedidos_detallados': pedidos_con_detalles
+    })
+
+
+
 @login_requerido_custom
 def editar_pedido(request, id): 
     cliente = obtener_cliente_actual(request)
@@ -477,81 +546,86 @@ def editar_pedido(request, id):
         
     return render(request, 'ventas/pedido/editar_pedido.html', {'pedido': pedido})
 
-@login_requerido_custom
-def eliminar_pedido(request, id):
-    cliente = obtener_cliente_actual(request)
+from django.shortcuts import render, redirect, get_object_or_404
+from django.db import transaction
+from django.contrib import messages
+# Asegúrate de importar tus modelos y decoradores
+# from .models import Pedido, Abono 
 
-    if not cliente: 
-        messages.error(request, "Perfil de cliente no encontrado.")
-        return redirect('login')
-    pedido = get_object_or_404(Pedido, id_pedido=id)
-    
-    if request.method == 'POST':
-        if pedido.estado_ped == 'Cancelado': 
-            messages.warning(request, "Pedido ya cancelado")
-            return redirect('ventas:lista_pedido')
-        try: 
+@login_requerido_custom
+def gestionar_pedido(request, id_pedido):
+    """Vista procesadora de acciones mediante POST"""
+    pedido = get_object_or_404(Pedido, id_pedido=id_pedido)
+    accion = request.POST.get('accion')
+
+    try:
+        if accion == 'cancelar':
             with transaction.atomic():
-            # Si el pedido ya tenía abonos, significa que el inventario se descontó
                 realizo_pago = Abono.objects.filter(id_pedido_fk_abono=pedido).exists()
                 if realizo_pago:    
-                    gestionar_inventario(pedido, 'SUMAR') # Devolvemos el material
-            
-            pedido.estado_ped = 'Cancelado'
-            pedido.save()
-            return redirect('ventas:lista_pedido')
-        except Exception as e:
-            messages.success(request, f"Error al cancelar el pedido: {e}")
-            return redirect('ventas:lista_pedido')
-            
-    return render(request, 'ventas/pedido/eliminar_pedido.html', {'pedido': pedido})
+                    gestionar_inventario(pedido, 'SUMAR')
+                pedido.estado_ped = 'Cancelado'
+                pedido.save()
+                messages.success(request, "Pedido cancelado correctamente.")
+        
+        elif accion == 'entregado':
+            pedido.delete() # Borrado físico como pediste
+            messages.success(request, "¡Gracias por confirmar la entrega!")
+
+    except Exception as e:
+        messages.error(request, f"Error: {e}")
+
+    return redirect('ventas:lista_pedidos_cliente')
 
 #------------------------ CARRITO --------------------------
 
 @login_requerido_custom
-def ver_carrito(request):
+def ver_carrito(request): # O podrías llamarla ver_mis_pedidos
     try:
         cliente = obtener_cliente_actual(request)
     except Cliente.DoesNotExist:
-        return render(request, 'ventas/pedido/carrito.html', {'items': [], 'total_productos': 0})
+        return render(request, 'ventas/pedido/carrito.html', {'pedidos_info': []})
 
-    # 1. BUSQUEDA DEL PEDIDO ACTIVO
-    # Buscamos el pedido que NO esté cancelado ni entregado.
-    pedido = Pedido.objects.filter(
+    # 1. TRAEMOS TODOS LOS PEDIDOS (Quitamos el .first())
+    pedidos = Pedido.objects.filter(
         id_clien_fk=cliente
-    ).exclude(estado_ped__in=['Entregado', 'Cancelado', 'Completado']).order_by('-id_pedido').first()
+    ).exclude(estado_ped__in=['Entregado', 'Cancelado', 'Completado']).order_by('-id_pedido')
 
-    if not pedido:
-        return render(request, 'ventas/pedido/carrito.html', {'items': [], 'total_productos': 0})
+    if not pedidos.exists():
+        return render(request, 'ventas/pedido/carrito.html', {'pedidos_info': []})
 
-    # 2. CÁLCULOS DE VALORES (Punto 2: Que se vea el abono)
+    # 2. PROCESAMOS CADA PEDIDO PARA SACAR SUS TOTALES
+    pedidos_info = [] 
     formato = Decimal('0.00')
-    items = Det_valor.objects.filter(id_ped_fk_detval=pedido).select_related('id_var_fk_detval', 'id_prod_fk_detval')
-    
-    total_raw = items.aggregate(Sum('valor_total'))['valor_total__sum'] or 0
-    total_productos = Decimal(str(total_raw)).quantize(formato)
 
-    abono_raw = Abono.objects.filter(id_pedido_fk_abono=pedido).aggregate(Sum('monto_abono'))['monto_abono__sum'] or 0
-    total_abonado = Decimal(str(abono_raw)).quantize(formato)
-    
-    saldo_pendiente = (total_productos - total_abonado).quantize(formato)
+    for pedido in pedidos:
+        items = Det_valor.objects.filter(id_ped_fk_detval=pedido).select_related('id_var_fk_detval', 'id_prod_fk_detval')
 
-    # 3. EL FILTRO "MÁGICO" (Punto 3: Se quita solo cuando ya está pagado totalmente)
-    # Si el saldo es 0 o menor, Y el pedido ya fue confirmado/pagado, 
-    # entonces ya no debe estar en el carrito.
-    if saldo_pendiente <= 0 and pedido.estado_ped != 'Carrito':
-        return render(request, 'ventas/pedido/carrito.html', {'items': [], 'total_productos': 0})
+        total_product = 0
+        for item in items:
+            if item.id_var_fk_detval:
+                total_product += item.id_var_fk_detval.cant_soli
+        total_raw = items.aggregate(Sum('valor_total'))['valor_total__sum'] or 0
+        total_productos = Decimal(str(total_raw)).quantize(formato)
 
-    # Si llega aquí, significa que:
-    # - O el pedido es nuevo ('Carrito')
-    # - O todavía debe plata (saldo_pendiente > 0)
+        abono_raw = Abono.objects.filter(id_pedido_fk_abono=pedido).aggregate(Sum('monto_abono'))['monto_abono__sum'] or 0
+        total_abonado = Decimal(str(abono_raw)).quantize(formato)
+        
+        saldo_pendiente = (total_productos - total_abonado).quantize(formato)
+
+        # Solo lo agregamos si no está pagado totalmente o si es el carrito actual
+        if saldo_pendiente > 0 or pedido.estado_ped == 'Carrito':
+            pedidos_info.append({
+                'pedido': pedido,
+                'items': items,
+                'total_product' : total_product,
+                'total_productos': total_productos,
+                'total_abonado': total_abonado,
+                'saldo_pendiente': max(0, saldo_pendiente),
+            })
+
     return render(request, 'ventas/pedido/carrito.html', {
-        'pedido': pedido,
-        'items': items, 
-        'total_productos': total_productos,
-        'total_abonado': total_abonado,
-        'saldo_pendiente': max(0, saldo_pendiente),
-        'tiene_abonos': total_abonado > 0
+        'pedidos_info': pedidos_info
     })
 
 @login_requerido_custom
@@ -605,31 +679,41 @@ def editar_carrito(request, id_det_valor):
 #------------- DET_MOV_MATP ---------------------------------
 
 def gestionar_inventario(pedido, operacion):
-    detalles = Det_valor.objects.filter(id_ped_fk_detval=pedido)
-    materiales_faltantes = [] # Lista para guardar los materiales faltantes
-
-    with transaction.atomic():
-        for item in detalles:
-            receta = Det_mov_matp.objects.filter(producto=item.id_prod_fk_detval)
-            
-            for insumo in receta:
-                material = insumo.materia_prima
-                cantidad_total = insumo.cantidad_usada * item.id_var_fk_detval.cant_soli
-
-                if operacion == 'RESTAR':
-                    # Restamos de todos modos
-                    material.stock_mmtp-= cantidad_total
-                    
-                    # Si el stock bajó de cero, lo anotamos en la lista de faltantes
-                    if material.stock_mmtp < 0:
-                        materiales_faltantes.append(f"{material.tipo_mmtp} (Faltan {abs(material.stock_mmtp)} unidades)")
-                
-                elif operacion == 'SUMAR':
-                    material.stock_mmtp += cantidad_total
-                
-                material.save()
+    # Traemos los productos del pedido y sus variaciones (cantidades)
+    detalles_pedido = Det_valor.objects.filter(id_ped_fk_detval=pedido).select_related('id_var_fk_detval', 'id_prod_fk_detval')
     
-    return materiales_faltantes
+    with transaction.atomic():
+        for item in detalles_pedido:
+            # Obtenemos la cantidad desde la variación (cant_soli)
+            cantidad_prendas = item.id_var_fk_detval.cant_soli if item.id_var_fk_detval else 0
+            
+            if cantidad_prendas <= 0:
+                continue
+
+            # Buscamos qué materias primas usa este producto (la receta)
+            receta = Det_mov_matp.objects.filter(producto=item.id_prod_fk_detval)
+
+            for insumo in receta:
+                # IMPORTANTE: Buscamos el registro en Movimiento_matp que coincida 
+                # con el material de la receta. 
+                # Usamos .filter().latest() para asegurarnos de editar el último ingreso.
+                try:
+                    material_stock = Movimiento_matp.objects.filter(
+                        mat_mmtp=insumo.materia_prima.mat_mmtp,
+                        color_mmtp=insumo.materia_prima.color_mmtp
+                    ).latest('id_mmtp') # El ID más alto suele ser el saldo actual
+
+                    cantidad_a_mover = insumo.cantidad_usada * cantidad_prendas
+
+                    if operacion == 'RESTAR':
+                        material_stock.stock_mmtp -= cantidad_a_mover
+                    elif operacion == 'SUMAR':
+                        material_stock.stock_mmtp += cantidad_a_mover
+                    
+                    material_stock.save()
+                except Movimiento_matp.DoesNotExist:
+                    # Si no encuentra el material, podrías registrar un error o ignorarlo
+                    continue
 
 
 #---------------------- listas empleados --------------------------------------------------------

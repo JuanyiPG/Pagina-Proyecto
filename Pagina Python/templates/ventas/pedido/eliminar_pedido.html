@@ -1,0 +1,49 @@
+
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header bg-dark text-white">
+            <h3>Gestión del Pedido #{{ pedido.id_pedido }}</h3>
+        </div>
+        <div class="card-body">
+            <p><strong>Estado actual:</strong> {{ pedido.estado_ped }}</p>
+            <p>¿Qué acción deseas realizar con este pedido?</p>
+            
+            <form method="POST" id="formGestion">
+                {% csrf_token %}
+                
+                <div class="d-flex gap-3">
+                    {% if pedido.estado_ped != 'Cancelado' %}
+                    <button type="submit" name="cancelar" class="btn btn-warning">
+                        Cancelar Pedido
+                    </button>
+                    {% endif %}
+
+                    <button type="button" class="btn btn-success" onclick="confirmarEntrega()">
+                        ¿Ya te llegó el pedido?
+                    </button>
+                </div>
+
+                <input type="hidden" id="inputConfirmar" name="confirmar_entrega" value="0">
+            </form>
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'ventas:lista_product' %}" class="btn btn-secondary">Volver a la lista</a>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmarEntrega() {
+    if (confirm("¿Estás seguro de que ya recibiste tu pedido? Esto eliminará el registro de tu lista.")) {
+        // Marcamos el input oculto y enviamos el form
+        const form = document.getElementById('formGestion');
+        const input = document.getElementById('inputConfirmar');
+        input.value = "1"; 
+        input.name = "confirmar_entrega"; // Asegura que el backend reciba el nombre correcto
+        form.submit();
+    }
+}
+</script>
+{% endblock %}

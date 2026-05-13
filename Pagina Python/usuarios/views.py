@@ -30,9 +30,9 @@ def solo_personal(view_func):
         if 'usuario_id' not in request.session:
             return redirect('usuarios:login')
         
-        # .title() asegura que 'administrador' o 'ADMINISTRADOR' funcionen como 'Administrador'
-        rol = str(request.session.get('rol', '')).title()
-        if rol in ['Administrador', 'Empleado']:
+        rol = request.session.get('rol')
+        if rol in ['Administrador', 'Empleado', 'empleado']:
+            
             return view_func(request, *args, **kwargs)
         
         messages.warning(request, "No tienes permisos para acceder.")

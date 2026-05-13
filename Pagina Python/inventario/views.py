@@ -91,18 +91,61 @@ def lista_mmtp(request):
         
         if id_pro:
             proveedor_instancia = get_object_or_404(Proveedor, id_provee=id_pro)
+            
+            # 1. CORRECCIÓN DE LÓGICA:
+            # Queremos que si el número es negativo se vuelva 0, 
+            # pero si es positivo se mantenga igual.
+            stock_recibido = int(request.POST.get('stock_mmtp', 0))
+            stock_final = stock_recibido if stock_recibido > 0 else 0
+            
             Movimiento_matp.objects.create(
                 tipo_mmtp=tipo,
                 color_mmtp=request.POST.get('color_mmtp', ''), 
                 fecha_mmtp=request.POST.get('fecha_mmtp'),
-                stock_mmtp=request.POST.get('stock_mmtp'),
+                stock_mmtp=stock_final, # Guardamos el valor validado
                 mat_mmtp=request.POST.get('mat_mmtp'),
                 id_proveedor_fk=proveedor_instancia
             )
             return redirect('inventario:lista_mmtp')
 
+    # 2. PROCESAMIENTO PARA EL MODAL (HISTORIAL)
+    mmtp = Movimiento_matp.objects.all()
+
+    for m in mmtp:
+        # Forzamos a Django a traer los datos reales
+        h_queryset = list(m.history.all().order_by('history_date'))
+        
+        procesados = []
+        
+        for i, h in enumerate(h_queryset):
+            # Usamos el nombre exacto de tu campo en el modelo
+            stock_en_esta_foto = float(h.stock_mmtp)
+            
+            if i == 0:
+                antes = 0
+            else:
+                antes = float(h_queryset[i-1].stock_mmtp)
+            
+            variacion = stock_en_esta_foto - antes
+            tipo_mov_real = 'ENTRADA' if variacion >= 0 else 'SALIDA'
+            
+            procesados.append({
+                'fecha': h.history_date,
+                'antes': antes,
+                'variacion': abs(variacion),
+                'tipo': tipo_mov_real,
+                'despues': stock_en_esta_foto
+            })
+            
+        procesados.reverse()
+        # Esta es la variable que el MODAL debe leer
+        m.historial_calculado = procesados
+        
+        # --- PRUEBA RÁPIDA EN CONSOLA ---
+        print(f"Material: {m.mat_mmtp} - Movimientos: {len(procesados)}")
+
     return render(request, "inventario/movimiento_matp/lista.html", {
-        'mmtp': Movimiento_matp.objects.all(), 
+        'mmtp': mmtp,
         'proveedores': Proveedor.objects.all()
     })
 
@@ -131,11 +174,41 @@ def eliminar_mmtp(request, id):
 #----------------------------- historial mov MatP -----------------------------------------------
 
 def history_MatP(request, id):
-    matP = get_object_or_404(Movimiento_matp, id_mmtp=id )
-    historial = matP.history.all()
-    return render(request, 'inventario/movimiento_matp/lista.html',{
-        'matP' : matP,
-        'historial': historial
+    # Traemos el material
+    m = get_object_or_404(Movimiento_matp, id_mmtp=id)
+    
+    # Obtenemos el historial de viejo a nuevo
+    h_queryset = m.history.all().order_by('history_date')
+    
+    historial_final = []
+
+    for i, registro in enumerate(h_queryset):
+        # El valor que quedó guardado en este punto
+        actual = registro.stock_mmtp
+        
+        # El valor que había un paso atrás
+        if i == 0:
+            anterior = 0
+        else:
+            anterior = h_queryset[i-1].stock_mmtp
+
+        # La diferencia real
+        diferencia = actual - anterior
+
+        historial_final.append({
+            'fecha': registro.history_date,
+            'antes': anterior,
+            'cambio': abs(diferencia),
+            'tipo': 'ENTRADA' if diferencia >= 0 else 'SALIDA',
+            'despues': actual
+        })
+
+    # Ponemos el más reciente arriba
+    historial_final.reverse()
+    print(f"DEBUG: Cantidad en historial para {m.nom_mmtp}: {len(historial_final)}")
+    return render(request, 'inventario/movimiento_matp/lista.html', {
+        'matP': m,
+        'historial': historial_final 
     })
 
 
@@ -153,7 +226,7 @@ def report_mmtp(request):
         logo_final = "" 
 
     context = {
-        'movimientos': movimiento,
+        'movimientos': movimientos,
         'Logo': logo_final 
     }
 

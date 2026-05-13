@@ -2,152 +2,286 @@
 
 {% block content %}
 <style>
-    :root {
-        --luxy-burgundy: #800020;
-        --luxy-copper: #6e0a32;
-        --luxy-hazelnut: #64093d;
-        --luxy-cream: #F5F5F5;
-        --blanco: #ffffff;
-    }
+:root {
+    --luxy-burgundy: #800020;
+    --luxy-copper: #a8325e;
+    --luxy-hazelnut: #64093d;
+    --luxy-light: #f8f6f8;
+    --blanco: #ffffff;
+    --gris: #777;
+}
 
-    .dashboard {
-        padding: 20px 0;
-        margin: 0;
-        width: 100%;
-    }
+/* CONTENEDOR */
+.dashboard {
+    padding: 20px;
+    width: 100%;
+}
 
-    .titulo {
-        border-left: 6px solid var(--luxy-copper);
-        padding-left: 20px;
-        margin-bottom: 30px;
-    }
+/* TITULO */
+.titulo {
+    border-left: 6px solid var(--luxy-copper);
+    padding-left: 20px;
+    margin-bottom: 30px;
+}
 
-    .titulo h2 {
-        color: var(--luxy-burgundy);
-        margin: 0;
-        font-family: 'Segoe UI', sans-serif;
-    }
+.titulo h2 {
+    color: var(--luxy-burgundy);
+    margin: 0;
+}
 
-    .cards {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 20px;
-        margin-bottom: 40px;
-    }
+.titulo small {
+    color: var(--luxy-hazelnut);
+}
 
-    .card {
-        background: var(--blanco);
-        padding: 25px;
-        border-radius: 12px;
-        text-align: center;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        border: 1px solid #eee;
-    }
+/* CARDS */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
 
-    .card p {
-        font-size: 32px;
-        font-weight: bold;
-        color: var(--luxy-burgundy);
-        margin: 0;
-    }
+.card {
+    background: var(--blanco);
+    padding: 18px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: 0.3s ease;
+    border: 1px solid #eee;
+}
 
-    .graficas {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-        gap: 25px;
-    }
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+}
 
-    .grafica {
-        background: var(--blanco);
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        border: 1px solid #eee;
-    }
+/* ICONOS */
+.icono {
+    width: 55px;
+    height: 55px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: white;
+}
 
-    canvas {
-        max-height: 300px;
-    }
+.empleados { background: #a8325e; }
+.clientes { background: #ff9f43; }
+.productos { background: #6c5ce7; }
+.proveedores { background: #00b894; }
+
+/* TEXTO CARD */
+.card-info h4 {
+    margin: 0;
+    font-size: 14px;
+    color: var(--gris);
+}
+
+.card-info p {
+    margin: 0;
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--luxy-burgundy);
+}
+
+/* GRAFICAS */
+.graficas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 25px;
+}
+
+.grafica {
+    background: var(--blanco);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    border: 1px solid #eee;
+}
+
+.grafica h3 {
+    margin-bottom: 15px;
+    color: var(--luxy-burgundy);
+}
+
+/* EXTRA */
+.extra {
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.extra-card {
+    background: var(--blanco);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    border: 1px solid #eee;
+}
+
+.extra-card h4 {
+    margin: 0;
+    color: var(--gris);
+}
+
+.extra-card h2 {
+    margin: 10px 0;
+    color: var(--luxy-burgundy);
+}
+
+/* CANVAS */
+canvas {
+    max-height: 300px;
+}
 </style>
 
 <div class="dashboard">
+
     <div class="titulo">
         <h2>Panel de Estadísticas</h2>
-        <small style="color: var(--luxy-hazelnut);">Resumen general de Luxy Fashion</small>
+        <small>Resumen general de Luxy Fashion</small>
     </div>
 
+    <!-- CARDS -->
     <div class="cards">
-        <div class="card"><h3>Empleados</h3><p>{{ total_empleados }}</p></div>
-        <div class="card"><h3>Clientes</h3><p>{{ total_clientes }}</p></div>
-        <div class="card"><h3>Productos</h3><p>{{ total_productos }}</p></div>
-        <div class="card"><h3>Proveedores</h3><p>{{ total_proveedores }}</p></div>
+
+        <div class="card">
+            <div class="icono empleados">👨‍💼</div>
+            <div class="card-info">
+                <h4>Empleados</h4>
+                <p>{{ total_empleados }}</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="icono clientes">👥</div>
+            <div class="card-info">
+                <h4>Clientes</h4>
+                <p>{{ total_clientes }}</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="icono productos">📦</div>
+            <div class="card-info">
+                <h4>Productos</h4>
+                <p>{{ total_productos }}</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="icono proveedores">🚚</div>
+            <div class="card-info">
+                <h4>Proveedores</h4>
+                <p>{{ total_proveedores }}</p>
+            </div>
+        </div>
+
     </div>
 
+    <!-- GRAFICAS -->
     <div class="graficas">
+
         <div class="grafica">
-            <h3>Distribución de Datos (Torta)</h3>
+            <h3>Distribución de Datos</h3>
             <canvas id="torta"></canvas>
         </div>
+
         <div class="grafica">
-            <h3>Tendencia de Registros (Lineal)</h3>
+            <h3>Tendencia de Registros</h3>
             <canvas id="linea"></canvas>
         </div>
+
     </div>
+
+    <!-- EXTRA -->
+    <div class="extra">
+
+        <div class="extra-card">
+            <h4>Ventas del mes</h4>
+            <h2>$ 2,450</h2>
+            <small style="color:green;">↑ 18% respecto al mes anterior</small>
+        </div>
+
+        <div class="extra-card">
+            <h4>Pedidos</h4>
+            <h2>34</h2>
+            <small style="color:green;">↑ 7% respecto al mes anterior</small>
+        </div>
+
+        <div class="extra-card">
+            <h4>Nuevos clientes</h4>
+            <h2>{{ total_clientes }}</h2>
+            <small style="color:green;">↑  respecto al mes anterior</small>
+        </div>
+
+    </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    // ERROR CORREGIDO: Se añadieron las comas entre los valores
-    const dataValues = [
-        {{ total_empleados }},
-        {{ total_clientes }},
-        {{ total_productos }},
-        {{ total_proveedores }}
-    ];
+const dataValues = [
+    {{ total_empleados }},
+    {{ total_clientes }},
+    {{ total_productos }},
+    {{ total_proveedores }}
+    {{ total_pedidos}}
+];
 
-    const labels = ['Empleados', 'Clientes', 'Productos', 'Proveedores'];
-    const colors = ['#800020', '#B87333', '#64093d', '#a8325e'];
+const labels = ['Empleados', 'Clientes', 'Productos', 'Proveedores',];
+const colors = ['#800020', '#B87333', '#64093d', '#a8325e',];
 
-    new Chart(document.getElementById('torta'), {
-        type: 'pie',
-        data: {
-            labels: labels,
-            datasets: [{
-                data: dataValues,
-                backgroundColor: colors,
-                borderWidth: 2,
-                borderColor: '#ffffff'
-            }]
+/* DONUT */
+new Chart(document.getElementById('torta'), {
+    type: 'doughnut',
+    data: {
+        labels: labels,
+        datasets: [{
+            data: dataValues,
+            backgroundColor: colors,
+            borderWidth: 2,
+            borderColor: '#fff'
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { position: 'bottom' }
         },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false
-        }
-    });
+        cutout: '65%'
+    }
+});
 
-    new Chart(document.getElementById('linea'), {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Cantidad Registrada',
-                data: dataValues,
-                borderColor: '#800020',
-                backgroundColor: 'rgba(128,0,32,0.1)',
-                tension: 0.4,
-                fill: true,
-                pointBackgroundColor: '#800020',
-                pointRadius: 5
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: { beginAtZero: true }
-            }
+/* LINEA */
+new Chart(document.getElementById('linea'), {
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'Cantidad Registrada',
+            data: dataValues,
+            borderColor: '#800020',
+            backgroundColor: 'rgba(128,0,32,0.1)',
+            tension: 0.4,
+            fill: true,
+            pointRadius: 5
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: { beginAtZero: true }
         }
-    });
+    }
+});
 </script>
+
 {% endblock %}

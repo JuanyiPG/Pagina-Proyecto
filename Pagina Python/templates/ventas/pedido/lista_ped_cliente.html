@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>Mis Pedidos - Luxy Fashion</title>
+    <style>
+        /* Tus estilos de Luxy Fashion */
+        body { font-family: Arial; background: #f4eeee; margin: 0; }
+        header { 
+            background: white; height: 80px; padding: 0 20px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            position: fixed; top: 0; width: 100%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            z-index: 1000;
+        }
+        main { margin-top: 100px; padding: 40px; }
+        
+        .pedido-card { 
+            display: flex; align-items: center; background: white; 
+            margin-bottom: 20px; padding: 20px; border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .pedido-card img { width: 130px; height: 130px; margin-right: 25px; object-fit: cover; border-radius: 8px; border: 1px solid #eee; }
+        
+        .info-ped { flex-grow: 1; }
+        .nombre-p { font-weight: bold; font-size: 18px; color: rgb(87,16,29); margin: 0 0 10px 0; }
+        
+        .resumen-precios { display: flex; gap: 20px; margin-top: 10px; border-top: 1px dashed #eee; padding-top: 10px; }
+        .dato-precio { font-size: 14px; color: #666; }
+        .dato-precio strong { color: #333; display: block; font-size: 16px; }
+        .saldo-rojo { color: #a31c36 !important; }
+
+        .btn-recibido { background: #28a745; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-cancelar { background: #57101d; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; margin-left: 10px; }
+        .btn-recibido:hover { background: #218838; transform: scale(1.05); }
+        .btn-cancelar:hover { background: #87101d; transform: scale(1.05); }
+    </style>
+</head>
+<body>
+
+<header>
+    <div><a href="{% url 'ventas:lista_product' %}"><img src="{% static 'img/Logo_Luxy_Fashion.jpg' %}" height="60" alt="Logo"></a></div>
+</header>
+
+<main>
+    <h2 style="color: #57101d;">Mis Pedidos</h2>
+    
+    {% if pedidos_detallados %}
+        {% for item in pedidos_detallados %}
+    <div class="pedido-card">
+
+        <div class="info-ped">
+            <p class="nombre-p">Pedido #{{ item.objeto.id_pedido }}</p>
+            <p>Fecha de entrega: {{ item.objeto.fecha_ped|date:"d/m/Y" }} | Estado: <strong>{{ item.objeto.estado_ped }}</strong></p>
+            
+            <div class="resumen-precios">
+                <div class="dato-precio">Total Pedido: <strong>${{ item.total }}</strong></div>
+                <div class="dato-precio">Abonado: <strong>${{ item.abonado }}</strong></div>
+                <div class="dato-precio">Saldo Pendiente: <strong class="saldo-rojo">${{ item.saldo }}</strong></div>
+            </div>
+        </div>
+
+        <div class="acciones">
+            
+            <button onclick="confirmarCancelacion('{{ item.objeto.id_pedido }}')" class="btn-cancelar">Cancelar</button>
+        </div>
+
+        <form id="form-entregado-{{ item.objeto.id_pedido }}" method="POST" action="{% url 'ventas:gestionar_pedido' item.objeto.id_pedido %}">
+            {% csrf_token %} <input type="hidden" name="accion" value="entregado">
+        </form>
+        <form id="form-cancelar-{{ item.objeto.id_pedido }}" method="POST" action="{% url 'ventas:gestionar_pedido' item.objeto.id_pedido %}">
+            {% csrf_token %} <input type="hidden" name="accion" value="cancelar">
+        </form>
+    </div>
+{% endfor %}
+    {% else %}
+        <div style="text-align: center; margin-top: 50px;">
+            <p>No tienes pedidos activos actualmente.</p>
+            <a href="{% url 'ventas:lista_product' %}" style="color: #57101d; font-weight: bold;">Ver productos</a>
+        </div>
+    {% endif %}
+</main>
+
+<script>
+    // Reutiliza las funciones SweetAlert que configuramos en el paso anterior
+    function confirmarEntrega(id) {
+        Swal.fire({
+            title: '¿Confirmas la entrega?',
+            text: "El pedido se borrará de la lista porque ya lo tienes en tus manos.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, ya llegó',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) { document.getElementById('form-entregado-' + id).submit(); }
+        })
+    }
+
+    function confirmarCancelacion(id) {
+        Swal.fire({
+            title: '¿Deseas cancelar?',
+            text: "Esta acción devolverá los productos al stock.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#57101d',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, cancelar pedido'
+        }).then((result) => {
+            if (result.isConfirmed) { document.getElementById('form-cancelar-' + id).submit(); }
+        })
+    }
+</script>
+</body>
+</html>
