@@ -109,40 +109,40 @@ def lista_mmtp(request):
             return redirect('inventario:lista_mmtp')
 
     # 2. PROCESAMIENTO PARA EL MODAL (HISTORIAL)
-    # Traemos todos los movimientos
     mmtp = Movimiento_matp.objects.all()
 
     for m in mmtp:
-        # Obtenemos el historial cronológico (del más viejo al más nuevo)
-        h_queryset = m.history.all().order_by('history_date')
+        # Forzamos a Django a traer los datos reales
+        h_queryset = list(m.history.all().order_by('history_date'))
         
         procesados = []
-        saldo = 0
         
-        for h in h_queryset:
-            # Usamos getattr para evitar problemas con campos que el editor ve "grises"
-            cantidad = float(getattr(h, 'stock_mmtp', 0))
-            tipo_mov = getattr(h, 'tipo_mmtp', 'ENTRADA')
+        for i, h in enumerate(h_queryset):
+            # Usamos el nombre exacto de tu campo en el modelo
+            stock_en_esta_foto = float(h.stock_mmtp)
             
-            antes = saldo
-            if tipo_mov == 'ENTRADA':
-                despues = antes + cantidad
+            if i == 0:
+                antes = 0
             else:
-                despues = antes - cantidad
-                if despues < 0: despues = 0
+                antes = float(h_queryset[i-1].stock_mmtp)
+            
+            variacion = stock_en_esta_foto - antes
+            tipo_mov_real = 'ENTRADA' if variacion >= 0 else 'SALIDA'
             
             procesados.append({
                 'fecha': h.history_date,
                 'antes': antes,
-                'variacion': cantidad,
-                'tipo': tipo_mov,
-                'despues': despues
+                'variacion': abs(variacion),
+                'tipo': tipo_mov_real,
+                'despues': stock_en_esta_foto
             })
-            saldo = despues # El final de este es el inicio del próximo
             
-        # Guardamos la lista invertida (más nuevo arriba) dentro del objeto
         procesados.reverse()
+        # Esta es la variable que el MODAL debe leer
         m.historial_calculado = procesados
+        
+        # --- PRUEBA RÁPIDA EN CONSOLA ---
+        print(f"Material: {m.mat_mmtp} - Movimientos: {len(procesados)}")
 
     return render(request, "inventario/movimiento_matp/lista.html", {
         'mmtp': mmtp,
@@ -174,47 +174,41 @@ def eliminar_mmtp(request, id):
 #----------------------------- historial mov MatP -----------------------------------------------
 
 def history_MatP(request, id):
-    # 1. Buscamos el material por su ID
-    matP = get_object_or_404(Movimiento_matp, id_mmtp=id)
+    # Traemos el material
+    m = get_object_or_404(Movimiento_matp, id_mmtp=id)
     
-    # 2. Obtenemos el historial desde el primero que se creó (cronológico)
-    # Importante: Usamos order_by('history_date') para que la suma sea correcta
-    h_queryset = matP.history.all().order_by('history_date')
+    # Obtenemos el historial de viejo a nuevo
+    h_queryset = m.history.all().order_by('history_date')
     
-    datos_para_tabla = []
-    saldo_acumulado = 0
+    historial_final = []
 
-    for h in h_queryset:
-        # Obtenemos el valor de stock. Si no existe, usamos 0.
-        valor_movimiento = getattr(h, 'stock_mmtp', 0)
-        tipo = getattr(h, 'tipo_mmtp', 'ENTRADA')
+    for i, registro in enumerate(h_queryset):
+        # El valor que quedó guardado en este punto
+        actual = registro.stock_mmtp
         
-        antes = saldo_acumulado
-        
-        if tipo == 'ENTRADA':
-            despues = antes + valor_movimiento
+        # El valor que había un paso atrás
+        if i == 0:
+            anterior = 0
         else:
-            despues = antes - valor_movimiento
-            if despues < 0: despues = 0 # Evitar negativos
-            
-        datos_para_tabla.append({
-            'fecha': h.history_date,
-            'stock_antes': antes,
-            'variacion': valor_movimiento,
-            'tipo': tipo,
-            'stock_despues': despues
+            anterior = h_queryset[i-1].stock_mmtp
+
+        # La diferencia real
+        diferencia = actual - anterior
+
+        historial_final.append({
+            'fecha': registro.history_date,
+            'antes': anterior,
+            'cambio': abs(diferencia),
+            'tipo': 'ENTRADA' if diferencia >= 0 else 'SALIDA',
+            'despues': actual
         })
-        
-        # El saldo final de este registro es el acumulado para el siguiente
-        saldo_acumulado = despues
 
-    # 3. Volteamos la lista para que el movimiento más nuevo aparezca arriba
-    datos_para_tabla.reverse()
-
-    # 4. Enviamos 'historial' al template
+    # Ponemos el más reciente arriba
+    historial_final.reverse()
+    print(f"DEBUG: Cantidad en historial para {m.nom_mmtp}: {len(historial_final)}")
     return render(request, 'inventario/movimiento_matp/lista.html', {
-        'matP': matP,
-        'historial': datos_para_tabla 
+        'matP': m,
+        'historial': historial_final 
     })
 
 

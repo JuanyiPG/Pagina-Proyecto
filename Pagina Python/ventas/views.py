@@ -600,9 +600,11 @@ def ver_carrito(request): # O podrías llamarla ver_mis_pedidos
 
     for pedido in pedidos:
         items = Det_valor.objects.filter(id_ped_fk_detval=pedido).select_related('id_var_fk_detval', 'id_prod_fk_detval')
-        cant = Variacion.objects.select_related('cant_soli')
-        
-        total_product = cant.aggregate(total=Sum('cant_soli'))['total'] or 0
+
+        total_product = 0
+        for item in items:
+            if item.id_var_fk_detval:
+                total_product += item.id_var_fk_detval.cant_soli
         total_raw = items.aggregate(Sum('valor_total'))['valor_total__sum'] or 0
         total_productos = Decimal(str(total_raw)).quantize(formato)
 

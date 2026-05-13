@@ -62,11 +62,6 @@
         </div>
 
         <div class="acciones">
-            {% if item.bloqueado %}
-                <button class="btn-recibido" style="background: #ccc; cursor: not-allowed; opacity: 0.6;" disabled title="Debes pagar el saldo completo para confirmar">¿Ya llegó?</button>
-            {% else %}
-                <button onclick="confirmarEntrega('{{ item.objeto.id_pedido }}')" class="btn-recibido">¿Ya llegó?</button>
-            {% endif %}
             
             <button onclick="confirmarCancelacion('{{ item.objeto.id_pedido }}')" class="btn-cancelar">Cancelar</button>
         </div>
