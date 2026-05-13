@@ -91,18 +91,61 @@ def lista_mmtp(request):
         
         if id_pro:
             proveedor_instancia = get_object_or_404(Proveedor, id_provee=id_pro)
+            
+            # 1. CORRECCIÓN DE LÓGICA:
+            # Queremos que si el número es negativo se vuelva 0, 
+            # pero si es positivo se mantenga igual.
+            stock_recibido = int(request.POST.get('stock_mmtp', 0))
+            stock_final = stock_recibido if stock_recibido > 0 else 0
+            
             Movimiento_matp.objects.create(
                 tipo_mmtp=tipo,
                 color_mmtp=request.POST.get('color_mmtp', ''), 
                 fecha_mmtp=request.POST.get('fecha_mmtp'),
-                stock_mmtp=request.POST.get('stock_mmtp'),
+                stock_mmtp=stock_final, # Guardamos el valor validado
                 mat_mmtp=request.POST.get('mat_mmtp'),
                 id_proveedor_fk=proveedor_instancia
             )
             return redirect('inventario:lista_mmtp')
 
+    # 2. PROCESAMIENTO PARA EL MODAL (HISTORIAL)
+    # Traemos todos los movimientos
+    mmtp = Movimiento_matp.objects.all()
+
+    for m in mmtp:
+        # Obtenemos el historial cronológico (del más viejo al más nuevo)
+        h_queryset = m.history.all().order_by('history_date')
+        
+        procesados = []
+        saldo = 0
+        
+        for h in h_queryset:
+            # Usamos getattr para evitar problemas con campos que el editor ve "grises"
+            cantidad = float(getattr(h, 'stock_mmtp', 0))
+            tipo_mov = getattr(h, 'tipo_mmtp', 'ENTRADA')
+            
+            antes = saldo
+            if tipo_mov == 'ENTRADA':
+                despues = antes + cantidad
+            else:
+                despues = antes - cantidad
+                if despues < 0: despues = 0
+            
+            procesados.append({
+                'fecha': h.history_date,
+                'antes': antes,
+                'variacion': cantidad,
+                'tipo': tipo_mov,
+                'despues': despues
+            })
+            saldo = despues # El final de este es el inicio del próximo
+            
+        # Guardamos la lista invertida (más nuevo arriba) dentro del objeto
+        procesados.reverse()
+        m.historial_calculado = procesados
+
     return render(request, "inventario/movimiento_matp/lista.html", {
-        'mmtp': Movimiento_matp.objects.all(), 
+        'mmtp': mmtp,
         'proveedores': Proveedor.objects.all()
     })
 
@@ -131,11 +174,47 @@ def eliminar_mmtp(request, id):
 #----------------------------- historial mov MatP -----------------------------------------------
 
 def history_MatP(request, id):
-    matP = get_object_or_404(Movimiento_matp, id_mmtp=id )
-    historial = matP.history.all()
-    return render(request, 'inventario/movimiento_matp/lista.html',{
-        'matP' : matP,
-        'historial': historial
+    # 1. Buscamos el material por su ID
+    matP = get_object_or_404(Movimiento_matp, id_mmtp=id)
+    
+    # 2. Obtenemos el historial desde el primero que se creó (cronológico)
+    # Importante: Usamos order_by('history_date') para que la suma sea correcta
+    h_queryset = matP.history.all().order_by('history_date')
+    
+    datos_para_tabla = []
+    saldo_acumulado = 0
+
+    for h in h_queryset:
+        # Obtenemos el valor de stock. Si no existe, usamos 0.
+        valor_movimiento = getattr(h, 'stock_mmtp', 0)
+        tipo = getattr(h, 'tipo_mmtp', 'ENTRADA')
+        
+        antes = saldo_acumulado
+        
+        if tipo == 'ENTRADA':
+            despues = antes + valor_movimiento
+        else:
+            despues = antes - valor_movimiento
+            if despues < 0: despues = 0 # Evitar negativos
+            
+        datos_para_tabla.append({
+            'fecha': h.history_date,
+            'stock_antes': antes,
+            'variacion': valor_movimiento,
+            'tipo': tipo,
+            'stock_despues': despues
+        })
+        
+        # El saldo final de este registro es el acumulado para el siguiente
+        saldo_acumulado = despues
+
+    # 3. Volteamos la lista para que el movimiento más nuevo aparezca arriba
+    datos_para_tabla.reverse()
+
+    # 4. Enviamos 'historial' al template
+    return render(request, 'inventario/movimiento_matp/lista.html', {
+        'matP': matP,
+        'historial': datos_para_tabla 
     })
 
 
@@ -153,7 +232,7 @@ def report_mmtp(request):
         logo_final = "" 
 
     context = {
-        'movimientos': movimiento,
+        'movimientos': movimientos,
         'Logo': logo_final 
     }
 

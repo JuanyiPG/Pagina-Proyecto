@@ -138,9 +138,31 @@ def eliminar_variacion (request, detalle_id):
 
 #----------------- CRUD PRODUCTO ------------------------------
 
-def lista_producto(request): 
-    productos = Producto.objects.all()
-    return render(request, 'PAGINAS_LUXY_PROD/PAGINA_PROD.html', {'productos': productos})
+def lista_producto(request):
+    todos = Producto.objects.prefetch_related('det_mov_matp_set__materia_prima').all()
+    productos_visibles = []
+
+    for p in todos:
+        es_valido = True
+        detalles = p.det_mov_matp_set.all()
+        
+        if not detalles.exists():
+            es_valido = False
+        else:
+            for d in detalles:
+                h = d.materia_prima.history.all()
+                # Calculamos stock rápido
+                stock = sum(x.stock_mmtp if x.tipo_mmtp == 'ENTRADA' else -x.stock_mmtp for x in h)
+                if stock < d.cantidad_usada :
+                    es_valido = False
+                elif stock == 0: 
+                    es_valido = False
+                    break
+        
+        if es_valido:
+            productos_visibles.append(p)
+
+    return render(request, 'PAGINAS_LUXY_PROD/PAGINA_PROD.html', {'productos': productos_visibles})
     
 
 @solo_personal
@@ -158,6 +180,7 @@ def lista_producto_admin(request):
         categoria_produc = request.POST.get('cat_produc')
         estado_produc = request.POST.get('estado_produc')
         precio = request.POST.get('precio')
+        dias_produccion = request.POST.get('dias_produccion')
 
         #Converir String a Decimal
         try: 
@@ -183,7 +206,7 @@ def lista_producto_admin(request):
             })
         
         nuevo_p = Producto.objects.create(imagen_product=imagen_produc, imagen_hash=nuevo_hash, nom_produc=nom_produc, gen_produc=gen_produc,
-                                desc_produc=desc_produc, categoria_produc=categoria_produc,estado_produc=estado_produc, precio=valor )
+                                desc_produc=desc_produc, categoria_produc=categoria_produc,estado_produc=estado_produc, precio=valor, dias_produccion=dias_produccion )
         
         ids_materiales = request.POST.getlist('material_ids[]')
         cantidades = request.POST.getlist('cantidades[]')
@@ -222,6 +245,15 @@ def editar_producto(request, id):
         producto.gen_produc = request.POST.get('gen_produc')
         producto.desc_produc = request.POST['desc_produc']
         producto.categoria_produc = request.POST.get('categoria_produc')
+
+        dias = request.POST.get('dias_produccion')
+
+        if not dias or dias.strip() == "":
+            producto.dias_produccion = 10
+        else:
+            producto.dias_produccion = int(dias)
+
+        producto.save()
         
         producto.estado_produc = request.POST['estado_produc']
         precio = request.POST['precio']
@@ -568,7 +600,9 @@ def ver_carrito(request): # O podrías llamarla ver_mis_pedidos
 
     for pedido in pedidos:
         items = Det_valor.objects.filter(id_ped_fk_detval=pedido).select_related('id_var_fk_detval', 'id_prod_fk_detval')
+        cant = Variacion.objects.select_related('cant_soli')
         
+        total_product = cant.aggregate(total=Sum('cant_soli'))['total'] or 0
         total_raw = items.aggregate(Sum('valor_total'))['valor_total__sum'] or 0
         total_productos = Decimal(str(total_raw)).quantize(formato)
 
@@ -582,6 +616,7 @@ def ver_carrito(request): # O podrías llamarla ver_mis_pedidos
             pedidos_info.append({
                 'pedido': pedido,
                 'items': items,
+                'total_product' : total_product,
                 'total_productos': total_productos,
                 'total_abonado': total_abonado,
                 'saldo_pendiente': max(0, saldo_pendiente),

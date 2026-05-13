@@ -256,7 +256,7 @@
                         <label title="{{ c|capfirst }}">
                             <input type="radio" name="color" value="{{c}}" style="display:none;" required>
                             <span class="color-circle" 
-                                  style="background-color: {% if c|lower == 'rojo' %}#d90429{% elif c|lower == 'azul' %}#0077b6{% elif c|lower == 'blanco' %}#ffffff{% elif c|lower == 'gris' %}#8d99ae{% elif c|lower == 'negro' %}#2b2d42{% else %}{{c}}{% endif %};">
+                                style="background-color: {% if c|lower == 'rojo' %}#d90429{% elif c|lower == 'azul' %}#0077b6{% elif c|lower == 'blanco' %}#ffffff{% elif c|lower == 'gris' %}#8d99ae{% elif c|lower == 'negro' %}#2b2d42{% else %}{{c}}{% endif %};">
                             </span>
                         </label>
                         {% endfor %}
@@ -266,7 +266,7 @@
                 <div style="margin-bottom: 30px; display: flex; align-items: center; gap: 15px;">
                     <label style="font-weight: bold; color: #555; font-size: 13px;">CANTIDAD:</label>
                     <input type="number" name="cantidad" value="1" min="1" 
-                           style="width: 70px; padding: 12px; border-radius: 12px; border: 1px solid #ddd; text-align: center; font-weight: bold; font-size: 16px;">
+                        style="width: 70px; padding: 12px; border-radius: 12px; border: 1px solid #ddd; text-align: center; font-weight: bold; font-size: 16px;">
                 </div>
 
                 <button type="submit" class="btn-carrito">
