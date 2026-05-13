@@ -281,24 +281,62 @@ def b64_to_file(data, filename):
 def guardar_diseno_3d(request):
     if request.method == 'POST':
         try:
-            # 1. Identificar al cliente (tu función de sesión manual)
+            # 1. TU LÓGICA DE SESIÓN (No se toca)
             cliente_usuario = obtener_cliente_actual(request)
             if not cliente_usuario:
                 return JsonResponse({'status': 'error', 'message': 'Sesión no válida'}, status=401)
 
-            # 2. Cargar los datos que vienen del JavaScript
+            # 2. CARGA DE DATOS
             data = json.loads(request.body)
             producto_id = data.get('producto_id')
             color = data.get('color')
-            talla = data.get('talla', 'M')
+            talla = data.get('talla') 
             cantidad = int(data.get('cantidad', 1))
-            estampado_id = data.get('estampado_id')
+            estampado_id = data.get('estampado_id') # ID del último/principal
+            
+            # --- NUEVAS VARIABLES PARA EL CÁLCULO MÚLTIPLE ---
+            lista_ids_estampados = data.get('lista_estampados', []) # Lista de todos los IDs puestos
+            total_estampados_escena = int(data.get('cantidad_total_estampados', 0))
+            
             foto_frente_base64 = data.get('foto_frente')
 
-            # --- AQUÍ ESTABA EL ERROR: Necesitamos definir producto_base ---
             producto_base = get_object_or_404(Producto, id_produc=producto_id)
 
-            # 3. Procesar la captura del 3D (Base64 a archivo real)
+            # --- 3. LÓGICA DE PRECIOS CORREGIDA (Suma cada estampado individualmente) ---
+            precio_unitario = float(producto_base.precio)
+            extra_total_estampados = 0
+            estampado_obj_principal = None
+
+            # A. Primero sumamos los costos de los estampados de catálogo que estén en la lista
+            # Usamos un set para no cobrar doble si el ID se repite por error, o quita el set si quieres cobrar cada instancia
+            for est_id in lista_ids_estampados:
+                try:
+                    est_temp = Estampado.objects.get(id_estamp=est_id)
+                    extra_total_estampados += float(est_temp.costo_adi)
+                    
+                    # Guardamos el último como principal para la relación en la DB
+                    if str(est_id) == str(estampado_id):
+                        estampado_obj_principal = est_temp
+                except Estampado.DoesNotExist:
+                    continue
+            
+            # B. Si no logramos asignar el principal arriba, intentamos con el estampado_id directo
+            if not estampado_obj_principal and estampado_id:
+                try:
+                    estampado_obj_principal = Estampado.objects.get(id_estamp=estampado_id)
+                except: pass
+
+            # C. Lógica para estampados propios (subidos por el usuario)
+            # Si hay más objetos en escena que IDs de catálogo, la diferencia son estampados propios
+            cantidad_propios = total_estampados_escena - len(lista_ids_estampados)
+            if cantidad_propios > 0:
+                extra_total_estampados += (20000 * cantidad_propios) # 20k por cada uno propio
+
+            precio_unitario += extra_total_estampados
+            valor_total_final = int(precio_unitario * cantidad)
+            # -----------------------------------------------------------------------
+
+            # 4. PROCESAR IMAGEN (TU LÓGICA ORIGINAL)
             archivo_foto = None
             if foto_frente_base64 and ';base64,' in foto_frente_base64:
                 format, imgstr = foto_frente_base64.split(';base64,')
@@ -306,57 +344,45 @@ def guardar_diseno_3d(request):
                 nombre_archivo = f"diseno_{uuid.uuid4()}.{ext}"
                 archivo_foto = ContentFile(base64.b64decode(imgstr), name=nombre_archivo)
 
-            # 4. Buscar el estampado si existe
-            estampado_obj = None
-            if estampado_id:
-                try:
-                    estampado_obj = Estampado.objects.get(id_estamp=estampado_id)
-                except Estampado.DoesNotExist:
-                    estampado_obj = None
-
-            # 5. Guardar todo en la base de datos
+            # 5. GUARDADO (TU ESTRUCTURA ORIGINAL CON DATOS NUEVOS)
             with transaction.atomic():
-                # A. Crear la personalización (Donde se guarda la foto)
                 personalizacion = PedidoPersonalizado.objects.create(
                     producto=producto_base,
-                    estampado=estampado_obj,
+                    estampado=estampado_obj_principal, # Usamos el principal identificado
                     color_hex=color,
                     tipo_personalizacion="3D",
                     foto_frente=archivo_foto,
-                    precio_final=producto_base.precio
+                    precio_final=precio_unitario 
                 )
 
-                # B. Crear la variación física
                 nueva_variacion = Variacion.objects.create(
                     talla_var=talla,
                     cant_soli=cantidad,
                     color_var=color,
                     mat_var="Algodón",
-                    costo_var=producto_base.precio,
-                    id_estam_fk_var=estampado_obj 
+                    costo_var=precio_unitario, 
+                    id_estam_fk_var=estampado_obj_principal 
                 )
 
-                # C. Buscar o crear el carrito del cliente
                 pedido, _ = Pedido.objects.get_or_create(
                     id_clien_fk=cliente_usuario,
                     estado_ped='Carrito',
                     defaults={'subtotal_ped': 0, 'valor_ped': 0, 'metodo_pago': 'Pendiente'}
                 )
 
-                # D. Crear el detalle final
                 Det_valor.objects.create(
                     id_ped_fk_detval=pedido, 
                     id_prod_fk_detval=producto_base,
                     id_var_fk_detval=nueva_variacion,
                     id_personalizacion_3d=personalizacion,
-                    valor_total=int(producto_base.precio * cantidad),
+                    valor_total=valor_total_final, 
                     tipo_pedido='Personalizado'
                 )
 
             return JsonResponse({'status': 'success', 'message': '¡Diseño guardado correctamente!'})
 
         except Exception as e:
-            print(f"Error detallado: {str(e)}") # Esto lo verás en tu terminal
+            print(f"Error detallado: {str(e)}")
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
     return JsonResponse({'status': 'error', 'message': 'Método no permitido'}, status=405)

@@ -13,15 +13,15 @@ export function modelo() {
     // --- 1. CONFIGURACIÓN DE ESCENA Y RENDERER ---
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xffffff);
+    window.scene = scene; // Exponer la escena globalmente para el conteo
 
     const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-    const posicionInicial = { x: 0, y: 0.5, z: 6.5 }; 
-    camera.position.set(posicionInicial.x, posicionInicial.y, posicionInicial.z);
+    camera.position.set(0, 0.5, 6.5);
 
     const renderer = new THREE.WebGLRenderer({ 
         antialias: true, 
         alpha: true,
-        preserveDrawingBuffer: true // Vital para las capturas de pantalla
+        preserveDrawingBuffer: true 
     });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -45,6 +45,7 @@ export function modelo() {
     let teclaAPresionada = false;
     let contadorEstampados = 0;
     let idEstampadoSeleccionado = null; 
+    window.listaEstampadosIds = []; // Array global para permitir duplicados en el cobro
 
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
@@ -74,152 +75,41 @@ export function modelo() {
             }
         });
 
-        // Aplicar color inicial si existe el input
+        // Aplicar color inicial
         const colorInput = document.getElementById('color-input-global');
         if (colorInput) aplicarColor(colorInput.value);
     });
 
-    // --- 6. LÓGICA DE GUARDADO (VÍA FORMULARIO OCULTO) ---
-   // Reemplaza tu función guardarConfiguracion con esta versión optimizada:
-// 1. Función para obtener el token real de las cookies del navegador
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
+    // --- 6. FUNCIONES DE AYUDA ---
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
             }
         }
-    }
-    return cookieValue;
-}
-
-async function guardarConfiguracion() {
-    const btnSave = document.getElementById('btn-guardar-3d');
-    if (btnSave) {
-        btnSave.disabled = true;
-        btnSave.innerText = "Guardando...";
+        return cookieValue;
     }
 
-    try {
-        // Captura de imagen actual (Frente)
-        eliminarPrevisualizacion();
-        renderer.render(scene, camera);
-        const imagenBase64 = renderer.domElement.toDataURL('image/png');
-
-        const datos = {
-            'producto_id': document.getElementById('producto-id').value,
-            'color': document.getElementById('color-input-global').value,
-            'talla': document.getElementById('talla-seleccionada')?.value || 'M',
-            'cantidad': 1,
-            'estampado_id': idEstampadoSeleccionado,
-            'foto_frente': imagenBase64
-        };
-
-        const response = await fetch('/inventario/guardar-diseno/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken'), // Token real
-            },
-            body: JSON.stringify(datos)
-        });
-
-        if (response.redirected) {
-            // Si el servidor nos mandó al login, redirigir manualmente
-            window.location.href = response.url;
-            return;
-        }
-
-        const resultado = await response.json();
-        
-        if (resultado.status === 'success') {
-            alert("¡Producto añadido al carrito!");
-            window.location.href = '/ventas/carrito/';
-        } else {
-            throw new Error(resultado.message);
-        }
-
-    } catch (error) {
-        console.error("Error:", error);
-        alert("Error al guardar: " + error.message);
-        if (btnSave) {
-            btnSave.disabled = false;
-            btnSave.innerText = "Añadir al Carrito";
-        }
-    }
-}
-
-    // --- 7. EVENTOS DE INTERACCIÓN ---
-
-    // Carga de imagen local (Usuario sube su propio logo)
-    const imageInput = document.getElementById('imageInput');
-    if (imageInput) {
-        imageInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    idEstampadoSeleccionado = null; 
-                    textureLoader.load(event.target.result, (tex) => {
-                        tex.colorSpace = THREE.SRGBColorSpace;
-                        ultimaTextura = tex;
-                    });
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+    function aplicarColor(hex) {
+        meshCamiseta.forEach(m => m.material.color.set(hex));
     }
 
-    // Manejo de la tecla 'A' para estampar
-    window.addEventListener('keydown', (e) => {
-        if (e.key.toLowerCase() === 'a') {
-            teclaAPresionada = true;
-            controls.enabled = false; 
+    function eliminarPrevisualizacion() {
+        if (decalVistaPrevia) {
+            scene.remove(decalVistaPrevia);
+            if (decalVistaPrevia.geometry) decalVistaPrevia.geometry.dispose();
+            if (decalVistaPrevia.material) decalVistaPrevia.material.dispose();
+            decalVistaPrevia = null;
         }
-    });
+    }
 
-    window.addEventListener('keyup', (e) => {
-        if (e.key.toLowerCase() === 'a') {
-            teclaAPresionada = false;
-            controls.enabled = true; 
-            eliminarPrevisualizacion();
-        }
-    });
-
-    // Movimiento del mouse para previsualizar el decal
-    renderer.domElement.addEventListener('mousemove', (event) => {
-        if (!ultimaTextura || !teclaAPresionada || contadorEstampados >= 2) {
-            eliminarPrevisualizacion();
-            return;
-        }
-        const rect = renderer.domElement.getBoundingClientRect();
-        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-        raycaster.setFromCamera(mouse, camera);
-        const intersects = raycaster.intersectObjects(meshCamiseta);
-
-        eliminarPrevisualizacion();
-        if (intersects.length > 0) crearDecal(intersects[0], true);
-    });
-
-    // Clic para fijar el estampado
-    renderer.domElement.addEventListener('click', () => {
-        if (!decalVistaPrevia || !teclaAPresionada) return;
-        if (contadorEstampados >= 2) return alert("Máximo 2 estampados permitidos.");
-        
-        decalVistaPrevia.name = "estampado_fijo";
-        decalVistaPrevia.material.opacity = 1.0;
-        decalVistaPrevia = null; 
-        contadorEstampados++;
-    });
-
-    // --- 8. FUNCIONES AUXILIARES (DECAL, COLOR, ETC) ---
-
+    // --- 7. LÓGICA DE ESTAMPADO (DECAL) ---
     function crearDecal(hit, esPrevia) {
         const malla = hit.object;
         const posicion = hit.point;
@@ -250,26 +140,9 @@ async function guardarConfiguracion() {
         if (esPrevia) decalVistaPrevia = decalMesh;
     }
 
-    function eliminarPrevisualizacion() {
-        if (decalVistaPrevia) {
-            decalVistaPrevia.geometry.dispose();
-            decalVistaPrevia.material.dispose();
-            scene.remove(decalVistaPrevia);
-            decalVistaPrevia = null;
-        }
-    }
+    // --- 8. EVENTOS DE INTERACCIÓN ---
 
-    function aplicarColor(hex) {
-        meshCamiseta.forEach(m => m.material.color.set(hex));
-    }
-
-    // Listener para el input de color
-    const colorInputGlobal = document.getElementById('color-input-global');
-    if(colorInputGlobal) {
-        colorInputGlobal.addEventListener('input', (e) => aplicarColor(e.target.value));
-    }
-
-    // Listener para estampados del catálogo
+    // Listener del catálogo
     window.addEventListener('cambioEstampadoManual', (event) => {
         const { url, id } = event.detail;
         idEstampadoSeleccionado = id;
@@ -280,37 +153,58 @@ async function guardarConfiguracion() {
             });
         }
     });
-    
-    async function guardarDiseño() {
-    const canvas = document.querySelector('canvas');
-    
-    // Función para capturar el canvas como Base64 (puedes rotar el modelo entre capturas)
-    const imagenFrente = canvas.toDataURL('image/png'); 
 
-    const datos = {
-        'producto_id': 9, // O el ID dinámico que tengas
-        'color': meshPrenda.material.color.getHexString(),
-        'talla': document.getElementById('talla').value,
-        'cantidad': 1,
-        'foto_frente': imagenFrente, // Enviamos la imagen como texto Base64
-    };
-
-    const response = await fetch('/inventario/guardar-diseno/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': '{{ csrf_token }}'
-        },
-        body: JSON.stringify(datos)
+    // Teclado (Tecla A para modo estampado)
+    window.addEventListener('keydown', (e) => {
+        if (e.key.toLowerCase() === 'a') {
+            teclaAPresionada = true;
+            controls.enabled = false; 
+        }
     });
 
-    const resultado = await response.json();
-    if (resultado.status === 'success') {
-        window.location.href = '/ventas/carrito/';
-    }
-}
+    window.addEventListener('keyup', (e) => {
+        if (e.key.toLowerCase() === 'a') {
+            teclaAPresionada = false;
+            controls.enabled = true; 
+            eliminarPrevisualizacion();
+        }
+    });
 
-    // Botón de Limpiar
+    // Movimiento del mouse
+    renderer.domElement.addEventListener('mousemove', (event) => {
+        if (!ultimaTextura || !teclaAPresionada || contadorEstampados >= 2) {
+            eliminarPrevisualizacion();
+            return;
+        }
+        const rect = renderer.domElement.getBoundingClientRect();
+        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(meshCamiseta);
+
+        eliminarPrevisualizacion();
+        if (intersects.length > 0) crearDecal(intersects[0], true);
+    });
+
+    // Clic para FIJAR estampado
+    renderer.domElement.addEventListener('click', () => {
+        if (!decalVistaPrevia || !teclaAPresionada) return;
+        if (contadorEstampados >= 2) return alert("Máximo 2 estampados permitidos.");
+        
+        decalVistaPrevia.name = "estampado_fijo";
+        decalVistaPrevia.material.opacity = 1.0;
+        
+        // Guardamos el ID en el array para permitir cobrar repetidos
+        if (idEstampadoSeleccionado) {
+            window.listaEstampadosIds.push(idEstampadoSeleccionado);
+        }
+
+        decalVistaPrevia = null; 
+        contadorEstampados++;
+    });
+
+    // Botón Limpiar
     const btnLimpiar = document.getElementById('btn-limpiar-estampados');
     if (btnLimpiar) {
         btnLimpiar.onclick = () => {
@@ -320,17 +214,83 @@ async function guardarConfiguracion() {
                 obj.material.dispose();
                 scene.remove(obj);
             });
+            window.listaEstampadosIds = [];
             contadorEstampados = 0;
             ultimaTextura = null;
             idEstampadoSeleccionado = null;
         };
     }
 
-    // Botón Guardar (conecta con la función del paso 6)
-    const btnGuardar = document.getElementById('btn-guardar-3d');
-    if (btnGuardar) btnGuardar.onclick = guardarConfiguracion;
+// --- 9. LÓGICA DE GUARDADO ---
+    async function guardarConfiguracion() {
+        console.log("Iniciando proceso de guardado...");
 
-    // --- 9. BUCLE DE ANIMACIÓN Y RESIZE ---
+        // Usamos los IDs exactos de tu HTML: 'btn-procesar-guardado' y 'texto-boton'
+        const btnSave = document.getElementById('btn-procesar-guardado');
+        const textoBtn = document.getElementById('texto-boton');
+
+        if (btnSave) {
+            btnSave.disabled = true;
+            if (textoBtn) textoBtn.innerText = "Guardando...";
+        }
+
+        try {
+            // Eliminar la vista previa (el "fantasma") antes de la captura
+            eliminarPrevisualizacion();
+            
+            // Forzar renderizado para obtener la imagen actualizada
+            renderer.render(scene, camera);
+            const imagenBase64 = renderer.domElement.toDataURL('image/png');
+            
+            const datos = {
+                'producto_id': document.getElementById('producto-id').value,
+                'color': document.getElementById('color-input-global').value,
+                'talla': document.getElementById('talla-seleccionada')?.value || 'M',
+                'cantidad': 1,
+                'foto_frente': imagenBase64,
+                'cantidad_total_estampados': window.listaEstampadosIds.length, 
+                'lista_estampados': window.listaEstampadosIds, 
+            };
+
+            const response = await fetch('/inventario/guardar-diseno/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Usamos el token global que definimos en el HTML
+                    'X-CSRFToken': window.csrfToken || getCookie('csrftoken'),
+                },
+                body: JSON.stringify(datos)
+            });
+
+            const resultado = await response.json();
+            
+            if (resultado.status === 'success') {
+                console.log("Éxito, redirigiendo...");
+                window.location.href = '/ventas/carrito/';
+            } else {
+                throw new Error(resultado.message || "Error al procesar el diseño.");
+            }
+        } catch (error) {
+            console.error("Error en el guardado:", error);
+            alert("Error: " + error.message);
+            
+            if (btnSave) {
+                btnSave.disabled = false;
+                if (textoBtn) textoBtn.innerText = "✅ Guardar Diseño";
+            }
+        }
+    }
+
+    // --- IMPORTANTE: VINCULACIÓN DEL EVENTO ---
+    const btnEjecutar = document.getElementById('btn-procesar-guardado');
+    if (btnEjecutar) {
+        btnEjecutar.onclick = (e) => {
+            e.preventDefault(); // Evitar cualquier comportamiento por defecto
+            guardarConfiguracion();
+        };
+    }
+
+    // --- 10. BUCLE DE ANIMACIÓN Y RESIZE ---
     function animate() {
         requestAnimationFrame(animate);
         controls.update();
@@ -343,7 +303,4 @@ async function guardarConfiguracion() {
         camera.updateProjectionMatrix();
         renderer.setSize(container.clientWidth, container.clientHeight);
     });
-
-    
 }
-

@@ -189,16 +189,33 @@
     <div id="container3d"></div>
 
     <div class="form-pro">
+        
         <input type="hidden" id="producto-id" value="{{ producto.id_produc }}">
 
         <div class="instrucciones-box">
             <strong style="display: block; margin-bottom: 5px;">🎮 Cómo personalizar:</strong>
-            • <b>Girar:</b> Arrastra con el ratón.<br>
-            • <b>Estampar:</b> Elige diseño + Mantén <b>'A'</b> + Clic.<br>
+            • <b>Color:</b> Elige el color de la tela abajo.<br>
+            • <b>Catálogo:</b> Selecciona un diseño y ajusta su tamaño.<br>
+            • <b>Estampar:</b> Mantén <b>Tecla 'A'</b> + <b>Clic</b> sobre la prenda.<br>
             • <b>Límite:</b> Máximo 2 estampados.
         </div>
 
         <div class="controles-scroll">
+
+            <span class="label-style">Color de la tela:</span>
+            <input type="color" id="color-input-global" value="#ffffff">
+
+            <span class="label-style" style="margin-top: 20px;">Talla:</span>
+            <select id="talla-seleccionada" style="width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #ddd;">
+                <option value="S">S</option>
+                <option value="M" selected>M</option>
+                <option value="L">L</option>
+                <option value="XL">XL</option>
+            </select>
+            
+            <span class="label-style" style="margin-top: 20px;">Tamaño del diseño:</span>
+            <input type="range" id="sizeSlider" min="10" max="250" value="80">
+
             <div class="control-tabs">
                 <button class="tab-btn active" onclick="showTab('tab-ninguno', this); limpiarTodo();">Original</button>
                 <button class="tab-btn" onclick="showTab('tab-propio', this)">Mi Foto</button>
@@ -217,7 +234,6 @@
             </div>
 
             <div id="tab-lista" class="panel-opcion">
-                <span class="label-style">Selecciona un diseño:</span>
                 <div class="galeria-disenos">
                     {% for est in estampados %}
                         <div class="diseno-item" onclick="seleccionarEstampado('{{ est.imagen_estamp.url }}', '{{ est.id_estamp }}', this)">
@@ -229,14 +245,6 @@
                     {% endfor %}
                 </div>
             </div>
-
-            <hr style="border: 0; border-top: 1px solid #f0f0f0; margin: 20px 0;">
-
-            <span class="label-style">Color de la tela:</span>
-            <input type="color" id="color-input-global" value="#ffffff">
-
-            <span class="label-style" style="margin-top: 20px;">Tamaño del diseño:</span>
-            <input type="range" id="sizeSlider" min="10" max="250" value="80">
         </div>
 
         <div class="acciones-footer">
@@ -253,8 +261,8 @@
     </div>
 </div>
 
+<!-- SCRIPTS DE FUNCIONAMIENTO -->
 <script>
-    // 1. FUNCIONES GLOBALES (Interactividad de pestañas)
     function showTab(tabId, btn) {
         document.querySelectorAll('.panel-opcion').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -284,79 +292,12 @@
 
 <script type="module">
     import { modelo } from "{% static 'js/main.js' %}";
+    
+    // Aseguramos que el CSRF esté disponible para main.js
+    window.csrfToken = "{{ csrf_token }}";
 
-    window.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('load', () => {
         modelo();
-    });
-
-    // 2. LÓGICA DE GUARDADO (Corregida para manejar errores de JSON/Login)
-    document.getElementById('btn-procesar-guardado').addEventListener('click', async function() {
-        const btn = this;
-        const textoBtn = document.getElementById('texto-boton');
-        
-        btn.disabled = true;
-        textoBtn.innerText = 'Guardando...';
-
-        const canvas = document.querySelector('canvas');
-        if (!canvas) {
-            alert("Error: No se encontró el lienzo 3D");
-            btn.disabled = false;
-            return;
-        }
-        
-        const fotoBase64 = canvas.toDataURL('image/png');
-
-        const datos = {
-            producto_id: document.getElementById('producto-id').value,
-            color: document.getElementById('color-input-global').value,
-            talla: "M", 
-            cantidad: 1,
-            foto_frente: fotoBase64,
-            estampado_id: window.currentEstampadoId || null 
-        };
-
-        try {
-            const response = await fetch("{% url 'inventario:guardar-diseno' %}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: JSON.stringify(datos)
-            });
-
-            // VALIDACIÓN CRÍTICA: Si el servidor nos redirigió al login
-            if (response.redirected) {
-                alert("Tu sesión ha expirado. Redirigiendo al login...");
-                window.location.href = response.url;
-                return;
-            }
-
-            // Validar si la respuesta es exitosa antes de intentar leer JSON
-            if (!response.ok) {
-                const errorData = await response.text();
-                console.error("Error del servidor:", errorData);
-                throw new Error("El servidor devolvió un error (Status " + response.status + ")");
-            }
-
-            const res = await response.json();
-            
-            if (res.status === 'success') {
-                window.location.href = "{% url 'ventas:ver_carrito' %}";
-            } else {
-                throw new Error(res.message || "Error desconocido al guardar.");
-            }
-
-        } catch (error) {
-            console.error("Error completo de guardado:", error);
-            alert("Error al guardar: " + error.message + "\n\nTip: Asegúrate de haber iniciado sesión en el sistema.");
-            btn.disabled = false;
-            textoBtn.innerText = '✅ Guardar Diseño';
-        }
-    });
-
-    window.addEventListener('cambioEstampadoManual', (e) => {
-        window.currentEstampadoId = e.detail.id;
     });
 </script>
 </body>
