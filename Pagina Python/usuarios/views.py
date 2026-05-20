@@ -1,3 +1,4 @@
+from datetime import date
 from functools import wraps
 import hashlib 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -9,6 +10,8 @@ from django.views.decorators.cache import never_cache
 from usuarios.models import Empleado, Cliente
 from inventario.models import Proveedor
 from ventas.models import Producto
+from datetime import date
+from dateutil.relativedelta import relativedelta
 
 # ================================================================
 # 🛡️ DECORADORES DE SEGURIDAD CUSTOM
@@ -54,6 +57,7 @@ def crear_rol(request):
     if request.method == 'POST':
         nom_rol = request.POST['nom_rol']
         Rol.objects.create(nom_rol=nom_rol)
+        messages.success(request, f"Rol guardado con exito")
         return redirect('usuarios:lista_roles')
     return render(request, 'usuarios/roles/crear.html')
 
@@ -63,6 +67,7 @@ def editar_rol(request, id):
     if request.method == 'POST':
         rol.nom_rol = request.POST['nom_rol']
         rol.save()
+        messages.success(request, f"Rol Actualizado con exito")
         return redirect('usuarios:lista_roles')
     return render(request, 'usuarios/roles/editar.html', {'rol': rol})
 
@@ -98,6 +103,7 @@ def crear_usuario(request):
             contrasena=make_password(contrasena), # Encriptado
             id_rol_fk=rol
         )
+        messages.success(request, f"Usuario guardado con exito")
         return redirect('usuarios:lista_usuarios')
     return render(request, 'usuarios/usuario/crear.html', {'roles': roles})
 
@@ -117,6 +123,7 @@ def editar_usuario(request, id):
 
         usuario.id_rol_fk = Rol.objects.get(id_rol=request.POST['id_rol'])
         usuario.save()
+        messages.success(request, f"Usuario actualizado con exito")
         return redirect('usuarios:lista_usuarios')
 
     return render(request, 'usuarios/usuario/editar.html', {'usuario': usuario, 'roles': roles})
@@ -192,26 +199,49 @@ def crear_empleado(request):
                     id_rol_fk=rol_obj
                 )
 
-                # 2. Crear el Empleado vinculado al usuario
-                Empleado.objects.create(
-                    nom_emple=request.POST.get('nom_emple'),
-                    tel_emple=request.POST.get('tel_emple'), 
-                    correo_emple=request.POST.get('correo_emple'),
-                    dir_emple=request.POST.get('dir_emple'),
-                    rh_emple=request.POST.get('rh_emple'),
-                    fecha_naci_emple=request.POST.get('fecha_naci_emple'),
-                    tipo_ident=request.POST.get('tipo_ident'),
-                    num_ident=num_ident_val,
-                    fecha_ing_emple=request.POST.get('fecha_ing_emple'),
-                    salari_emple=request.POST.get('salari_emple'),
-                    estado_emple=request.POST.get('estado_emple'),
-                    foto_perfil=foto,
-                    hash_foto=foto_hash,
-                    id_usuario_fk=nuevo_usuario 
-                )
-                
-                messages.success(request, "✅ Empleado y usuario creados con éxito.")
-                
+
+
+                f_nac_str = request.POST.get('fecha_naci_emple')
+                f_ing_str = request.POST.get('fecha_ing_emple')
+
+                f_nac = date.fromisoformat(f_nac_str)
+                f_ing = date.fromisoformat(f_ing_str)
+                hoy = date.today()
+
+            if relativedelta(hoy, f_nac).years < 18:
+                messages.error(request, "Error: El empleado debe ser mayor de edad.")
+                return redirect('usuarios:lista_empleados')
+
+    # Regla 2: No fechas futuras en ingreso
+            if f_ing > hoy:
+                messages.error(request, "Error: La fecha de ingreso no puede ser futura.")
+                return redirect('usuarios:lista_empleados')
+
+    # Regla 3: No trabajar antes de nacer
+            if f_ing <= f_nac:
+                messages.error(request, "Error: La fecha de ingreso debe ser posterior al nacimiento.")
+                return redirect('usuarios:lista_empleados')
+
+    # 3. CREACIÓN (Solo llegamos aquí si todas las reglas de arriba pasaron)
+            Empleado.objects.create(
+                nom_emple=request.POST.get('nom_emple'),
+                tel_emple=request.POST.get('tel_emple'), 
+                correo_emple=request.POST.get('correo_emple'),
+                dir_emple=request.POST.get('dir_emple'),
+                rh_emple=request.POST.get('rh_emple'),
+                fecha_naci_emple=f_nac, # Usamos la variable f_nac
+                tipo_ident=request.POST.get('tipo_ident'),
+                num_ident=num_ident_val,
+                fecha_ing_emple=f_ing, # Usamos la variable f_ing ya convertida
+                salari_emple=request.POST.get('salari_emple'),
+                estado_emple=request.POST.get('estado_emple'),
+                foto_perfil=foto,
+                hash_foto=foto_hash,
+                id_usuario_fk=nuevo_usuario 
+            )
+
+            messages.success(request, "✅ Empleado y usuario creados con éxito.")
+
         except Exception as e:
             messages.error(request, f"Error crítico al registrar: {e}")
             
@@ -318,7 +348,7 @@ def eliminar_empleado(request, id):
 @solo_personal
 def lista_clientes(request):
     clientes = Cliente.objects.all()
-    usuarios = Usuario.objects.all()
+    usuarios = Usuario.objects.exclude(id_rol_fk__nom_rol__in=['Administrador', 'administrador'])
     return render(request, 'usuarios/clientes/lista.html', {
         'clientes': clientes,
         'usuarios': usuarios
@@ -327,7 +357,7 @@ def lista_clientes(request):
 
 @solo_personal
 def crear_cliente(request):
-    usuarios = Usuario.objects.all()
+    usuarios = Usuario.objects.all().exclude(id_rol_fk__nom_rol__icontains=['Administrador', 'administrador'])
 
     if request.method == 'POST':
         id_usuario_seleccionado = request.POST.get('id_usuario_fk_clien')
@@ -340,6 +370,7 @@ def crear_cliente(request):
             id_usuario_fk=Usuario.objects.get(id_usuario=id_usuario_seleccionado)
         )
 
+        messages.success(request, f"Cliente guardado con exito")
         return redirect('usuarios:lista_clientes')
 
     return render(request, 'usuarios/clientes/crear.html', {'usuarios': usuarios})
@@ -348,7 +379,7 @@ def crear_cliente(request):
 @solo_personal
 def editar_cliente(request, id):
     cliente = get_object_or_404(Cliente, id_clien=id)
-    usuarios = Usuario.objects.all()
+    usuarios = Usuario.objects.all().exclude(id_rol_fk__nom_rol__in=['Administrador', 'administrador'])
 
     if request.method == 'POST':
         cliente.nom_clien = request.POST['nom_clien']
@@ -361,6 +392,7 @@ def editar_cliente(request, id):
             cliente.id_usuario_fk = Usuario.objects.get(id_usuario=id_usuario)
 
         cliente.save()
+        messages.success(request, f"Cliente actualizado con exito")
         return redirect('usuarios:lista_clientes')
 
     return render(request, 'usuarios/clientes/editar.html', {

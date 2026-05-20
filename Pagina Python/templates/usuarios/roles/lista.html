@@ -66,6 +66,31 @@
         background: #4d0a21;
         transform: translateY(-1px);
     }
+
+/* NOTIFICACIONES */
+
+    .container-mensajes {
+        margin-bottom: 15px; 
+    }
+
+    .alert {
+    padding: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    text-align: center;
+    }
+
+    .alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    }
+
+    .alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    }
 </style>
 
 <div class="table-container">
@@ -76,11 +101,22 @@
         
     <div class="form-card" style="margin-bottom: 40px; background: #fff; padding: 25px; border-radius: 8px; border: 1px solid #eee;">
         <form method="POST" action="{% url 'usuarios:crear_rol' %}">
+
+            {% if messages %}
+                <div class="container-mensajes" id="mensaje-django">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+            </div>
+            {% endfor %}
+            </div>
+            {% endif %}
+
             {% csrf_token %}
             <div class="form-grid" style="display: grid; grid-template-columns: 1fr; gap: 20px;">
                 <div class="form-group">
                     <label>Nombre del Rol</label>
-                    <input type="text" name="nom_rol" placeholder="Ej: Administrador, Vendedor, Contador..." required>
+                    <input type="text" name="nom_rol" placeholder="Ej: Administrador, Vendedor, Contador..." minlength="5" maxlength="25" required>
                 </div>
             </div>
             <button type="submit" class="btn-save" style="margin-top: 20px;">Guardar Rol</button>
@@ -161,5 +197,21 @@ function confirmarEliminacionRol(event, url) {
         }
     });
 }
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const mensaje = document.getElementById("mensaje-django");
+        
+        if (mensaje) {
+            setTimeout(function() {
+                mensaje.style.transition = "opacity 1s ease";
+                mensaje.style.opacity = "0";
+                
+                setTimeout(function() {
+                    mensaje.remove();
+                }, 1000);
+            }, 5000); 
+        }
+    });
 </script>
 {% endblock %}

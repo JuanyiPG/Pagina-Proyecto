@@ -40,7 +40,7 @@
                             <img id="preview" src="" style="display:none;">
                         {% endif %}
                     </label>
-                    <input type="file" name="foto_perfil" id="id_foto" hidden accept="image/*" required>
+                    <input type="file" name="foto_perfil" id="id_foto" hidden accept="image/*" >
                     <p style="font-size: 10px; color: #7e1a3f; margin-top: 8px; font-weight: bold;">CAMBIAR FOTO</p>
                 </div>
 
@@ -55,12 +55,12 @@
 
                     <div class="form-group">
                         <label>Nombre Completo</label>
-                        <input type="text" name="nom_emple" value="{{ empleado.nom_emple }}" required class="input-style">
+                        <input type="text" name="nom_emple" value="{{ empleado.nom_emple }}" minlength="10" maxlength="100" required class="input-style">
                     </div>
 
                     <div class="form-group">
                         <label>Correo Electrónico</label>
-                        <input type="email" name="correo_emple" value="{{ empleado.correo_emple }}" required class="input-style">
+                        <input type="email" name="correo_emple" value="{{ empleado.correo_emple }}" minlength="7" maxlength="50" required class="input-style">
                     </div>
 
                     <div class="form-group">
@@ -93,12 +93,12 @@
 
                     <div class="form-group">
                         <label>Teléfono</label>
-                        <input type="text" name="tel_emple" value="{{ empleado.tel_emple }}" required class="input-style">
+                        <input type="text" name="tel_emple" value="{{ empleado.tel_emple }}" min="10" max="10" required class="input-style">
                     </div>
 
                     <div class="form-group" style="grid-column: span 3;">
                         <label>Dirección de Residencia</label>
-                        <input type="text" name="dir_emple" value="{{ empleado.dir_emple }}" required class="input-style">
+                        <input type="text" name="dir_emple" value="{{ empleado.dir_emple }}"  minlength="7" maxlength="50" required class="input-style">
                     </div>
 
                     <div class="credential-box">
@@ -108,11 +108,11 @@
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                             <div class="form-group">
                                 <label style="color: #666;">Usuario</label>
-                                <input type="text" name="username" value="{{ empleado.id_usuario_fk.username }}" class="input-style" style="border: 1px solid #7e1a3f50;">
+                                <input type="text" name="username" value="{{ empleado.id_usuario_fk.username }}" minlength="4" maxlength="25" class="input-style" style="border: 1px solid #7e1a3f50;">
                             </div>
                             <div class="form-group">
                                 <label style="color: #666;">Nueva Contraseña</label>
-                                <input type="password" name="password" placeholder="Dejar en blanco para no cambiar" class="input-style" style="border: 1px solid #7e1a3f50;">
+                                <input type="password" name="password" placeholder="Dejar en blanco para no cambiar" class="input-style" style="border: 1px solid #7e1a3f50;" minlength="12" maxlength="64">
                                 <small style="color: #999; font-size: 10px;">* La contraseña actual está encriptada y no se puede mostrar.</small>
                             </div>
                         </div>

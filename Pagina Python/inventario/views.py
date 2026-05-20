@@ -5,6 +5,7 @@ import base64
 import hashlib
 import pandas as pd
 from decimal import Decimal
+from django.contrib import messages
 
 # Django Core
 from django.shortcuts import render, redirect, get_object_or_404
@@ -64,6 +65,7 @@ def lista_provee(request):
             fech_ingre=request.POST.get('fech_ingre'),
             num_tel=request.POST.get('num_tel')
         )
+        messages.success(request, f"Proveedor guardado con exito")
         return redirect('inventario:lista_provee') 
     proveedores = Proveedor.objects.all()
     return render(request, "inventario/proveedor/lista.html", {'proveedor': proveedores})
@@ -75,6 +77,7 @@ def editar_provee(request, id):
         proveedor.fech_ingre = request.POST.get('fech_ingre')
         proveedor.num_tel = request.POST.get('num_tel')
         proveedor.save()
+        messages.success(request, f"Proveedor actualizado con exito")
         return redirect('inventario:lista_provee')
     return render(request, 'inventario/proveedor/editar.html', {'proveedor': proveedor})
 
@@ -106,6 +109,7 @@ def lista_mmtp(request):
                 mat_mmtp=request.POST.get('mat_mmtp'),
                 id_proveedor_fk=proveedor_instancia
             )
+            messages.success(request, f"Materia Prima guardado con exito")
             return redirect('inventario:lista_mmtp')
 
     # 2. PROCESAMIENTO PARA EL MODAL (HISTORIAL)
@@ -160,6 +164,7 @@ def editar_mmtp(request, id):
         id_pro = request.POST.get('id_proveedor_fk')
         mmtp.id_proveedor_fk = get_object_or_404(Proveedor, id_provee=id_pro)
         mmtp.save()
+        messages.success(request, f"Materia Prima actualizado con exito")
         return redirect('inventario:lista_mmtp') 
 
     return render(request, 'inventario/movimiento_matp/editar.html', {
@@ -288,6 +293,7 @@ def lista_estampado(request):
             nombre_estamp=nombre, costo_adi=costo, tipo_estamp=tipo,
             imagen_estamp=archivo_img, imagen_hash=nuevo_hash
         )
+        messages.success(request, f"Estampado guardado con exito")
         return redirect('inventario:lista_estampado')
 
     estampados = Estampado.objects.filter(Q(nombre_estamp__icontains=query) | Q(tipo_estamp__icontains=query)) if query else Estampado.objects.all()
@@ -314,6 +320,7 @@ def editar_estampado(request, id):
         
         estampado.tipo_estamp = request.POST.get('tipo_estamp')
         estampado.save()
+        messages.success(request, f"Estampado actualizado con exito")
         return redirect('inventario:lista_estampado')
     return render(request, 'inventario/estampado/editar.html', {'estampado': estampado})
 
