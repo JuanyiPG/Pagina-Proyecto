@@ -14,39 +14,30 @@
 
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label>Nombre</label>
-                    <input type="text" name="nom_clien" value="{{ cliente.nom_clien }}" required>
+                    <input type="text" name="nom_clien" value="{{ cliente.nom_clien }}" maxlength="4" minlength="25" required>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label>Dirección</label>
-                    <input type="text" name="dir_clien" value="{{ cliente.dir_clien }}" required>
+                    <input type="text" name="dir_clien" value="{{ cliente.dir_clien }}" maxlength="10" minlength="80" required>
                 </div>
 
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Teléfono</label>
-                        <input type="text" name="tel_clien" value="{{ cliente.tel_clien }}" required>
+                        <input type="text" name="tel_clien" value="{{ cliente.tel_clien }}" min="10" max="10" required>
                     </div>
 
                     <div class="form-group">
                         <label>Correo</label>
-                        <input type="email" name="correo_clien" value="{{ cliente.correo_clien }}" required>
+                        <input type="email" name="correo_clien" value="{{ cliente.correo_clien }}" maxlength="7" minlength="50" required>
                     </div>
                 </div>
 
                 <div class="form-group" style="margin-top: 15px;">
                     <label>Usuario</label>
-                    <select name="id_usuario_fk" required>
-                        {% for usuario in usuarios %}
-                        <option value="{{ usuario.id_usuario }}"
-                        {% if usuario.id_usuario == cliente.id_usuario_fk_id %}
-                        selected
-                        {% endif %}
-                        >
-                        {{ usuario.username }}
-                        </option>
-                        {% endfor %}
-                    </select>
+                        <input value="{{ cliente.id_usuario_fk.username }}" name="id_usuario_fk"  readonly>
+                    </input>
                 </div>
 
                 <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 12px;">

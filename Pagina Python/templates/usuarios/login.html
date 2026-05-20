@@ -21,15 +21,19 @@
             {% csrf_token %}
             <h2>Registro</h2>
             <span class="subtitle">Ingrese sus datos personales</span>
-            <input type="text" name="nombre" placeholder="Nombre Completo" required>
-            <input type="text" name="direccion" placeholder="Dirección" required>
-            <input type="text" name="telefono" placeholder="Teléfono" required>
-            <input type="email" name="correo" placeholder="Correo" required>
-            <input type="text" name="username" placeholder="User" required>
-            <input type="password" name="password" placeholder="Contraseña" required>
-            <button type="submit" class="btn-action">Registrarse Cliente</button>
+            <input type="text" name="nombre" placeholder="Nombre Completo" minlength="4" required>
+            <input type="text" name="direccion" placeholder="Dirección" minlength="10" required>
+            <input type="text" name="telefono" placeholder="Teléfono" min="10" max="10" required>
+            <input type="email" name="correo" placeholder="Correo" minlength="4" required>
+            <input type="text" name="username" placeholder="User" minlength="4" required>
+            <input type="password" name="password" id="password" placeholder="Contraseña" required 
+            minlength="8" 
+            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
+            title="Debe contener al menos un número, una letra mayúscula, una minúscula y 8 o más caracteres">
+            <button type="submit" class="btn-action">Registrarse</button>
         </form>
     </div>
+    
 
     <div class="form-container sign-in-container">
         <form action="{% url 'usuarios:login' %}" method="post">
@@ -43,7 +47,7 @@
             
             {# 2. Aplicamos tus clases originales según el tipo de mensaje #}
             <p class="{% if message.tags == 'info' or message.tags == 'success' %}success-msg{% else %}error-msg{% endif %}">
-                {{ message }}
+                {{ message }}...
             </p>
             
         {% endif %}
@@ -56,11 +60,6 @@
 
             <input type="text" name="username" placeholder="Usuario" required>
             <input type="password" name="password" placeholder="Contraseña" required>
-            <div class="text-center mt-3">
-                <a href="" class="text-muted">
-                    ¿Olvidaste tu contraseña?
-                </a>
-            </div>
             <button type="submit" class="btn-action">Ingresar</button>
         </form>
     </div>
