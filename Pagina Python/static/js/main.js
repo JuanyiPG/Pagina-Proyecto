@@ -13,7 +13,7 @@ export function modelo() {
     // --- 1. CONFIGURACIÓN DE ESCENA Y RENDERER ---
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xffffff);
-    window.scene = scene; // Exponer la escena globalmente para el conteo
+    window.scene = scene; 
 
     const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
     camera.position.set(0, 0.5, 6.5);
@@ -21,7 +21,7 @@ export function modelo() {
     const renderer = new THREE.WebGLRenderer({ 
         antialias: true, 
         alpha: true,
-        preserveDrawingBuffer: true 
+        preserveDrawingBuffer: true // 🌟 CRUCIAL: Mantiene el buffer para que toDataURL() no salga negro
     });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -33,10 +33,11 @@ export function modelo() {
     lightFront.position.set(5, 5, 5);
     scene.add(lightFront);
 
-    // --- 3. CONTROLES ---
+    // --- 3. CONTROLES (ZOOM DESACTIVADO) ---
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
+    controls.enableZoom = false; // 🔒 Bloquea que el usuario pueda agrandar o alejar el modelo
 
     // --- 4. VARIABLES DE ESTADO ---
     let meshCamiseta = [];
@@ -45,7 +46,7 @@ export function modelo() {
     let teclaAPresionada = false;
     let contadorEstampados = 0;
     let idEstampadoSeleccionado = null; 
-    window.listaEstampadosIds = []; // Array global para permitir duplicados en el cobro
+    window.listaEstampadosIds = []; 
 
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
@@ -58,7 +59,6 @@ export function modelo() {
         model.scale.set(6.0, 6.0, 6.0); 
         scene.add(model);
 
-        // Centrar el modelo
         const box = new THREE.Box3().setFromObject(model);
         const center = box.getCenter(new THREE.Vector3());
         model.position.sub(center);
@@ -75,7 +75,7 @@ export function modelo() {
             }
         });
 
-        // Aplicar color inicial
+        // Aplicar color inicial detectado en el HTML
         const colorInput = document.getElementById('color-input-global');
         if (colorInput) aplicarColor(colorInput.value);
     });
@@ -142,7 +142,51 @@ export function modelo() {
 
     // --- 8. EVENTOS DE INTERACCIÓN ---
 
-    // Listener del catálogo
+    // Cambios de color desde el input HTML
+    const colorInputGlobal = document.getElementById('color-input-global');
+    if (colorInputGlobal) {
+        colorInputGlobal.addEventListener('input', (e) => {
+            aplicarColor(e.target.value);
+        });
+    }
+
+    // 🌟 TU PROCEDIMIENTO DE CARGA DE IMAGEN PROPIA (FILE INPUT) RECUPERADO
+    const imageInputPropio = document.getElementById('imageInput');
+    if (imageInputPropio) {
+        imageInputPropio.addEventListener('change', (e) => {
+            const archivo = e.target.files[0];
+            const errorMsg = document.getElementById('error-message');
+            
+            if (archivo) {
+                const limitBytes = 2 * 1024 * 1024; // Límite 2MB
+                if (archivo.size > limitBytes) {
+                    if (errorMsg) {
+                        errorMsg.textContent = "❌ El archivo es muy grande. El límite máximo es de 2 MB.";
+                        errorMsg.style.display = "block";
+                    }
+                    e.target.value = ""; 
+                    ultimaTextura = null;
+                    idEstampadoSeleccionado = null;
+                    return;
+                }
+
+                if (errorMsg) errorMsg.style.display = "none";
+
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    textureLoader.load(event.target.result, (tex) => {
+                        tex.colorSpace = THREE.SRGBColorSpace;
+                        ultimaTextura = tex;
+                        idEstampadoSeleccionado = "imagen_propia"; 
+                        console.log("Imagen propia cargada con éxito en el lienzo 3D.");
+                    });
+                };
+                reader.readAsDataURL(archivo);
+            }
+        });
+    }
+
+    // Listener del catálogo manual (Imágenes precargadas del servidor)
     window.addEventListener('cambioEstampadoManual', (event) => {
         const { url, id } = event.detail;
         idEstampadoSeleccionado = id;
@@ -151,6 +195,9 @@ export function modelo() {
                 tex.colorSpace = THREE.SRGBColorSpace;
                 ultimaTextura = tex;
             });
+        } else {
+            ultimaTextura = null;
+            idEstampadoSeleccionado = null;
         }
     });
 
@@ -195,7 +242,6 @@ export function modelo() {
         decalVistaPrevia.name = "estampado_fijo";
         decalVistaPrevia.material.opacity = 1.0;
         
-        // Guardamos el ID en el array para permitir cobrar repetidos
         if (idEstampadoSeleccionado) {
             window.listaEstampadosIds.push(idEstampadoSeleccionado);
         }
@@ -218,14 +264,15 @@ export function modelo() {
             contadorEstampados = 0;
             ultimaTextura = null;
             idEstampadoSeleccionado = null;
+            const inputFoto = document.getElementById('imageInput');
+            if(inputFoto) inputFoto.value = "";
         };
     }
 
-// --- 9. LÓGICA DE GUARDADO ---
+    // --- 9. LÓGICA DE GUARDADO COMPLETA ---
     async function guardarConfiguracion() {
         console.log("Iniciando proceso de guardado...");
 
-        // Usamos los IDs exactos de tu HTML: 'btn-procesar-guardado' y 'texto-boton'
         const btnSave = document.getElementById('btn-procesar-guardado');
         const textoBtn = document.getElementById('texto-boton');
 
@@ -235,10 +282,9 @@ export function modelo() {
         }
 
         try {
-            // Eliminar la vista previa (el "fantasma") antes de la captura
             eliminarPrevisualizacion();
             
-            // Forzar renderizado para obtener la imagen actualizada
+            // 📸 FORZAMOS EL RENDERIZADO JUSTO ANTES DE TOMAR LA FOTO DE FRENTE
             renderer.render(scene, camera);
             const imagenBase64 = renderer.domElement.toDataURL('image/png');
             
@@ -247,7 +293,7 @@ export function modelo() {
                 'color': document.getElementById('color-input-global').value,
                 'talla': document.getElementById('talla-seleccionada')?.value || 'M',
                 'cantidad': 1,
-                'foto_frente': imagenBase64,
+                'foto_frente': imagenBase64, // Aquí va la captura en Base64 para la DB
                 'cantidad_total_estampados': window.listaEstampadosIds.length, 
                 'lista_estampados': window.listaEstampadosIds, 
             };
@@ -256,7 +302,6 @@ export function modelo() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    // Usamos el token global que definimos en el HTML
                     'X-CSRFToken': window.csrfToken || getCookie('csrftoken'),
                 },
                 body: JSON.stringify(datos)
@@ -281,11 +326,10 @@ export function modelo() {
         }
     }
 
-    // --- IMPORTANTE: VINCULACIÓN DEL EVENTO ---
     const btnEjecutar = document.getElementById('btn-procesar-guardado');
     if (btnEjecutar) {
         btnEjecutar.onclick = (e) => {
-            e.preventDefault(); // Evitar cualquier comportamiento por defecto
+            e.preventDefault();
             guardarConfiguracion();
         };
     }
