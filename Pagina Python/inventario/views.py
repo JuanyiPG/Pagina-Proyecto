@@ -358,6 +358,8 @@ def b64_to_file(data, filename):
 
 # inventario/views.py
 
+# ... (Todo el resto de tus importaciones y funciones de Proveedores/Movimientos quedan exactamente IGUAL) ...
+
 def guardar_diseno_3d(request):
     if request.method == 'POST':
         try:
@@ -388,8 +390,11 @@ def guardar_diseno_3d(request):
             estampado_obj_principal = None
 
             # A. Primero sumamos los costos de los estampados de catálogo que estén en la lista
-            # Usamos un set para no cobrar doble si el ID se repite por error, o quita el set si quieres cobrar cada instancia
             for est_id in lista_ids_estampados:
+                # 🌟 SOLUCIÓN: Si el ID es el texto de tu interfaz, saltamos la búsqueda en la DB
+                if est_id == "imagen_propia":
+                    continue
+
                 try:
                     est_temp = Estampado.objects.get(id_estamp=est_id)
                     extra_total_estampados += float(est_temp.costo_adi)
@@ -401,14 +406,16 @@ def guardar_diseno_3d(request):
                     continue
             
             # B. Si no logramos asignar el principal arriba, intentamos con el estampado_id directo
-            if not estampado_obj_principal and estampado_id:
+            if not estampado_obj_principal and estampado_id and estampado_id != "imagen_propia":
                 try:
                     estampado_obj_principal = Estampado.objects.get(id_estamp=estampado_id)
                 except: pass
 
             # C. Lógica para estampados propios (subidos por el usuario)
-            # Si hay más objetos en escena que IDs de catálogo, la diferencia son estampados propios
-            cantidad_propios = total_estampados_escena - len(lista_ids_estampados)
+            # Filtramos los "imagen_propia" de la lista de IDs para que la resta matemática cuadre exacta
+            lista_solo_catalogo = [x for x in lista_ids_estampados if x != "imagen_propia"]
+            cantidad_propios = total_estampados_escena - len(lista_solo_catalogo)
+            
             if cantidad_propios > 0:
                 extra_total_estampados += (20000 * cantidad_propios) # 20k por cada uno propio
 
@@ -428,7 +435,7 @@ def guardar_diseno_3d(request):
             with transaction.atomic():
                 personalizacion = PedidoPersonalizado.objects.create(
                     producto=producto_base,
-                    estampado=estampado_obj_principal, # Usamos el principal identificado
+                    estampado=estampado_obj_principal, # Quedará en null si es 100% propia, evitando errores
                     color_hex=color,
                     tipo_personalizacion="3D",
                     foto_frente=archivo_foto,
@@ -466,7 +473,6 @@ def guardar_diseno_3d(request):
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
     return JsonResponse({'status': 'error', 'message': 'Método no permitido'}, status=405)
-
 
 def eliminar_pedido_personalizado(request, id):
     pedido = get_object_or_404(PedidoPersonalizado, id=id)
