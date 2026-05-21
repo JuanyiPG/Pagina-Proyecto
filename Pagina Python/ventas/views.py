@@ -1,4 +1,5 @@
 import re
+import os
 from django.utils import timezone
 from decimal import Decimal, InvalidOperation
 from django.contrib import messages
@@ -643,10 +644,23 @@ def eliminar_del_carrito(request, id_det_valor):
         return redirect('ventas:ver_carrito')
 
     with transaction.atomic():
+        # 🌟 NUEVA LÓGICA: Si el producto tiene una personalización 3D asociada
+        if detalle.id_personalizacion_3d:
+            pedido_3d = detalle.id_personalizacion_3d
+            
+            # Recorremos los campos de imágenes para borrarlas físicamente del servidor
+            for img in [pedido_3d.foto_frente, pedido_3d.foto_espalda, pedido_3d.foto_lateral]:
+                if img and os.path.exists(img.path):
+                    os.remove(img.path)
+            
+            # Borramos el registro del diseño 3D de la base de datos
+            pedido_3d.delete()
         
+        # Lógica original que ya tenías para la variación
         if detalle.id_var_fk_detval:
             detalle.id_var_fk_detval.delete()
         
+        # Elimina el item del carrito
         detalle.delete()
         
     messages.success(request, "Producto eliminado del carrito.")
