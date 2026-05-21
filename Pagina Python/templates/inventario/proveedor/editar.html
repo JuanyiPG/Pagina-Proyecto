@@ -10,7 +10,7 @@
                 
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label>Nombre o Razón Social</label>
-                    <input type="text" name="nom_provee" value="{{ proveedor.nom_provee }}" required>
+                    <input type="text" name="nom_provee" value="{{ proveedor.nom_provee }}" maxlength="50" minlength="10" required>
                 </div>
                 
                 <div class="form-grid">
@@ -21,7 +21,7 @@
                     
                     <div class="form-group">
                         <label>Teléfono de Contacto</label>
-                        <input type="text" name="num_tel" value="{{ proveedor.num_tel }}" required>
+                        <input type="text" name="num_tel" value="{{ proveedor.num_tel }}" minlength="10" maxlength="10" required>
                     </div>
                 </div>
 
