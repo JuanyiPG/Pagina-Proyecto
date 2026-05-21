@@ -106,12 +106,12 @@
 
                     <div class="form-group">
                         <label>Fecha de Nacimiento</label>
-                        <input type="date" name="fecha_naci_emple" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px;">
+                        <input type="date" name="fecha_naci_emple" min="{{ f_nac_min }}" max="{{ f_nac_max }}" required>
                     </div>
 
                     <div class="form-group">
                         <label>Fecha Ingreso</label>
-                        <input type="date" name="fecha_ing_emple" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px;">
+                        <input type="date" name="fecha_ing_emple" min="{{ f_ing_min }}" max="{{ f_ing_max }}" required>
                     </div>
 
                     <div class="form-group">
@@ -191,55 +191,71 @@
         </div>
 
         <div class="table-card" style="margin-top: 40px; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-            <div style="background: #f9f9f9; padding: 15px; font-weight: bold; color: #7e1a3f; border-bottom: 1px solid #eee;">
-                Personal Registrado en Luxy Fashion
-            </div>
-            <div class="table-responsive" style="padding: 20px;">
-                <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                    <thead>
-                        <tr style="border-bottom: 2px solid #f3e8ef;">
-                            <th style="padding: 12px;">Foto</th>
-                            <th style="padding: 12px;">Nombre</th>
-                            <th style="padding: 12px;">Documento</th>
-                            <th style="padding: 12px;">Correo</th>
-                            <th style="padding: 12px;">Telefono</th>
-                            <th style="padding: 12px;">Dirección</th>
-                            <th style="padding: 12px;">Salario</th>
-                            <th style="padding: 12px;">Estado</th>
-                            <th style="padding: 12px;">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for e in empleados %}
-                        <tr style="border-bottom: 1px solid #eee;">
-                            <td style="padding: 12px;">
-                                {% if e.foto_perfil %}
-                                    <img src="{{ e.foto_perfil.url }}" class="img-table">
-                                {% else %}
-                                    <div class="img-table" style="background: #eee; display:flex; align-items:center; justify-content:center; font-size:10px; color:#999;">N/A</div>
-                                {% endif %}
-                            </td>
-                            <td style="padding: 12px;"><strong>{{ e.nom_emple }}</strong></td>
-                            <td style="padding: 12px;">{{ e.tipo_ident }}: {{ e.num_ident }}</td>
-                            <td style="padding: 12px;">{{ e.correo_emple }}</td>
-                            <td style="padding: 12px;">{{ e.tel_emple }}</td>
-                            <td style="padding: 12px;">{{ e.dir_emple }}</td>
-                            <td style="padding: 12px; color: #7e1a3f; font-weight: bold;">${{ e.salari_emple }}</td>
-                            <td style="padding: 12px;"><span style="background: #f3e8ef; padding: 3px 8px; border-radius: 4px; font-size: 11px;">{{ e.estado_emple }}</span></td>
-                            <td style="padding: 12px;">
-                                <a href="{% url 'usuarios:editar_empleado' id=e.id_emple %}" style="color: #2d6cdf; text-decoration: none; font-size: 12px; font-weight: bold; margin-right: 10px;">Editar</a>
-                                <a href="{% url 'usuarios:eliminar_empleado' id=e.id_emple %}" style="color: #d33; text-decoration: none; font-size: 12px; font-weight: bold;" onclick="confirmarEliminacionEmpleado(event, this.href)">Borrar</a>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr><td colspan="6" style="text-align: center; padding: 30px; color: #999;">No hay empleados registrados.</td></tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+        <h3 style="font-size: 18px; margin: 0;">Personal Registrado</h3>
+        
+        <div style="position: relative; width: 300px;">
+            <input type="text" id="searchEmple" placeholder=" Buscar empleado por nombre, correo..." 
+                style="width: 100%; padding: 8px 15px; border: 1px solid #6a0f2e; border-radius: 20px; outline: none;">
         </div>
     </div>
+    
+    <div class="table-responsive" style="padding: 20px;">
+        <table class="tableEmple" style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+                <tr style="border-bottom: 2px solid #f3e8ef;">
+                    <th style="padding: 12px;">Foto</th>
+                    <th style="padding: 12px;">Nombre</th>
+                    <th style="padding: 12px;">Documento</th>
+                    <th style="padding: 12px;">Correo</th>
+                    <th style="padding: 12px;">Telefono</th>
+                    <th style="padding: 12px;">Dirección</th>
+                    <th style="padding: 12px;">Salario</th>
+                    <th style="padding: 12px;">Estado</th>
+                    <th style="padding: 12px;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in empleados %}
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 12px;">
+                        {% if e.foto_perfil %}
+                            <img src="{{ e.foto_perfil.url }}" class="img-table">
+                        {% else %}
+                            <div class="img-table" style="background: #eee; display:flex; align-items:center; justify-content:center; font-size:10px; color:#999;">N/A</div>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 12px;"><strong>{{ e.nom_emple }}</strong></td>
+                    <td style="padding: 12px;">{{ e.tipo_ident }}: {{ e.num_ident }}</td>
+                    <td style="padding: 12px;">{{ e.correo_emple }}</td>
+                    <td style="padding: 12px;">{{ e.tel_emple }}</td>
+                    <td style="padding: 12px;">{{ e.dir_emple }}</td>
+                    <td style="padding: 12px; color: #7e1a3f; font-weight: bold;">${{ e.salari_emple }}</td>
+                    <td style="padding: 12px;"><span style="background: #f3e8ef; padding: 3px 8px; border-radius: 4px; font-size: 11px;">{{ e.estado_emple }}</span></td>
+                    <td style="padding: 12px;">
+                        <a href="{% url 'usuarios:editar_empleado' id=e.id_emple %}" style="color: #2d6cdf; text-decoration: none; font-size: 12px; font-weight: bold; margin-right: 10px;">Editar</a>
+                        <a href="{% url 'usuarios:eliminar_empleado' id=e.id_emple %}" style="color: #d33; text-decoration: none; font-size: 12px; font-weight: bold;" onclick="confirmarEliminacionEmpleado(event, this.href)">Borrar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr id="noResultsRow">
+                    <td colspan="9" style="text-align: center; padding: 30px; color: #999;">No hay empleados registrados.</td>
+                </tr>
+                {% endfor %}
+                
+                <!-- Fila extra para cuando la búsqueda no arroje resultados en tiempo real -->
+                <tr id="searchEmptyRow" style="display: none;">
+                    <td colspan="9" style="text-align: center; padding: 30px; color: #999; font-style: italic;">
+                        No se encontraron empleados que coincidan con la búsqueda.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     const fotoIn = document.getElementById('id_foto');
@@ -292,5 +308,48 @@ function confirmarEliminacionEmpleado(event, url) {
         }
     });
 }
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.getElementById('searchEmple');
+    
+    // Verificamos si el input de búsqueda realmente existe en el DOM
+    if (!searchInput) {
+        console.warn("No se encontró el input con ID 'searchEmple'");
+        return;
+    }
+
+    searchInput.addEventListener('keyup', function() {
+        let filter = this.value.toLowerCase().trim();
+        
+        // Seleccionamos las filas buscando por la etiqueta 'tr' dentro del tbody de la clase .tableEmple
+        let rows = document.querySelectorAll('.tableEmple tbody tr');
+        let anyVisible = false;
+        
+        rows.forEach(row => {
+            // Ignoramos por completo las filas de control de "No hay resultados"
+            if (row.id === 'noResultsRow' || row.id === 'searchEmptyRow') {
+                return; 
+            }
+
+            // Capturamos TODO el texto de la fila completa en una sola variable
+            let rowText = row.textContent.toLowerCase();
+
+            // Comparamos si el filtro está dentro del texto de la fila
+            if (rowText.includes(filter)) {
+                row.style.display = "";
+                anyVisible = true;
+            } else {
+                row.style.display = "none";
+            }
+        });
+        
+        // Manejo del mensaje visual dinámico "Sin resultados"
+        let emptyRow = document.getElementById('searchEmptyRow');
+        if (emptyRow) {
+            emptyRow.style.display = anyVisible ? "none" : "";
+        }
+    });
+});
 </script>
 {% endblock %}
