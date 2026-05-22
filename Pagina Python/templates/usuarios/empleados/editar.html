@@ -69,13 +69,29 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Fecha de Nacimiento</label>
-                        <input type="text" name="fecha_naci_emple" value="{{ empleado.fecha_naci_emple|date:'Y-m-d' }}" readonly class="input-style">
+                        <label for="fecha_naci_emple">Fecha de Nacimiento:</label>
+                        <input 
+                            type="date" 
+                            name="fecha_naci_emple" 
+                            id="fecha_naci_emple" 
+                            value="{{ empleado.fecha_naci_emple|date:'Y-m-d' }}"
+                            min="{{ f_nac_min }}" 
+                            max="{{ f_nac_max }}" 
+                            required
+                        > 
                     </div>
 
                     <div class="form-group">
-                        <label>Fecha Ingreso</label>
-                        <input type="date" name="fecha_ing_emple" value="{{ empleado.fecha_ing_emple|date:'Y-m-d' }}" required class="input-style">
+                    <label for="fecha_ing_emple">Fecha de Ingreso:</label>
+                    <input 
+                        type="date" 
+                        name="fecha_ing_emple" 
+                        id="fecha_ing_emple" 
+                        value="{{ empleado.fecha_ing_emple|date:'Y-m-d' }}"
+                        min="{{ f_ing_min }}" 
+                        max="{{ f_ing_max }}" 
+                        required
+                    >
                     </div>
 
                     <div class="form-group">

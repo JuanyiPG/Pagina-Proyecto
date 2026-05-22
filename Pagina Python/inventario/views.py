@@ -1,3 +1,4 @@
+from datetime import date
 import os
 import uuid
 import json
@@ -6,6 +7,7 @@ import hashlib
 import pandas as pd
 from decimal import Decimal
 from django.contrib import messages
+from dateutil.relativedelta import relativedelta
 
 # Django Core
 from django.shortcuts import render, redirect, get_object_or_404
@@ -59,27 +61,80 @@ def b64_to_file(data_url, name):
 # --- PROVEEDORES ---
 
 def lista_provee(request):
+    # Calcular límites de fechas para hoy y dos meses atrás
+    hoy = timezone.now().date()
+    hace_dos_meses = hoy - relativedelta(months=2)
+    
+    if hace_dos_meses.year < hoy.year:
+        hace_dos_meses = date(hoy.year, 1, 1)
+
     if request.method == 'POST':
+        fecha_str = request.POST.get('fech_ingre')
+        
+        if fecha_str:
+            fecha_usuario = date.fromisoformat(fecha_str)
+            
+            if fecha_usuario > hoy:
+                messages.error(request, "Error: La fecha de ingreso no puede ser mayor a la actual.")
+                return redirect('inventario:lista_provee')
+                
+            if fecha_usuario < hace_dos_meses:
+                messages.error(request, f"Error: La fecha no puede ser anterior al {hace_dos_meses.strftime('%d/%m/%Y')}.")
+                return redirect('inventario:lista_provee')
+
         Proveedor.objects.create(
             nom_provee=request.POST.get('nom_provee'),
-            fech_ingre=request.POST.get('fech_ingre'),
+            fech_ingre=fecha_str,
             num_tel=request.POST.get('num_tel')
         )
-        messages.success(request, f"Proveedor guardado con exito")
+        messages.success(request, f"Proveedor guardado con éxito")
         return redirect('inventario:lista_provee') 
+        
     proveedores = Proveedor.objects.all()
-    return render(request, "inventario/proveedor/lista.html", {'proveedor': proveedores})
+    
+    return render(request, "inventario/proveedor/lista.html", {
+        'proveedor': proveedores,
+        'fecha_maxima': hoy.isoformat(),
+        'fecha_minima': hace_dos_meses.isoformat()  
+    })
 
 def editar_provee(request, id):
     proveedor = get_object_or_404(Proveedor, id_provee=id)
+
+    hoy = timezone.now().date()
+    hace_dos_meses = hoy - relativedelta(months=2)
+    
+    if hace_dos_meses.year < hoy.year:
+        hace_dos_meses = date(hoy.year, 1, 1)
+
     if request.method == "POST":
+        fecha_str = request.POST.get('fech_ingre')
+        
+        if fecha_str:
+            fecha_usuario = date.fromisoformat(fecha_str)
+
+            if fecha_usuario > hoy:
+                messages.error(request, "Error: La fecha de ingreso no puede ser mayor a la actual.")
+                return redirect('inventario:editar_provee', id=id) # Recarga la edición si hay error
+                
+            # 2. Validar pasado mínimo (2 meses del mismo año)
+            if fecha_usuario < hace_dos_meses:
+                messages.error(request, f"Error: La fecha no puede ser anterior al {hace_dos_meses.strftime('%d/%m/%Y')}.")
+                return redirect('inventario:editar_provee', id=id)
+
         proveedor.nom_provee = request.POST.get('nom_provee')
-        proveedor.fech_ingre = request.POST.get('fech_ingre')
+        proveedor.fech_ingre = fecha_str
         proveedor.num_tel = request.POST.get('num_tel')
         proveedor.save()
-        messages.success(request, f"Proveedor actualizado con exito")
+        
+        messages.success(request, f"Proveedor actualizado con éxito")
         return redirect('inventario:lista_provee')
-    return render(request, 'inventario/proveedor/editar.html', {'proveedor': proveedor})
+        
+    return render(request, 'inventario/proveedor/editar.html', {
+        'proveedor': proveedor,
+        'fecha_maxima': hoy.isoformat(),
+        'fecha_minima': hace_dos_meses.isoformat()
+    })
 
 def eliminar_provee(request, id):
     get_object_or_404(Proveedor, id_provee=id).delete()

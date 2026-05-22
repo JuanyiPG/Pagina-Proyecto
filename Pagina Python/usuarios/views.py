@@ -1,4 +1,4 @@
-from datetime import date
+from django.utils import timezone
 from functools import wraps
 import hashlib 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -10,7 +10,7 @@ from django.views.decorators.cache import never_cache
 from usuarios.models import Empleado, Cliente
 from inventario.models import Proveedor
 from ventas.models import Producto
-from datetime import date
+from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 
 # ================================================================
@@ -143,7 +143,29 @@ def eliminar_usuario(request, id):
 def lista_empleados(request):
     empleados = Empleado.objects.all()
     roles = Rol.objects.all()
-    return render(request, 'usuarios/empleados/lista.html', {'empleados': empleados, 'roles': roles})
+    
+    # --- CÁLCULO DINÁMICO DE LÍMITES PARA EL FORMULARIO (MÉTODO GET) ---
+    hoy = date.today()
+    
+    # 1. Reglas para Fecha de Nacimiento (Mínimo 18 años, Máximo 70 años)
+    f_nac_max = (hoy - timedelta(days=18*365.25)).strftime('%Y-%m-%d')  # Límite menor de edad
+    f_nac_min = (hoy - timedelta(days=70*365.25)).strftime('%Y-%m-%d')  # Límite mayor de 70 años
+
+    # 2. Reglas para Fecha de Ingreso (Máximo hoy, Mínimo hace 3 meses)
+    # 3 meses se calculan de manera estándar aproximada a 90 días para el HTML
+    f_ing_max = hoy.strftime('%Y-%m-%d')
+    f_ing_min = (hoy - timedelta(days=90)).strftime('%Y-%m-%d')
+
+    context = {
+        'empleados': empleados,
+        'roles': roles,
+        'f_nac_min': f_nac_min,
+        'f_nac_max': f_nac_max,
+        'f_ing_min': f_ing_min,
+        'f_ing_max': f_ing_max,
+    }
+    return render(request, 'usuarios/empleados/lista.html', context)
+
 
 @solo_personal
 def crear_empleado(request):
@@ -155,7 +177,7 @@ def crear_empleado(request):
         rol_id = request.POST.get('id_rol')
         foto = request.FILES.get('foto_perfil')
 
-        # --- SECCIÓN DE VALIDACIONES  ---
+        # --- SECCIÓN DE VALIDACIONES PREVIAS ---
 
         if Empleado.objects.filter(num_ident=num_ident_val).exists():
             messages.error(request, f"⚠️ La identificación {num_ident_val} ya está registrada. No se creó ni el empleado ni el usuario.")
@@ -165,12 +187,11 @@ def crear_empleado(request):
             messages.error(request, f"⚠️ El nombre de usuario '{user_val}' ya existe.")
             return redirect('usuarios:lista_empleados')
 
-        # C. Validar credenciales vacías
         if not user_val or not pass_val:
             messages.error(request, "⚠️ Debes configurar el usuario.")
             return redirect('usuarios:lista_empleados')
 
-        # D. Validar si la foto ya existe (Hash)
+        # Validar si la foto ya existe (Hash)
         foto_hash = None
         if foto:
             content = foto.read()
@@ -180,7 +201,55 @@ def crear_empleado(request):
                 messages.error(request, "⚠️ Esta fotografía ya está registrada.")
                 return redirect('usuarios:lista_empleados')
 
-        # --- SECCIÓN DE GUARDADO (Solo llegamos aquí si todo lo anterior pasó) ---
+        # --- SECCIÓN DE PROCESAMIENTO Y VALIDACIÓN DE FECHAS ---
+        f_nac_str = request.POST.get('fecha_naci_emple')
+        f_ing_str = request.POST.get('fecha_ing_emple')
+
+        if not f_nac_str or not f_ing_str:
+            messages.error(request, "⚠️ Las fechas de nacimiento e ingreso son obligatorias.")
+            return redirect('usuarios:lista_empleados')
+
+        try:
+            f_nac = date.fromisoformat(f_nac_str)
+            f_ing = date.fromisoformat(f_ing_str)
+            hoy = date.today()
+        except ValueError:
+            messages.error(request, "⚠️ El formato de las fechas ingresadas no es válido.")
+            return redirect('usuarios:lista_empleados')
+
+        # --- VALIDACIONES DE REGLAS DE NEGOCIO DINÁMICAS (BACKEND) ---
+        
+        # 1. Validación de edad (Mínimo 18, Máximo 70)
+        # Calculamos la edad exacta teniendo en cuenta el mes y el día de nacimiento
+        edad = hoy.year - f_nac.year - ((hoy.month, hoy.day) < (f_nac.month, f_nac.day))
+        
+        if edad < 18:
+            messages.error(request, "❌ Error: El empleado debe ser mayor de edad (mínimo 18 años).")
+            return redirect('usuarios:lista_empleados')
+            
+        if edad > 70:
+            messages.error(request, "❌ Error: El sistema no permite el registro de personas mayores de 70 años.")
+            return redirect('usuarios:lista_empleados')
+
+        # 2. Validación de Fecha de Ingreso (No superar el día actual)
+        if f_ing > hoy:
+            messages.error(request, "❌ Error: La fecha de ingreso no puede ser una fecha futura.")
+            return redirect('usuarios:lista_empleados')
+
+        # 3. Validación de Fecha de Ingreso (No menor a 3 meses atrás)
+        # Restamos 3 meses exactos restando 90 días o calculando el trimestre de forma segura
+        limite_tres_meses = hoy - timedelta(days=90)
+        if f_ing < limite_tres_meses:
+            messages.error(request, "❌ Error: La fecha de ingreso no puede ser menor a tres meses atrás.")
+            return redirect('usuarios:lista_empleados')
+
+        # 4. Regla lógica: No trabajar antes de nacer
+        if f_ing <= f_nac:
+            messages.error(request, "❌ Error: La fecha de ingreso debe ser posterior al nacimiento.")
+            return redirect('usuarios:lista_empleados')
+
+
+        # --- SECCIÓN DE GUARDADO ATÓMICO ---
         try:
             with transaction.atomic():
                 # Buscamos o creamos el Rol
@@ -199,60 +268,48 @@ def crear_empleado(request):
                     id_rol_fk=rol_obj
                 )
 
-
-
-                f_nac_str = request.POST.get('fecha_naci_emple')
-                f_ing_str = request.POST.get('fecha_ing_emple')
-
-                f_nac = date.fromisoformat(f_nac_str)
-                f_ing = date.fromisoformat(f_ing_str)
-                hoy = date.today()
-
-            if relativedelta(hoy, f_nac).years < 18:
-                messages.error(request, "Error: El empleado debe ser mayor de edad.")
-                return redirect('usuarios:lista_empleados')
-
-    # Regla 2: No fechas futuras en ingreso
-            if f_ing > hoy:
-                messages.error(request, "Error: La fecha de ingreso no puede ser futura.")
-                return redirect('usuarios:lista_empleados')
-
-    # Regla 3: No trabajar antes de nacer
-            if f_ing <= f_nac:
-                messages.error(request, "Error: La fecha de ingreso debe ser posterior al nacimiento.")
-                return redirect('usuarios:lista_empleados')
-
-    # 3. CREACIÓN (Solo llegamos aquí si todas las reglas de arriba pasaron)
-            Empleado.objects.create(
-                nom_emple=request.POST.get('nom_emple'),
-                tel_emple=request.POST.get('tel_emple'), 
-                correo_emple=request.POST.get('correo_emple'),
-                dir_emple=request.POST.get('dir_emple'),
-                rh_emple=request.POST.get('rh_emple'),
-                fecha_naci_emple=f_nac, # Usamos la variable f_nac
-                tipo_ident=request.POST.get('tipo_ident'),
-                num_ident=num_ident_val,
-                fecha_ing_emple=f_ing, # Usamos la variable f_ing ya convertida
-                salari_emple=request.POST.get('salari_emple'),
-                estado_emple=request.POST.get('estado_emple'),
-                foto_perfil=foto,
-                hash_foto=foto_hash,
-                id_usuario_fk=nuevo_usuario 
-            )
+                # 2. Crear el Empleado
+                Empleado.objects.create(
+                    nom_emple=request.POST.get('nom_emple'),
+                    tel_emple=request.POST.get('tel_emple'), 
+                    correo_emple=request.POST.get('correo_emple'),
+                    dir_emple=request.POST.get('dir_emple'),
+                    rh_emple=request.POST.get('rh_emple'),
+                    fecha_naci_emple=f_nac,
+                    tipo_ident=request.POST.get('tipo_ident'),
+                    num_ident=num_ident_val,
+                    fecha_ing_emple=f_ing,
+                    salari_emple=request.POST.get('salari_emple'),
+                    estado_emple=request.POST.get('estado_emple'),
+                    foto_perfil=foto,
+                    hash_foto=foto_hash,
+                    id_usuario_fk=nuevo_usuario 
+                )
 
             messages.success(request, "✅ Empleado y usuario creados con éxito.")
 
         except Exception as e:
-            messages.error(request, f"Error crítico al registrar: {e}")
+            messages.error(request, f"Error crítico al registrar en la base de datos: {e}")
             
     return redirect('usuarios:lista_empleados')
 
 @solo_personal
 def editar_empleado(request, id):
-    # 1. Traemos al empleado. El objeto se llama 'empleado'
     empleado = get_object_or_404(Empleado, id_emple=id)
     roles = Rol.objects.all()
     
+    # Calcular límites de fechas para usar en validaciones y pasarlas al HTML
+    hoy = timezone.now().date()
+    
+    # Límites de Ingreso (Máx hoy, Mín 2 meses del mismo año)
+    hace_dos_meses = hoy - relativedelta(months=2)
+    if hace_dos_meses.year < hoy.year:
+        hace_dos_meses = date(hoy.year, 1, 1)
+        
+    # Límites de Nacimiento (Entre 18 y 70 años de edad)
+    f_nac_max_val = hoy - relativedelta(years=18)
+    f_nac_min_val = hoy - relativedelta(years=70)
+
     if request.method == 'POST':
         foto_nueva = request.FILES.get('foto_perfil')
         
@@ -266,33 +323,67 @@ def editar_empleado(request, id):
             empleado.foto_perfil = foto_nueva
             empleado.hash_foto = nuevo_hash
 
+        # --- EXTRACCIÓN Y VALIDACIÓN DE FECHAS ---
+        f_nac_str = request.POST.get('fecha_naci_emple')
+        f_ing_str = request.POST.get('fecha_ing_emple')
+
+        if not f_nac_str or not f_ing_str:
+            messages.error(request, "⚠️ Las fechas de nacimiento e ingreso son obligatorias.")
+            return redirect('usuarios:editar_empleado', id=id)
+
+        f_nac = date.fromisoformat(f_nac_str)
+        f_ing = date.fromisoformat(f_ing_str)
+
+        # A. Validar Fecha de Ingreso
+        if f_ing > hoy:
+            messages.error(request, "Error: La fecha de ingreso no puede ser mayor a la actual.")
+            return redirect('usuarios:editar_empleado', id=id)
+
+        if f_ing < hace_dos_meses:
+            messages.error(request, f"Error: La fecha de ingreso no puede ser anterior al {hace_dos_meses.strftime('%d/%m/%Y')}.")
+            return redirect('usuarios:editar_empleado', id=id)
+
+        # B. Validar Edad / Fecha de Nacimiento
+        edad_empleado = relativedelta(hoy, f_nac).years
+
+        if edad_empleado < 18:
+            messages.error(request, "Error: El empleado debe ser mayor de edad (mínimo 18 años).")
+            return redirect('usuarios:editar_empleado', id=id)
+
+        if edad_empleado > 70:
+            messages.error(request, "Error: El empleado no puede ser mayor de 70 años.")
+            return redirect('usuarios:editar_empleado', id=id)
+
+        # C. Coherencia elemental
+        if f_ing <= f_nac:
+            messages.error(request, "Error: La fecha de ingreso debe ser posterior al nacimiento.")
+            return redirect('usuarios:editar_empleado', id=id)
+
+        # --- SECCIÓN DE GUARDADO SEGURO ---
         try:
             with transaction.atomic():
-                # --- CAMPOS DEL EMPLEADO ---
-                # Importante: Asegúrate que en el HTML el atributo 'name' sea igual a estos
+                # Asignación de campos del Empleado ya validados
                 empleado.nom_emple = request.POST.get('nom_emple')
                 empleado.tel_emple = request.POST.get('tel_emple')
                 empleado.correo_emple = request.POST.get('correo_emple')
                 empleado.dir_emple = request.POST.get('dir_emple')
                 
-                # Campos de identificación (se mantienen aunque sean readonly en el HTML)
                 empleado.rh_emple = request.POST.get('rh_emple')
                 empleado.tipo_ident = request.POST.get('tipo_ident')
                 empleado.num_ident = request.POST.get('num_ident')
-                empleado.fecha_naci_emple = request.POST.get('fecha_naci_emple')
                 
-                empleado.fecha_ing_emple = request.POST.get('fecha_ing_emple')
+                # Asignamos los objetos de tipo fecha reales ya validados
+                empleado.fecha_naci_emple = f_nac
+                empleado.fecha_ing_emple = f_ing
+                
                 empleado.salari_emple = request.POST.get('salari_emple')
                 empleado.estado_emple = request.POST.get('estado_emple')
                 
-                # --- CAMPOS DEL USUARIO (RELACIONADO) ---
-                # En tu modelo la relación es id_usuario_fk
+                # Campos del Usuario relacionado
                 usuario = empleado.id_usuario_fk 
                 usuario.username = request.POST.get('username')
                 
                 nueva_contra = request.POST.get('password')
-                
-                # Si el admin escribió algo y NO es el hash que ya existía, lo encriptamos
                 if nueva_contra and not nueva_contra.startswith('pbkdf2_sha256$'):
                     usuario.contrasena = make_password(nueva_contra)
                 
@@ -300,7 +391,7 @@ def editar_empleado(request, id):
                 if rol_id:
                     usuario.id_rol_fk = Rol.objects.get(id_rol=rol_id)
                 
-                # Guardamos ambos
+                # Guardamos cambios en cascada atómica
                 usuario.save()
                 empleado.save()
 
@@ -308,10 +399,18 @@ def editar_empleado(request, id):
                 return redirect('usuarios:lista_empleados')
 
         except Exception as e:
-            messages.error(request, f"Error al editar: {e}")
+            messages.error(request, f"Error al editar en la base de datos: {e}")
+            return redirect('usuarios:editar_empleado', id=id)
             
-    # El objeto se pasa como 'empleado'
-    return render(request, 'usuarios/empleados/editar.html', {'empleado': empleado, 'roles': roles})
+    # Retornamos el formulario enviando los candados calculados al contexto
+    return render(request, 'usuarios/empleados/editar.html', {
+        'empleado': empleado, 
+        'roles': roles,
+        'f_ing_max': hoy.isoformat(),
+        'f_ing_min': hace_dos_meses.isoformat(),
+        'f_nac_max': f_nac_max_val.isoformat(),
+        'f_nac_min': f_nac_min_val.isoformat()
+    })
 
 
 @solo_personal
