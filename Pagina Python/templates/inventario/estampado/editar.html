@@ -18,17 +18,17 @@
                 
                 <div class="form-group" style="margin-bottom: 20px;">
                     <label>Nombre del Diseño</label>
-                    <input type="text" name="nombre_estamp" value="{{ estampado.nombre_estamp }}" required>
+                    <input type="text" name="nombre_estamp" value="{{ estampado.nombre_estamp }}"  minlength="10" maxlength="200" required>
                 </div>
 
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Técnica / Tipo</label>
-                        <input type="text" name="tipo_estamp" value="{{ estampado.tipo_estamp }}" required>
+                        <input type="text" name="tipo_estamp" value="{{ estampado.tipo_estamp }}" minlength="10" maxlength="200" required>
                     </div>
                     <div class="form-group">
                         <label>Costo Adicional</label>
-                        <input type="number" step="0.01" name="costo_adi" value="{{ estampado.costo_adi|unlocalize }}" required>
+                        <input type="number" step="0.01" name="costo_adi" value="{{ estampado.costo_adi|unlocalize }}" min="1000" max="200000" required>
                     </div>
                 </div>
 

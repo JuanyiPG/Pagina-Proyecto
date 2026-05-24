@@ -1,17 +1,22 @@
+from django.utils import timezone
 from functools import wraps
 import hashlib 
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Rol, Usuario, Empleado, Cliente  # Se mantiene solo esta importación limpia
+from .models import Rol, Usuario, Empleado, Cliente
 from django.contrib.auth.hashers import check_password, make_password
 from django.db import transaction
 from django.contrib import messages
 from django.views.decorators.cache import never_cache
+from usuarios.models import Empleado, Cliente
 from inventario.models import Proveedor
 from ventas.models import Producto
+from datetime import date, timedelta
+from dateutil.relativedelta import relativedelta
 
 # ================================================================
 # 🛡️ DECORADORES DE SEGURIDAD CUSTOM
 # ================================================================
+
 
 def login_requerido_custom(view_func):
     @wraps(view_func)
@@ -29,8 +34,8 @@ def solo_personal(view_func):
             return redirect('usuarios:login')
         
         rol = request.session.get('rol')
-        # Mantenemos exactamente tus tres validaciones de texto para el rol
         if rol in ['Administrador', 'Empleado', 'empleado']:
+            
             return view_func(request, *args, **kwargs)
         
         messages.warning(request, "No tienes permisos para acceder.")
@@ -52,6 +57,7 @@ def crear_rol(request):
     if request.method == 'POST':
         nom_rol = request.POST['nom_rol']
         Rol.objects.create(nom_rol=nom_rol)
+        messages.success(request, f"Rol guardado con exito")
         return redirect('usuarios:lista_roles')
     return render(request, 'usuarios/roles/crear.html')
 
@@ -61,6 +67,7 @@ def editar_rol(request, id):
     if request.method == 'POST':
         rol.nom_rol = request.POST['nom_rol']
         rol.save()
+        messages.success(request, f"Rol Actualizado con exito")
         return redirect('usuarios:lista_roles')
     return render(request, 'usuarios/roles/editar.html', {'rol': rol})
 
@@ -96,6 +103,7 @@ def crear_usuario(request):
             contrasena=make_password(contrasena), # Encriptado
             id_rol_fk=rol
         )
+        messages.success(request, f"Usuario guardado con exito")
         return redirect('usuarios:lista_usuarios')
     return render(request, 'usuarios/usuario/crear.html', {'roles': roles})
 
@@ -115,6 +123,7 @@ def editar_usuario(request, id):
 
         usuario.id_rol_fk = Rol.objects.get(id_rol=request.POST['id_rol'])
         usuario.save()
+        messages.success(request, f"Usuario actualizado con exito")
         return redirect('usuarios:lista_usuarios')
 
     return render(request, 'usuarios/usuario/editar.html', {'usuario': usuario, 'roles': roles})
@@ -134,9 +143,6 @@ def eliminar_usuario(request, id):
 def lista_empleados(request):
     empleados = Empleado.objects.all()
     roles = Rol.objects.all()
-<<<<<<< Updated upstream
-    return render(request, 'usuarios/empleados/lista.html', {'empleados': empleados, 'roles': roles})
-=======
     
     # --- CÁLCULO DINÁMICO DE LÍMITES PARA EL FORMULARIO (MÉTODO GET) ---
     hoy = date.today()
@@ -146,6 +152,7 @@ def lista_empleados(request):
     f_nac_min = (hoy - timedelta(days=70*365.25)).strftime('%Y-%m-%d')  # Límite mayor de 70 años
 
     # 2. Reglas para Fecha de Ingreso (Máximo hoy, Mínimo hace 3 meses)
+    # 3 meses se calculan de manera estándar aproximada a 90 días para el HTML
     f_ing_max = hoy.strftime('%Y-%m-%d')
     f_ing_min = (hoy - timedelta(days=90)).strftime('%Y-%m-%d')
 
@@ -158,18 +165,19 @@ def lista_empleados(request):
         'f_ing_max': f_ing_max,
     }
     return render(request, 'usuarios/empleados/lista.html', context)
->>>>>>> Stashed changes
+
 
 @solo_personal
 def crear_empleado(request):
     if request.method == 'POST':
+
         num_ident_val = request.POST.get('num_ident')
         user_val = request.POST.get('username')
         pass_val = request.POST.get('contrasena')
         rol_id = request.POST.get('id_rol')
         foto = request.FILES.get('foto_perfil')
 
-        # --- SECCIÓN DE VALIDACIONES  ---
+        # --- SECCIÓN DE VALIDACIONES PREVIAS ---
 
         if Empleado.objects.filter(num_ident=num_ident_val).exists():
             messages.error(request, f"⚠️ La identificación {num_ident_val} ya está registrada. No se creó ni el empleado ni el usuario.")
@@ -179,12 +187,11 @@ def crear_empleado(request):
             messages.error(request, f"⚠️ El nombre de usuario '{user_val}' ya existe.")
             return redirect('usuarios:lista_empleados')
 
-        # C. Validar credenciales vacías
         if not user_val or not pass_val:
             messages.error(request, "⚠️ Debes configurar el usuario.")
             return redirect('usuarios:lista_empleados')
 
-        # D. Validar si la foto ya existe (Hash)
+        # Validar si la foto ya existe (Hash)
         foto_hash = None
         if foto:
             content = foto.read()
@@ -194,9 +201,6 @@ def crear_empleado(request):
                 messages.error(request, "⚠️ Esta fotografía ya está registrada.")
                 return redirect('usuarios:lista_empleados')
 
-<<<<<<< Updated upstream
-        # --- SECCIÓN DE GUARDADO (Solo llegamos aquí si todo lo anterior pasó) ---
-=======
         # --- SECCIÓN DE PROCESAMIENTO Y VALIDACIÓN DE FECHAS ---
         f_nac_str = request.POST.get('fecha_naci_emple')
         f_ing_str = request.POST.get('fecha_ing_emple')
@@ -216,6 +220,7 @@ def crear_empleado(request):
         # --- VALIDACIONES DE REGLAS DE NEGOCIO DINÁMICAS (BACKEND) ---
         
         # 1. Validación de edad (Mínimo 18, Máximo 70)
+        # Calculamos la edad exacta teniendo en cuenta el mes y el día de nacimiento
         edad = hoy.year - f_nac.year - ((hoy.month, hoy.day) < (f_nac.month, f_nac.day))
         
         if edad < 18:
@@ -232,6 +237,7 @@ def crear_empleado(request):
             return redirect('usuarios:lista_empleados')
 
         # 3. Validación de Fecha de Ingreso (No menor a 3 meses atrás)
+        # Restamos 3 meses exactos restando 90 días o calculando el trimestre de forma segura
         limite_tres_meses = hoy - timedelta(days=90)
         if f_ing < limite_tres_meses:
             messages.error(request, "❌ Error: La fecha de ingreso no puede ser menor a tres meses atrás.")
@@ -242,10 +248,11 @@ def crear_empleado(request):
             messages.error(request, "❌ Error: La fecha de ingreso debe ser posterior al nacimiento.")
             return redirect('usuarios:lista_empleados')
 
+
         # --- SECCIÓN DE GUARDADO ATÓMICO ---
->>>>>>> Stashed changes
         try:
             with transaction.atomic():
+                # Buscamos o creamos el Rol
                 try:
                     if rol_id:
                         rol_obj = Rol.objects.get(id_rol=rol_id)
@@ -261,39 +268,37 @@ def crear_empleado(request):
                     id_rol_fk=rol_obj
                 )
 
-                # 2. Crear el Empleado vinculado al usuario
+                # 2. Crear el Empleado
                 Empleado.objects.create(
                     nom_emple=request.POST.get('nom_emple'),
                     tel_emple=request.POST.get('tel_emple'), 
                     correo_emple=request.POST.get('correo_emple'),
                     dir_emple=request.POST.get('dir_emple'),
                     rh_emple=request.POST.get('rh_emple'),
-                    fecha_naci_emple=request.POST.get('fecha_naci_emple'),
+                    fecha_naci_emple=f_nac,
                     tipo_ident=request.POST.get('tipo_ident'),
                     num_ident=num_ident_val,
-                    fecha_ing_emple=request.POST.get('fecha_ing_emple'),
+                    fecha_ing_emple=f_ing,
                     salari_emple=request.POST.get('salari_emple'),
                     estado_emple=request.POST.get('estado_emple'),
                     foto_perfil=foto,
                     hash_foto=foto_hash,
                     id_usuario_fk=nuevo_usuario 
                 )
-                
-                messages.success(request, "✅ Empleado y usuario creados con éxito.")
-                
+
+            messages.success(request, "✅ Empleado y usuario creados con éxito.")
+
         except Exception as e:
-            messages.error(request, f"Error crítico al registrar: {e}")
+            messages.error(request, f"Error crítico al registrar en la base de datos: {e}")
             
     return redirect('usuarios:lista_empleados')
 
 @solo_personal
 def editar_empleado(request, id):
-    # 1. Traemos al empleado. El objeto se llama 'empleado'
     empleado = get_object_or_404(Empleado, id_emple=id)
     roles = Rol.objects.all()
     
-<<<<<<< Updated upstream
-=======
+    # Calcular límites de fechas para usar en validaciones y pasarlas al HTML
     hoy = timezone.now().date()
     
     # Límites de Ingreso (Máx hoy, Mín 2 meses del mismo año)
@@ -305,7 +310,6 @@ def editar_empleado(request, id):
     f_nac_max_val = hoy - relativedelta(years=18)
     f_nac_min_val = hoy - relativedelta(years=70)
 
->>>>>>> Stashed changes
     if request.method == 'POST':
         foto_nueva = request.FILES.get('foto_perfil')
         
@@ -319,48 +323,67 @@ def editar_empleado(request, id):
             empleado.foto_perfil = foto_nueva
             empleado.hash_foto = nuevo_hash
 
+        # --- EXTRACCIÓN Y VALIDACIÓN DE FECHAS ---
+        f_nac_str = request.POST.get('fecha_naci_emple')
+        f_ing_str = request.POST.get('fecha_ing_emple')
+
+        if not f_nac_str or not f_ing_str:
+            messages.error(request, "⚠️ Las fechas de nacimiento e ingreso son obligatorias.")
+            return redirect('usuarios:editar_empleado', id=id)
+
+        f_nac = date.fromisoformat(f_nac_str)
+        f_ing = date.fromisoformat(f_ing_str)
+
+        # A. Validar Fecha de Ingreso
+        if f_ing > hoy:
+            messages.error(request, "Error: La fecha de ingreso no puede ser mayor a la actual.")
+            return redirect('usuarios:editar_empleado', id=id)
+
+        if f_ing < hace_dos_meses:
+            messages.error(request, f"Error: La fecha de ingreso no puede ser anterior al {hace_dos_meses.strftime('%d/%m/%Y')}.")
+            return redirect('usuarios:editar_empleado', id=id)
+
+        # B. Validar Edad / Fecha de Nacimiento
+        edad_empleado = relativedelta(hoy, f_nac).years
+
+        if edad_empleado < 18:
+            messages.error(request, "Error: El empleado debe ser mayor de edad (mínimo 18 años).")
+            return redirect('usuarios:editar_empleado', id=id)
+
+        if edad_empleado > 70:
+            messages.error(request, "Error: El empleado no puede ser mayor de 70 años.")
+            return redirect('usuarios:editar_empleado', id=id)
+
+        # C. Coherencia elemental
+        if f_ing <= f_nac:
+            messages.error(request, "Error: La fecha de ingreso debe ser posterior al nacimiento.")
+            return redirect('usuarios:editar_empleado', id=id)
+
+        # --- SECCIÓN DE GUARDADO SEGURO ---
         try:
             with transaction.atomic():
-<<<<<<< Updated upstream
-                # --- CAMPOS DEL EMPLEADO ---
-                # Importante: Asegúrate que en el HTML el atributo 'name' sea igual a estos
-=======
->>>>>>> Stashed changes
+                # Asignación de campos del Empleado ya validados
                 empleado.nom_emple = request.POST.get('nom_emple')
                 empleado.tel_emple = request.POST.get('tel_emple')
                 empleado.correo_emple = request.POST.get('correo_emple')
                 empleado.dir_emple = request.POST.get('dir_emple')
-<<<<<<< Updated upstream
                 
-                # Campos de identificación (se mantienen aunque sean readonly en el HTML)
-=======
->>>>>>> Stashed changes
                 empleado.rh_emple = request.POST.get('rh_emple')
                 empleado.tipo_ident = request.POST.get('tipo_ident')
                 empleado.num_ident = request.POST.get('num_ident')
-                empleado.fecha_naci_emple = request.POST.get('fecha_naci_emple')
                 
-<<<<<<< Updated upstream
-                empleado.fecha_ing_emple = request.POST.get('fecha_ing_emple')
-                empleado.salari_emple = request.POST.get('salari_emple')
-                empleado.estado_emple = request.POST.get('estado_emple')
-                
-                # --- CAMPOS DEL USUARIO (RELACIONADO) ---
-                # En tu modelo la relación es id_usuario_fk
-=======
+                # Asignamos los objetos de tipo fecha reales ya validados
                 empleado.fecha_naci_emple = f_nac
                 empleado.fecha_ing_emple = f_ing
                 
                 empleado.salari_emple = request.POST.get('salari_emple')
                 empleado.estado_emple = request.POST.get('estado_emple')
                 
->>>>>>> Stashed changes
+                # Campos del Usuario relacionado
                 usuario = empleado.id_usuario_fk 
                 usuario.username = request.POST.get('username')
                 
                 nueva_contra = request.POST.get('password')
-                
-                # Si el admin escribió algo y NO es el hash que ya existía, lo encriptamos
                 if nueva_contra and not nueva_contra.startswith('pbkdf2_sha256$'):
                     usuario.contrasena = make_password(nueva_contra)
                 
@@ -368,10 +391,7 @@ def editar_empleado(request, id):
                 if rol_id:
                     usuario.id_rol_fk = Rol.objects.get(id_rol=rol_id)
                 
-<<<<<<< Updated upstream
-                # Guardamos ambos
-=======
->>>>>>> Stashed changes
+                # Guardamos cambios en cascada atómica
                 usuario.save()
                 empleado.save()
 
@@ -379,12 +399,10 @@ def editar_empleado(request, id):
                 return redirect('usuarios:lista_empleados')
 
         except Exception as e:
-            messages.error(request, f"Error al editar: {e}")
+            messages.error(request, f"Error al editar en la base de datos: {e}")
+            return redirect('usuarios:editar_empleado', id=id)
             
-<<<<<<< Updated upstream
-    # El objeto se pasa como 'empleado'
-    return render(request, 'usuarios/empleados/editar.html', {'empleado': empleado, 'roles': roles})
-=======
+    # Retornamos el formulario enviando los candados calculados al contexto
     return render(request, 'usuarios/empleados/editar.html', {
         'empleado': empleado, 
         'roles': roles,
@@ -393,17 +411,24 @@ def editar_empleado(request, id):
         'f_nac_max': f_nac_max_val.isoformat(),
         'f_nac_min': f_nac_min_val.isoformat()
     })
->>>>>>> Stashed changes
+
 
 @solo_personal
 def eliminar_empleado(request, id):
+    # 1. Buscamos el empleado por su ID
     empleado = get_object_or_404(Empleado, id_emple=id)
     
     try:
+        # Usamos transaction.atomic para que si falla el borrado de uno, no se borre ninguno
         with transaction.atomic():
+            # 2. Accedemos al usuario relacionado usando el nombre correcto del campo: id_usuario_fk
             usuario_relacionado = empleado.id_usuario_fk
+            
+            # 3. Borramos primero el empleado (opcional, el orden depende de tu DB, 
+            # pero usualmente borramos el perfil y luego la cuenta)
             empleado.delete()
             
+            # 4. Borramos el usuario
             if usuario_relacionado:
                 usuario_relacionado.delete()
             
@@ -422,15 +447,16 @@ def eliminar_empleado(request, id):
 @solo_personal
 def lista_clientes(request):
     clientes = Cliente.objects.all()
-    usuarios = Usuario.objects.all()
+    usuarios = Usuario.objects.exclude(id_rol_fk__nom_rol__in=['Administrador', 'administrador'])
     return render(request, 'usuarios/clientes/lista.html', {
         'clientes': clientes,
         'usuarios': usuarios
     })
 
+
 @solo_personal
 def crear_cliente(request):
-    usuarios = Usuario.objects.all()
+    usuarios = Usuario.objects.all().exclude(id_rol_fk__nom_rol__icontains=['Administrador', 'administrador'])
 
     if request.method == 'POST':
         id_usuario_seleccionado = request.POST.get('id_usuario_fk_clien')
@@ -443,14 +469,16 @@ def crear_cliente(request):
             id_usuario_fk=Usuario.objects.get(id_usuario=id_usuario_seleccionado)
         )
 
+        messages.success(request, f"Cliente guardado con exito")
         return redirect('usuarios:lista_clientes')
 
     return render(request, 'usuarios/clientes/crear.html', {'usuarios': usuarios})
 
+
 @solo_personal
 def editar_cliente(request, id):
     cliente = get_object_or_404(Cliente, id_clien=id)
-    usuarios = Usuario.objects.all()
+    usuarios = Usuario.objects.all().exclude(id_rol_fk__nom_rol__in=['Administrador', 'administrador'])
 
     if request.method == 'POST':
         cliente.nom_clien = request.POST['nom_clien']
@@ -463,6 +491,7 @@ def editar_cliente(request, id):
             cliente.id_usuario_fk = Usuario.objects.get(id_usuario=id_usuario)
 
         cliente.save()
+        messages.success(request, f"Cliente actualizado con exito")
         return redirect('usuarios:lista_clientes')
 
     return render(request, 'usuarios/clientes/editar.html', {
@@ -470,18 +499,19 @@ def editar_cliente(request, id):
         'usuarios': usuarios
     })
 
+
 @solo_personal
 def eliminar_cliente(request, id):
     cliente = get_object_or_404(Cliente, id_clien=id)
     cliente.delete()
     return redirect('usuarios:lista_clientes')
 
+
 # ================================================================
 # 🔐 AUTENTICACIÓN (LOGIN, LOGOUT, REGISTRO)
 # ================================================================
 
-# Mantenemos explícitamente tu comentario e importación del bloque original
-from django.contrib import messages 
+from django.contrib import messages # Asegúrate de tener la importación
 
 def login_view(request):
     storage = messages.get_messages(request)
@@ -494,18 +524,24 @@ def login_view(request):
             usuario = Usuario.objects.get(username=user_post)
             
             if check_password(pass_post, usuario.contrasena):
+                # --- SOLUCIÓN AL ERROR DE NOTIFICACIONES ---
+                # 1. Consumimos los mensajes existentes para limpiar la cola
                 storage = messages.get_messages(request)
                 for _ in storage:
                     pass 
                 
+                # 2. Limpiamos la sesión
                 request.session.flush() 
 
+                # 3. Guardamos los nuevos datos
                 request.session['usuario_id'] = usuario.id_usuario
                 request.session['username'] = usuario.username
                 request.session['rol'] = usuario.id_rol_fk.nom_rol
 
+                # 4. Ahora el único mensaje en cola será el de éxito
                 messages.success(request, f"Bienvenido, {usuario.username}")
 
+                # Redirecciones según el rol
                 if usuario.id_rol_fk.nom_rol == 'Administrador':
                     return redirect('usuarios:estadisticas_admin')
                 elif usuario.id_rol_fk.nom_rol == 'Empleado':
@@ -523,10 +559,12 @@ def login_view(request):
             
     return render(request, 'usuarios/login.html')
 
+
 def logout_view(request):
-    request.session.flush() 
+    request.session.flush() # Elimina TODO de la sesión (Seguridad máxima)
     messages.info(request, "Has cerrado sesión correctamente.")
     return redirect('usuarios:login')
+
 
 def registro_view(request):
     if request.method == 'POST':
@@ -570,9 +608,9 @@ def registro_view(request):
 @solo_personal
 def panel_empleado(request):
     return render(request, 'ventas/abono/lista_abono_e.html')
-
 @solo_personal
 def estadisticas_admin(request):
+
     total_empleados = Empleado.objects.count()
     total_clientes = Cliente.objects.count()
     total_productos = Producto.objects.count()
@@ -584,12 +622,16 @@ def estadisticas_admin(request):
         'total_productos': total_productos,
         'total_proveedores': total_proveedores,
     }
-    return render(request, 'usuarios/empleados/estadisticas.html', context)
 
+    return render(request, 'usuarios/empleados/estadisticas.html', context)
 @solo_personal
 def editar_perfil(request):
     usuario_id = request.session.get('usuario_id')
+    
+
     usuario = get_object_or_404(Usuario, id_usuario=usuario_id)
+    
+
     empleado = Empleado.objects.filter(id_usuario_fk=usuario).first()
 
     if request.method == 'POST':
@@ -597,10 +639,9 @@ def editar_perfil(request):
         pass_val = request.POST.get('contrasena')
         nueva_foto = request.FILES.get('foto_perfil')
 
+
         if user_val:
             usuario.username = user_val
-            # Candado añadido: Actualiza en caliente la barra de navegación o templates que usen la sesión activa
-            request.session['username'] = user_val 
         if pass_val:
             usuario.contrasena = make_password(pass_val)
         usuario.save()
@@ -616,3 +657,4 @@ def editar_perfil(request):
         'usuario': usuario,
         'empleado': empleado
     })
+

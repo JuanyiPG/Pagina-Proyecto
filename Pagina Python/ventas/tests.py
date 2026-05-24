@@ -1,284 +1,222 @@
-<<<<<<< Updated upstream
-from django.test import TestCase
-
-# Create your tests here.
-=======
-import hashlib
-from decimal import Decimal
-from datetime import date, timedelta
 from django.test import TestCase, Client
 from django.urls import reverse
-from django.contrib.messages import get_messages
+from django.contrib.auth import get_user_model
 from django.utils import timezone
+from datetime import timedelta
+from decimal import Decimal
 
-from .models import Pedido, Producto, Variacion, Det_valor, Abono, Cliente, Rol, Usuario, Det_mov_matp
+# Importación de modelos según la estructura de tus vistas
+from .models import Pedido, Variacion, Det_valor, Producto, Cliente, Abono, Det_mov_matp
 from inventario.models import Estampado, Movimiento_matp
 
-class VentasYPedidosViewsTestCase(TestCase):
+User = get_user_model()
+
+class VentasFlujoTestCase(TestCase):
 
     def setUp(self):
-        """
-        Configuración inicial del entorno de pruebas.
-        Crea roles, usuarios, clientes, productos, estampados e insumos.
-        """
-        self.client = Client()
-
-        # 1. Creación de Roles y Usuarios de control
-        self.rol_cliente = Rol.objects.create(nom_rol='Cliente')
-        self.rol_admin = Rol.objects.create(nom_rol='Administrador')
-
-        self.user_cliente = Usuario.objects.create(
-            username='comprador_luxy',
-            contrasena='hash_fake_123',
-            id_rol_fk=self.rol_cliente
-        )
-        self.user_admin = Usuario.objects.create(
-            username='admin_ventas',
-            contrasena='hash_fake_admin',
-            id_rol_fk=self.rol_admin
-        )
-
-        # 2. Creación del perfil del Cliente asociado al usuario
+        """Configuración inicial del entorno de prueba (Fixtures)"""
+        # 1. Crear un usuario de Django y su perfil de Cliente asociado
+        self.user = User.objects.create_user(username='cliente_test', password='password123')
         self.cliente = Cliente.objects.create(
-            id_usuario_fk=self.user_cliente,
-            nom_clien='Esteban Quito',
-            tel_clien='3157778899',
-            correo_clien='esteban@correo.com'
+            id_usuario_fk=self.user.id
+            # Añade aquí más campos si tu modelo Cliente los requiere como obligatorios
         )
 
-        # 3. Creación de insumos de Materia Prima en Inventario para la receta
-        self.material_insumo = Movimiento_matp.objects.create(
-            mat_mmtp='Algodón Perchado',
-            color_mmtp='Negro',
-            stock_mmtp=100,  # Inicial con 100 unidades en stock
-            tipo_mmtp='ENTRADA'
-        )
+        # 2. Configurar el cliente de pruebas simulando la sesión activa del usuario
+        self.client = Client()
+        session = self.client.session
+        session['usuario_id'] = self.user.id
+        session.save()
 
-        # 4. Creación de un Producto estándar
+        # 3. Crear productos base para las pruebas
         self.producto = Producto.objects.create(
-            nom_produc='Hodie Oversize Luxy',
-            gen_produc='Unisex',
-            desc_produc='Hodie premium de alta costura.',
-            categoria_produc='Prendas Superiores',
-            estado_produc='Activo',
-            precio=Decimal('85000.00'),
-            dias_produccion=8,
-            imagen_hash='abc123hashoriginal'
+            nom_produc="Camiseta Luxy Premium",
+            precio=Decimal('60000.00'),
+            dias_produccion=6,
+            estado_produc="Activo"
         )
 
-        # Asociar la receta al producto (Usa 2 unidades de Algodón Negro por prenda)
-        self.receta = Det_mov_matp.objects.create(
-            producto=self.producto,
-            materia_prima=self.material_insumo,
-            cantidad_usada=2
-        )
-
-        # 5. Creación de un Estampado para personalizaciones
+        # 4. Crear estampados para pruebas de personalización
         self.estampado = Estampado.objects.create(
-            nom_estam='Cyberpunk Glow 3D',
+            nom_estam="Diseño Minimalista",
             costo_adi=Decimal('15000.00')
         )
 
-    # ================================================================
-    # 🛒 PRUEBAS DEL CARRITO Y VARIACIONES (PERSONALIZACIÓN)
-    # ================================================================
-
-    def test_crear_variacion_personalizada_calcula_total(self):
-        """
-        Valida que al crear una variación con estampado, el Det_valor
-        calcule el total aplicando la fórmula: (Precio + Costo Adicional) * Cantidad.
-        """
-        # Iniciar sesión como Cliente
-        session = self.client.session
-        session['usuario_id'] = self.user_cliente.id_usuario
-        session.save()
-
-        # Crear un pedido base en estado 'Carrito'
-        pedido_cart = Pedido.objects.create(
-            id_clien_fk=self.cliente,
-            estado_ped='Carrito',
-            subtotal_ped=0,
-            valor_ped=0
+        # 5. Configurar insumos en el inventario
+        self.material = Movimiento_matp.objects.create(
+            mat_mmtp="Algodón Perchado",
+            color_mmtp="negro",
+            stock_mmtp=50.0,
+            tipo_mmtp="ENTRADA"
         )
 
-        data_post = {
-            'talla_var': 'M',
-            'cant_soli': '2',
-            'color_var': 'Negro',
-            'mat_var': 'Algodón',
-            'id_estam': self.estampado.id_estam
-        }
+        # 6. Asignar la receta (materia prima que usa el producto)
+        self.receta = Det_mov_matp.objects.create(
+            producto=self.producto,
+            materia_prima=self.material,
+            cantidad_usada=2.0  # Consume 2 unidades por cada prenda armada
+        )
 
-        url = reverse('ventas:crear_variacion', args=[self.producto.id_produc, pedido_cart.id_pedido])
-        response = self.client.post(url, data=data_post)
-
-        # Debe redirigir al carrito tras añadir el artículo
-        self.assertRedirects(response, reverse('ventas:ver_carrito'))
-
-        # Validaciones de Base de Datos
-        variacion_creada = Variacion.objects.get(talla_var='M', color_var='Negro')
-        detalle_creado = Det_valor.objects.get(id_ped_fk_detval=pedido_cart)
-
-        # Formula: (85,000 precio + 15,000 estampado) * 2 cant = 200,000
-        self.assertEqual(variacion_creada.costo_var, self.estampado.costo_adi)
-        self.assertEqual(detalle_creado.valor_total, Decimal('200000.00'))
-        self.assertEqual(detalle_creado.tipo_pedido, 'Personalizado')
-
-    def test_producto_sin_personalizar_crea_carrito_automatico(self):
-        """
-        Valida que al añadir una prenda estándar por POST, el sistema
-        cree el Pedido en estado 'Carrito' si el usuario no tenía uno activo.
-        """
-        session = self.client.session
-        session['usuario_id'] = self.user_cliente.id_usuario
-        session.save()
-
-        data_post = {
-            'talla': 'L',
-            'color': 'gris',
-            'cantidad': '3'
-        }
-
+    def test_producto_sin_personalizar_crea_carrito_y_detalle(self):
+        """Evalúa que añadir un producto estándar cree correctamente el Pedido 'Carrito' y su Det_valor"""
         url = reverse('ventas:producto_sin_personalizar', args=[self.producto.id_produc])
-        response = self.client.post(url, data=data_post)
-
-        self.assertRedirects(response, reverse('ventas:lista_product'))
-
-        # Comprobar la existencia del pedido 'Carrito' autogenerado
-        pedido_auto = Pedido.objects.get(id_clien_fk=self.cliente, estado_ped='Carrito')
-        detalle_auto = Det_valor.objects.get(id_ped_fk_detval=pedido_auto)
-
-        # Formula estándar: 85,000 * 3 = 255,000
-        self.assertEqual(detalle_auto.valor_total, Decimal('255000.00'))
-        self.assertEqual(detalle_auto.tipo_pedido, 'Estandar')
-
-    # ================================================================
-    # ⚙️ VALIDACIÓN DE CONTROL DE INVENTARIO (RECETA DE PRODUCCIÓN)
-    # ================================================================
-
-    def test_gestionar_inventario_resta_stock_al_finalizar_pedido(self):
-        """
-        Prueba la función nuclear `gestionar_inventario`. Al procesar un pedido
-        de 3 prendas, debe descontar del stock físico (3 prendas * 2 unidades de insumo = 6).
-        """
-        session = self.client.session
-        session['usuario_id'] = self.user_cliente.id_usuario
-        session.save()
-
-        # Configurar un pedido con ítems listos en el carrito
-        pedido = Pedido.objects.create(id_clien_fk=self.cliente, estado_ped='Carrito')
-        var = Variacion.objects.create(talla_var='S', cant_soli=3, color_var='Negro', costo_var=0)
-        Det_valor.objects.create(
-            id_ped_fk_detval=pedido, id_prod_fk_detval=self.producto,
-            id_var_fk_detval=var, valor_total=self.producto.precio * 3, cant=3
-        )
-
-        # Ejecutamos el flujo de finalización por 100% pago directo
-        data_post = {
-            'tipo_pago': 'total',
-            'metodo_pago': 'Nequi'
+        data = {
+            'talla': 'L',
+            'color': 'negro',
+            'cantidad': 3
         }
-        url = reverse('ventas:finalizar_pedido', args=[pedido.id_pedido])
-        self.client.post(url, data=data_post)
-
-        # Refrescar stock de la base de datos
-        self.material_insumo.refresh_from_db()
         
-        # Stock inicial: 100 -> Menos 6 usados = 94 unidades restantes
-        self.assertEqual(self.material_insumo.stock_mmtp, 94)
+        response = self.client.post(url, data)
+        
+        # Debe redireccionar a la lista de productos
+        self.assertEqual(response.status_code, 302)
+        
+        # Validar la existencia del pedido en estado Carrito
+        pedido = Pedido.objects.filter(id_clien_fk=self.cliente, estado_ped='Carrito').first()
+        self.assertIsNotNone(pedido)
+        
+        # Validar el Det_valor calculado: precio_producto (60000) * cantidad (3) = 180000
+        detalle = Det_valor.objects.filter(id_ped_fk_detval=pedido).first()
+        self.assertIsNotNone(detalle)
+        self.assertEqual(detalle.valor_total, 180000)
+        self.assertEqual(detalle.tipo_pedido, 'Estandar')
 
-    # ================================================================
-    # 💰 PRUEBAS DEL SISTEMA DE ABONOS Y FINANZAS
-    # ================================================================
+    def test_crear_variacion_personalizada_con_estampado(self):
+        """Prueba la vista crear_variacion adjuntando un costo de estampado adicional"""
+        # Creamos un pedido base simulando que ya existe un carrito activo
+        pedido_carrito = Pedido.objects.create(id_clien_fk=self.cliente, estado_ped='Carrito')
+        
+        url = reverse('ventas:crear_variacion', args=[self.producto.id_produc, pedido_carrito.id_pedido])
+        data = {
+            'id_estam': self.estampado.id_estam,
+            'talla_var': 'M',
+            'cant_soli': 2,
+            'color_var': 'gris',
+            'mat_var': 'Poliéster'
+        }
+        
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 302)
+        
+        # El detalle debe calcular: (precio_producto (60000) + costo_adi (15000)) * cant (2) = 150000
+        detalle = Det_valor.objects.filter(id_ped_fk_detval=pedido_carrito).first()
+        self.assertIsNotNone(detalle)
+        self.assertEqual(detalle.valor_total, 150000)
+        self.assertEqual(detalle.tipo_pedido, 'Personalizado')
 
-    def test_crear_abono_excede_saldo_pendiente_arroja_error(self):
-        """
-        Garantiza la seguridad financiera de Luxy Fashion: Evita que un cliente
-        registre un abono mayor al dinero que resta por pagar del pedido.
-        """
-        session = self.client.session
-        session['usuario_id'] = self.user_cliente.id_usuario
-        session.save()
-
-        # Pedido de $85.000 pesos colombianos
-        pedido = Pedido.objects.create(id_clien_fk=self.cliente, estado_ped='Confirmado')
-        var = Variacion.objects.create(talla_var='M', cant_soli=1, color_var='Negro', costo_var=0)
+    def test_crear_abono_parcial_y_afectacion_inventario(self):
+        """Verifica que el primer abono disminuya las existencias físicas del inventario de insumos"""
+        pedido = Pedido.objects.create(id_clien_fk=self.cliente, estado_ped='Carrito')
+        variacion = Variacion.objects.create(talla_var='S', cant_soli=5, color_var='negro')
         Det_valor.objects.create(
             id_ped_fk_detval=pedido, id_prod_fk_detval=self.producto,
-            id_var_fk_detval=var, valor_total=Decimal('85000.00'), cant=1
+            id_var_fk_detval=variacion, valor_total=300000, tipo_pedido='Estandar'
         )
 
-        # Intentar abonar $90.000 (Excede el saldo de $85.000)
-        data_post = {
-            'monto_abono': '90000',
-            'metodo_pago': 'Efectivo',
-            'descripcion': 'Abono sospechoso'
-        }
+        # Stock inicial del material antes de la operación = 50.0
         url = reverse('ventas:crear_abono', args=[pedido.id_pedido])
-        response = self.client.post(url, data=data_post)
-
-        # Comprobar que redirige de nuevo al formulario por el fallo de validación
-        self.assertRedirects(response, url)
-
-        # Verificar el mensaje de error personalizado en el request
-        messages = list(get_messages(response.wsgi_request))
-        self.assertTrue(any("supera el saldo" in str(m) for m in messages))
-
-        # El abono NO debió crearse en la base de datos
-        self.assertFalse(Abono.objects.filter(id_pedido_fk_abono=pedido).exists())
-
-    # ================================================================
-    # 🛡️ SEGURIDAD DE ARCHIVOS Y DUPLICIDAD (SISTEMA DE HASHING SHA-256)
-    # ================================================================
-
-    def test_subir_prenda_duplicada_por_hash_bloquea_registro(self):
-        """
-        Asegura que el administrador no pueda subir dos veces la misma prenda
-        física basándose en la huella SHA-256 del archivo binario.
-        """
-        # Forzar sesión como administrador
-        session = self.client.session
-        session['usuario_id'] = self.user_admin.id_usuario
-        session['rol'] = 'Administrador'
-        session.save()
-
-        # Simulamos un archivo que genera exactamente el mismo hash de control del setUp
-        from django.core.files.uploadedfile import SimpleUploadedFile
-        imagen_duplicada = SimpleUploadedFile(
-            "prenda_nueva.png", 
-            b"contenido_binario_de_ejemplo_de_imagen", 
-            content_type="image/png"
-        )
-
-        # Calculamos manualmente el hash para inyectarlo en la simulación del test
-        hasher = hashlib.sha256()
-        hasher.update(b"contenido_binario_de_ejemplo_de_imagen")
-        hash_calculado = hasher.hexdigest()
-
-        # Modificamos temporalmente el hash de nuestro producto existente para forzar la coincidencia
-        self.producto.imagen_hash = hash_calculado
-        self.producto.save()
-
-        data_post = {
-            'nom_produc': 'Clon de Hodie',
-            'gen_produc': 'Hombre',
-            'desc_produc': 'Intento de duplicación',
-            'cat_produc': 'Prendas Superiores',
-            'estado_produc': 'Activo',
-            'precio': '85000',
-            'dias_produccion': '10',
-            'imagen_produc': imagen_duplicada,
-            'material_ids[]': [self.material_insumo.id_mmtp],
-            'cantidades[]': [2]
+        data = {
+            'monto_abono': '100000',  # Abono parcial
+            'metodo_pago': 'Nequi',
+            'descripcion': 'Primer pago'
         }
 
-        url = reverse('ventas:lista_producto_admin')
-        response = self.client.post(url, data=data_post)
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 302)
 
-        # Debe responder con el render de la plantilla mostrando el error en pantalla
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('ERROR: Esta prenda ya ha sido subida anteriormente.', response.content.decode('utf-8'))
+        # Al ser el primer abono, debió llamar a gestionar_inventario('RESTAR')
+        # Consumo: cantidad_usada (2.0) * cant_soli (5) = 10 unidades consumidas.
+        self.material.refresh_from_db()
+        self.assertEqual(self.material.stock_mmtp, 40.0)
 
-        # No debe existir un segundo producto guardado con el nombre "Clon de Hodie"
-        self.assertFalse(Producto.objects.filter(nom_produc='Clon de Hodie').exists())
->>>>>>> Stashed changes
+        # Como es abono parcial, el estado del pedido no debe cambiar a Confirmado aún
+        pedido.refresh_from_db()
+        self.assertEqual(pedido.estado_ped, 'Carrito')
+
+    def test_finalizar_pedido_completo_con_pago_total(self):
+        """Prueba el flujo de pagar el 100% mediante finalizar_pedido actualizando fechas y estados"""
+        pedido = Pedido.objects.create(id_clien_fk=self.cliente, estado_ped='Carrito')
+        variacion = Variacion.objects.create(talla_var='M', cant_soli=1, color_var='negro')
+        Det_valor.objects.create(
+            id_ped_fk_detval=pedido, id_prod_fk_detval=self.producto,
+            id_var_fk_detval=variacion, valor_total=60000, tipo_pedido='Estandar'
+        )
+
+        url = reverse('ventas:finalizar_pedido', args=[pedido.id_pedido])
+        data = {
+            'tipo_pago': 'total',  # Envía flujo diferente a 'abono'
+            'metodo_pago': 'Efectivo'
+        }
+
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 302)
+
+        pedido.refresh_from_db()
+        # Verificaciones de actualización de metadatos del pedido
+        self.assertEqual(pedido.estado_ped, 'Confirmado')
+        self.assertEqual(pedido.subtotal_ped, Decimal('60000.00'))
+        self.assertEqual(pedido.fecha_entrega, timezone.now().date() + timedelta(days=self.producto.dias_produccion))
+
+        # Comprobar la creación automática del abono por el 100%
+        abono = Abono.objects.filter(id_pedido_fk_abono=pedido).first()
+        self.assertIsNotNone(abono)
+        self.assertEqual(abono.monto_abono, Decimal('60000.00'))
+
+    def test_gestionar_pedido_cancelar_devuelve_inventario(self):
+        """Asegura que al cancelar un pedido con abonos previos se le devuelvan los insumos al inventario"""
+        pedido = Pedido.objects.create(id_clien_fk=self.cliente, estado_ped='Confirmado')
+        variacion = Variacion.objects.create(talla_var='L', cant_soli=2, color_var='negro')
+        Det_valor.objects.create(
+            id_ped_fk_detval=pedido, id_prod_fk_detval=self.producto,
+            id_var_fk_detval=variacion, valor_total=120000, tipo_pedido='Estandar'
+        )
+        # Simulamos que ya poseía un abono registrado
+        Abono.objects.create(id_pedido_fk_abono=pedido, monto_abono=60000, metodo_pago='Efectivo')
+
+        # Simulamos stock en 46.0 (imaginando que ya se habían restado 4 unidades correspondientes al pedido)
+        self.material.stock_mmtp = 46.0
+        self.material.save()
+
+        url = reverse('ventas:gestionar_pedido', args=[pedido.id_pedido])
+        response = self.client.post(url, {'accion': 'cancelar'})
+        self.assertEqual(response.status_code, 302)
+
+        # El pedido cambia su estado a Cancelado
+        pedido.refresh_from_db()
+        self.assertEqual(pedido.estado_ped, 'Cancelado')
+
+        # Se debe ejecutar gestionar_inventario('SUMAR'): 46.0 + (2.0 receta * 2 cantidad) = 50.0
+        self.material.refresh_from_db()
+        self.assertEqual(self.material.stock_mmtp, 50.0)
+
+    def test_gestionar_pedido_entrega_ejecuta_borrado_fisico(self):
+        """Valida que la acción 'entregado' realice el borrado físico completo del pedido"""
+        pedido = Pedido.objects.create(id_clien_fk=self.cliente, estado_ped='Confirmado')
+        
+        url = reverse('ventas:gestionar_pedido', args=[pedido.id_pedido])
+        response = self.client.post(url, {'accion': 'entregado'})
+        self.assertEqual(response.status_code, 302)
+
+        # Se verifica que el registro fue destruido físicamente de la base de datos
+        with self.assertRaises(Pedido.DoesNotExist):
+            Pedido.objects.get(id_pedido=pedido.id_pedido)
+
+    def test_eliminar_del_carrito_y_borrado_de_variacion(self):
+        """Garantiza que eliminar un ítem del carrito remueva también su variación en cascada"""
+        pedido = Pedido.objects.create(id_clien_fk=self.cliente, estado_ped='Carrito')
+        variacion = Variacion.objects.create(talla_var='S', cant_soli=1, color_var='azul')
+        detalle = Det_valor.objects.create(
+            id_ped_fk_detval=pedido, id_prod_fk_detval=self.producto,
+            id_var_fk_detval=variacion, valor_total=60000, tipo_pedido='Estandar'
+        )
+
+        url = reverse('ventas:eliminar_del_carrito', args=[detalle.id_det_valor])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 302)
+
+        # Tanto el detalle como la variación asociada no deben existir
+        with self.assertRaises(Det_valor.DoesNotExist):
+            Det_valor.objects.get(id_det_valor=detalle.id_det_valor)
+
+        with self.assertRaises(Variacion.DoesNotExist):
+            Variacion.objects.get(id_var=variacion.id_var)

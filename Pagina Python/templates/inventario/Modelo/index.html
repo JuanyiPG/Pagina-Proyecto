@@ -193,7 +193,8 @@
         <input type="hidden" id="producto-id" value="{{ producto.id_produc }}">
 
        <h1 class="product-title">{{ producto.nom_produc }}</h1>
-       <div class="product-price">$ {{ producto.precio }}</div>
+       <b><div class="product-price" style="color: #5e0925; font-size: 25px; font-family: 'Times New Roman', Times, serif;">$ {{ producto.precio }}</div></b>
+       <br>
 
         <div class="instrucciones-box">
             <strong style="display: block; margin-bottom: 5px;">🎮 Cómo personalizar:</strong>
@@ -214,6 +215,7 @@
                 <option value="M" selected>M</option>
                 <option value="L">L</option>
                 <option value="XL">XL</option>
+                <option value="XXL">XXL</option>
             </select>
             
             <span class="label-style" style="margin-top: 20px;">Tamaño del diseño:</span>
@@ -233,6 +235,7 @@
 
             <div id="tab-propio" class="panel-opcion">
                 <span class="label-style">Cargar imagen (.png, .jpg):</span>
+                <b>$20000,00</b>
                 <input type="file" id="imageInput" accept="image/jpeg, image/png">
                 <p id="error-message" style="color: #e74c3c; font-weight: bold; margin-top: 5px; display: none;"></p>
             </div>

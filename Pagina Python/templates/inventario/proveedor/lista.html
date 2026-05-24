@@ -107,6 +107,31 @@
 
     .edit { color: #2d6cdf; text-decoration: none; font-weight: bold; }
     .delete { color: #d33; text-decoration: none; font-weight: bold; }
+
+    /* NOTIFICACIONES */
+
+    .container-mensajes {
+        margin-bottom: 15px; 
+    }
+
+    .alert {
+    padding: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    text-align: center;
+    }
+
+    .alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    }
+
+    .alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    }
 </style>
 
 <div class="table-container">
@@ -120,19 +145,36 @@
         
     <div class="form-card">
         <form method="POST">
+            {% if messages %}
+                <div class="container-mensajes" id="mensaje-django">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+            </div>
+            {% endfor %}
+            </div>
+            {% endif %}
+
             {% csrf_token %}
             <div class="form-grid">
                 <div class="form-group">
                     <label>Nombre o Razón Social</label>
-                    <input type="text" name="nom_provee" placeholder="Ej: Textiles del Norte S.A.S" required>
+                    <input type="text" name="nom_provee" placeholder="Ej: Textiles del Norte S.A.S" minlength="10" maxlength="50" required>
                 </div>
                 <div class="form-group">
-                    <label>Fecha de Vinculación</label>
-                    <input type="date" name="fech_ingre" required>
+                    <label for="fech_ingre">Fecha de Vinculación</label>
+                    <input 
+                        type="date" 
+                        name="fech_ingre" 
+                        id="fech_ingre" 
+                        max="{{ fecha_maxima }}" 
+                        min="{{ fecha_minima }}"
+                        required
+                    >
                 </div>
                 <div class="form-group">
                     <label>Teléfono Directo</label>
-                    <input type="text" name="num_tel" placeholder="Ej: 310 000 0000" required>
+                    <input type="text" name="num_tel" placeholder="Ej: 310 000 0000" maxlength="10" minlength="10" required>
                 </div>
             </div>
             <button type="submit" class="btn-save" style="width: 100%; margin-top: 25px;">
@@ -140,9 +182,16 @@
             </button>
         </form>
     </div>
+    
+    <div class="table-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="font-size: 18px; margin: 0;">Proveedores Registrados</h3>
+            
+            <input type="text" id="searchProve" placeholder=" Buscar..." style="width: 250px; padding: 8px 15px; border-radius: 20px; border: 1px solid #6a0f2e;">
+        </div>
 
     <div class="table-responsive">
-        <table class="table-inventory">
+        <table class="table-inventory" id="TableProve">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -159,16 +208,16 @@
                 {% for p in proveedor %}
                 <tr>
                     <td><span style="color: #999;">#{{ p.id_provee }}</span></td>
-                    <td><strong>{{ p.nom_provee }}</strong></td>
-                    <td>{{ p.fech_ingre }}</td>
-                    <td><span style="background: #f0f0f0; padding: 4px 8px; border-radius: 5px;">{{ p.num_tel }}</span></td>
+                    <td class="nom"><strong>{{ p.nom_provee }}</strong></td>
+                    <td class="fecha">{{ p.fech_ingre }}</td>
+                    <td class="num"><span style="background: #f0f0f0; padding: 4px 8px; border-radius: 5px;">{{ p.num_tel }}</span></td>
                     <td style="text-align: center;">
                         <a href="{% url 'inventario:editar_provee' p.id_provee %}" class="edit" style="margin-right: 15px;">Editar</a>
                         <a href="{% url 'inventario:eliminar_provee' p.id_provee %}" class="delete" onclick="confirmarEliminacion(event, this.href)">Borrar</a>
                     </td>
                 </tr>
                 {% empty %}
-                <tr>
+                <tr id="noResultsRow">
                     <td colspan="5" style="text-align: center; color: #999; padding: 40px;">
                         No hay proveedores registrados actualmente.
                     </td>
@@ -178,7 +227,33 @@
         </table>
     </div>
 </div>
+<script>
+    document.getElementById('searchProve').addEventListener('keyup', function() {
+        let filter = this.value.toLowerCase().trim();
+        // Buscamos todas las filas del tbody excepto la de sin resultados
+        let rows = document.querySelectorAll('#TableProve tbody tr:not(#noResultsRow):not(#searchEmptyRow)');
+        let anyVisible = false;
 
+        rows.forEach(row => {
+            // row.textContent une el texto de TODAS las celdas de esta fila en un solo bloque de texto
+            let allRowText = row.textContent.toLowerCase();
+            
+            // Evaluamos si el filtro (número, fecha o texto) existe en la fila
+            if (allRowText.includes(filter)) {
+                row.style.display = "";
+                anyVisible = true; // Marcamos que encontramos una coincidencia
+            } else {
+                row.style.display = "none";
+            }
+        });
+
+        // Opcional: Manejo visual de la fila "No se encontraron resultados" si la tienes
+        let emptyRow = document.getElementById('searchEmptyRow');
+        if (emptyRow) {
+            emptyRow.style.display = anyVisible ? "none" : "";
+        }
+    });
+</script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -315,5 +390,22 @@ function confirmarEliminacion(event, url) {
         }
     });
 }
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const mensaje = document.getElementById("mensaje-django");
+        
+        if (mensaje) {
+            setTimeout(function() {
+                mensaje.style.transition = "opacity 1s ease";
+                mensaje.style.opacity = "0";
+                
+                setTimeout(function() {
+                    mensaje.remove();
+                }, 1000);
+            }, 5000); 
+        }
+    });
 </script>
 {% endblock %}

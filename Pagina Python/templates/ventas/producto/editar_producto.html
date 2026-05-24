@@ -90,19 +90,19 @@
                     </div>
                     <div class="form-group">
                         <label>Precio ($)</label>
-                        <input type="number" name="precio" value="{{ producto.precio|unlocalize }}" required>
+                        <input type="number" name="precio" value="{{ producto.precio|unlocalize }}" min="10000" max="50000" required>
                     </div>
 
                     <div class="form-group">
                     <label>Dias de producción</label>
-                    <input type="number" name="dias_produccion" value="{{ producto.dias_produccion }}">
+                    <input type="number" name="dias_produccion" value="{{ producto.dias_produccion }}" min="1" max="30">
                     </div>
 
                 </div>
 
                 <div class="form-group">
                     <label>Descripción Corta</label>
-                    <textarea name="desc_produc" rows="3" placeholder="Detalles de la prenda...">{{ producto.desc_produc }}</textarea>
+                    <textarea name="desc_produc" rows="3" placeholder="Detalles de la prenda..." minlength="20" maxlength="50">{{ producto.desc_produc }}</textarea>
                 </div>
 
                 <div class="form-group" style="background: #fdfdfd; padding: 15px; border-radius: 8px; border: 1px solid #eee;">

@@ -1,172 +1,131 @@
+import datetime
 from django.test import TestCase
-<<<<<<< Updated upstream
-
-# Create your tests here.
-=======
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.utils import timezone
-from decimal import Decimal
-import json
+from .models import Proveedor, Movimiento_matp, Estampado
+from ventas.models import Producto
 
-# Importamos los modelos reales de tu aplicación
-from .models import Proveedor, Movimiento_matp, Estampado, PedidoPersonalizado
-from ventas.models import Producto, Cliente  # Necesarios para la prueba del Carrito/3D
-
-class InventarioViewsTest(TestCase):
+class InventarioCompletoTest(TestCase):
 
     def setUp(self):
-        # 1. Crear datos base de prueba para las relaciones
+        """
+        Configuración inicial: Creamos datos de prueba en la base de datos temporal
+        para que las vistas tengan información con la cual trabajar.
+        """
+        # 1. Proveedor de prueba
         self.proveedor = Proveedor.objects.create(
-            nom_provee='Proveedor Textil S.A.S',
-            fech_ingre=timezone.now().date().isoformat(),
-            num_tel='3101234567'
+            nom_provee="Textiles del Tolima",
+            fech_ingre="2026-01-15",
+            num_tel="3201234567"
         )
 
-        self.materia_prima = Movimiento_matp.objects.create(
-            tipo_mmtp='ENTRADA',
-            color_mmtp='#FFFFFF',
-            fecha_mmtp=timezone.now().date().isoformat(),
+        # 2. Materia prima asociada al proveedor
+        self.movimiento = Movimiento_matp.objects.create(
+            tipo_mmtp="ENTRADA",
+            color_mmtp="#FFFFFF",
+            fecha_mmtp="2026-05-20",
             stock_mmtp=50,
-            mat_mmtp='Algodón Perchado',
+            mat_mmtp="Algodón Perchado",
             id_proveedor_fk=self.proveedor
         )
 
-        self.estampado = Estampado.objects.create(
-            nombre_estamp='Calavera Aesthetic',
-            costo_adi=Decimal('15000.00'),
-            tipo_estamp='Frente',
-            imagen_hash='hash_falso_de_prueba_123'
-        )
-
-        # Necesarios para la prueba del diseño 3D
+        # 3. Producto base en catálogo (Necesario para la vista del modelo 3D)
         self.producto = Producto.objects.create(
             id_produc=1,
-            nombre='Camiseta Oversize',
-            precio=Decimal('45000.00')
-        )
-        
-        # Simulamos un usuario cliente en sesión
-        self.cliente = Cliente.objects.create(
-            id_clien=1,
-            nombre_completo='Juan Test'
+            nom_produc="Camiseta Oversize",
+            precio=40000,
+            stock=20
         )
 
-    # ==========================================
-    # PRUEBAS DE PROVEEDORES
-    # ==========================================
-    
-    def test_lista_proveedores_view(self):
-        """Verifica que la vista cargue el catálogo de proveedores correctamente"""
+        # 4. Estampado de prueba con una imagen simulada en memoria
+        self.imagen_prueba = SimpleUploadedFile(
+            name='test_logo.png',
+            content=b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\xff\xff\xff\x21\xf9\x04\x01\x00\x00\x00\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02\x4c\x01\x00\x3b',
+            content_type='image/png'
+        )
+        self.estampado = Estampado.objects.create(
+            nombre_estamp="Logo Cyberpunk",
+            costo_adi=5000.00,
+            tipo_estamp="Frente",
+            imagen_estamp=self.imagen_prueba,
+            imagen_hash="hash_falso_de_prueba_123"
+        )
+
+    # --- PRUEBAS DE PROVEEDORES ---
+
+    def test_vista_lista_proveedores(self):
+        """Verifica que la página de listar proveedores cargue y muestre los datos."""
         response = self.client.get(reverse('inventario:lista_provee'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'inventario/proveedor/lista.html')
+        self.assertTemplateUsed(response, "inventario/proveedor/lista.html")
         self.assertIn('proveedor', response.context)
 
-    def test_registrar_proveedor_exitoso(self):
-        """Prueba la creación manual de un proveedor mediante formulario POST"""
-        response = self.client.post(
-            reverse('inventario:lista_provee'),
-            {
-                'nom_provee': 'Distribuidora de Telas',
-                'fech_ingre': timezone.now().date().isoformat(),
-                'num_tel': '3159876543'
-            }
-        )
-        # Verifica redirección exitosa tras guardar
-        self.assertEqual(response.status_code, 302)
+    def test_crear_proveedor_POST(self):
+        """Verifica que el formulario guarde un proveedor válido y redirija."""
+        response = self.client.post(reverse('inventario:lista_provee'), {
+            'nom_provee': 'Botones y Cremalleras SAS',
+            'fech_ingre': '2026-05-21',
+            'num_tel': '3159876543'
+        })
         self.assertEqual(Proveedor.objects.count(), 2)
+        self.assertEqual(response.status_code, 302)  # Redirección exitosa
 
-    def test_eliminar_proveedor(self):
-        """Prueba que el borrado por ID funcione en la base de datos"""
-        response = self.client.get(
-            reverse('inventario:eliminar_provee', args=[self.proveedor.id_provee])
-        )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(Proveedor.objects.count(), 0)
+    # --- PRUEBAS DE MOVIMIENTOS MATP (MATERIA PRIMA) ---
 
-    # ==========================================
-    # PRUEBAS DE MATERIA PRIMA (MOVIMIENTOS)
-    # ==========================================
-
-    def test_lista_materia_prima_view(self):
-        """Verifica que se listen los movimientos y cargue el modal de historial"""
+    def test_vista_lista_materia_prima(self):
+        """Verifica el acceso a la lista de insumos y que cargue el historial calculado."""
         response = self.client.get(reverse('inventario:lista_mmtp'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'inventario/movimiento_matp/lista.html')
-        self.assertIn('mmtp', response.context)
+        self.assertTemplateUsed(response, "inventario/movimiento_matp/lista.html")
 
-    def test_registrar_materia_prima_control_negativos(self):
-        """Prueba tu corrección de lógica: si meten stock negativo debe volverse 0"""
-        response = self.client.post(
-            reverse('inventario:lista_mmtp'),
-            {
-                'tipo_mmtp': 'ENTRADA',
-                'color_mmtp': '#000000',
-                'fecha_mmtp': timezone.now().date().isoformat(),
-                'stock_mmtp': '-15',  # Valor negativo erróneo
-                'mat_mmtp': 'Lino',
-                'id_proveedor_fk': self.proveedor.id_provee
-            }
-        )
-        self.assertEqual(response.status_code, 302)
-        # Buscamos el movimiento creado para ver si la lógica lo forzó a 0
-        movimiento_creado = Movimiento_matp.objects.get(mat_mmtp='Lino')
-        self.assertEqual(movimiento_creado.stock_mmtp, 0)
+    def test_control_stock_negativo_POST(self):
+        """PRUEBA DE REGRESIÓN: Verifica tu lógica para evitar stock negativo."""
+        response = self.client.post(reverse('inventario:lista_mmtp'), {
+            'tipo_mmtp': 'ENTRADA',
+            'color_mmtp': '#FF0000',
+            'fecha_mmtp': '2026-05-21',
+            'stock_mmtp': '-10',  # Mandamos un número negativo a propósito
+            'mat_mmtp': 'Lino',
+            'id_proveedor_fk': self.proveedor.id_provee
+        })
+        # Buscamos el material que se acaba de crear
+        nuevo_material = Movimiento_matp.objects.get(mat_mmtp='Lino')
+        # Tu backend debe haberlo transformado en 0 automáticamente
+        self.assertEqual(nuevo_material.stock_mmtp, 0)
 
-    # ==========================================
-    # PRUEBAS DE ESTAMPADOS (DUPLICADOS POR HASH)
-    # ==========================================
+    # --- PRUEBAS DE ESTAMPADOS ---
 
-    def test_lista_estampados_busqueda(self):
-        """Prueba que la consulta de búsqueda por parámetros de texto responda bien"""
-        response = self.client.get(reverse('inventario:lista_estampado'), {'q': 'Aesthetic'})
+    def test_vista_lista_estampados(self):
+        """Verifica que cargue la galería de diseños correctamente."""
+        response = self.client.get(reverse('inventario:lista_estampado'))
         self.assertEqual(response.status_code, 200)
-        self.assertIn('estampados', response.context)
+        self.assertTemplateUsed(response, "inventario/estampado/lista.html")
 
-    def test_evitar_estampado_duplicado(self):
-        """Prueba que el sistema rechace un estampado si el hash de imagen ya existe"""
-        # Simulamos un archivo de imagen cargado
-        archivo_imagen = SimpleUploadedFile(
-            "logo_test.png", 
-            b"contenido_binario_falso", 
-            content_type="image/png"
+    def test_evitar_estampado_duplicado_POST(self):
+        """PRUEBA DE SEGURIDAD: Comprueba que el validador por HASH bloquee imágenes idénticas."""
+        # Intentamos subir exactamente la misma imagen que configuramos en el setUp
+        imagen_duplicada = SimpleUploadedFile(
+            name='test_logo.png',
+            content=b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\xff\xff\xff\x21\xf9\x04\x01\x00\x00\x00\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02\x4c\x01\x00\x3b',
+            content_type='image/png'
         )
         
-        # Intentamos registrar un estampado duplicando a propósito el hash existente
-        # Nota: En tu vista real, si encuentra el hash devuelve un render con error directo
-        # en lugar de redirigir.
-        response = self.client.post(
-            reverse('inventario:lista_estampado'),
-            {
-                'nombre_estamp': 'Calavera Aesthetic Copia',
-                'costo_adi': '15000',
-                'tipo_estamp': 'Frente',
-                'archivo_imagen': archivo_imagen
-            }
-        )
+        # Simulamos que el usuario llena el formulario con el mismo archivo
+        response = self.client.post(reverse('inventario:lista_estampado'), {
+            'nombre_estamp': 'Clon Logo',
+            'costo_adi': '5000',
+            'tipo_estamp': 'Frente',
+            'archivo_imagen': imagen_duplicada
+        })
         
-        # Debe responder con éxito 200 pintando la alerta en la misma plantilla, sin duplicar en DB
+        # Como el código calcula el hash SHA-256 y ve que ya existe, no debe añadir otro registro
+        self.assertEqual(Estampado.objects.count(), 1) 
+
+    # --- PRUEBAS DEL VISOR 3D ---
+
+    def test_vista_modelo_3d(self):
+        """Verifica que el entorno tridimensional enlace bien el producto y los estampados."""
+        response = self.client.get(reverse('inventario:modelo', kwargs={'producto_id': self.producto.id_produc}))
         self.assertEqual(response.status_code, 200)
-        self.assertIn('¡Atención! Este diseño ya existe.', response.context.get('error', ''))
-
-    # ==========================================
-    # PRUEBAS DEL MÓDULO DE PERSONALIZACIÓN 3D
-    # ==========================================
-
-    def test_guardar_diseno_3d_metodo_invalido(self):
-        """Verifica que si la petición al diseño no es POST, lance error 405"""
-        response = self.client.get(reverse('inventario:guardar_diseno_3d'))
-        self.assertEqual(response.status_code, 405)
-
-    def test_guardar_diseno_3d_sin_sesion(self):
-        """Valida que si no hay un cliente en sesión responda con error 401"""
-        # Enviamos una estructura JSON vacía imitando la petición Fetch de JavaScript
-        response = self.client.post(
-            reverse('inventario:guardar_diseno_3d'),
-            json.dumps({}),
-            content_type='application/json'
-        )
-        # Al no mockear la sesión del cliente, tu función `obtener_cliente_actual` dará None
-        self.assertEqual(response.status_code, 401)
->>>>>>> Stashed changes
+        self.assertTemplateUsed(response, 'inventario/modelo/index.html')
+        self.assertEqual(response.context['producto'], self.producto)

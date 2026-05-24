@@ -1,3 +1,4 @@
+from datetime import date
 import os
 import uuid
 import json
@@ -5,6 +6,8 @@ import base64
 import hashlib
 import pandas as pd
 from decimal import Decimal
+from django.contrib import messages
+from dateutil.relativedelta import relativedelta
 
 # Django Core
 from django.shortcuts import render, redirect, get_object_or_404
@@ -58,25 +61,80 @@ def b64_to_file(data_url, name):
 # --- PROVEEDORES ---
 
 def lista_provee(request):
+    # Calcular límites de fechas para hoy y dos meses atrás
+    hoy = timezone.now().date()
+    hace_dos_meses = hoy - relativedelta(months=2)
+    
+    if hace_dos_meses.year < hoy.year:
+        hace_dos_meses = date(hoy.year, 1, 1)
+
     if request.method == 'POST':
+        fecha_str = request.POST.get('fech_ingre')
+        
+        if fecha_str:
+            fecha_usuario = date.fromisoformat(fecha_str)
+            
+            if fecha_usuario > hoy:
+                messages.error(request, "Error: La fecha de ingreso no puede ser mayor a la actual.")
+                return redirect('inventario:lista_provee')
+                
+            if fecha_usuario < hace_dos_meses:
+                messages.error(request, f"Error: La fecha no puede ser anterior al {hace_dos_meses.strftime('%d/%m/%Y')}.")
+                return redirect('inventario:lista_provee')
+
         Proveedor.objects.create(
             nom_provee=request.POST.get('nom_provee'),
-            fech_ingre=request.POST.get('fech_ingre'),
+            fech_ingre=fecha_str,
             num_tel=request.POST.get('num_tel')
         )
+        messages.success(request, f"Proveedor guardado con éxito")
         return redirect('inventario:lista_provee') 
+        
     proveedores = Proveedor.objects.all()
-    return render(request, "inventario/proveedor/lista.html", {'proveedor': proveedores})
+    
+    return render(request, "inventario/proveedor/lista.html", {
+        'proveedor': proveedores,
+        'fecha_maxima': hoy.isoformat(),
+        'fecha_minima': hace_dos_meses.isoformat()  
+    })
 
 def editar_provee(request, id):
     proveedor = get_object_or_404(Proveedor, id_provee=id)
+
+    hoy = timezone.now().date()
+    hace_dos_meses = hoy - relativedelta(months=2)
+    
+    if hace_dos_meses.year < hoy.year:
+        hace_dos_meses = date(hoy.year, 1, 1)
+
     if request.method == "POST":
+        fecha_str = request.POST.get('fech_ingre')
+        
+        if fecha_str:
+            fecha_usuario = date.fromisoformat(fecha_str)
+
+            if fecha_usuario > hoy:
+                messages.error(request, "Error: La fecha de ingreso no puede ser mayor a la actual.")
+                return redirect('inventario:editar_provee', id=id) # Recarga la edición si hay error
+                
+            # 2. Validar pasado mínimo (2 meses del mismo año)
+            if fecha_usuario < hace_dos_meses:
+                messages.error(request, f"Error: La fecha no puede ser anterior al {hace_dos_meses.strftime('%d/%m/%Y')}.")
+                return redirect('inventario:editar_provee', id=id)
+
         proveedor.nom_provee = request.POST.get('nom_provee')
-        proveedor.fech_ingre = request.POST.get('fech_ingre')
+        proveedor.fech_ingre = fecha_str
         proveedor.num_tel = request.POST.get('num_tel')
         proveedor.save()
+        
+        messages.success(request, f"Proveedor actualizado con éxito")
         return redirect('inventario:lista_provee')
-    return render(request, 'inventario/proveedor/editar.html', {'proveedor': proveedor})
+        
+    return render(request, 'inventario/proveedor/editar.html', {
+        'proveedor': proveedor,
+        'fecha_maxima': hoy.isoformat(),
+        'fecha_minima': hace_dos_meses.isoformat()
+    })
 
 def eliminar_provee(request, id):
     get_object_or_404(Proveedor, id_provee=id).delete()
@@ -106,6 +164,7 @@ def lista_mmtp(request):
                 mat_mmtp=request.POST.get('mat_mmtp'),
                 id_proveedor_fk=proveedor_instancia
             )
+            messages.success(request, f"Materia Prima guardado con exito")
             return redirect('inventario:lista_mmtp')
 
     # 2. PROCESAMIENTO PARA EL MODAL (HISTORIAL)
@@ -160,6 +219,7 @@ def editar_mmtp(request, id):
         id_pro = request.POST.get('id_proveedor_fk')
         mmtp.id_proveedor_fk = get_object_or_404(Proveedor, id_provee=id_pro)
         mmtp.save()
+        messages.success(request, f"Materia Prima actualizado con exito")
         return redirect('inventario:lista_mmtp') 
 
     return render(request, 'inventario/movimiento_matp/editar.html', {
@@ -288,6 +348,7 @@ def lista_estampado(request):
             nombre_estamp=nombre, costo_adi=costo, tipo_estamp=tipo,
             imagen_estamp=archivo_img, imagen_hash=nuevo_hash
         )
+        messages.success(request, f"Estampado guardado con exito")
         return redirect('inventario:lista_estampado')
 
     estampados = Estampado.objects.filter(Q(nombre_estamp__icontains=query) | Q(tipo_estamp__icontains=query)) if query else Estampado.objects.all()
@@ -314,6 +375,7 @@ def editar_estampado(request, id):
         
         estampado.tipo_estamp = request.POST.get('tipo_estamp')
         estampado.save()
+        messages.success(request, f"Estampado actualizado con exito")
         return redirect('inventario:lista_estampado')
     return render(request, 'inventario/estampado/editar.html', {'estampado': estampado})
 
@@ -351,6 +413,8 @@ def b64_to_file(data, filename):
 
 # inventario/views.py
 
+# ... (Todo el resto de tus importaciones y funciones de Proveedores/Movimientos quedan exactamente IGUAL) ...
+
 def guardar_diseno_3d(request):
     if request.method == 'POST':
         try:
@@ -381,8 +445,11 @@ def guardar_diseno_3d(request):
             estampado_obj_principal = None
 
             # A. Primero sumamos los costos de los estampados de catálogo que estén en la lista
-            # Usamos un set para no cobrar doble si el ID se repite por error, o quita el set si quieres cobrar cada instancia
             for est_id in lista_ids_estampados:
+                # 🌟 SOLUCIÓN: Si el ID es el texto de tu interfaz, saltamos la búsqueda en la DB
+                if est_id == "imagen_propia":
+                    continue
+
                 try:
                     est_temp = Estampado.objects.get(id_estamp=est_id)
                     extra_total_estampados += float(est_temp.costo_adi)
@@ -394,14 +461,16 @@ def guardar_diseno_3d(request):
                     continue
             
             # B. Si no logramos asignar el principal arriba, intentamos con el estampado_id directo
-            if not estampado_obj_principal and estampado_id:
+            if not estampado_obj_principal and estampado_id and estampado_id != "imagen_propia":
                 try:
                     estampado_obj_principal = Estampado.objects.get(id_estamp=estampado_id)
                 except: pass
 
             # C. Lógica para estampados propios (subidos por el usuario)
-            # Si hay más objetos en escena que IDs de catálogo, la diferencia son estampados propios
-            cantidad_propios = total_estampados_escena - len(lista_ids_estampados)
+            # Filtramos los "imagen_propia" de la lista de IDs para que la resta matemática cuadre exacta
+            lista_solo_catalogo = [x for x in lista_ids_estampados if x != "imagen_propia"]
+            cantidad_propios = total_estampados_escena - len(lista_solo_catalogo)
+            
             if cantidad_propios > 0:
                 extra_total_estampados += (20000 * cantidad_propios) # 20k por cada uno propio
 
@@ -421,7 +490,7 @@ def guardar_diseno_3d(request):
             with transaction.atomic():
                 personalizacion = PedidoPersonalizado.objects.create(
                     producto=producto_base,
-                    estampado=estampado_obj_principal, # Usamos el principal identificado
+                    estampado=estampado_obj_principal, # Quedará en null si es 100% propia, evitando errores
                     color_hex=color,
                     tipo_personalizacion="3D",
                     foto_frente=archivo_foto,
@@ -459,7 +528,6 @@ def guardar_diseno_3d(request):
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
     return JsonResponse({'status': 'error', 'message': 'Método no permitido'}, status=405)
-
 
 def eliminar_pedido_personalizado(request, id):
     pedido = get_object_or_404(PedidoPersonalizado, id=id)

@@ -120,6 +120,31 @@
 
     .card-item:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
 
+    /* NOTIFICACIONES */
+
+    .container-mensajes {
+        margin-bottom: 15px; 
+    }
+
+    .alert {
+    padding: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    text-align: center;
+    }
+
+    .alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    }
+
+    .alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    }
+
 </style>
 
 <div class="main-container-fluid">
@@ -130,6 +155,16 @@
 
     <div class="form-card">
         <form method="POST" enctype="multipart/form-data">
+            {% if messages %}
+                <div class="container-mensajes" id="mensaje-django">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+            </div>
+            {% endfor %}
+            </div>
+            {% endif %}
+
             {% csrf_token %}
             <div style="display: flex; gap: 30px; flex-wrap: wrap;">
                 <div style="flex: 1; min-width: 250px;">
@@ -149,15 +184,15 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                         <div class="form-group" style="grid-column: span 2;">
                             <label>Nombre del Diseño</label>
-                            <input type="text" name="nombre_estamp" class="form-control-luxy" required placeholder="Ej: Logo Corporativo Dorado">
+                            <input type="text" name="nombre_estamp" class="form-control-luxy" required placeholder="Ej: Logo Corporativo Dorado" minlength="10" maxlength="200">
                         </div>
                         <div class="form-group">
                             <label>Técnica / Tipo</label>
-                            <input type="text" name="tipo_estamp" class="form-control-luxy" required placeholder="Ej: Bordado, DTF, Vinilo">
+                            <input type="text" name="tipo_estamp" class="form-control-luxy" required placeholder="Ej: Bordado, DTF, Vinilo" minlength="10" maxlength="200">
                         </div>
                         <div class="form-group">
                             <label>Costo Adicional ($)</label>
-                            <input type="number" step="0.01" name="costo_adi" class="form-control-luxy" required placeholder="0.00">
+                            <input type="number" step="0.01" name="costo_adi" class="form-control-luxy" required placeholder="0.00" min="10000" max="200000">
                         </div>
                     </div>
                     <button type="submit" class="btn-luxy" style="margin-top: 20px;">
@@ -250,5 +285,22 @@ function confirmarEliminacionEstampado(event, url) {
         }
     });
 }
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const mensaje = document.getElementById("mensaje-django");
+        
+        if (mensaje) {
+            setTimeout(function() {
+                mensaje.style.transition = "opacity 1s ease";
+                mensaje.style.opacity = "0";
+                
+                setTimeout(function() {
+                    mensaje.remove();
+                }, 1000);
+            }, 5000); 
+        }
+    });
 </script>
 {% endblock %}

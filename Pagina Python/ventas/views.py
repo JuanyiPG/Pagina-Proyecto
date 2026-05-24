@@ -1,4 +1,5 @@
 import re
+import os
 from django.utils import timezone
 from decimal import Decimal, InvalidOperation
 from django.contrib import messages
@@ -52,36 +53,38 @@ def crear_variacion(request, producto_id, pedido_id):
         messages.error(request, "Perfil de cliente no encontrado.")
         return redirect('ventas:lista_product')
 
-    producto = get_object_or_404(Producto, producto_id)
+    # CORRECCIÓN: Se cambió 'Producto, producto_id' por 'Producto, id_produc=producto_id'
+    producto = get_object_or_404(Producto, id_produc=producto_id)
     estampados = Estampado.objects.all()
+    
     if request.method == 'POST': 
         estampado_elegido = request.POST.get('id_estam')
-        estam_obj = get_object_or_404(Estampado, id_estam = (estampado_elegido))
+        estam_obj = get_object_or_404(Estampado, id_estam=estampado_elegido)
         
-        variacion = Variacion.objects.create(
-        talla_var = request.POST.get('talla_var'),
-        cant_soli = int(request.POST.get('cant_soli')),
-        color_var = request.POST.get('color_var'),
-        mat_var = request.POST.get('mat_var'),
-        costo_var = estam_obj.costo_adi,
-        id_estam_fk_var = estam_obj
-        )
+        with transaction.atomic():
+            variacion = Variacion.objects.create(
+                talla_var=request.POST.get('talla_var'),
+                cant_soli=int(request.POST.get('cant_soli')),
+                color_var=request.POST.get('color_var'),
+                mat_var=request.POST.get('mat_var'),
+                costo_var=estam_obj.costo_adi,
+                id_estam_fk_var=estam_obj
+            )
 
-        pedido_actual = get_object_or_404(Pedido, id_pedido = pedido_id)
-        Det_valor.objects.create(
-            valor_total = (producto.precio + variacion.costo_var)* variacion.cant_soli, 
-            cant = variacion.cant_soli,
-            tipo_pedido = "Personalizado", 
-            id_ped_fk_detval = pedido_actual, 
-            id_var_fk_detval = variacion, 
-            id_prod_fk_detval = producto
-        )
+            pedido_actual = get_object_or_404(Pedido, id_pedido=pedido_id)
+            
+            Det_valor.objects.create(
+                valor_total=(producto.precio + variacion.costo_var) * variacion.cant_soli, 
+                cant=variacion.cant_soli,
+                tipo_pedido="Personalizado", 
+                id_ped_fk_detval=pedido_actual, 
+                id_var_fk_detval=variacion, 
+                id_prod_fk_detval=producto
+            )
 
         return redirect('ventas:ver_carrito')
 
     return render(request, 'personalizar.html', {
-        #lo que este entre las '', es para poder llamar los datos en el HTML, ejemplo producto.nom y el 
-        #otro es la variable la cual tiene todos los datos que traemos desde la base de datos.
         'producto': producto,
         'estampados': estampados
     })
@@ -94,7 +97,8 @@ def editar_variacion(request, detalle_id):
         messages.error(request, "Perfil de cliente no encontrado.")
         return redirect('login')
     
-    detalle = get_object_or_404(Det_valor, id_var=detalle_id)
+    # CORRECCIÓN: Filtrar por la clave primaria correcta del detalle
+    detalle = get_object_or_404(Det_valor, id_det_valor=detalle_id)
     variacion = detalle.id_var_fk_detval
     producto = detalle.id_prod_fk_detval
 
@@ -102,30 +106,30 @@ def editar_variacion(request, detalle_id):
 
     if request.method == 'POST': 
         id_estam_nuevo = request.POST.get('id_estam')
-        estampado_obj = get_object_or_404(Estampado, id_estam = id_estam_nuevo)
+        estampado_obj = get_object_or_404(Estampado, id_estam=id_estam_nuevo)
 
+        # Actualizar la variación asociada
         variacion.talla_var = request.POST.get('talla_var')
-        variacion.cant_soli = request.POST.get('cant_soli')
+        variacion.cant_soli = int(request.POST.get('cant_soli', 1))  # Convertir a entero
         variacion.color_var = request.POST.get('color_var')
         variacion.mat_var = request.POST.get('mat_var')
         variacion.costo_var = estampado_obj.costo_adi
         variacion.save()
 
+        # Actualizar el detalle del valor
         detalle.cant = variacion.cant_soli
         detalle.valor_total = (producto.precio + variacion.costo_var) * variacion.cant_soli
+        detalle.save()  # CORRECCIÓN: Faltaba guardar el objeto 'detalle'
 
-<<<<<<< Updated upstream
-        return redirect ('ventas:ver_carrito')
-    return render (request, 'personalizar.html',{
-=======
         return redirect('ventas:ver_carrito')
+        
     return render(request, 'personalizar.html', {
->>>>>>> Stashed changes
         'producto': producto,
         'estampados': estampado,
-        'variacion': variacion, # Enviamos la variación actual para llenar el form
-        'es_edicion': True      # Una bandera para saber que estamos editando
+        'variacion': variacion, 
+        'es_edicion': True      
     })
+
 
 def eliminar_variacion (request, detalle_id):
     detalle = get_object_or_404(Det_valor, id_det_valor=detalle_id)
@@ -648,10 +652,23 @@ def eliminar_del_carrito(request, id_det_valor):
         return redirect('ventas:ver_carrito')
 
     with transaction.atomic():
+        # 🌟 NUEVA LÓGICA: Si el producto tiene una personalización 3D asociada
+        if detalle.id_personalizacion_3d:
+            pedido_3d = detalle.id_personalizacion_3d
+            
+            # Recorremos los campos de imágenes para borrarlas físicamente del servidor
+            for img in [pedido_3d.foto_frente, pedido_3d.foto_espalda, pedido_3d.foto_lateral]:
+                if img and os.path.exists(img.path):
+                    os.remove(img.path)
+            
+            # Borramos el registro del diseño 3D de la base de datos
+            pedido_3d.delete()
         
+        # Lógica original que ya tenías para la variación
         if detalle.id_var_fk_detval:
             detalle.id_var_fk_detval.delete()
         
+        # Elimina el item del carrito
         detalle.delete()
         
     messages.success(request, "Producto eliminado del carrito.")
