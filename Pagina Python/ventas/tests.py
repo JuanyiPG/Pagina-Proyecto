@@ -1,3 +1,9 @@
+<<<<<<< Updated upstream
+=======
+import hashlib
+from decimal import Decimal
+from datetime import date, timedelta
+>>>>>>> Stashed changes
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -129,6 +135,7 @@ class VentasFlujoTestCase(TestCase):
         self.material.refresh_from_db()
         self.assertEqual(self.material.stock_mmtp, 40.0)
 
+<<<<<<< Updated upstream
         # Como es abono parcial, el estado del pedido no debe cambiar a Confirmado aún
         pedido.refresh_from_db()
         self.assertEqual(pedido.estado_ped, 'Carrito')
@@ -220,3 +227,7 @@ class VentasFlujoTestCase(TestCase):
 
         with self.assertRaises(Variacion.DoesNotExist):
             Variacion.objects.get(id_var=variacion.id_var)
+=======
+        # No debe existir un segundo producto guardado con el nombre "Clon de Hodie"
+        self.assertFalse(Producto.objects.filter(nom_produc='Clon de Hodie').exists())
+>>>>>>> Stashed changes
