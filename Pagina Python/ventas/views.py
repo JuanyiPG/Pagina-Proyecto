@@ -27,14 +27,98 @@ def obtener_cliente_actual(request):
 #-------------------- CRUD VARIACION --------------------------
 
 def lista_var(request):
-    # Traemos Det_valor porque es la tabla que une TODO (Pedido, Variacion, Producto)
-    detalles = Det_valor.objects.exclude(
+    # 1. Traemos los detalles excluyendo los cancelados con sus relaciones
+    detalles_db = Det_valor.objects.exclude(
         id_ped_fk_detval__estado_ped='Cancelado'
-    ).select_related('id_ped_fk_detval', 'id_prod_fk_detval', 'id_var_fk_detval')
+    ).select_related(
+        'id_ped_fk_detval', 
+        'id_prod_fk_detval', 
+        'id_var_fk_detval', 
+        'id_ped_fk_detval__id_clien_fk'
+    )
+
+    pedidos_agrupados = {}
+
+    for d in detalles_db:
+        if d.id_ped_fk_detval:
+            id_ped = d.id_ped_fk_detval.id_pedido
+            
+            if id_ped not in pedidos_agrupados:
+                pedido_obj = d.id_ped_fk_detval
+                pedido_obj.prendas_agrupadas = []
+                
+                # Formateamos la fecha del pedido de forma segura
+                if pedido_obj.fecha_ped:
+                    pedido_obj.fecha_formateada = pedido_obj.fecha_ped.strftime("%d/%m/%Y")
+                else:
+                    pedido_obj.fecha_formateada = "Sin Fecha"
+                
+                # EXTRAEMOS Y FORMATEAMOS LOS ABONOS AQUÍ EN PYTHON
+                pedido_obj.abonos_listos = []
+                if hasattr(pedido_obj, 'abono_set'):
+                    for abono in pedido_obj.abono_set.all():
+                        # Intentamos usar formato con hora, si falla porque es solo fecha, usamos formato simple
+                        try:
+                            fecha_txt = abono.fecha_abono.strftime("%d/%m/%Y %H:%M")
+                        except AttributeError:
+                            fecha_txt = abono.fecha_abono.strftime("%d/%m/%Y")
+                            
+                        pedido_obj.abonos_listos.append({
+                            'fecha': fecha_txt,
+                            'monto': abono.monto_abono,
+                            'metodo_pago': abono.metodo_pago
+                        })
+                
+                pedidos_agrupados[id_ped] = pedido_obj
+                
+            pedidos_agrupados[id_ped].prendas_agrupadas.append(d)
+        else:
+            # Control para datos huérfanos de prueba
+            id_temporal = "Prueba-Suelto"
+            if id_temporal not in pedidos_agrupados:
+                class PedidoSimulado:
+                    pass
+                p_sim = PedidoSimulado()
+                p_sim.id_pedido = "Sin ID"
+                p_sim.id_clien_fk = None
+                p_sim.valor_ped = d.valor_total
+                p_sim.estado_ped = "Prueba"
+                p_sim.metodo_pago = "Manual"
+                p_sim.fecha_formateada = timezone.now().strftime("%d/%m/%Y")
+                p_sim.prendas_agrupadas = []
+                p_sim.abonos_listos = [] # Lista vacía para que no rompa el bucle
+                pedidos_agrupados[id_temporal] = p_sim
+                
+            pedidos_agrupados[id_temporal].prendas_agrupadas.append(d)
+
+    # 2. Ordenamos los pedidos colocando los reales numéricos primero
+    pedidos_reales = [p for p in pedidos_agrupados.values() if isinstance(p.id_pedido, int)]
+    pedidos_reales.sort(key=lambda x: x.id_pedido, reverse=True)
     
+    pedidos_manuales = [p for p in pedidos_agrupados.values() if not isinstance(p.id_pedido, int)]
+    lista_final = pedidos_reales + pedidos_manuales
+
     return render(request, 'ventas/pedido/lista_pedidos.html', {
-        'detalles': detalles,
+        'pedidos': lista_final,
     })
+
+def eliminar_pedido(request, id_pedido):
+    # Buscamos el pedido en la base de datos (dispara 404 si ya no existe)
+    pedido = get_object_or_404(Pedido, id_pedido=id_pedido)
+    
+    try:
+        # 1. Eliminamos los detalles asociados primero
+        Det_valor.objects.filter(id_ped_fk_detval=pedido).delete()
+        
+        # 2. Borramos el pedido principal
+        pedido.delete()
+        
+        messages.success(request, f"El pedido #{id_pedido} y todo su historial se borraron correctamente.")
+    except Exception as e:
+        messages.error(request, f"No se pudo eliminar el pedido: {str(e)}")
+        
+    # CORRECCIÓN: Redirección limpia usando el name exacto de tu urls.py
+    return redirect('ventas:lista_pedido')
 
 def lista_var_e(request):
     detalles = Det_valor.objects.exclude(
