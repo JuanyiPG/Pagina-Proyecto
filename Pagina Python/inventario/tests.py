@@ -3,8 +3,11 @@ import os
 from django.test import TestCase
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
+
+# Imports de los modelos
 from .models import Proveedor, Movimiento_matp, Estampado
 from ventas.models import Producto
+
 
 class InventarioCompletoTest(TestCase):
 
@@ -15,6 +18,7 @@ class InventarioCompletoTest(TestCase):
         """
         # 1. Proveedor de prueba
         self.proveedor = Proveedor.objects.create(
+            pk=1,
             nom_provee="Textiles del Tolima",
             fech_ingre="2026-01-15",
             num_tel="3201234567"
@@ -22,6 +26,7 @@ class InventarioCompletoTest(TestCase):
 
         # 2. Materia prima asociada al proveedor
         self.movimiento = Movimiento_matp.objects.create(
+            pk=1,
             tipo_mmtp="ENTRADA",
             color_mmtp="#FFFFFF",
             fecha_mmtp="2026-05-20",
@@ -31,7 +36,6 @@ class InventarioCompletoTest(TestCase):
         )
 
         # 3. Producto base en catálogo (Necesario para la vista del modelo 3D)
-        # Corregido: Se eliminan campos inexistentes de stock/cantidad para cumplir con ventas.models
         self.producto = Producto.objects.create(
             id_produc=1,
             nom_produc="Camiseta Oversize",
@@ -48,6 +52,7 @@ class InventarioCompletoTest(TestCase):
             content=b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\xff\xff\xff\x21\xf9\x04\x01\x00\x00\x00\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02\x4c\x01\x00\x3b',
             content_type='image/png'
         )
+        
         self.estampado = Estampado.objects.create(
             nombre_estamp="Logo Cyberpunk",
             costo_adi=5000.00,
@@ -55,6 +60,14 @@ class InventarioCompletoTest(TestCase):
             imagen_estamp=self.imagen_prueba,
             imagen_hash="hash_falso_de_prueba_123"
         )
+
+    def tearDown(self):
+        """Limpieza física de las imágenes creadas durante los tests para evitar basura."""
+        if self.estampado.imagen_estamp and os.path.exists(self.estampado.imagen_estamp.path):
+            try:
+                os.remove(self.estampado.imagen_estamp.path)
+            except OSError:
+                pass
 
     # --- PRUEBAS DE PROVEEDORES ---
 
@@ -112,7 +125,7 @@ class InventarioCompletoTest(TestCase):
         self.estampado.save()
 
         imagen_duplicada = SimpleUploadedFile(
-            name='test_logo.png',
+            name='test_logo_duplicado.png',
             content=b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\xff\xff\xff\x21\xf9\x04\x01\x00\x00\x00\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02\x4c\x01\x00\x3b',
             content_type='image/png'
         )
@@ -126,7 +139,6 @@ class InventarioCompletoTest(TestCase):
         })
         
         # Al tener unique=True en el modelo, la base de datos o el formulario impiden la inserción.
-        # Por ende, el conteo de registros con ese hash debe seguir siendo estrictamente 1.
         self.assertEqual(Estampado.objects.filter(imagen_hash=self.estampado.imagen_hash).count(), 1)
 
     # --- PRUEBAS DEL VISOR 3D ---
