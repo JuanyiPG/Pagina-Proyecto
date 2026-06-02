@@ -2,6 +2,9 @@
 {% block content %}
 
 <div class="main-content">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         :root {
             --luxy-burgundy: #800020;
@@ -11,8 +14,8 @@
         }
 
         .table-container {
-            margin-left:-120px ;
-            padding: 1.5rem;
+            margin-left:-120px;
+            padding: 0.4rem;
             background-color: white;
             border-radius: 12px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.1);
@@ -71,36 +74,50 @@
             object-fit: cover;
             display: block;
         }
+
+        /* Personalización sutil para los botones de SweetAlert para que combinen con Luxy */
+        .luxy-swal-confirm {
+            background-color: #632222 !important;
+            color: white !important;
+            border-radius: 8px !important;
+            padding: 10px 24px !important;
+        }
+        .luxy-swal-cancel {
+            background-color: #6e7881 !important;
+            color: white !important;
+            border-radius: 8px !important;
+            padding: 10px 24px !important;
+        }
     </style>
 
-    <div class="table-container">
-        <div class="title-section">
-            <h2 style="margin:0;">Historial de Pedidos</h2>
-            <small style="color: var(--luxy-hazelnut);">Registro detallado de pedidos realizados</small>
-        </div>
+<div class="table-container">
+    <div class="title-section">
+        <h2 style="margin:0;">Historial de Pedidos</h2>
+        <small style="color: #8e7a63;">Registro detallado de pedidos realizados</small>
+    </div>
 
-        <div class="table-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+    <div class="table-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-top: 15px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            
             <input type="text" id="searchPed" placeholder=" Buscar..." style="width: 250px; padding: 8px 15px; border-radius: 20px; border: 1px solid #6a0f2e;">
         </div>
 
         <div style="overflow-x: auto;">
-            <table class="custom-table" id="TablePed">
+            <table class="custom-table" id="TablePed" style="width: 100%; border-collapse: collapse;">
                 <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Imagen</th>
-                        <th>Nombre</th>
-                        <th>Color</th>
-                        <th>Talla</th>
-                        <th>Cantidad</th>
+                    <tr style="text-align: center; background-color: #f8f9fa;">
+                        <th style="padding: 12px;">ID Pedido</th>
                         <th>Cliente</th>
-                        <th>Pagos</th>
+                        <th>Fecha Pedido</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Prendas</th>
+                        <th>Caja / Pagos</th>
+                        <th>Acción</th>
                     </tr>
                 </thead>
 
                 <tbody>
+<<<<<<< HEAD
     {% for d in detalles %}
     <tr style="text-align: center;">
         <td style="font-weight: bold;">#{{ d.id_var_fk_detval.id_var }}</td>
@@ -150,38 +167,105 @@
     </tr>
     {% endfor %}
 </tbody>
+=======
+                    {% for p in pedidos %}
+                    <tr style="text-align: center; border-bottom: 1px solid #eee;">
+                        <td style="font-weight: bold; padding: 12px;">#{{ p.id_pedido }}</td>
+                        <td class="cliente">{{ p.id_clien_fk.nom_clien|default:"Cliente General" }}</td>
+                        <td>{{ p.fecha_formateada }}</td>
+                        <td style="font-weight: bold; color: #7e1a3f;">${{ p.valor_ped }}</td>
+                        <td>
+                            <span class="badge {% if p.estado_ped == 'Cancelado' or p.estado_ped == 'Prueba' %}bg-danger{% else %}bg-success{% endif %}" style="padding: 5px 10px; font-size: 11px;">
+                                {{ p.estado_ped }}
+                            </span>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-dark" 
+                                    style="border-radius: 6px; font-size: 12px; padding: 5px 10px;"
+                                    data-bs-toggle="modal" data-bs-target="#modalProductos{{ forloop.counter }}">
+                                <i class="fas fa-tshirt"></i> Ver Prendas ({{ p.prendas_agrupadas|length }})
+                            </button>
+                        </td>
+                        <td>
+                            <button type="button" class="btn" 
+                                style="background-color: #800020; color: white; border-radius: 8px; padding: 6px 12px; font-size: 12px;" 
+                                data-bs-toggle="modal" data-bs-target="#modalPagos{{ forloop.counter }}">
+                                {% if p.abono_set and p.abono_set.count > 1 %}
+                                    <i class="fas fa-wallet"></i> Ver Abonos
+                                {% else %}
+                                    <i class="fas fa-money-bill-wave"></i> Ver Contado
+                                {% endif %}
+                            </button>
+                        </td>
+                        <td>
+                            {% if p.id_pedido != "Sin ID" %}
+                            <a href="{% url 'ventas:eliminar_pedido' p.id_pedido %}" 
+                               class="btn btn-sm btn-danger btn-eliminar-pedido" 
+                               style="border-radius: 6px; padding: 4px 8px; font-size: 12px; text-decoration: none;"
+                               data-id="{{ p.id_pedido }}">
+                                <i class="fas fa-trash"></i> Borrar
+                            </a>
+                            {% else %}
+                            <span class="text-muted" style="font-size: 11px;">Dato Huérfano</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" style="padding: 20px; text-align: center; color: #999;">No hay pedidos registrados en el sistema.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+>>>>>>> c6e0798ae0797855b023afa873f4d1b84957988b
             </table>
         </div>
     </div>
 </div>
 
-{% for d in detalles %}
-<div class="modal fade" id="modalPagos{{ d.id_det_valor }}" tabindex="-1" aria-hidden="true">
+{% for p in pedidos %}
+<div class="modal fade" id="modalProductos{{ forloop.counter }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content" style="border-radius: 12px; border: none; overflow: hidden; text-align: left;">
-                        <div class="modal-header" style="background: #7e1a3f; color: white;">
-                <h5 class="modal-title">Abonos de {{ d.id_ped_fk_detval.id_clien_fk.nom_clien }}</h5>
+        <div class="modal-content" style="border-radius: 12px; border: none; overflow: hidden;">
+            <div class="modal-header" style="background: #333; color: white; padding: 15px 20px;">
+                <h5 class="modal-title">Prendas del Pedido #{{ p.id_pedido }} — {{ p.id_clien_fk.nom_clien|default:"Cliente" }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1);"></button>
             </div>
-            <div class="modal-body">
-                <table class="table">
+            <div class="modal-body" style="padding: 20px;">
+                <table class="table table-hover align-middle text-center">
                     <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Monto</th>
-                            <th>Método</th>
+                        <tr class="table-light">
+                            <th>Imagen</th>
+                            <th>Producto</th>
+                            <th>Color</th>
+                            <th>Talla</th>
+                            <th>Cantidad</th>
+                            <th>Subtotal</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {# Buscamos los abonos del pedido vinculado a este detalle #}
-                        {% for abono in d.id_ped_fk_detval.abono_set.all %}
+                        {% for d in p.prendas_agrupadas %}
                         <tr>
-                            <td>{{ abono.fecha_abono }}</td>
-                            <td>${{ abono.monto_abono }}</td>
-                            <td>{{ abono.metodo_pago }}</td>
+                            <td>
+                                <div class="img-thumbnail-container" style="width: 50px; height: 50px; margin: auto; border-radius: 6px; overflow: hidden; border: 1px solid #eee;">
+                                    {% if d.id_personalizacion_3d and d.id_personalizacion_3d.foto_frente %}
+                                        <img src="{{ d.id_personalizacion_3d.foto_frente.url }}" alt="Diseño" style="width:100%; height:100%; object-fit:cover;">
+                                    {% elif d.id_prod_fk_detval.imagen_product %}
+                                        <img src="{{ d.id_prod_fk_detval.imagen_product.url }}" alt="Estándar" style="width:100%; height:100%; object-fit:cover;">
+                                    {% else %}
+                                        <div style="background: #f5f5f5; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #bbb;">Sin foto</div>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td><strong>{{ d.id_prod_fk_detval.nom_produc }}</strong></td>
+                            <td>{{ d.id_var_fk_detval.color_var|default:"-" }}</td>
+                            <td><span class="badge bg-secondary">{{ d.id_var_fk_detval.talla_var|default:"-" }}</span></td>
+                            <td style="font-weight: bold;">{{ d.id_var_fk_detval.cant_soli|default:"1" }}</td>
+                            <td style="font-weight: bold; color: #7e1a3f;">${{ d.valor_total }}</td>
                         </tr>
                         {% empty %}
-                        <tr><td colspan="3" class="text-center">No hay abonos.</td></tr>
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">Este pedido no tiene productos registrados.</td>
+                        </tr>
                         {% endfor %}
                     </tbody>
                 </table>
@@ -189,15 +273,113 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modalPagos{{ forloop.counter }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 12px; border: none; overflow: hidden;">
+            <div class="modal-header" style="background: #7e1a3f; color: white; padding: 15px 20px;">
+                <h5 class="modal-title"><i class="fas fa-cash-register"></i> Caja: Pedido #{{ p.id_pedido }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1);"></button>
+            </div>
+            <div class="modal-body" style="padding: 25px; text-align: center;">
+                
+                <div class="mb-4">
+                    {% if p.abono_set and p.abono_set.count > 1 or p.metodo_pago == "Abono" or p.metodo_pago == "Credito" %}
+                        <span class="badge bg-warning text-dark" style="font-size: 13px; padding: 8px 16px; border-radius: 20px;">
+                            <i class="fas fa-clock"></i> MÉTODOS DE PAGO: ABONOS / CRÉDITO
+                        </span>
+                    {% else %}
+                        <span class="badge bg-success" style="font-size: 13px; padding: 8px 16px; border-radius: 20px;">
+                            <i class="fas fa-check-circle"></i> MÉTODO DE PAGO: CONTADO ({% firstof p.metodo_pago "Efectivo" %})
+                        </span>
+                    {% endif %}
+                </div>
+
+                <div style="background: #fafafa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #eee;">
+                    <small style="color: #666; font-weight: bold; text-transform: uppercase;">Valor Total del Pedido</small>
+                    <h3 style="margin: 5px 0 0 0; color: #7e1a3f; font-weight: bold;">${{ p.valor_ped }}</h3>
+                </div>
+
+                <table class="table table-sm table-striped text-center align-middle">
+                    <thead>
+                        <tr>
+                            <th>Fecha Recibido</th>
+                            <th>Monto</th>
+                            <th>Forma</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if p.abonos_listos %}
+                            {% for abono in p.abonos_listos %}
+                            <tr>
+                                <td>{{ abono.fecha }}</td>
+                                <td style="font-weight: bold; color: #2e7d32;">${{ abono.monto }}</td>
+                                <td><span class="badge bg-light text-dark" style="border: 1px solid #ddd;">{{ abono.metodo_pago }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td>{{ p.fecha_formateada }}</td>
+                                <td style="font-weight: bold; color: #2e7d32;">${{ p.valor_ped }}</td>
+                                <td><span class="badge bg-light text-dark" style="border: 1px solid #ddd;">{{ p.metodo_pago|default:"Efectivo" }}</span></td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 {% endfor %}
+
 <script>
 document.addEventListener("DOMContentLoaded", function() {
+    
+    // 🌟 INTERCEPTOR DE ELIMINACIÓN CON SWEETALERT2
+    const botonesEliminar = document.querySelectorAll('.btn-eliminar-pedido');
+    
+    botonesEliminar.forEach(boton => {
+        boton.addEventListener('click', function(e) {
+            e.preventDefault(); // Detiene la navegación directa de Django
+            const urlDestino = this.getAttribute('href');
+            const idPedido = this.getAttribute('data-id');
+
+            Swal.fire({
+                title: '¿Estás segurx?',
+                text: `Vas a eliminar el Pedido #${idPedido}. Esta acción limpiará todo su historial y prendas asociadas de forma permanente.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '<i class="fas fa-trash"></i> Sí, borrar pedido',
+                cancelButtonText: 'Cancelar',
+                customClass: {
+                    confirmButton: 'luxy-swal-confirm',
+                    cancelButton: 'luxy-swal-cancel'
+                },
+                buttonsStyling: false, // Permite que use nuestros estilos CSS limpios
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Si confirma, mostramos una alerta de carga y redirigimos
+                    Swal.fire({
+                        title: 'Procesando...',
+                        text: 'Limpiando registros de la base de datos.',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    window.location.href = urlDestino;
+                }
+            });
+        });
+    });
+
+    // CÓDIGO DEL BUSCADOR
     const searchInput = document.getElementById('searchPed');
     const tableBody = document.querySelector('#TablePed tbody');
 
     if (!tableBody) return;
 
-    // Creamos dinámicamente la fila de "Sin resultados" adaptada a las 8 columnas
     const emptyRow = document.createElement('tr');
     emptyRow.id = 'searchEmptyRow';
     emptyRow.style.display = 'none';
@@ -212,22 +394,17 @@ document.addEventListener("DOMContentLoaded", function() {
         let anyVisible = false;
 
         rows.forEach(row => {
-            // Ignoramos la fila de control de "Sin resultados"
             if (row.id === 'searchEmptyRow' || row.id === 'noResultsRow') return;
 
             let matchFound = false;
             
-            // Recorremos celda por celda de la fila actual
             Array.from(row.cells).forEach(cell => {
                 let cellText = cell.textContent.toLowerCase();
-                
-                // Protección extra por si la cantidad se vuelve un input editable en el futuro
                 let input = cell.querySelector('input');
                 if (input) {
                     cellText += " " + input.value.toLowerCase();
                 }
 
-                // Si hay coincidencia en el ID, Nombre, Color, Talla o Cliente, se marca como verdadero
                 if (cellText.includes(filter)) {
                     matchFound = true;
                 }
@@ -241,7 +418,6 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
 
-        // Alternamos el estado de la fila de notificación de resultados vacíos
         emptyRow.style.display = anyVisible ? "none" : "";
     });
 });
