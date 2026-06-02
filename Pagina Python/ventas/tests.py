@@ -47,7 +47,7 @@ class VentasFlujoTestCase(TestCase):
             id_proveedor_fk=self.proveedor
         )
 
-        # Producto Base con su precio obligatorio
+        # Producto Base con su precio obligatorio e imagen simulada
         self.producto = Producto.objects.create(
             pk=1,
             nom_produc="Camiseta Base",
@@ -55,8 +55,18 @@ class VentasFlujoTestCase(TestCase):
             desc_produc="Descripción de prueba",
             categoria_produc="Ropa",
             estado_produc="Activo",
-            precio=85000
+            precio=85000,
+            imagen_product="producto/logo_test.png"
         )
+
+    def tearDown(self):
+        """Limpieza física de archivos después de cada prueba."""
+        # Si el producto tiene una imagen asignada y el archivo existe en el almacenamiento, se elimina
+        if self.producto.imagen_product and os.path.exists(self.producto.imagen_product.path):
+            try:
+                os.remove(self.producto.imagen_product.path)
+            except OSError:
+                pass
 
     def test_producto_sin_personalizar_crea_carrito_y_detalle(self):
         """Evalúa que añadir un producto estándar cree correctamente el Pedido 'Carrito' y su Det_valor."""
