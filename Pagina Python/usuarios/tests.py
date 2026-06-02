@@ -1,4 +1,5 @@
 import hashlib
+import os
 from django.test import TestCase
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
