@@ -29,6 +29,7 @@ urlpatterns = [
     path('pedidos/', views.lista_var_e, name='lista_pedido_e'),
     path('productos-empleado/', views.lista_producto_e, name='lista_producto_e'),
     path('gestionar_pedido/<int:id_pedido>', views.gestionar_pedido, name='gestionar_pedido' ),
-    path('gestionar_pedido/', views.lista_pedidos_client, name='lista_pedidos_cliente' )
+    path('gestionar_pedido/', views.lista_pedidos_client, name='lista_pedidos_cliente' ),
+    path('venta-empleado/', views.venta_empleado, name='venta_empleado'),
     
 ] 

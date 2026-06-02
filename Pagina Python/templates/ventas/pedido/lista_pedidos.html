@@ -117,6 +117,57 @@
                 </thead>
 
                 <tbody>
+<<<<<<< HEAD
+    {% for d in detalles %}
+    <tr style="text-align: center;">
+        <td style="font-weight: bold;">#{{ d.id_var_fk_detval.id_var }}</td>
+        
+        <td>
+            <div class="img-thumbnail-container">
+                {# Cambiamos 'pedido.det_valor_set.first' por 'd' #}
+                {% if d.id_personalizacion_3d and d.id_personalizacion_3d.foto_frente %}
+                    <img src="{{ d.id_personalizacion_3d.foto_frente.url }}" alt="Diseño Personalizado">
+                {% elif d.id_prod_fk_detval.imagen_product %}
+                    <img src="{{ d.id_prod_fk_detval.imagen_product.url }}" alt="Producto Estándar">
+                {% else %}
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #ccc; font-size: 10px;">
+                        Sin foto
+                    </div>
+                {% endif %}
+            </div>
+        </td>
+
+        <td class="nom">{{ d.id_prod_fk_detval.nom_produc }}</td>
+        <td class="color">{{ d.id_var_fk_detval.color_var }}</td>
+        <td class="talla">{{ d.id_var_fk_detval.talla_var }}</td>
+        <td style="font-weight: bold;" class="cant">{{ d.id_var_fk_detval.cant_soli }}</td>
+
+        <td class="cliente">
+
+            {% if d.id_ped_fk_detval.id_clien_fk %}
+
+                {{ d.id_ped_fk_detval.id_clien_fk.nom_clien }}
+
+            {% else %}
+
+                Venta de Empleado
+
+            {% endif %}
+
+        </td>
+
+        <td>
+            <button type="button" class="btn" 
+                style="background-color: #800020; color: white; border-radius: 8px; padding: 8px 15px;" 
+                data-bs-toggle="modal" 
+                data-bs-target="#modalPagos{{ d.id_det_valor }}">
+                Ver Pagos 
+            </button>
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>
+=======
                     {% for p in pedidos %}
                     <tr style="text-align: center; border-bottom: 1px solid #eee;">
                         <td style="font-weight: bold; padding: 12px;">#{{ p.id_pedido }}</td>
@@ -165,6 +216,7 @@
                     </tr>
                     {% endfor %}
                 </tbody>
+>>>>>>> c6e0798ae0797855b023afa873f4d1b84957988b
             </table>
         </div>
     </div>

@@ -112,7 +112,19 @@
                     <td>{{ d.id_var_fk_detval.color_var }}</td>
                     <td>{{ d.id_var_fk_detval.talla_var }}</td>
                     <td style="font-weight: bold;">{{ d.id_var_fk_detval.cant_soli }}</td>
-                    <td>{{ d.id_ped_fk_detval.id_clien_fk.nom_clien }}</td>
+                    <td class="cliente">
+
+                        {% if d.id_ped_fk_detval.id_clien_fk %}
+
+                            {{ d.id_ped_fk_detval.id_clien_fk.nom_clien }}
+
+                        {% else %}
+
+                            Venta de Empleado
+
+                        {% endif %}
+
+                    </td>
                     <td>
                         <button type="button" class="btn" 
                             style="background-color: #800020; color: white; border-radius: 8px; padding: 8px 15px; font-weight: bold; border: none;" 
