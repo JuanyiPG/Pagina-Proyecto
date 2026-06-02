@@ -34,7 +34,7 @@ from .serializers import MovimientoSerializer, ProveedorSerializer
 from django.contrib.auth.decorators import login_required
 
 # Importaciones desde Ventas (Para el Carrito)
-from ventas.models import Producto, Pedido, Det_valor, Cliente, Variacion
+from ventas.models import Det_mov_matp, Producto, Pedido, Det_valor, Cliente, Variacion
 from ventas.views import obtener_cliente_actual
 
 # Importaciones desde Usuarios (Para Seguridad)
@@ -142,6 +142,62 @@ def eliminar_provee(request, id):
 
 # --- MOVIMIENTOS MATP ---
 
+def obtener_motivo_pedido(movimiento_historial):
+    """
+    Identifica el motivo calculando si la variación de stock coincide 
+    con un pedido real del producto, si no, es Manual.
+    """
+    # 1. Si es ENTRADA, por defecto en tu flujo es carga manual o proveedor
+    if movimiento_historial.tipo_mmtp == 'ENTRADA':
+        return "Manual"
+    
+    # 2. Buscamos las recetas asociadas a este material exacto
+    recetas = Det_mov_matp.objects.filter(
+        materia_prima__mat_mmtp=movimiento_historial.mat_mmtp,
+        materia_prima__color_mmtp=movimiento_historial.color_mmtp
+    ).select_related('producto')
+    
+    if not recetas.exists():
+        return "Manual"
+
+    # 3. Traemos el historial de este material para calcular cuánto varió en ESTE movimiento específico
+    # Buscamos el registro inmediatamente anterior en el historial para saber la variación real
+    historial_completo = list(movimiento_historial.instance.history.all().order_by('history_date'))
+    
+    variacion_stock = 0
+    for i, h in enumerate(historial_completo):
+        if h.history_id == movimiento_historial.history_id:
+            if i == 0:
+                variacion_stock = float(movimiento_historial.stock_mmtp)
+            else:
+                variacion_stock = float(movimiento_historial.stock_mmtp) - float(historial_completo[i-1].stock_mmtp)
+            break
+            
+    # Volvemos la variación positiva para comparar
+    variacion_absoluta = abs(variacion_stock)
+
+    # Si no hubo cambio de stock (ej. editaste solo el color o proveedor), es una edición manual
+    if variacion_absoluta == 0:
+        return "Manual"
+
+    # 4. Cruzamos la variación con las ventas reales
+    for receta in recetas:
+        # Buscamos los detalles de pedidos de este producto
+        detalles_venta = Det_valor.objects.filter(id_prod_fk_detval=receta.producto).select_related('id_ped_fk_detval', 'id_var_fk_detval')
+        
+        for detalle in detalles_venta:
+            cantidad_prendas = detalle.id_var_fk_detval.cant_soli if detalle.id_var_fk_detval else 0
+            # ¿Cuánto debió descontar este pedido? -> cantidad usada en receta * prendas pedidas
+            descuento_teorico = float(receta.cantidad_usada) * cantidad_prendas
+            
+            # 🌟 LA MAGIA: Si el descuento que vemos en el historial coincide EXACTAMENTE con lo que
+            # pide este pedido, entonces este movimiento SÍ fue causado por este pedido.
+            if abs(descuento_teorico - variacion_absoluta) < 0.01: # Usamos margen pequeño por los DecimalFields
+                return f"Pedido #{detalle.id_ped_fk_detval.id_pedido}"
+
+    # 5. Si la variación de stock no coincide con ningún cálculo de pedidos vendidos, ¡fuiste tú editando a mano!
+    return "Manual"
+
 def lista_mmtp(request):
     if request.method == "POST":
         tipo = request.POST.get('tipo_mmtp')
@@ -149,10 +205,6 @@ def lista_mmtp(request):
         
         if id_pro:
             proveedor_instancia = get_object_or_404(Proveedor, id_provee=id_pro)
-            
-            # 1. CORRECCIÓN DE LÓGICA:
-            # Queremos que si el número es negativo se vuelva 0, 
-            # pero si es positivo se mantenga igual.
             stock_recibido = int(request.POST.get('stock_mmtp', 0))
             stock_final = stock_recibido if stock_recibido > 0 else 0
             
@@ -160,24 +212,20 @@ def lista_mmtp(request):
                 tipo_mmtp=tipo,
                 color_mmtp=request.POST.get('color_mmtp', ''), 
                 fecha_mmtp=request.POST.get('fecha_mmtp'),
-                stock_mmtp=stock_final, # Guardamos el valor validado
+                stock_mmtp=stock_final,
                 mat_mmtp=request.POST.get('mat_mmtp'),
                 id_proveedor_fk=proveedor_instancia
             )
             messages.success(request, f"Materia Prima guardado con exito")
             return redirect('inventario:lista_mmtp')
 
-    # 2. PROCESAMIENTO PARA EL MODAL (HISTORIAL)
     mmtp = Movimiento_matp.objects.all()
 
     for m in mmtp:
-        # Forzamos a Django a traer los datos reales
         h_queryset = list(m.history.all().order_by('history_date'))
-        
         procesados = []
         
         for i, h in enumerate(h_queryset):
-            # Usamos el nombre exacto de tu campo en el modelo
             stock_en_esta_foto = float(h.stock_mmtp)
             
             if i == 0:
@@ -188,20 +236,28 @@ def lista_mmtp(request):
             variacion = stock_en_esta_foto - antes
             tipo_mov_real = 'ENTRADA' if variacion >= 0 else 'SALIDA'
             
+            # Usamos nuestra funcioncita auxiliar de la vista
+            motivo_real = obtener_motivo_pedido(h)
+            
             procesados.append({
                 'fecha': h.history_date,
                 'antes': antes,
                 'variacion': abs(variacion),
                 'tipo': tipo_mov_real,
-                'despues': stock_en_esta_foto
+                'despues': stock_en_esta_foto,
+                'motivo': motivo_real  # Esto alimenta al modal interno
             })
             
         procesados.reverse()
-        # Esta es la variable que el MODAL debe leer
         m.historial_calculado = procesados
-        
-        # --- PRUEBA RÁPIDA EN CONSOLA ---
-        print(f"Material: {m.mat_mmtp} - Movimientos: {len(procesados)}")
+
+        # 🌟 EL CAMBIO CLAVE AQUÍ:
+        # Si el material tiene historial, tomamos el motivo del movimiento más reciente 
+        # (que quedó de primero tras el .reverse()) y se lo asignamos a motivo_principal
+        if procesados:
+            m.motivo_principal = procesados[0]['motivo']
+        else:
+            m.motivo_principal = "Manual"
 
     return render(request, "inventario/movimiento_matp/lista.html", {
         'mmtp': mmtp,
@@ -218,6 +274,7 @@ def editar_mmtp(request, id):
         mmtp.mat_mmtp = request.POST.get('mat_mmtp')
         id_pro = request.POST.get('id_proveedor_fk')
         mmtp.id_proveedor_fk = get_object_or_404(Proveedor, id_provee=id_pro)
+        mmtp._history_change_reason = "Manual"
         mmtp.save()
         messages.success(request, f"Materia Prima actualizado con exito")
         return redirect('inventario:lista_mmtp') 
@@ -234,41 +291,39 @@ def eliminar_mmtp(request, id):
 #----------------------------- historial mov MatP -----------------------------------------------
 
 def history_MatP(request, id):
-    # Traemos el material
     m = get_object_or_404(Movimiento_matp, id_mmtp=id)
+    h_queryset = list(m.history.all().order_by('history_date'))
+    procesados = []
     
-    # Obtenemos el historial de viejo a nuevo
-    h_queryset = m.history.all().order_by('history_date')
-    
-    historial_final = []
-
-    for i, registro in enumerate(h_queryset):
-        # El valor que quedó guardado en este punto
-        actual = registro.stock_mmtp
+    for i, h in enumerate(h_queryset):
+        stock_en_esta_foto = float(h.stock_mmtp)
         
-        # El valor que había un paso atrás
         if i == 0:
-            anterior = 0
+            antes = 0
         else:
-            anterior = h_queryset[i-1].stock_mmtp
-
-        # La diferencia real
-        diferencia = actual - anterior
-
-        historial_final.append({
-            'fecha': registro.history_date,
-            'antes': anterior,
-            'cambio': abs(diferencia),
-            'tipo': 'ENTRADA' if diferencia >= 0 else 'SALIDA',
-            'despues': actual
+            antes = float(h_queryset[i-1].stock_mmtp)
+        
+        variacion = stock_en_esta_foto - antes
+        tipo_mov_real = 'ENTRADA' if variacion >= 0 else 'SALIDA'
+        
+        # 🌟 AQUÍ TAMBIÉN LLAMAMOS A NUESTRA FUNCIÓN DE LA VISTA:
+        motivo_operacion = obtener_motivo_pedido(h)
+        
+        procesados.append({
+            'fecha': h.history_date,
+            'antes': antes,
+            'variacion': abs(variacion),
+            'tipo': tipo_mov_real,
+            'despues': stock_en_esta_foto,
+            'motivo': motivo_operacion  
         })
+        
+    procesados.reverse()
+    m.historial_calculado = procesados
 
-    # Ponemos el más reciente arriba
-    historial_final.reverse()
-    print(f"DEBUG: Cantidad en historial para {m.nom_mmtp}: {len(historial_final)}")
-    return render(request, 'inventario/movimiento_matp/lista.html', {
-        'matP': m,
-        'historial': historial_final 
+    return render(request, "inventario/movimiento_matp/lista.html", {
+        'mmtp': [m],  
+        'proveedores': Proveedor.objects.all()
     })
 
 
