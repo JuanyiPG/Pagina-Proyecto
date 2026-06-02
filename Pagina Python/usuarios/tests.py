@@ -6,17 +6,19 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.hashers import make_password
 from .models import Rol, Usuario, Empleado, Cliente
 
+
 class UsuariosCustomAuthTest(TestCase):
 
     def setUp(self):
         """Configuración de roles y credenciales iniciales en la base de datos."""
         # 1. Creamos los roles obligatorios del sistema
-        self.rol_admin = Rol.objects.create(nom_rol='Administrador')
-        self.rol_empleado = Rol.objects.create(nom_rol='Empleado')
-        self.rol_cliente = Rol.objects.create(nom_rol='Cliente')
+        self.rol_admin = Rol.objects.create(pk=1, nom_rol='Administrador')
+        self.rol_empleado = Rol.objects.create(pk=2, nom_rol='Empleado')
+        self.rol_cliente = Rol.objects.create(pk=3, nom_rol='Cliente')
 
         # 2. Creamos un usuario administrador de prueba (Clave: admin123)
         self.usuario_admin = Usuario.objects.create(
+            pk=1,
             username='admin_luxy',
             contrasena=make_password('admin123'),
             id_rol_fk=self.rol_admin
@@ -24,6 +26,7 @@ class UsuariosCustomAuthTest(TestCase):
 
         # 3. Creamos un usuario cliente de prueba (Clave: cliente123)
         self.usuario_cliente = Usuario.objects.create(
+            pk=2,
             username='carlos_cliente',
             contrasena=make_password('cliente123'),
             id_rol_fk=self.rol_cliente
@@ -35,6 +38,17 @@ class UsuariosCustomAuthTest(TestCase):
             content=b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x80\x00',
             content_type='image/png'
         )
+
+    def tearDown(self):
+        """Elimina físicamente los archivos subidos al disco durante los tests."""
+        # Buscamos si algún empleado guardó un archivo físico en la carpeta media y lo limpiamos
+        for empleado in Empleado.objects.all():
+            if hasattr(empleado, 'foto_perfil') and empleado.foto_perfil:
+                if os.path.exists(empleado.foto_perfil.path):
+                    try:
+                        os.remove(empleado.foto_perfil.path)
+                    except OSError:
+                        pass
 
     def simular_login_session(self, usuario, nombre_rol):
         """Método auxiliar para bypass de tus decoradores custom (@solo_personal)"""
@@ -102,7 +116,7 @@ class UsuariosCustomAuthTest(TestCase):
             'contrasena': 'empleado123',
             'id_rol': self.rol_empleado.id_rol,
             'nom_emple': 'Juanito Perez',
-            'fecha_naci_emple': '2015-05-20',  # Nació en 2015, tiene menos de 18 en 2026
+            'fecha_naci_emple': '2015-05-20',  # Menor de edad en el año actual (2026)
             'fecha_ing_emple': '2026-05-20',
             'salari_emple': '1300000',
             'estado_emple': 'Activo'
@@ -139,7 +153,6 @@ class UsuariosCustomAuthTest(TestCase):
         self.foto_test.seek(0)
 
         # Registramos un primer empleado con esa foto directamente 
-        # (Se añade 'salari_emple' para solucionar la IntegrityError)
         usuario_emp1 = Usuario.objects.create(username='emp1', contrasena='1', id_rol_fk=self.rol_empleado)
         Empleado.objects.create(
             num_ident='1111', 
