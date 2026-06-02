@@ -205,14 +205,9 @@ def editar_variacion(request, detalle_id):
         detalle.valor_total = (producto.precio + variacion.costo_var) * variacion.cant_soli
         detalle.save()  # CORRECCIÓN: Faltaba guardar el objeto 'detalle'
 
-<<<<<<< Updated upstream
         return redirect('ventas:ver_carrito')
         
     return render(request, 'personalizar.html', {
-=======
-        return redirect ('ventas:ver_carrito')
-    return render (request, 'personalizar.html',{
->>>>>>> Stashed changes
         'producto': producto,
         'estampados': estampado,
         'variacion': variacion, 
