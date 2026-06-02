@@ -151,37 +151,51 @@ canvas {
     <!-- CARDS -->
     <div class="cards">
 
-        <div class="card">
-            <div class="icono empleados">👨‍💼</div>
-            <div class="card-info">
-                <h4>Empleados</h4>
-                <p>{{ total_empleados }}</p>
+        <a href="{% url 'usuarios:lista_empleados' %}" style="text-decoration:none; color:inherit;">
+            <div class="card">
+                <div class="icono empleados">
+                    👨‍💼
+                </div>
+                <div class="card-info">
+                    <h4>
+                        Empleados
+                    </h4>
+                    <p>
+                        {{ total_empleados }}
+                    </p>
+                </div>
             </div>
-        </div>
+        </a>
 
-        <div class="card">
-            <div class="icono clientes">👥</div>
-            <div class="card-info">
-                <h4>Clientes</h4>
-                <p>{{ total_clientes }}</p>
+        <a href="{% url 'usuarios:lista_clientes' %}" style="text-decoration:none; color:inherit;">
+            <div class="card">
+                <div class="icono clientes">👥</div>
+                <div class="card-info">
+                    <h4>Clientes</h4>
+                    <p>{{ total_clientes }}</p>
+                </div>
             </div>
-        </div>
+        </a>
 
-        <div class="card">
-            <div class="icono productos">📦</div>
-            <div class="card-info">
-                <h4>Productos</h4>
-                <p>{{ total_productos }}</p>
+        <a href="{% url 'ventas:lista_producto_admin' %}" style="text-decoration:none; color:inherit;">
+            <div class="card">
+                <div class="icono productos">📦</div>
+                <div class="card-info">
+                    <h4>Productos</h4>
+                    <p>{{ total_productos }}</p>
+                </div>
             </div>
-        </div>
+        </a>
 
-        <div class="card">
-            <div class="icono proveedores">🚚</div>
-            <div class="card-info">
-                <h4>Proveedores</h4>
-                <p>{{ total_proveedores }}</p>
+        <a href="{% url 'inventario:lista_provee' %}" style="text-decoration:none; color:inherit;">
+            <div class="card">
+                <div class="icono proveedores">🚚</div>
+                <div class="card-info">
+                    <h4>Proveedores</h4>
+                    <p>{{ total_proveedores }}</p>
+                </div>
             </div>
-        </div>
+        </a>
 
     </div>
 

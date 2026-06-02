@@ -1,139 +1,735 @@
 {% extends 'base_emple.html' %}
+{% load static %}
 
 {% block content %}
+
 <style>
-    :root {
-        --luxy-burgundy: #800020;
-        --luxy-copper: #6e0a32;
-        --luxy-hazelnut: #64093d;
-    }
 
-    .table-container {
-        margin: 0; 
-        padding: 1.5rem;
-        background-color: white;
-        border-radius: 12px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        font-family: 'Segoe UI', sans-serif;
-        width: 100%;
-    }
+:root{
+    --vino:#800020;
+    --vinoOscuro:#5e0018;
+}
 
-    .title-section {
-        color: var(--luxy-burgundy);
-        border-left: 6px solid var(--luxy-copper);
-        padding-left: 20px;
-        margin-bottom: 30px;
-    }
+body{
+    background:#f6f2f3;
+}
 
-    .productos-grid { 
-        display: grid; 
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
-        gap: 25px; 
-    }
+/* =========================
+CONTENEDOR
+========================= */
 
-    .card-item { 
-        background: white; 
-        border-radius: 15px; 
-        overflow: hidden; 
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-        transition: 0.3s; 
-        border: 1px solid #eee;
-    }
+.table-container{
+    padding:40px;
+    padding-right:420px;
+}
 
-    .card-item:hover { 
-        transform: translateY(-5px); 
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1); 
-    }
+/* =========================
+TITULO
+========================= */
 
-    .badge-estado { 
-        position: absolute; 
-        top: 10px; 
-        right: 10px; 
-        background: #6a0f2e; 
-        color: white; 
-        padding: 4px 10px; 
-        border-radius: 12px; 
-        font-size: 11px; 
-        z-index: 1; 
-    }
+.title-section h2{
+    font-size:40px;
+    color:var(--vino);
+    font-weight:bold;
+}
 
-    #product-search {
-        max-width: 600px;
-        margin: 0 auto 40px auto;
-        display: flex;
-        padding: 12px 25px;
-        border-radius: 25px;
-        border: 1.5px solid #ddd;
-        outline: none;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        width: 100%;
-    }
+.title-section small{
+    color:#777;
+}
+
+/* =========================
+BUSCADOR
+========================= */
+
+#product-search{
+    width:100%;
+    max-width:600px;
+    padding:15px 25px;
+    border:none;
+    border-radius:50px;
+    outline:none;
+    background:white;
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+    margin:30px 0;
+}
+
+/* =========================
+GRID
+========================= */
+
+.productos-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+    gap:30px;
+}
+
+/* =========================
+CARD
+========================= */
+
+.card-item{
+    background:white;
+    border-radius:25px;
+    overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.card-item:hover{
+    transform:translateY(-5px);
+}
+
+.product-image{
+    height:280px;
+    overflow:hidden;
+}
+
+.product-image img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.card-info{
+    padding:20px;
+}
+
+.product-name{
+    font-size:24px;
+    font-weight:bold;
+    margin:10px 0;
+}
+
+.product-price{
+    font-size:28px;
+    color:var(--vino);
+    font-weight:bold;
+}
+
+.label-option{
+    display:block;
+    margin-top:15px;
+    margin-bottom:8px;
+    font-weight:bold;
+    color:var(--vino);
+}
+
+.select-option{
+    width:100%;
+    padding:12px;
+    border-radius:14px;
+    border:1px solid #ddd;
+    outline:none;
+}
+
+/* =========================
+BOTON
+========================= */
+
+.btn-factura{
+    width:100%;
+    margin-top:20px;
+    padding:15px;
+    border:none;
+    border-radius:16px;
+    background:linear-gradient(135deg,#800020,#5e0018);
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.btn-factura:hover{
+    opacity:.9;
+}
+
+/* =========================
+FACTURA
+========================= */
+
+.factura-panel{
+    position:fixed;
+    top:0;
+    right:0;
+    width:380px;
+    height:100vh;
+    background:white;
+    box-shadow:-10px 0 30px rgba(0,0,0,.08);
+    padding:25px;
+    overflow-y:auto;
+    z-index:999;
+}
+
+.factura-panel h2{
+    color:var(--vino);
+    font-size:35px;
+}
+
+/* =========================
+ITEM FACTURA
+========================= */
+
+.item-factura{
+    display:flex;
+    gap:12px;
+    background:#fafafa;
+    border-radius:18px;
+    padding:12px;
+    margin-top:15px;
+}
+
+.item-factura img{
+    width:80px;
+    height:80px;
+    object-fit:cover;
+    border-radius:14px;
+}
+
+.factura-info{
+    flex:1;
+}
+
+.factura-info h4{
+    margin:0;
+}
+
+.factura-info p{
+    color:var(--vino);
+    font-weight:bold;
+}
+
+.btn-remove{
+    width:30px;
+    height:30px;
+    border:none;
+    border-radius:50%;
+    background:crimson;
+    color:white;
+    cursor:pointer;
+}
+
+/* =========================
+TOTAL
+========================= */
+
+.total-factura{
+    margin-top:30px;
+    font-size:30px;
+    color:var(--vino);
+    font-weight:bold;
+}
+
+/* =========================
+BOTON PAGAR
+========================= */
+
+.btn-pagar{
+    width:100%;
+    margin-top:20px;
+    padding:18px;
+    border:none;
+    border-radius:18px;
+    background:linear-gradient(135deg,#800020,#5e0018);
+    color:white;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
 </style>
 
 <div class="table-container">
+
     <div class="title-section">
-        <h2 style="margin:0;">Inventario de Productos</h2>
-        <small style="color: var(--luxy-hazelnut);">Listado de prendas con búsqueda en tiempo real</small>
+
+        <h2>
+            Inventario de Productos
+        </h2>
+
+        <small>
+            Venta directa empleado
+        </small>
+
     </div>
 
-    <input type="text" id="product-search" placeholder="Buscar por nombre o categoría...">
+    <input type="text"
+    id="product-search"
+    placeholder="Buscar productos...">
 
-    <div class="productos-grid" id="productos-grid">
+    <div class="productos-grid">
+
         {% for p in productos %}
+
         <div class="card-item product-card">
-            <div style="position: relative; height: 250px; overflow: hidden; background: #f9f9f9;">
-                <span class="badge-estado">{{ p.estado_produc }}</span>
+
+            <div class="product-image">
+
                 {% if p.imagen_product %}
-                    <img src="{{ p.imagen_product.url }}" alt="{{ p.nom_produc }}" style="width: 100%; height: 100%; object-fit: cover;">
+
+                <img src="{{ p.imagen_product.url }}">
+
                 {% else %}
-                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #ccc; font-size: 12px;">Sin imagen</div>
+
+                <img src="{% static 'img/default.jpg' %}">
+
                 {% endif %}
+
             </div>
-            <div class="card-info" style="padding: 15px;">
-                <p class="product-cat" style="margin: 0; color: #888; font-size: 11px; text-transform: uppercase;">{{ p.gen_produc }} | {{ p.categoria_produc }}</p>
-                <h3 class="product-name" style="margin: 5px 0; font-size: 16px; color: #333; font-weight: 600;">{{ p.nom_produc }}</h3>
-                <p style="margin: 10px 0; color: var(--luxy-burgundy); font-weight: bold; font-size: 18px;">${{ p.precio }}</p>
+
+            <div class="card-info">
+
+                <small>
+                    {{ p.categoria_produc }}
+                </small>
+
+                <h3 class="product-name">
+                    {{ p.nom_produc }}
+                </h3>
+
+                <p class="product-price">
+                    ${{ p.precio }}
+                </p>
+
+                <!-- TALLA -->
+
+                <label class="label-option">
+                    Talla
+                </label>
+
+                <select class="select-option talla-select">
+
+                    <option value="S">S</option>
+                    <option value="M">M</option>
+                    <option value="L">L</option>
+                    <option value="XL">XL</option>
+
+                </select>
+
+                <!-- COLOR -->
+
+                <label class="label-option">
+                    Color
+                </label>
+
+                <select class="select-option color-select">
+
+                    <option value="Negro">
+                        Negro
+                    </option>
+
+                    <option value="Blanco">
+                        Blanco
+                    </option>
+
+                    <option value="Rojo">
+                        Rojo
+                    </option>
+
+                    <option value="Azul">
+                        Azul
+                    </option>
+
+                </select>
+
+                <!-- BOTON -->
+
+                <button class="btn-factura"
+
+                onclick="agregarFactura(
+                '{{ p.id_produc }}',
+                '{{ p.nom_produc }}',
+                '{{ p.precio }}',
+                '{% if p.imagen_product %}{{ p.imagen_product.url }}{% endif %}',
+                this
+                )">
+
+                    🛍️ Añadir a factura
+
+                </button>
+
             </div>
+
         </div>
-        {% empty %}
-        <div id="no-results" style="grid-column: 1 / -1; text-align: center; padding: 50px; color: #999;">
-            No se encontraron productos en el inventario.
-        </div>
+
         {% endfor %}
+
     </div>
+
+</div>
+
+<!-- FACTURA -->
+
+<div class="factura-panel">
+
+    <h2>
+        Factura
+    </h2>
+
+    <div id="factura-items"></div>
+
+    <div class="total-factura">
+
+        Total:
+        $
+        <span id="total">
+            0
+        </span>
+
+    </div>
+
+    <!-- METODO PAGO -->
+
+    <label class="label-option">
+        Método de pago
+    </label>
+
+    <select id="metodo_pago"
+    class="select-option">
+
+        <option value="Efectivo">
+            Efectivo
+        </option>
+
+        <option value="Nequi">
+            Nequi
+        </option>
+
+        <option value="Daviplata">
+            Daviplata
+        </option>
+
+        <option value="Tarjeta">
+            Tarjeta
+        </option>
+
+    </select>
+
+    <!-- BOTON PAGAR -->
+
+    <button class="btn-pagar"
+    onclick="pagarFactura()">
+
+        PAGAR $
+        <span id="total-btn">
+            0
+        </span>
+
+    </button>
+
+</div>
+
+<!-- MODAL -->
+
+<div id="modal-pago"
+
+style="
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.6);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:99999;
+">
+
+    <div style="
+    background:white;
+    width:400px;
+    padding:40px;
+    border-radius:25px;
+    text-align:center;
+    ">
+
+        <h2 style="color:#800020;">
+            Pago realizado
+        </h2>
+
+        <p>
+            Venta de Empleado registrada correctamente
+        </p>
+
+        <button class="btn-pagar"
+
+        onclick="
+        document.getElementById('modal-pago').style.display='none'
+        ">
+
+            Aceptar
+
+        </button>
+
+    </div>
+
 </div>
 
 <script>
-    // Búsqueda en tiempo real
-    document.getElementById('product-search').addEventListener('input', function(e) {
-        const term = e.target.value.toLowerCase();
-        const cards = document.querySelectorAll('.product-card');
-        let hasResults = false;
 
-        cards.forEach(card => {
-            const name = card.querySelector('.product-name').textContent.toLowerCase();
-            const category = card.querySelector('.product-cat').textContent.toLowerCase();
-            
-            if (name.includes(term) || category.includes(term)) {
-                card.style.display = 'block';
-                hasResults = true;
-            } else {
-                card.style.display = 'none';
-            }
-        });
+let factura = [];
 
-        const noResultsMsg = document.getElementById('no-results');
-        if (noResultsMsg) noResultsMsg.style.display = hasResults ? 'none' : 'block';
+let total = 0;
+
+/* =========================
+BUSCADOR
+========================= */
+
+document.getElementById('product-search')
+
+.addEventListener('input', function(e){
+
+    const texto =
+    e.target.value.toLowerCase();
+
+    const cards =
+    document.querySelectorAll('.product-card');
+
+    cards.forEach(card=>{
+
+        const nombre =
+        card.querySelector('.product-name')
+        .textContent
+        .toLowerCase();
+
+        if(nombre.includes(texto)){
+
+            card.style.display = 'block';
+
+        }else{
+
+            card.style.display = 'none';
+        }
+
     });
-</script>
-{% endblock %}
 
-<tr>
-                            <th style="padding: 12px;">ID</th>
-                            <th style="padding: 12px;">Imagen</th>
-                            <th style="padding: 12px;">Nombre</th>
-                            <th style="padding: 12px;">Color</th>
-                            <th style="padding: 12px;">Talla</th>
-                            <th style="padding: 12px;">Cantidad</th>
-                            <th style="padding: 12px;">Cliente</th>
-                        </tr>
+});
+
+/* =========================
+AGREGAR FACTURA
+========================= */
+
+function agregarFactura(
+id,
+nombre,
+precio,
+imagen,
+boton
+){
+
+    const card =
+    boton.closest('.card-info');
+
+    const talla =
+    card.querySelector('.talla-select').value;
+
+    const color =
+    card.querySelector('.color-select').value;
+
+    factura.push({
+
+        id:id,
+        nombre:nombre,
+        precio:parseFloat(precio),
+        talla:talla,
+        color:color,
+        cantidad:1,
+        imagen:imagen
+
+    });
+
+    renderFactura();
+
+}
+
+/* =========================
+RENDER FACTURA
+========================= */
+
+function renderFactura(){
+
+    const contenedor =
+    document.getElementById('factura-items');
+
+    contenedor.innerHTML = "";
+
+    total = 0;
+
+    factura.forEach((item,index)=>{
+
+        total += item.precio;
+
+        contenedor.innerHTML += `
+
+        <div class="item-factura">
+
+            <img src="${item.imagen}">
+
+            <div class="factura-info">
+
+                <h4>
+                    ${item.nombre}
+                </h4>
+
+                <p>
+                    $${item.precio}
+                </p>
+
+                <small>
+                    Talla:
+                    ${item.talla}
+                </small>
+
+                <br>
+
+                <small>
+                    Color:
+                    ${item.color}
+                </small>
+
+                <br>
+
+                <small>
+                    Venta de Empleado
+                </small>
+
+            </div>
+
+            <button class="btn-remove"
+
+            onclick="eliminarItem(${index})">
+
+                X
+
+            </button>
+
+        </div>
+
+        `;
+
+    });
+
+    document.getElementById('total')
+    .innerText =
+    total.toLocaleString();
+
+    document.getElementById('total-btn')
+    .innerText =
+    total.toLocaleString();
+
+}
+
+/* =========================
+ELIMINAR
+========================= */
+
+function eliminarItem(index){
+
+    factura.splice(index,1);
+
+    renderFactura();
+
+}
+
+/* =========================
+PAGAR
+========================= */
+
+function pagarFactura(){
+
+    if(factura.length == 0){
+
+        alert("No hay productos");
+
+        return;
+    }
+
+    const metodo =
+    document.getElementById('metodo_pago').value;
+
+    fetch("/ventas/venta-empleado/",{
+
+        method:"POST",
+
+        headers:{
+
+            "Content-Type":"application/json",
+            "X-CSRFToken": obtenerCSRFToken()
+
+        },
+
+        body:JSON.stringify({
+
+            productos:factura,
+
+            metodo_pago:metodo
+
+        })
+
+    })
+
+    .then(response=>response.json())
+
+    .then(data=>{
+
+        console.log(data);
+
+        if(data.success){
+
+            document.getElementById(
+            'modal-pago'
+            ).style.display = 'flex';
+
+            factura = [];
+
+            renderFactura();
+
+        }else{
+
+            alert(data.message);
+
+        }
+
+    })
+
+    .catch(error=>{
+
+        console.log(error);
+
+        alert("Error al pagar");
+
+    });
+
+}
+
+/* =========================
+CSRF
+========================= */
+
+function obtenerCSRFToken(){
+
+    let cookieValue = null;
+
+    const cookies =
+    document.cookie.split(';');
+
+    for(let i=0;i<cookies.length;i++){
+
+        let cookie =
+        cookies[i].trim();
+
+        if(cookie.startsWith('csrftoken=')){
+
+            cookieValue =
+            cookie.substring('csrftoken='.length);
+
+        }
+
+    }
+
+    return cookieValue;
+
+}
+
+</script>
+
+{% endblock %}
