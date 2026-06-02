@@ -121,7 +121,7 @@ class UsuariosCustomAuthTest(TestCase):
             'id_rol': self.rol_empleado.id_rol,
             'nom_emple': 'Felipe',
             'fecha_naci_emple': '1995-05-20',
-            'fecha_ing_emple': '2030-12-31',  # Fecha en el futuro lejano
+            'fecha_ing_emple': '2030-12-31',  
             'salari_emple': '1500000',
             'estado_emple': 'Activo'
         })
@@ -137,11 +137,17 @@ class UsuariosCustomAuthTest(TestCase):
         hash_calculado = hashlib.sha256(content).hexdigest()
         self.foto_test.seek(0)
 
-        # Registramos un primer empleado con esa foto directamente
+        # Registramos un primer empleado con esa foto directamente 
+        # (Se añade 'salari_emple' para solucionar la IntegrityError)
         usuario_emp1 = Usuario.objects.create(username='emp1', contrasena='1', id_rol_fk=self.rol_empleado)
         Empleado.objects.create(
-            num_ident='1111', nom_emple='Emp Uno', fecha_naci_emple='1990-01-01',
-            fecha_ing_emple='2025-01-01', hash_foto=hash_calculado, id_usuario_fk=usuario_emp1
+            num_ident='1111', 
+            nom_emple='Emp Uno', 
+            fecha_naci_emple='1990-01-01',
+            fecha_ing_emple='2025-01-01', 
+            salari_emple=1300000, 
+            hash_foto=hash_calculado, 
+            id_usuario_fk=usuario_emp1
         )
 
         # Intentamos registrar un SEGUNDO empleado mandando el mismo archivo por POST
@@ -154,6 +160,7 @@ class UsuariosCustomAuthTest(TestCase):
             'nom_emple': 'Emp Dos',
             'fecha_naci_emple': '1992-01-01',
             'fecha_ing_emple': '2025-05-01',
+            'salari_emple': '1400000', 
             'foto_perfil': self.foto_test
         })
 
