@@ -79,5 +79,4 @@ class Det_valor(models.Model):
     id_var_fk_detval = models.ForeignKey(Variacion, on_delete=models.CASCADE, null=True)
     id_prod_fk_detval = models.ForeignKey(Producto, on_delete=models.CASCADE)
 
-    
     id_personalizacion_3d = models.ForeignKey('inventario.PedidoPersonalizado', on_delete=models.CASCADE, null=True, blank=True)

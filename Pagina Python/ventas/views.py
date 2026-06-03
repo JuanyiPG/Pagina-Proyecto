@@ -140,7 +140,6 @@ def crear_variacion(request, producto_id, pedido_id):
         messages.error(request, "Perfil de cliente no encontrado.")
         return redirect('ventas:lista_product')
 
-    # CORRECCIÓN: Se cambió 'Producto, producto_id' por 'Producto, id_produc=producto_id'
     producto = get_object_or_404(Producto, id_produc=producto_id)
     estampados = Estampado.objects.all()
     
@@ -184,7 +183,6 @@ def editar_variacion(request, detalle_id):
         messages.error(request, "Perfil de cliente no encontrado.")
         return redirect('login')
     
-    # CORRECCIÓN: Filtrar por la clave primaria correcta del detalle
     detalle = get_object_or_404(Det_valor, id_det_valor=detalle_id)
     variacion = detalle.id_var_fk_detval
     producto = detalle.id_prod_fk_detval
@@ -195,9 +193,8 @@ def editar_variacion(request, detalle_id):
         id_estam_nuevo = request.POST.get('id_estam')
         estampado_obj = get_object_or_404(Estampado, id_estam=id_estam_nuevo)
 
-        # Actualizar la variación asociada
         variacion.talla_var = request.POST.get('talla_var')
-        variacion.cant_soli = int(request.POST.get('cant_soli', 1))  # Convertir a entero
+        variacion.cant_soli = int(request.POST.get('cant_soli', 1))
         variacion.color_var = request.POST.get('color_var')
         variacion.mat_var = request.POST.get('mat_var')
         variacion.costo_var = estampado_obj.costo_adi
@@ -206,7 +203,7 @@ def editar_variacion(request, detalle_id):
         # Actualizar el detalle del valor
         detalle.cant = variacion.cant_soli
         detalle.valor_total = (producto.precio + variacion.costo_var) * variacion.cant_soli
-        detalle.save()  # CORRECCIÓN: Faltaba guardar el objeto 'detalle'
+        detalle.save()  
 
         return redirect('ventas:ver_carrito')
         
@@ -574,8 +571,6 @@ def finalizar_pedido(request, pedido_id):
 
     return render(request, 'ventas/pedido/finalizar.html', {'pedido': pedido})
 
-from decimal import Decimal
-from django.db.models import Sum
 
 @login_requerido_custom
 def lista_pedidos_client(request):
@@ -627,7 +622,6 @@ def editar_pedido(request, id):
     if not cliente: 
         messages.error(request, "Perfil de cliente no encontrado.")
         return redirect('login')
-    # CORRECCIÓN: El primer parámetro es el Modelo, no request
     pedido = get_object_or_404(Pedido, id_pedido=id)
 
     if request.method == 'POST':
@@ -637,7 +631,7 @@ def editar_pedido(request, id):
         pedido.estado_ped = request.POST.get('estado_ped')
         pedido.metodo_pago = request.POST.get('metodo_pago')
         pedido.fecha_entrega = request.POST.get('fecha_entrega')
-        pedido.save() # Esto disparará el cálculo del subtotal automáticamente
+        pedido.save()
         return redirect('ventas:lista_pedido') 
         
     return render(request, 'ventas/pedido/editar_pedido.html', {'pedido': pedido})
@@ -645,8 +639,6 @@ def editar_pedido(request, id):
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import transaction
 from django.contrib import messages
-# Asegúrate de importar tus modelos y decoradores
-# from .models import Pedido, Abono 
 
 @login_requerido_custom
 def gestionar_pedido(request, id_pedido):
@@ -665,7 +657,7 @@ def gestionar_pedido(request, id_pedido):
                 messages.success(request, "Pedido cancelado correctamente.")
         
         elif accion == 'entregado':
-            pedido.delete() # Borrado físico como pediste
+            pedido.delete() 
             messages.success(request, "¡Gracias por confirmar la entrega!")
 
     except Exception as e:
@@ -676,7 +668,7 @@ def gestionar_pedido(request, id_pedido):
 #------------------------ CARRITO --------------------------
 
 @login_requerido_custom
-def ver_carrito(request): # O podrías llamarla ver_mis_pedidos
+def ver_carrito(request): 
     try:
         cliente = obtener_cliente_actual(request)
     except Cliente.DoesNotExist:
@@ -739,23 +731,18 @@ def eliminar_del_carrito(request, id_det_valor):
         return redirect('ventas:ver_carrito')
 
     with transaction.atomic():
-        # 🌟 NUEVA LÓGICA: Si el producto tiene una personalización 3D asociada
         if detalle.id_personalizacion_3d:
             pedido_3d = detalle.id_personalizacion_3d
             
-            # Recorremos los campos de imágenes para borrarlas físicamente del servidor
             for img in [pedido_3d.foto_frente, pedido_3d.foto_espalda, pedido_3d.foto_lateral]:
                 if img and os.path.exists(img.path):
                     os.remove(img.path)
             
-            # Borramos el registro del diseño 3D de la base de datos
             pedido_3d.delete()
         
-        # Lógica original que ya tenías para la variación
         if detalle.id_var_fk_detval:
             detalle.id_var_fk_detval.delete()
         
-        # Elimina el item del carrito
         detalle.delete()
         
     messages.success(request, "Producto eliminado del carrito.")
@@ -763,26 +750,20 @@ def eliminar_del_carrito(request, id_det_valor):
 
 @login_requerido_custom
 def editar_carrito(request, id_det_valor):
-    # 1. Obtenemos el detalle que se quiere "cambiar"
     detalle = get_object_or_404(Det_valor, id_det_valor=id_det_valor)
     
-    # 2. Guardamos los datos necesarios antes de borrar
     id_producto = detalle.id_prod_fk_detval.id_produc
     id_pedido = detalle.id_ped_fk_detval.id_pedido
     es_personalizado = (detalle.tipo_pedido == "Personalizado")
 
-    # 3. Borramos el registro actual del carrito
     with transaction.atomic():
         if detalle.id_var_fk_detval:
-            detalle.id_var_fk_detval.delete() # Borra la variación si existe
-        detalle.delete() # Borra el renglón del carrito
+            detalle.id_var_fk_detval.delete()
+        detalle.delete()
 
-    # 4. Redirección inteligente según el tipo de producto
     if es_personalizado:
-        # Te manda al formulario de personalización (talla, estampado, etc.)
         return redirect('ventas:crear_variacion', producto_id=id_producto, pedido_id=id_pedido)
     else:
-        # Te manda a la vista simple (solo talla)
         return redirect('ventas:producto_sin_personalizar', producto_id=id_producto)
 
 #------------- DET_MOV_MATP ---------------------------------
@@ -793,24 +774,20 @@ def gestionar_inventario(pedido, operacion):
     
     with transaction.atomic():
         for item in detalles_pedido:
-            # Obtenemos la cantidad desde la variación (cant_soli)
+
             cantidad_prendas = item.id_var_fk_detval.cant_soli if item.id_var_fk_detval else 0
             
             if cantidad_prendas <= 0:
                 continue
 
-            # Buscamos qué materias primas usa este producto (la receta)
             receta = Det_mov_matp.objects.filter(producto=item.id_prod_fk_detval)
 
             for insumo in receta:
-                # IMPORTANTE: Buscamos el registro en Movimiento_matp que coincida 
-                # con el material de la receta. 
-                # Usamos .filter().latest() para asegurarnos de editar el último ingreso.
                 try:
                     material_stock = Movimiento_matp.objects.filter(
                         mat_mmtp=insumo.materia_prima.mat_mmtp,
                         color_mmtp=insumo.materia_prima.color_mmtp
-                    ).latest('id_mmtp') # El ID más alto suele ser el saldo actual
+                    ).latest('id_mmtp')
 
                     cantidad_a_mover = insumo.cantidad_usada * cantidad_prendas
 
@@ -821,7 +798,6 @@ def gestionar_inventario(pedido, operacion):
                     
                     material_stock.save()
                 except Movimiento_matp.DoesNotExist:
-                    # Si no encuentra el material, podrías registrar un error o ignorarlo
                     continue
 
 

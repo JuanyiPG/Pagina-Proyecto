@@ -173,29 +173,22 @@ def obtener_motivo_pedido(movimiento_historial):
                 variacion_stock = float(movimiento_historial.stock_mmtp) - float(historial_completo[i-1].stock_mmtp)
             break
             
-    # Volvemos la variación positiva para comparar
     variacion_absoluta = abs(variacion_stock)
 
-    # Si no hubo cambio de stock (ej. editaste solo el color o proveedor), es una edición manual
     if variacion_absoluta == 0:
         return "Manual"
 
-    # 4. Cruzamos la variación con las ventas reales
     for receta in recetas:
-        # Buscamos los detalles de pedidos de este producto
         detalles_venta = Det_valor.objects.filter(id_prod_fk_detval=receta.producto).select_related('id_ped_fk_detval', 'id_var_fk_detval')
         
         for detalle in detalles_venta:
             cantidad_prendas = detalle.id_var_fk_detval.cant_soli if detalle.id_var_fk_detval else 0
-            # ¿Cuánto debió descontar este pedido? -> cantidad usada en receta * prendas pedidas
+
             descuento_teorico = float(receta.cantidad_usada) * cantidad_prendas
             
-            # 🌟 LA MAGIA: Si el descuento que vemos en el historial coincide EXACTAMENTE con lo que
-            # pide este pedido, entonces este movimiento SÍ fue causado por este pedido.
-            if abs(descuento_teorico - variacion_absoluta) < 0.01: # Usamos margen pequeño por los DecimalFields
+            if abs(descuento_teorico - variacion_absoluta) < 0.01: 
                 return f"Pedido #{detalle.id_ped_fk_detval.id_pedido}"
 
-    # 5. Si la variación de stock no coincide con ningún cálculo de pedidos vendidos, ¡fuiste tú editando a mano!
     return "Manual"
 
 def lista_mmtp(request):
