@@ -12,6 +12,9 @@ from usuarios.views import solo_personal, login_requerido_custom
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Abono,Pedido, Variacion, Det_valor, Producto, Det_mov_matp,Cliente
 from inventario.models import Estampado, Movimiento_matp
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 #---------------------- COMPROBAR LOGIN ------------------------------
 
@@ -830,3 +833,132 @@ def gestionar_inventario(pedido, operacion):
 def lista_producto_e(request):
     productos = Producto.objects.all()
     return render(request, 'ventas/producto/lista_producto_e.html', {'productos': productos})
+
+
+from .models import (
+    Pedido,
+    Variacion,
+    Det_valor,
+    Producto,
+    Abono
+)
+
+@csrf_exempt
+def venta_empleado(request):
+
+    if request.method == 'POST':
+
+        try:
+            data = json.loads(request.body)
+
+            productos = data.get('productos', [])
+            metodo_pago = data.get('metodo_pago', 'Efectivo')
+
+            if not productos:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'No hay productos'
+                })
+
+            # =========================
+            # CREAR PEDIDO
+            # =========================
+
+            pedido = Pedido.objects.create(
+                subtotal_ped = 0,
+                valor_ped = 0,
+                estado_ped = 'Confirmado',
+                metodo_pago = metodo_pago,
+                id_clien_fk = None
+            )
+
+            total = Decimal('0')
+
+            # =========================
+            # RECORRER PRODUCTOS
+            # =========================
+
+            for item in productos:
+
+                producto = Producto.objects.get(
+                    id_produc = item['id']
+                )
+
+                cantidad = int(item['cantidad'])
+
+                talla = item['talla']
+
+                color = item['color']
+
+                subtotal = Decimal(str(producto.precio)) * cantidad
+
+                # =========================
+                # VARIACION
+                # =========================
+
+                variacion = Variacion.objects.create(
+                    talla_var = talla,
+                    cant_soli = cantidad,
+                    color_var = color,
+                    mat_var = "Venta Empleado",
+                    costo_var = subtotal
+                )
+
+                # =========================
+                # DETALLE
+                # =========================
+
+                Det_valor.objects.create(
+                    valor_total = subtotal,
+                    tipo_pedido = "Venta Empleado",
+                    id_ped_fk_detval = pedido,
+                    id_var_fk_detval = variacion,
+                    id_prod_fk_detval = producto
+                )
+
+                total += subtotal
+
+            # =========================
+            # ACTUALIZAR PEDIDO
+            # =========================
+
+            pedido.subtotal_ped = total
+            pedido.valor_ped = total
+            pedido.save()
+
+            # =========================
+            # ABONO
+            # =========================
+
+            Abono.objects.create(
+                monto_abono = total,
+                metodo_pago = metodo_pago,
+                descripcion = "Venta de Empleado",
+                id_pedido_fk_abono = pedido
+            )
+
+            # =========================
+            # DESCONTAR INVENTARIO
+            # =========================
+
+            gestionar_inventario(
+                pedido,
+                'RESTAR'
+            )
+
+            return JsonResponse({
+                'success': True,
+                'message': 'Pago realizado correctamente'
+            })
+
+        except Exception as e:
+
+            return JsonResponse({
+                'success': False,
+                'message': str(e)
+            })
+
+    return JsonResponse({
+        'success': False,
+        'message': 'Método no permitido'
+    })
