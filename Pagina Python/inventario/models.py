@@ -47,4 +47,5 @@ class Movimiento_matp(models.Model):
     color_mmtp = models.CharField(max_length=100)
     stock_mmtp = models.DecimalField(max_digits=10, decimal_places=2)
     id_proveedor_fk = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
+    pedido_origen = models.ForeignKey('ventas.Pedido', on_delete=models.SET_NULL, null=True, blank=True)
     history = HistoricalRecords() #Crea el historial automaticamente

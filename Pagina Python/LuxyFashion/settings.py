@@ -164,3 +164,18 @@ SESSION_COOKIE_AGE = 86400
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# CONFIGURACIÓN PARA EL ENVÍO DE CORREOS ELECTRÓNICOS
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = 'yuyismolina2807@gmail.com' 
+
+EMAIL_HOST_PASSWORD = 'bkgx kfor itwu gvsp' 
+
+DEFAULT_FROM_EMAIL = f'Luxy Fashion <{EMAIL_HOST_USER}>'
+# Muestra el diálogo secreto entre Django y Gmail en la terminal
+EMAIL_USE_DEBUG = True
+

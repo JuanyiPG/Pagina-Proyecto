@@ -1,7 +1,10 @@
-{% extends 'base_emple.html' %}
+{% extends 'base.html' %}
 {% block content %}
 
 <div class="main-content">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         :root {
             --luxy-burgundy: #800020;
@@ -11,8 +14,8 @@
         }
 
         .table-container {
-            margin: 2rem auto;
-            padding: 1.5rem;
+            margin-left:-120px;
+            padding: 0.4rem;
             background-color: white;
             border-radius: 12px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.1);
@@ -71,96 +74,176 @@
             object-fit: cover;
             display: block;
         }
+
+        /* Personalización sutil para los botones de SweetAlert para que combinen con Luxy */
+        .luxy-swal-confirm {
+            background-color: #752727 !important;
+            color: white !important;
+            border-radius: 8px !important;
+            padding: 10px 24px !important;
+        }
+        .luxy-swal-cancel {
+            background-color: #6e7881 !important;
+            color: white !important;
+            border-radius: 8px !important;
+            padding: 10px 24px !important;
+        }
+
+        /* Estilos específicos para el nuevo botón de entrega */
+        .btn-entregado-action {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 12px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .btn-entregado-action:hover {
+            background-color: #1e7e34;
+            transform: scale(1.05);
+        }
     </style>
+
 <div class="table-container">
     <div class="title-section">
         <h2 style="margin:0;">Historial de Pedidos</h2>
-        <small style="color: var(--luxy-hazelnut);">Registro detallado de pedidos realizados</small>
+        <small style="color: #8e7a63;">Registro detallado de pedidos realizados</small>
     </div>
 
-    <div style="overflow-x: auto;">
-        <table class="custom-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Imagen</th>
-                    <th>Nombre</th>
-                    <th>Color</th>
-                    <th>Talla</th>
-                    <th>Cantidad</th>
-                    <th>Cliente</th>
-                    <th>Pagos</th>
-                </tr>
-            </thead>
+    <div class="table-card" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-top: 15px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <input type="text" id="searchPed" placeholder=" Buscar..." style="width: 250px; padding: 8px 15px; border-radius: 20px; border: 1px solid #6a0f2e;">
+        </div>
 
-            <tbody>
-                {% for d in detalles %}
-                <tr style="text-align: center;">
-                    <td style="font-weight: bold;">#{{ d.id_var_fk_detval.id_var }}</td>
-                    <td>
-                        <div class="img-thumbnail-container">
-                            {% if d.id_personalizacion_3d %}
-                                <img src="{{ d.id_personalizacion_3d.foto_frente.url }}" style="width: 50px; height: 50px; object-fit: contain;">
-                            {% elif d.id_prod_fk_detval.imagen_product %}
-                                <img src="{{ d.id_prod_fk_detval.imagen_product.url }}" style="width: 50px; height: 50px; object-fit: contain;">
-                            {% else %}
-                                <span style="font-size: 10px;">Sin foto</span>
-                            {% endif %}
-                        </div>
-                    </td>
-                    <td>{{ d.id_prod_fk_detval.nom_produc }}</td>
-                    <td>{{ d.id_var_fk_detval.color_var }}</td>
-                    <td>{{ d.id_var_fk_detval.talla_var }}</td>
-                    <td style="font-weight: bold;">{{ d.id_var_fk_detval.cant_soli }}</td>
-                    <td class="cliente">
+        <div style="overflow-x: auto;">
+            <table class="custom-table" id="TablePed" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="text-align: center; background-color: #f8f9fa;">
+                        <th style="padding: 12px;">ID Pedido</th>
+                        <th>Cliente</th>
+                        <th>Fecha Pedido</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Prendas</th>
+                        <th>Caja / Pagos</th>
+                        <th>Acciones de Control</th>
+                    </tr>
+                </thead>
 
-                        {% if d.id_ped_fk_detval.id_clien_fk %}
+                <tbody>
+                    {% for p in pedidos %}
+                    <tr style="text-align: center; border-bottom: 1px solid #eee;">
+                        <td style="font-weight: bold; padding: 12px;">#{{ p.id_pedido }}</td>
+                        <td class="cliente">{{ p.id_clien_fk.nom_clien|default:"Cliente General" }}</td>
+                        <td>{{ p.fecha_formateada }}</td>
+                        <td style="font-weight: bold; color: #7e1a3f;">${{ p.valor_ped }}</td>
+                        <td>
+                            <span class="badge {% if p.estado_ped == 'Cancelado' or p.estado_ped == 'Prueba' %}bg-danger{% elif p.estado_ped == 'Entregado' %}bg-primary{% else %}bg-success{% endif %}" style="padding: 5px 10px; font-size: 11px;">
+                                {{ p.estado_ped }}
+                            </span>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-dark" 
+                                    style="border-radius: 6px; font-size: 12px; padding: 5px 10px;"
+                                    data-bs-toggle="modal" data-bs-target="#modalProductos{{ forloop.counter }}">
+                                <i class="fas fa-tshirt"></i> Ver Prendas ({{ p.prendas_agrupadas|length }})
+                            </button>
+                        </td>
+                        <td>
+                            <button type="button" class="btn" 
+                                style="background-color: #800020; color: white; border-radius: 8px; padding: 6px 12px; font-size: 12px;" 
+                                data-bs-toggle="modal" data-bs-target="#modalPagos{{ forloop.counter }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash-stack" viewBox="0 0 16 16">
+                                    <path d="M1 3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1zm7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
+                                    <path d="M0 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2z"/>
+                                </svg>
+                            </button>
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 5px; justify-content: center; align-items: center;">
+                                {% if p.id_pedido != "Sin ID" %}
+                                    
+                                    {% if p.estado_ped != 'Entregado' and p.estado_ped != 'Cancelado' %}
+                                        <button type="button" class="btn-entregado-action" onclick="confirmarEntregaPedido('{{ p.id_pedido }}')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-check" viewBox="0 0 16 16">
+                                            <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0z"/>
+                                            <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zm3.915 10L3.102 4h10.796l-1.313 7zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                                            </svg>
+                                        </button>
+                                    {% else %}
+                                        <span class="text-muted" style="font-size: 12px; font-style: italic;">Sin acciones</span>
+                                    {% endif %}
 
-                            {{ d.id_ped_fk_detval.id_clien_fk.nom_clien }}
 
-                        {% else %}
+                                    <form id="form-entregar-{{ p.id_pedido }}" method="POST" action="{% url 'ventas:gestionar_pedido' p.id_pedido %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="accion" value="entregado">
+                                    </form>
 
-                            Venta de Empleado
-
-                        {% endif %}
-
-                    </td>
-                    <td>
-                        <button type="button" class="btn" 
-                            style="background-color: #800020; color: white; border-radius: 8px; padding: 8px 15px; font-weight: bold; border: none;" 
-                            data-bs-toggle="modal" data-bs-target="#modalPagos{{ d.id_det_valor }}">
-                            Ver Pagos 
-                        </button>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                                {% else %}
+                                    <span class="text-muted" style="font-size: 11px;">Dato Huérfano</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" style="padding: 20px; text-align: center; color: #999;">No hay pedidos registrados en el sistema.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
-{% for d in detalles %}
-<div class="modal fade" id="modalPagos{{ d.id_det_valor }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content" style="border-radius: 15px; border: none;">
-            <div class="modal-header" style="background-color: #800020; color: white; border-radius: 15px 15px 0 0;">
-                <h5 class="modal-title">Pagos de: {{ d.id_ped_fk_detval.id_clien_fk.nom_clien|default:"Cliente" }}</h5>
+{% for p in pedidos %}
+<div class="modal fade" id="modalProductos{{ forloop.counter }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 12px; border: none; overflow: hidden;">
+            <div class="modal-header" style="background: #333; color: white; padding: 15px 20px;">
+                <h5 class="modal-title">Prendas del Pedido #{{ p.id_pedido }} — {{ p.id_clien_fk.nom_clien|default:"Cliente" }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1);"></button>
             </div>
-            <div class="modal-body">
-                <table class="table" style="width: 100%;">
+            <div class="modal-body" style="padding: 20px;">
+                <table class="table table-hover align-middle text-center">
                     <thead>
-                        <tr><th>Fecha</th><th>Monto</th><th>Método</th></tr>
+                        <tr class="table-light">
+                            <th>Imagen</th>
+                            <th>Producto</th>
+                            <th>Color</th>
+                            <th>Talla</th>
+                            <th>Cantidad</th>
+                            <th>Subtotal</th>
+                        </tr>
                     </thead>
                     <tbody>
-                        {% for abono in d.id_ped_fk_detval.abono_set.all %}
+                        {% for d in p.prendas_agrupadas %}
                         <tr>
-                            <td>{{ abono.fecha_abono|date:"d/m/Y" }}</td>
-                            <td style="color: #800020; font-weight: bold;">${{ abono.monto_abono }}</td>
-                            <td>{{ abono.metodo_pago }}</td>
+                            <td>
+                                <div class="img-thumbnail-container" style="width: 50px; height: 50px; margin: auto; border-radius: 6px; overflow: hidden; border: 1px solid #eee;">
+                                    {% if d.id_personalizacion_3d and d.id_personalizacion_3d.foto_frente %}
+                                        <img src="{{ d.id_personalizacion_3d.foto_frente.url }}" alt="Diseño" style="width:100%; height:100%; object-fit:cover;">
+                                    {% elif d.id_prod_fk_detval.imagen_product %}
+                                        <img src="{{ d.id_prod_fk_detval.imagen_product.url }}" alt="Estándar" style="width:100%; height:100%; object-fit:cover;">
+                                    {% else %}
+                                        <div style="background: #f5f5f5; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #bbb;">Sin foto</div>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td><strong>{{ d.id_prod_fk_detval.nom_produc }}</strong></td>
+                            <td>{{ d.id_var_fk_detval.color_var|default:"-" }}</td>
+                            <td><span class="badge bg-secondary">{{ d.id_var_fk_detval.talla_var|default:"-" }}</span></td>
+                            <td style="font-weight: bold;">{{ d.id_var_fk_detval.cant_soli|default:"1" }}</td>
+                            <td style="font-weight: bold; color: #7e1a3f;">${{ d.valor_total }}</td>
                         </tr>
                         {% empty %}
-                        <tr><td colspan="3" style="text-align: center;">No hay abonos registrados.</td></tr>
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">Este pedido no tiene productos registrados.</td>
+                        </tr>
                         {% endfor %}
                     </tbody>
                 </table>
@@ -168,5 +251,176 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modalPagos{{ forloop.counter }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 12px; border: none; overflow: hidden;">
+            <div class="modal-header" style="background: #7e1a3f; color: white; padding: 15px 20px;">
+                <h5 class="modal-title"><i class="fas fa-cash-register"></i> Caja: Pedido #{{ p.id_pedido }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1);"></button>
+            </div>
+            <div class="modal-body" style="padding: 25px; text-align: center;">
+
+                <div style="background: #fafafa; padding: 8px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #eee;">
+                    <small style="color: #666; font-weight: bold; text-transform: uppercase;">Valor Total del Pedido</small>
+                    <h3 style="margin: 5px 0 0 0; color: #7e1a3f; font-weight: bold;">${{ p.valor_ped }}</h3>
+
+                    <div class="mb-4">
+                    {% if p.abono_set and p.abono_set.count > 1 or p.metodo_pago == "Abono" or p.metodo_pago == "Credito" %}
+                        <span style="font-size: 10px; padding: 8px 10px; margin: 10px 0 -10px 0">
+                            <i ></i> MÉTODOS DE PAGO: ABONOS / CRÉDITO
+                        </span>
+                    {% else %}
+                        <span  style="font-size: 12px; padding: 8px 18px; margin: 10px 0 -10px 0;">
+                            <i ></i> MÉTODO DE PAGO: CONTADO ({% firstof p.metodo_pago "Efectivo" %})
+                        </span>
+                    {% endif %}
+                </div>
+                </div>
+
+                <table class="table table-sm table-striped text-center align-middle">
+                    <thead>
+                        <tr>
+                            <th>Fecha Recibido</th>
+                            <th>Monto</th>
+                            <th>Forma</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if p.abonos_listos %}
+                            {% for abono in p.abonos_listos %}
+                            <tr>
+                                <td>{{ abono.fecha }}</td>
+                                <td style="font-weight: bold; color: #2e7d32;">${{ abono.monto }}</td>
+                                <td><span class="badge bg-light text-dark" style="border: 1px solid #ddd;">{{ abono.metodo_pago }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td>{{ p.fecha_formateada }}</td>
+                                <td style="font-weight: bold; color: #2e7d32;">${{ p.valor_ped }}</td>
+                                <td><span class="badge bg-light text-dark" style="border: 1px solid #ddd;">{{ p.metodo_pago|default:"Efectivo" }}</span></td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 {% endfor %}
+
+<script>
+// Manejar la confirmación de la entrega del pedido por el Administrador
+function confirmarEntregaPedido(idPedido) {
+    Swal.fire({
+        title: '¿Confirmar entrega exitosa?',
+        text: 'Se enviará un correo de confirmación al cliente automáticamente.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, marcar entregado',
+        cancelButtonText: 'Volver atrás',
+        customClass: {
+            confirmButton: 'luxy-swal-confirm',
+            cancelButton: 'luxy-swal-cancel'
+        },
+        buttonsStyling: false,
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Mostrar estado de procesamiento limpio antes del submit
+            Swal.fire({
+                title: 'Enviando notificación...',
+                text: 'Actualizando registros y despachando correo electrónico.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            // Ejecuta el submit del formulario POST oculto
+            document.getElementById('form-entregar-' + idPedido).submit();
+        }
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    
+    // INTERCEPTOR DE ELIMINACIÓN CON SWEETALERT2
+    const botonesEliminar = document.querySelectorAll('.btn-eliminar-pedido');
+    botonesEliminar.forEach(boton => {
+        boton.addEventListener('click', function(e) {
+            e.preventDefault(); 
+            const urlDestino = this.getAttribute('href');
+
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "Esta acción limpiará todo su historial y prendas asociadas de forma permanente.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '<i class="fas fa-trash"></i> Sí, borrar pedido',
+                cancelButtonText: 'Cancelar',
+                customClass: {
+                    confirmButton: 'luxy-swal-confirm',
+                    cancelButton: 'luxy-swal-cancel'
+                },
+                buttonsStyling: false, 
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Procesando...',
+                        text: 'Limpiando registros de la base de datos.',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    window.location.href = urlDestino;
+                }
+            });
+        });
+    });
+
+    // CÓDIGO DEL BUSCADOR DE LA TABLA
+    const searchInput = document.getElementById('searchPed');
+    const tableBody = document.querySelector('#TablePed tbody');
+
+    if (!tableBody) return;
+
+    const emptyRow = document.createElement('tr');
+    emptyRow.id = 'searchEmptyRow';
+    emptyRow.style.display = 'none';
+    emptyRow.innerHTML = `<td colspan="8" style="text-align: center; padding: 30px; color: #999; font-style: italic;">No se encontraron pedidos que coincidan con la búsqueda.</td>`;
+    tableBody.appendChild(emptyRow);
+
+    if (!searchInput) return;
+
+    searchInput.addEventListener('keyup', function() {
+        let filter = this.value.toLowerCase().trim();
+        let rows = document.querySelectorAll('#TablePed tbody tr');
+        let anyVisible = false;
+
+        rows.forEach(row => {
+            if (row.id === 'searchEmptyRow') return;
+
+            let matchFound = false;
+            Array.from(row.cells).forEach(cell => {
+                let cellText = cell.textContent.toLowerCase();
+                if (cellText.includes(filter)) {
+                    matchFound = true;
+                }
+            });
+
+            if (matchFound) {
+                row.style.display = "";
+                anyVisible = true;
+            } else {
+                row.style.display = "none";
+            }
+        });
+
+        emptyRow.style.display = anyVisible ? "none" : "";
+    });
+});
+</script>
 {% endblock %}

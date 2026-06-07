@@ -155,7 +155,7 @@
         box-shadow: 0 4px 10px rgba(106, 15, 46, 0.2);
     }
 
-    /* COLORES - CORRECCIÓN CRÍTICA */
+    /* COLORES */
     .color-circle {
         display: inline-block;
         width: 40px;
@@ -210,7 +210,12 @@
 </header>
 
 <div class="main-wrapper">
-    <div class="con-pro-cli">
+    
+    <div class="con-pro-cli" style="position: relative;">
+        
+        <a href="{% url 'ventas:lista_product' %}" style="position: absolute; top: 25px; right: 30px; text-decoration: none; color: var(--primary); font-size: 14px; font-weight: bold; display: inline-flex; align-items: center; gap: 5px; z-index: 10; transition: 0.3s;">
+            ✕ VOLVER
+        </a>
         
         <div class="imgs-of-produc">
             <img src="{{ producto.imagen_product.url }}" class="thumb active" onclick="changeImg(this.src, this)">
@@ -237,26 +242,32 @@
             <form action="{% url 'ventas:producto_sin_personalizar' producto.id_produc %}" method="POST">
                 {% csrf_token %}
 
+                <!-- ====================================================================== -->
+                <!-- TALLAS CARGADAS DINÁMICAMENTE DESDE LA BASE/SESIÓN -->
+                <!-- ====================================================================== -->
                 <div style="margin-bottom: 25px;">
                     <label style="display:block; margin-bottom: 12px; font-weight: bold; color: #555; font-size: 13px;">TALLA:</label>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                         {% for t in tallas %}
                             <label>
-                                <input type="radio" name="talla" value="{{t}}" style="display:none;" required>
-                                <span class="btn-talla">{{t}}</span>
+                                <input type="radio" name="talla" value="{{ t }}" style="display:none;" required>
+                                <span class="btn-talla">{{ t }}</span>
                             </label>
                         {% endfor %}
                     </div>
                 </div>
 
+                <!-- ====================================================================== -->
+                <!-- COLORES INFINITOS EN CALIENTE CARGADOS POR EL ADMIN -->
+                <!-- ====================================================================== -->
                 <div style="margin-bottom: 25px;">
                     <label style="display: block; margin-bottom: 12px; font-weight: bold; color: #555; font-size: 13px;">COLOR:</label>
                     <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                         {% for c in colores %}
                         <label title="{{ c|capfirst }}">
-                            <input type="radio" name="color" value="{{c}}" style="display:none;" required>
+                            <input type="radio" name="color" value="{{ c }}" style="display:none;" required>
                             <span class="color-circle" 
-                                style="background-color: {% if c|lower == 'rojo' %}#d90429{% elif c|lower == 'azul' %}#0077b6{% elif c|lower == 'blanco' %}#ffffff{% elif c|lower == 'gris' %}#8d99ae{% elif c|lower == 'negro' %}#2b2d42{% else %}{{c}}{% endif %};">
+                                style="background-color: {% if c|lower == 'rojo' %}#d90429{% elif c|lower == 'azul' %}#0077b6{% elif c|lower == 'blanco' %}#ffffff{% elif c|lower == 'gris' %}#8d99ae{% elif c|lower == 'negro' %}#2b2d42{% else %}{{ c }}{% endif %};">
                             </span>
                         </label>
                         {% endfor %}

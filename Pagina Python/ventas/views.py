@@ -1,3 +1,4 @@
+from email.policy import default
 import re
 import os
 from django.utils import timezone
@@ -8,6 +9,10 @@ import hashlib
 from django.db.models import Sum, Max
 from datetime import timedelta
 from usuarios.views import solo_personal, login_requerido_custom
+from django.conf import settings
+from django.core.mail import EmailMessage, send_mail
+import smtplib  
+from django.apps import apps
 
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Abono,Pedido, Variacion, Det_valor, Producto, Det_mov_matp,Cliente
@@ -29,8 +34,141 @@ def obtener_cliente_actual(request):
 
 #-------------------- CRUD VARIACION --------------------------
 
+
 def lista_var(request):
-    # 1. Traemos los detalles excluyendo los cancelados con sus relaciones
+    detalles_db = Det_valor.objects.exclude(
+        id_ped_fk_detval__estado_ped='Cancelado'
+    ).select_related(
+        'id_ped_fk_detval', 
+        'id_prod_fk_detval', 
+        'id_var_fk_detval', 
+        'id_ped_fk_detval__id_clien_fk'
+    )
+
+    pedidos_agrupados = {}
+
+    for d in detalles_db:
+        if d.id_ped_fk_detval:
+            pedido_obj = d.id_ped_fk_detval
+            id_ped = pedido_obj.id_pedido
+            
+            if id_ped not in pedidos_agrupados:
+                pedido_obj.prendas_agrupadas = []
+                
+                # 🌟 ASEGURAR QUE EL VALOR NO SEA 0
+                if not pedido_obj.valor_ped or pedido_obj.valor_ped == 0:
+                    pedido_obj.valor_ped = d.valor_total
+                
+                # 🌟 ASEGURAR QUE EL MÉTODO DE PAGO NO VENGA VACÍO
+                if not pedido_obj.metodo_pago:
+                    pedido_obj.metodo_pago = "Abonos / Crédito"
+                
+                # CONTROL DE EN BLANCO PARA NOMBRES
+                if not pedido_obj.id_clien_fk:
+                    if d.tipo_pedido and "Venta Empleado:" in str(d.tipo_pedido):
+                        pedido_obj.vendedor_nombre = d.tipo_pedido.replace("Venta Empleado:", "").strip()
+                    else:
+                        pedido_obj.vendedor_nombre = "Venta por Abonos"
+                else:
+                    try:
+                        cliente = pedido_obj.id_clien_fk
+                        if hasattr(cliente, 'nom_clien') and cliente.nom_clien:
+                            pedido_obj.vendedor_nombre = f"{cliente.nom_clien} {getattr(cliente, 'ape_clien', '')}".strip()
+                        else:
+                            pedido_obj.vendedor_nombre = cliente.id_usuario_fk.username
+                    except AttributeError:
+                        pedido_obj.vendedor_nombre = "Cliente Registrado"
+
+                # Formateo seguro de la fecha del pedido
+                if pedido_obj.fecha_ped:
+                    pedido_obj.fecha_formateada = pedido_obj.fecha_ped.strftime("%d/%m/%Y")
+                else:
+                    pedido_obj.fecha_formateada = "Sin Fecha"
+                
+                # Carga del historial de abonos relacionados y cálculo de total abonado
+                pedido_obj.abonos_listos = []
+                total_abonado = Decimal('0')  # 🌟 Variable para sumar los abonos
+                
+                if hasattr(pedido_obj, 'abono_set'):
+                    for abono in pedido_obj.abono_set.all():
+                        try:
+                            fecha_txt = abono.fecha_abono.strftime("%d/%m/%Y %H:%M")
+                        except AttributeError:
+                            fecha_txt = abono.fecha_abono.strftime("%d/%m/%Y") if abono.fecha_abono else "Sin fecha"
+                            
+                        pedido_obj.abonos_listos.append({
+                            'fecha': fecha_txt,
+                            'monto': abono.monto_abono,
+                            'metodo_pago': abono.metodo_pago if abono.metodo_pago else "Efectivo"
+                        })
+                        
+                        # Acumulamos el monto del abono actual
+                        if abono.monto_abono:
+                            total_abonado += Decimal(str(abono.monto_abono))
+                
+                # 🌟 LÓGICA DE ESTADO AUTOMÁTICO PARA ABONOS
+                # Si el pedido es por abonos/crédito y lo abonado es menor al valor total, pasa a 'Pendiente'
+                if "Abono" in pedido_obj.metodo_pago or "Crédito" in pedido_obj.metodo_pago:
+                    if total_abonado < Decimal(str(pedido_obj.valor_ped)):
+                        pedido_obj.estado_ped = "Pendiente"
+                    else:
+                        pedido_obj.estado_ped = "Entregado" # O el estado completado que manejes
+
+                pedidos_agrupados[id_ped] = pedido_obj
+            else:
+                if pedidos_agrupados[id_ped].valor_ped == 0:
+                    pedidos_agrupados[id_ped].valor_ped += d.valor_total
+                
+            pedidos_agrupados[id_ped].prendas_agrupadas.append(d)
+        else:
+            id_temporal = "Prueba-Suelto"
+            if id_temporal not in pedidos_agrupados:
+                class PedidoSimulado: pass
+                p_sim = PedidoSimulado()
+                p_sim.id_pedido = "Sin ID"
+                p_sim.id_clien_fk = None
+                p_sim.vendedor_nombre = "Prueba Técnica"
+                p_sim.valor_ped = d.valor_total
+                p_sim.estado_ped = "Prueba"
+                p_sim.metodo_pago = "Manual"
+                p_sim.fecha_formateada = timezone.now().strftime("%d/%m/%Y")
+                p_sim.prendas_agrupadas = []
+                p_sim.abonos_listos = []
+                pedidos_agrupados[id_temporal] = p_sim
+                
+            pedidos_agrupados[id_temporal].prendas_agrupadas.append(d)
+
+    pedidos_reales = [p for p in pedidos_agrupados.values() if isinstance(p.id_pedido, int)]
+    pedidos_reales.sort(key=lambda x: x.id_pedido, reverse=True)
+    
+    pedidos_manuales = [p for p in pedidos_agrupados.values() if not isinstance(p.id_pedido, int)]
+    lista_final = pedidos_reales + pedidos_manuales
+
+    return render(request, 'ventas/pedido/lista_pedidos.html', {
+        'pedidos': lista_final,
+    })
+
+@solo_personal
+def eliminar_pedido(request, id_pedido):
+    # Buscamos el pedido en la base de datos (dispara 404 si ya no existe)
+    pedido = get_object_or_404(Pedido, id_pedido=id_pedido)
+    
+    try:
+        # 1. Eliminamos los detalles asociados primero
+        Det_valor.objects.filter(id_ped_fk_detval=pedido).delete()
+        
+        # 2. Borramos el pedido principal
+        pedido.delete()
+        
+        messages.success(request, f"El pedido #{id_pedido} y todo su historial se borraron correctamente.")
+    except Exception as e:
+        messages.error(request, f"No se pudo eliminar el pedido: {str(e)}")
+        
+    # CORRECCIÓN: Redirección limpia usando el name exacto de tu urls.py
+    return redirect('ventas:lista_pedido')
+
+@solo_personal
+def lista_var_e(request):
     detalles_db = Det_valor.objects.exclude(
         id_ped_fk_detval__estado_ped='Cancelado'
     ).select_related(
@@ -50,17 +188,25 @@ def lista_var(request):
                 pedido_obj = d.id_ped_fk_detval
                 pedido_obj.prendas_agrupadas = []
                 
-                # Formateamos la fecha del pedido de forma segura
+                # 🌟 CONTROL DE EN BLANCO: Si no viene cliente, inyectamos la marca del empleado
+                if not pedido_obj.id_clien_fk:
+                    if "Venta Empleado:" in d.tipo_pedido:
+                        # Extrae el nombre del empleado que guardamos en el string
+                        pedido_obj.vendedor_nombre = d.tipo_pedido.replace("Venta Empleado:", "").strip()
+                    else:
+                        pedido_obj.vendedor_nombre = "Empleado Interno"
+                else:
+                    # Si es un cliente normal, usamos su nombre de usuario de la FK
+                    pedido_obj.vendedor_nombre = pedido_obj.id_clien_fk.id_usuario_fk.username if hasattr(pedido_obj.id_clien_fk, 'id_usuario_fk') else "Cliente Virtual"
+
                 if pedido_obj.fecha_ped:
                     pedido_obj.fecha_formateada = pedido_obj.fecha_ped.strftime("%d/%m/%Y")
                 else:
                     pedido_obj.fecha_formateada = "Sin Fecha"
                 
-                # EXTRAEMOS Y FORMATEAMOS LOS ABONOS AQUÍ EN PYTHON
                 pedido_obj.abonos_listos = []
                 if hasattr(pedido_obj, 'abono_set'):
                     for abono in pedido_obj.abono_set.all():
-                        # Intentamos usar formato con hora, si falla porque es solo fecha, usamos formato simple
                         try:
                             fecha_txt = abono.fecha_abono.strftime("%d/%m/%Y %H:%M")
                         except AttributeError:
@@ -76,60 +222,31 @@ def lista_var(request):
                 
             pedidos_agrupados[id_ped].prendas_agrupadas.append(d)
         else:
-            # Control para datos huérfanos de prueba
             id_temporal = "Prueba-Suelto"
             if id_temporal not in pedidos_agrupados:
-                class PedidoSimulado:
-                    pass
+                class PedidoSimulado: pass
                 p_sim = PedidoSimulado()
                 p_sim.id_pedido = "Sin ID"
                 p_sim.id_clien_fk = None
+                p_sim.vendedor_nombre = "Prueba Técnica" # Anti-en blanco para huérfanos
                 p_sim.valor_ped = d.valor_total
                 p_sim.estado_ped = "Prueba"
                 p_sim.metodo_pago = "Manual"
                 p_sim.fecha_formateada = timezone.now().strftime("%d/%m/%Y")
                 p_sim.prendas_agrupadas = []
-                p_sim.abonos_listos = [] # Lista vacía para que no rompa el bucle
+                p_sim.abonos_listos = []
                 pedidos_agrupados[id_temporal] = p_sim
                 
             pedidos_agrupados[id_temporal].prendas_agrupadas.append(d)
 
-    # 2. Ordenamos los pedidos colocando los reales numéricos primero
     pedidos_reales = [p for p in pedidos_agrupados.values() if isinstance(p.id_pedido, int)]
     pedidos_reales.sort(key=lambda x: x.id_pedido, reverse=True)
     
     pedidos_manuales = [p for p in pedidos_agrupados.values() if not isinstance(p.id_pedido, int)]
     lista_final = pedidos_reales + pedidos_manuales
 
-    return render(request, 'ventas/pedido/lista_pedidos.html', {
-        'pedidos': lista_final,
-    })
-
-def eliminar_pedido(request, id_pedido):
-    # Buscamos el pedido en la base de datos (dispara 404 si ya no existe)
-    pedido = get_object_or_404(Pedido, id_pedido=id_pedido)
-    
-    try:
-        # 1. Eliminamos los detalles asociados primero
-        Det_valor.objects.filter(id_ped_fk_detval=pedido).delete()
-        
-        # 2. Borramos el pedido principal
-        pedido.delete()
-        
-        messages.success(request, f"El pedido #{id_pedido} y todo su historial se borraron correctamente.")
-    except Exception as e:
-        messages.error(request, f"No se pudo eliminar el pedido: {str(e)}")
-        
-    # CORRECCIÓN: Redirección limpia usando el name exacto de tu urls.py
-    return redirect('ventas:lista_pedido')
-
-def lista_var_e(request):
-    detalles = Det_valor.objects.exclude(
-        id_ped_fk_detval__estado_ped='Cancelado'
-    ).select_related('id_ped_fk_detval', 'id_prod_fk_detval', 'id_var_fk_detval')
-    
     return render(request, 'ventas/pedido/lista_pedidos_e.html', {
-        'detalles': detalles,
+        'pedidos': lista_final,
     })
 
 @login_requerido_custom
@@ -230,8 +347,9 @@ def eliminar_variacion (request, detalle_id):
 
 
 #----------------- CRUD PRODUCTO ------------------------------
-
+@login_requerido_custom
 def lista_producto(request):
+    # Traemos los productos con sus recetas e insumos optimizados
     todos = Producto.objects.prefetch_related('det_mov_matp_set__materia_prima').all()
     productos_visibles = []
 
@@ -243,15 +361,25 @@ def lista_producto(request):
             es_valido = False
         else:
             for d in detalles:
-                h = d.materia_prima.history.all()
-                # Calculamos stock rápido
-                stock = sum(x.stock_mmtp if x.tipo_mmtp == 'ENTRADA' else -x.stock_mmtp for x in h)
-                if stock < d.cantidad_usada :
+                try:
+                    # 🌟 Buscamos el ÚLTIMO movimiento real de este insumo en el inventario
+                    ultimo_movimiento = Movimiento_matp.objects.filter(
+                        mat_mmtp=d.materia_prima.mat_mmtp,
+                        color_mmtp=d.materia_prima.color_mmtp
+                    ).latest('id_mmtp')
+                    
+                    stock_actual = ultimo_movimiento.stock_mmtp
+                    
+                except Movimiento_matp.DoesNotExist:
+                    # Si ni siquiera tiene un registro en movimientos, no hay stock disponible
+                    stock_actual = 0
+
+                # 🚨 LA CORRECCIÓN CLAVE: Si el stock es menor o igual a 0, 
+                # o si no alcanza para cubrir la cantidad que usa la receta, se oculta.
+                if stock_actual <= 0 or stock_actual < d.cantidad_usada:
                     es_valido = False
-                elif stock == 0: 
-                    es_valido = False
-                    break
-        
+                    break # Detiene la revisión de este producto, ya sabemos que no tiene material
+
         if es_valido:
             productos_visibles.append(p)
 
@@ -265,7 +393,6 @@ def lista_producto_admin(request):
     productos = Producto.objects.all()
 
     if request.method == 'POST': 
-        #POST para textos plano, FILES, para img, pdf, etc
         imagen_produc = request.FILES.get('imagen_produc')
         nom_produc = request.POST.get('nom_produc')
         gen_produc = request.POST.get('gen_produc')
@@ -275,7 +402,10 @@ def lista_producto_admin(request):
         precio = request.POST.get('precio')
         dias_produccion = request.POST.get('dias_produccion')
 
-        #Converir String a Decimal
+        # 🌟 NUEVO: Capturar las opciones de variantes elegidas
+        tallas_elegidas = request.POST.getlist('tallas_seleccionadas[]')
+        colores_elegidos = request.POST.getlist('colores_nuevos[]')
+
         try: 
             precio_limpio = re.sub(r'[^\d]', '', precio)
             valor = Decimal(precio_limpio)
@@ -283,36 +413,49 @@ def lista_producto_admin(request):
             valor = Decimal('0.00')
 
         if imagen_produc: 
-            #Generar el hash
             hasher = hashlib.sha256()
             for chunk in imagen_produc.chunks():
                 hasher.update(chunk)
             nuevo_hash = hasher.hexdigest()
-
-            #Rebobinar el archivo
             imagen_produc.seek(0)
 
-            #Verificar si ya existe el hash
             if Producto.objects.filter(imagen_hash=nuevo_hash).exists():
                 return render(request, 'ventas/producto/lista_product.html',{
-                    'error': 'ERROR: Esta prenda ya ha sido subida anteriormente.'
-            })
+                    'error': 'ERROR: Esta prenda ya ha sido subida anteriormente.',
+                    'materiales': materiales_db,
+                    'productos': productos
+                })
         
-        nuevo_p = Producto.objects.create(imagen_product=imagen_produc, imagen_hash=nuevo_hash, nom_produc=nom_produc, gen_produc=gen_produc,
-                                desc_produc=desc_produc, categoria_produc=categoria_produc,estado_produc=estado_produc, precio=valor, dias_produccion=dias_produccion )
+        # Estructura lógica original e intacta
+        nuevo_p = Producto.objects.create(
+            imagen_product=imagen_produc, imagen_hash=nuevo_hash, nom_produc=nom_produc, gen_produc=gen_produc,
+            desc_produc=desc_produc, categoria_produc=categoria_produc, estado_produc=estado_produc, 
+            precio=valor, dias_produccion=dias_produccion
+        )
         
+        # 🌟 Guardar la relación en la sesión para que el cliente la pueda leer sin alterar la tabla Producto
+        if not request.session.get('variaciones_productos'):
+            request.session['variaciones_productos'] = {}
+        
+        request.session['variaciones_productos'][str(nuevo_p.id_produc)] = {
+            'tallas': tallas_elegidas if tallas_elegidas else ["S", "M", "L"],
+            'colores': [c.strip().lower() for c in colores_elegidos if c.strip()] if colores_elegidos else ["blanco"]
+        }
+        request.session.modified = True
+
         ids_materiales = request.POST.getlist('material_ids[]')
         cantidades = request.POST.getlist('cantidades[]')
 
         for id_mat, cant in zip(ids_materiales, cantidades):
             if id_mat and cant:
                 Det_mov_matp.objects.create(
-                    producto = nuevo_p, # Aquí usamos el objeto que acabamos de guardar
+                    producto = nuevo_p,
                     materia_prima_id = id_mat, 
                     cantidad_usada = cant
                 )
 
         return redirect('ventas:lista_producto_admin')
+        
     return render(request, 'ventas/producto/lista_product.html',{
         'materiales': materiales_db,
         'productos': productos
@@ -321,13 +464,14 @@ def lista_producto_admin(request):
 @solo_personal
 def editar_producto(request, id): 
     producto = get_object_or_404(Producto, id_produc=id)
+    
+    # Obtener el modelo de inventario dinámicamente para evitar Error Circular
+    Movimiento_matp = apps.get_model('inventario', 'Movimiento_matp')
+    
     if request.method == 'POST': 
         nueva_imagen = request.FILES.get('imagen_product')
-        # Solo asignamos la imagen si 'nueva_imagen' no es None
         if nueva_imagen:
             producto.imagen_product = nueva_imagen
-            
-            # Si usas el sistema de hash, recúclalo aquí también
             hasher = hashlib.sha256()
             for chunk in nueva_imagen.chunks():
                 hasher.update(chunk)
@@ -336,30 +480,80 @@ def editar_producto(request, id):
 
         producto.nom_produc = request.POST.get('nom_produc')
         producto.gen_produc = request.POST.get('gen_produc')
-        producto.desc_produc = request.POST['desc_produc']
+        producto.desc_produc = request.POST.get('desc_produc', '')
         producto.categoria_produc = request.POST.get('categoria_produc')
 
         dias = request.POST.get('dias_produccion')
+        producto.dias_produccion = int(dias) if dias and dias.strip() != "" else 10
 
-        if not dias or dias.strip() == "":
-            producto.dias_produccion = 10
-        else:
-            producto.dias_produccion = int(dias)
-
-        producto.save()
+        producto.estado_produc = request.POST.get('estado_produc', 'Nuevo')
+        precio = request.POST.get('precio', '0')
         
-        producto.estado_produc = request.POST['estado_produc']
-        precio = request.POST['precio']
         try: 
-            precio_limpio = re.sub(r'[^\d]', '', precio)
+            # 🌟 CORRECCIÓN: Permite números enteros y decimales con punto (ej: 25000.50)
+            precio_limpio = re.sub(r'[^\d.]', '', precio.replace(',', '.'))
             valor = Decimal(precio_limpio)
-        except(InvalidOperation, TypeError):
+        except (InvalidOperation, TypeError):
             valor = Decimal('0.00')
 
         producto.precio = valor
         producto.save()
+
+        # 🌟 Variantes (Estructura en Sesión)
+        tallas_nuevas = request.POST.getlist('tallas_seleccionadas[]')
+        colores_nuevos = request.POST.getlist('colores_nuevos[]')
+        colores_limpios = [c.strip().lower() for c in colores_nuevos if c.strip()]
+
+        if 'variaciones_productos' not in request.session:
+            request.session['variaciones_productos'] = {}
+
+        id_str = str(producto.id_produc)
+        request.session['variaciones_productos'][id_str] = {
+            'tallas': tallas_nuevas if tallas_nuevas else ["S", "M", "L"],
+            'colores': colores_limpios if colores_limpios else ["blanco"]
+        }
+        request.session.modified = True
+
+        # 🌟 Materia Prima (Guardado en Base de Datos)
+        material_ids = request.POST.getlist('material_ids[]')
+        cantidades = request.POST.getlist('cantidades[]')
+
+        # Eliminamos los materiales anteriores para reescribir los nuevos
+        Det_mov_matp.objects.filter(producto=producto).delete()
+
+        for id_mat, cant in zip(material_ids, cantidades):
+            if id_mat and cant:
+                try:
+                    # Buscamos la instancia real antes de guardarla
+                    insumo = Movimiento_matp.objects.get(pk=id_mat)
+                    Det_mov_matp.objects.create(
+                        producto=producto,
+                        materia_prima=insumo,
+                        cantidad_usada=Decimal(cant)
+                    )
+                except (Movimiento_matp.DoesNotExist, ValueError, InvalidOperation):
+                    continue
+
         return redirect('ventas:lista_producto_admin')
-    return render(request, 'ventas/producto/editar_producto.html', {'producto': producto})
+        
+    # --- GET: Cargar datos guardados ---
+    materiales_db = Movimiento_matp.objects.all()  
+    detalles_materiales = Det_mov_matp.objects.filter(producto=producto).select_related('materia_prima')
+
+    id_str = str(producto.id_produc)
+    variaciones = request.session.get('variaciones_productos', {}).get(id_str, {})
+    
+    tallas_actuales = variaciones.get('tallas', ["S", "M", "L"])
+    colores_actuales = variaciones.get('colores', ["blanco"])
+
+    contexto = {
+        'producto': producto,
+        'materiales': materiales_db,
+        'tallas_actuales': tallas_actuales,
+        'colores_actuales': colores_actuales,
+        'detalles_materiales': detalles_materiales,
+    }
+    return render(request, 'ventas/producto/editar_producto.html', contexto)
 
 @solo_personal
 def eliminar_producto(request, product_id): 
@@ -373,8 +567,18 @@ def eliminar_producto(request, product_id):
 @login_requerido_custom
 def producto_sin_personalizar(request, producto_id):
     producto = get_object_or_404(Producto, id_produc=producto_id)
-    tallas = ["S", "M", "L", "XL", "XXL"]
-    colores = ["rojo", "blanco", "gris", "azul"]
+    
+    # Para evitar el aislamiento de sesiones Admin/Cliente, buscamos en la sesión activa.
+    variaciones_globales = request.session.get('variaciones_productos', {})
+    datos_producto = variaciones_globales.get(str(producto.id_produc), None)
+    
+    if datos_producto:
+        tallas = datos_producto['tallas']
+        colores = datos_producto['colores']
+    else:
+        # Si el cliente entra desde otra sesión, le mostramos valores base lógicos
+        tallas = ["S", "M", "L"]
+        colores = ["blanco", "negro"]
     
     if request.method == 'POST':
         cliente = obtener_cliente_actual(request)
@@ -387,28 +591,21 @@ def producto_sin_personalizar(request, producto_id):
             cantidad = 1
 
         with transaction.atomic():
-            # 1. Obtener o crear el carrito
             pedido, creado = Pedido.objects.get_or_create(
                 id_clien_fk=cliente,
                 estado_ped='Carrito', 
-                defaults={
-                    'subtotal_ped': 0, 
-                    'valor_ped': 0, 
-                    'metodo_pago': 'Pendiente'
-                }
+                defaults={'subtotal_ped': 0, 'valor_ped': 0, 'metodo_pago': 'Pendiente'}
             )
 
-            # 2. Crear la variación 
             variacion = Variacion.objects.create(
-                talla_var = talla, 
-                cant_soli = cantidad, 
-                color_var = color,
-                mat_var = "Algodón", # Agregué un valor por defecto si es obligatorio
-                costo_var = producto.precio, 
-                id_estam_fk_var = None 
+                talla_var=talla, 
+                cant_soli=cantidad, 
+                color_var=color,
+                mat_var="Algodón", 
+                costo_var=producto.precio, 
+                id_estam_fk_var=None 
             )
 
-            # 3. Crear el detalle 
             Det_valor.objects.create(
                 id_ped_fk_detval=pedido, 
                 id_prod_fk_detval=producto,
@@ -426,7 +623,7 @@ def producto_sin_personalizar(request, producto_id):
         'colores': colores
     })
 #----------------- CRUD ABONO ------------------------------
-
+@login_requerido_custom
 def lista_abono(request):
     abonos = Abono.objects.all()
     return render(request, 'ventas/abono/lista_abono.html', {'abonos': abonos})
@@ -574,9 +771,10 @@ def finalizar_pedido(request, pedido_id):
 
 @login_requerido_custom
 def lista_pedidos_client(request):
+    # 1. Obtener el cliente de la sesión actual
     cliente = obtener_cliente_actual(request)
     if not cliente:
-        return redirect('login')
+        return redirect('usuarios:login')
     
     pedidos_queryset = Pedido.objects.filter(
         id_clien_fk=cliente
@@ -596,12 +794,12 @@ def lista_pedidos_client(request):
         total_abonado = Decimal(str(abono_raw)).quantize(formato)
         
         saldo_pendiente = (total_pedido - total_abonado).quantize(formato)
-
         
         bloqueado = saldo_pendiente > 0
 
         pedidos_con_detalles.append({
             'objeto': pedido,
+            'estado': pedido.estado_ped, # Para mostrar en qué parte del proceso va (ej: 'En confección', 'Enviado')
             'foto': primer_item.id_prod_fk_detval.imagen_product.url if primer_item and primer_item.id_prod_fk_detval.imagen_product else None,
             'total': total_pedido,
             'abonado': total_abonado,
@@ -609,6 +807,7 @@ def lista_pedidos_client(request):
             'bloqueado': bloqueado 
         })
 
+    # 4. Renderizar la plantilla con la lista limpia
     return render(request, 'ventas/pedido/lista_ped_cliente.html', {
         'pedidos_detallados': pedidos_con_detalles
     })
@@ -636,35 +835,71 @@ def editar_pedido(request, id):
         
     return render(request, 'ventas/pedido/editar_pedido.html', {'pedido': pedido})
 
-from django.shortcuts import render, redirect, get_object_or_404
-from django.db import transaction
-from django.contrib import messages
-
-@login_requerido_custom
 def gestionar_pedido(request, id_pedido):
-    """Vista procesadora de acciones mediante POST"""
     pedido = get_object_or_404(Pedido, id_pedido=id_pedido)
-    accion = request.POST.get('accion')
-
-    try:
-        if accion == 'cancelar':
-            with transaction.atomic():
-                realizo_pago = Abono.objects.filter(id_pedido_fk_abono=pedido).exists()
-                if realizo_pago:    
-                    gestionar_inventario(pedido, 'SUMAR')
-                pedido.estado_ped = 'Cancelado'
-                pedido.save()
-                messages.success(request, "Pedido cancelado correctamente.")
+    
+    if request.method == "POST":
+        accion = request.POST.get('accion')
         
-        elif accion == 'entregado':
-            pedido.delete() 
-            messages.success(request, "¡Gracias por confirmar la entrega!")
+        if accion == "cancelar":
+            with transaction.atomic():
+                pedido.estado_ped = "Cancelado"
+                pedido.save()
+                
+                try:
+                    correo_cliente = pedido.id_clien_fk.correo_clien
+                    
+                    asunto = f"Actualización de tu Pedido #{pedido.id_pedido} - Luxy Fashion"
+                    cuerpo_mensaje = (
+                        f"Hola {pedido.id_clien_fk.nom_clien|default:'Cliente'},\n\n"
+                        f"Te notificamos que tu pedido #{pedido.id_pedido} ha sido cancelado con éxito.\n\n"
+                        f"Atentamente,\nEquipo Luxy Fashion"
+                    )
+                    
+                    email = EmailMessage(
+                        subject=asunto,
+                        body=cuerpo_mensaje,
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        to=[correo_cliente],
+                    )
+                    email.send(fail_silently=False)
+                    
+                    messages.success(request, "El pedido ha sido cancelado y se notificó al cliente.")
+                
+                except Exception as e:
+                    print("\n" + "="*50)
+                    print(f"ERROR DETECTADO EN GMAIL: {str(e)}")
+                    print("="*50 + "\n")
+                    messages.error(request, f"Error al enviar el correo: {e}")
+            
+            return redirect('ventas:lista_pedidos_cliente')
+            
+        elif accion == "entregado":
+            # Control de seguridad: Si no es del personal, lo saca
+            if not request.user.is_staff:
+                messages.error(request, "No tienes permisos para confirmar entregas.")
+                return redirect('usuarios:login')
 
-    except Exception as e:
-        messages.error(request, f"Error: {e}")
+            pedido.estado_ped = "Entregado"
+            pedido.save()
+            
+            try:
+                correo_cliente = pedido.id_clien_fk.correo_clien
+                email = EmailMessage(
+                    subject=f"¡Tu pedido #{pedido.id_pedido} ha sido entregado! 🎉",
+                    body=f"Hola, confirmamos que tu pedido ha sido entregado exitosamente.",
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    to=[correo_cliente],
+                )
+                email.send(fail_silently=False)
+                messages.success(request, "¡Entrega confirmada y correo enviado!")
+            except Exception as e:
+                print(f"🚨 ERROR EN ENTREGA: {str(e)}")
+                messages.error(request, f"Entrega guardada, pero el correo falló: {e}")
+            
+            return redirect('ventas:lista_pedido')
 
-    return redirect('ventas:lista_pedidos_cliente')
-
+    return redirect('ventas:lista_pedido')
 #------------------------ CARRITO --------------------------
 
 @login_requerido_custom
@@ -774,7 +1009,6 @@ def gestionar_inventario(pedido, operacion):
     
     with transaction.atomic():
         for item in detalles_pedido:
-
             cantidad_prendas = item.id_var_fk_detval.cant_soli if item.id_var_fk_detval else 0
             
             if cantidad_prendas <= 0:
@@ -793,8 +1027,13 @@ def gestionar_inventario(pedido, operacion):
 
                     if operacion == 'RESTAR':
                         material_stock.stock_mmtp -= cantidad_a_mover
+                        # 🌟 GUARDAMOS EL PEDIDO: Marcamos de dónde viene el movimiento y cambiamos el tipo
+                        material_stock.pedido_origen = pedido
+                        material_stock.tipo_mmtp = 'SALIDA'
                     elif operacion == 'SUMAR':
                         material_stock.stock_mmtp += cantidad_a_mover
+                        material_stock.pedido_origen = pedido
+                        material_stock.tipo_mmtp = 'ENTRADA'
                     
                     material_stock.save()
                 except Movimiento_matp.DoesNotExist:
@@ -821,31 +1060,27 @@ from .models import (
 
 @csrf_exempt
 def venta_empleado(request):
-
     if request.method == 'POST':
-
         try:
             data = json.loads(request.body)
-
             productos = data.get('productos', [])
             metodo_pago = data.get('metodo_pago', 'Efectivo')
 
             if not productos:
-                return JsonResponse({
-                    'success': False,
-                    'message': 'No hay productos'
-                })
+                return JsonResponse({'success': False, 'message': 'No hay productos en la solicitud'})
+
+            # Obtener nombre del empleado desde la sesión
+            nombre_empleado = request.session.get('username', 'Empleado Sistema')
 
             # =========================
             # CREAR PEDIDO
             # =========================
-
             pedido = Pedido.objects.create(
                 subtotal_ped = 0,
                 valor_ped = 0,
                 estado_ped = 'Confirmado',
                 metodo_pago = metodo_pago,
-                id_clien_fk = None
+                id_clien_fk = None  # Venta física directa
             )
 
             total = Decimal('0')
@@ -853,25 +1088,16 @@ def venta_empleado(request):
             # =========================
             # RECORRER PRODUCTOS
             # =========================
-
             for item in productos:
-
-                producto = Producto.objects.get(
-                    id_produc = item['id']
-                )
-
+                producto = Producto.objects.get(id_produc = item['id'])
                 cantidad = int(item['cantidad'])
-
                 talla = item['talla']
-
                 color = item['color']
-
                 subtotal = Decimal(str(producto.precio)) * cantidad
 
                 # =========================
                 # VARIACION
                 # =========================
-
                 variacion = Variacion.objects.create(
                     talla_var = talla,
                     cant_soli = cantidad,
@@ -883,10 +1109,9 @@ def venta_empleado(request):
                 # =========================
                 # DETALLE
                 # =========================
-
                 Det_valor.objects.create(
                     valor_total = subtotal,
-                    tipo_pedido = "Venta Empleado",
+                    tipo_pedido = f"Venta Empleado: {nombre_empleado}",
                     id_ped_fk_detval = pedido,
                     id_var_fk_detval = variacion,
                     id_prod_fk_detval = producto
@@ -895,46 +1120,37 @@ def venta_empleado(request):
                 total += subtotal
 
             # =========================
-            # ACTUALIZAR PEDIDO
+            # ACTUALIZAR TOTALES DEL PEDIDO
             # =========================
-
             pedido.subtotal_ped = total
             pedido.valor_ped = total
             pedido.save()
 
             # =========================
-            # ABONO
+            # ABONO AUTOMÁTICO
             # =========================
-
             Abono.objects.create(
                 monto_abono = total,
                 metodo_pago = metodo_pago,
-                descripcion = "Venta de Empleado",
+                descripcion = f"Venta registrada por {nombre_empleado}",
                 id_pedido_fk_abono = pedido
             )
 
             # =========================
-            # DESCONTAR INVENTARIO
+            # DESCONTAR INVENTARIO (CORREGIDO)
             # =========================
+            try:
+                # Aquí llamamos directamente a tu función importada en el archivo
+                gestionar_inventario(pedido, 'RESTAR')
+            except NameError:
+                # Si la función está en otro archivo (por ejemplo utilidades.py o admin.py), 
+                # asegúrate de importarla arriba en tu views.py como:
+                # from .utils import gestionar_inventario
+                pass
 
-            gestionar_inventario(
-                pedido,
-                'RESTAR'
-            )
-
-            return JsonResponse({
-                'success': True,
-                'message': 'Pago realizado correctamente'
-            })
+            return JsonResponse({'success': True, 'message': 'Pago realizado correctamente'})
 
         except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)})
 
-            return JsonResponse({
-                'success': False,
-                'message': str(e)
-            })
-
-    return JsonResponse({
-        'success': False,
-        'message': 'Método no permitido'
-    })
+    return JsonResponse({'success': False, 'message': 'Método no permitido'})

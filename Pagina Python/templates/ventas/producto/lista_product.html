@@ -116,30 +116,28 @@
     }
 
     /* NOTIFICACIONES */
-
     .container-mensajes {
         margin-bottom: 15px; 
     }
 
     .alert {
-    padding: 10px;
-    border-radius: 4px;
-    font-weight: bold;
-    text-align: center;
+        padding: 10px;
+        border-radius: 4px;
+        font-weight: bold;
+        text-align: center;
     }
 
     .alert-success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
     }
 
     .alert-error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
     }
-
 </style>
 
 <div class="table-container">
@@ -153,12 +151,12 @@
             
             {% if messages %}
                 <div class="container-mensajes" id="mensaje-django">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-            {{ message }}
-            </div>
-            {% endfor %}
-            </div>
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                    </div>
+                {% endfor %}
+                </div>
             {% endif %}
             
             {% csrf_token %}
@@ -200,6 +198,30 @@
             <div class="form-group" style="margin-bottom: 20px;">
                 <label>Descripción del Producto</label>
                 <textarea name="desc_produc" rows="2" placeholder="Breve descripción de la prenda..." minlength="20" maxlength="50"></textarea>
+            </div>
+
+            <div class="form-group" style="background: #fafafa; padding: 15px; border-radius: 10px; border: 1px solid #f0f0f0; margin-bottom: 20px;">
+                <label style="color: #6a0f2e; font-weight: bold; margin-bottom: 8px;">Tallas Disponibles para esta Prenda</label>
+                <div style="display: flex; gap: 20px; flex-wrap: wrap; padding-top: 5px;">
+                    <label style="font-weight: 600; color: #555; cursor: pointer;"><input type="checkbox" name="tallas_seleccionadas[]" value="S" checked> S</label>
+                    <label style="font-weight: 600; color: #555; cursor: pointer;"><input type="checkbox" name="tallas_seleccionadas[]" value="M" checked> M</label>
+                    <label style="font-weight: 600; color: #555; cursor: pointer;"><input type="checkbox" name="tallas_seleccionadas[]" value="L" checked> L</label>
+                    <label style="font-weight: 600; color: #555; cursor: pointer;"><input type="checkbox" name="tallas_seleccionadas[]" value="XL" checked> XL</label>
+                    <label style="font-weight: 600; color: #555; cursor: pointer;"><input type="checkbox" name="tallas_seleccionadas[]" value="XXL"> XXL</label>
+                </div>
+            </div>
+
+            <div class="form-group" style="background: #fafafa; padding: 15px; border-radius: 10px; border: 1px solid #f0f0f0; margin-bottom: 20px;">
+                <label style="color: #6a0f2e; font-weight: bold;">Colores Disponibles (Nombres o Códigos Hexadecimales como #ff0000)</label>
+                <div id="contenedor-colores" style="margin-top: 10px;">
+                    <div class="fila-color" style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <input type="text" name="colores_nuevos[]" placeholder="Ej: fucsia, negro, blanco o #e0aaff" required style="flex: 2; padding: 10px; border: 1.5px solid #eee; border-radius: 8px;">
+                        <button type="button" onclick="eliminarColor(this)" style="background: #ff4d4d; color: white; border: none; padding: 5px 15px; cursor: pointer; border-radius: 8px; font-weight: bold;">✕</button>
+                    </div>
+                </div>
+                <button type="button" onclick="agregarColor()" style="background: #555; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; font-size: 11px; font-weight: bold; text-transform: uppercase;">
+                    + AGREGAR OTRO COLOR
+                </button>
             </div>
 
             <div class="form-group" style="background: #fcfcfc; padding: 15px; border-radius: 10px; border: 1px solid #f0f0f0; margin-bottom: 20px;">
@@ -257,12 +279,12 @@
                 <p class="product-cat" style="margin: 0; color: #888; font-size: 11px; text-transform: uppercase;">{{ p.gen_produc }} | {{ p.categoria_produc }}</p>
                 
                 {% for detalle in p.det_mov_matp_set.all %}
-    <p class="product-cat" style="margin: 0; color: #888; font-size: 11px; text-transform: uppercase;">
-        {{ detalle.materia_prima.mat_mmtp }} ({{ detalle.cantidad_usada }})
-    </p>
-{% empty %}
-    <p style="margin: 0; color: #ccc; font-size: 11px;">SIN MATERIALES</p>
-{% endfor %}
+                <p class="product-cat" style="margin: 0; color: #888; font-size: 11px; text-transform: uppercase;">
+                    {{ detalle.materia_prima.mat_mmtp }} ({{ detalle.cantidad_usada }})
+                </p>
+                {% empty %}
+                    <p style="margin: 0; color: #ccc; font-size: 11px;">SIN MATERIALES</p>
+                {% endfor %}
                 <p class="product-cat" style="margin: 0; color: #888; font-size: 11px; text-transform: uppercase;">dias producción {{ p.dias_produccion }}</p>
 
                 <h3 class="product-name" style="margin: 5px 0; font-size: 16px; color: #333; font-weight: 600;">{{ p.nom_produc }}</h3>
@@ -295,7 +317,31 @@
     </div>
 </template>
 
+<template id="template-color">
+    <div class="fila-color" style="display: flex; gap: 10px; margin-bottom: 10px;">
+        <input type="text" name="colores_nuevos[]" placeholder="Ej: fucsia, negro, blanco o #e0aaff" required style="flex: 2; padding: 10px; border: 1.5px solid #eee; border-radius: 8px;">
+        <button type="button" onclick="eliminarColor(this)" style="background: #ff4d4d; color: white; border: none; padding: 5px 15px; cursor: pointer; border-radius: 8px; font-weight: bold;">✕</button>
+    </div>
+</template>
+
 <script>
+    // 🌟 NUEVO: Dinamismo de Colores
+    function agregarColor() {
+        const contenedor = document.getElementById('contenedor-colores');
+        const template = document.getElementById('template-color').content;
+        const clon = template.cloneNode(true);
+        contenedor.appendChild(clon);
+    }
+
+    function eliminarColor(boton) {
+        const filas = document.querySelectorAll('.fila-color');
+        if (filas.length > 1) {
+            boton.parentElement.remove();
+        } else {
+            alert("Debes asignar al menos un color disponible.");
+        }
+    }
+
     // Dinamismo de Materiales
     function agregarFila() {
         const contenedor = document.getElementById('contenedor-materiales');

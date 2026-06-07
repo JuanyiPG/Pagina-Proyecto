@@ -4,7 +4,6 @@
 {% block content %}
 
 <style>
-
 :root{
     --vino:#800020;
     --vinoOscuro:#5e0018;
@@ -17,7 +16,6 @@ body{
 /* =========================
 CONTENEDOR
 ========================= */
-
 .table-container{
     padding:40px;
     padding-right:420px;
@@ -26,7 +24,6 @@ CONTENEDOR
 /* =========================
 TITULO
 ========================= */
-
 .title-section h2{
     font-size:40px;
     color:var(--vino);
@@ -40,7 +37,6 @@ TITULO
 /* =========================
 BUSCADOR
 ========================= */
-
 #product-search{
     width:100%;
     max-width:600px;
@@ -56,7 +52,6 @@ BUSCADOR
 /* =========================
 GRID
 ========================= */
-
 .productos-grid{
     display:grid;
     grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
@@ -66,7 +61,6 @@ GRID
 /* =========================
 CARD
 ========================= */
-
 .card-item{
     background:white;
     border-radius:25px;
@@ -125,7 +119,6 @@ CARD
 /* =========================
 BOTON
 ========================= */
-
 .btn-factura{
     width:100%;
     margin-top:20px;
@@ -145,7 +138,6 @@ BOTON
 /* =========================
 FACTURA
 ========================= */
-
 .factura-panel{
     position:fixed;
     top:0;
@@ -167,7 +159,6 @@ FACTURA
 /* =========================
 ITEM FACTURA
 ========================= */
-
 .item-factura{
     display:flex;
     gap:12px;
@@ -210,7 +201,6 @@ ITEM FACTURA
 /* =========================
 TOTAL
 ========================= */
-
 .total-factura{
     margin-top:30px;
     font-size:30px;
@@ -221,7 +211,6 @@ TOTAL
 /* =========================
 BOTON PAGAR
 ========================= */
-
 .btn-pagar{
     width:100%;
     margin-top:20px;
@@ -234,502 +223,233 @@ BOTON PAGAR
     font-weight:bold;
     cursor:pointer;
 }
-
 </style>
 
 <div class="table-container">
 
     <div class="title-section">
-
-        <h2>
-            Inventario de Productos
-        </h2>
-
-        <small>
-            Venta directa empleado
-        </small>
-
+        <h2>Inventario de Productos</h2>
+        <small>Venta directa empleado</small>
     </div>
 
-    <input type="text"
-    id="product-search"
-    placeholder="Buscar productos...">
+    <input type="text" id="product-search" placeholder="Buscar productos...">
 
     <div class="productos-grid">
-
         {% for p in productos %}
-
         <div class="card-item product-card">
-
             <div class="product-image">
-
                 {% if p.imagen_product %}
-
                 <img src="{{ p.imagen_product.url }}">
-
                 {% else %}
-
                 <img src="{% static 'img/default.jpg' %}">
-
                 {% endif %}
-
             </div>
 
-            <div class="card-info">
+            <div class="card-info" id="card-prod-{{ p.id_produc }}">
+                <small>{{ p.categoria_produc }}</small>
+                <h3 class="product-name">{{ p.nom_produc }}</h3>
+                <p class="product-price">${{ p.precio }}</p>
 
-                <small>
-                    {{ p.categoria_produc }}
-                </small>
-
-                <h3 class="product-name">
-                    {{ p.nom_produc }}
-                </h3>
-
-                <p class="product-price">
-                    ${{ p.precio }}
-                </p>
-
-                <!-- TALLA -->
-
-                <label class="label-option">
-                    Talla
-                </label>
-
+                <label class="label-option">Talla</label>
                 <select class="select-option talla-select">
-
                     <option value="S">S</option>
                     <option value="M">M</option>
                     <option value="L">L</option>
                     <option value="XL">XL</option>
-
                 </select>
 
-                <!-- COLOR -->
-
-                <label class="label-option">
-                    Color
-                </label>
-
+                <label class="label-option">Color</label>
                 <select class="select-option color-select">
-
-                    <option value="Negro">
-                        Negro
-                    </option>
-
-                    <option value="Blanco">
-                        Blanco
-                    </option>
-
-                    <option value="Rojo">
-                        Rojo
-                    </option>
-
-                    <option value="Azul">
-                        Azul
-                    </option>
-
+                    <option value="Negro">Negro</option>
+                    <option value="Blanco">Blanco</option>
+                    <option value="Rojo">Rojo</option>
+                    <option value="Azul">Azul</option>
                 </select>
-
-                <!-- BOTON -->
 
                 <button class="btn-factura"
-
                 onclick="agregarFactura(
                 '{{ p.id_produc }}',
                 '{{ p.nom_produc }}',
                 '{{ p.precio }}',
-                '{% if p.imagen_product %}{{ p.imagen_product.url }}{% endif %}',
-                this
+                '{% if p.imagen_product %}{{ p.imagen_product.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}'
                 )">
-
                     🛍️ Añadir a factura
-
                 </button>
-
             </div>
-
         </div>
-
         {% endfor %}
-
     </div>
-
 </div>
 
-<!-- FACTURA -->
-
 <div class="factura-panel">
-
-    <h2>
-        Factura
-    </h2>
-
+    <h2>Factura</h2>
     <div id="factura-items"></div>
 
     <div class="total-factura">
-
-        Total:
-        $
-        <span id="total">
-            0
-        </span>
-
+        Total: $ <span id="total">0</span>
     </div>
 
-    <!-- METODO PAGO -->
-
-    <label class="label-option">
-        Método de pago
-    </label>
-
-    <select id="metodo_pago"
-    class="select-option">
-
-        <option value="Efectivo">
-            Efectivo
-        </option>
-
-        <option value="Nequi">
-            Nequi
-        </option>
-
-        <option value="Daviplata">
-            Daviplata
-        </option>
-
-        <option value="Tarjeta">
-            Tarjeta
-        </option>
-
+    <label class="label-option">Método de pago</label>
+    <select id="metodo_pago" class="select-option">
+        <option value="Efectivo">Efectivo</option>
+        <option value="Nequi">Nequi</option>
+        <option value="Daviplata">Daviplata</option>
+        <option value="Tarjeta">Tarjeta</option>
     </select>
 
-    <!-- BOTON PAGAR -->
-
-    <button class="btn-pagar"
-    onclick="pagarFactura()">
-
-        PAGAR $
-        <span id="total-btn">
-            0
-        </span>
-
+    <button class="btn-pagar" onclick="pagarFactura()">
+        PAGAR $ <span id="total-btn">0</span>
     </button>
-
 </div>
 
-<!-- MODAL -->
-
-<div id="modal-pago"
-
-style="
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,.6);
-display:none;
-justify-content:center;
-align-items:center;
-z-index:99999;
-">
-
-    <div style="
-    background:white;
-    width:400px;
-    padding:40px;
-    border-radius:25px;
-    text-align:center;
-    ">
-
-        <h2 style="color:#800020;">
-            Pago realizado
-        </h2>
-
-        <p>
-            Venta de Empleado registrada correctamente
-        </p>
-
-        <button class="btn-pagar"
-
-        onclick="
-        document.getElementById('modal-pago').style.display='none'
-        ">
-
-            Aceptar
-
-        </button>
-
+<div id="modal-pago" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.6); display:none; justify-content:center; align-items:center; z-index:99999;">
+    <div style="background:white; width:400px; padding:40px; border-radius:25px; text-align:center;">
+        <h2 style="color:#800020;">Pago realizado</h2>
+        <p>Venta de Empleado registrada correctamente</p>
+        <button class="btn-pagar" onclick="document.getElementById('modal-pago').style.display='none'">Aceptar</button>
     </div>
-
 </div>
 
 <script>
-
 let factura = [];
-
 let total = 0;
 
 /* =========================
 BUSCADOR
 ========================= */
-
-document.getElementById('product-search')
-
-.addEventListener('input', function(e){
-
-    const texto =
-    e.target.value.toLowerCase();
-
-    const cards =
-    document.querySelectorAll('.product-card');
+document.getElementById('product-search').addEventListener('input', function(e){
+    const texto = e.target.value.toLowerCase();
+    const cards = document.querySelectorAll('.product-card');
 
     cards.forEach(card=>{
-
-        const nombre =
-        card.querySelector('.product-name')
-        .textContent
-        .toLowerCase();
-
+        const nombre = card.querySelector('.product-name').textContent.toLowerCase();
         if(nombre.includes(texto)){
-
             card.style.display = 'block';
-
         }else{
-
             card.style.display = 'none';
         }
-
     });
-
 });
 
 /* =========================
 AGREGAR FACTURA
 ========================= */
-
-function agregarFactura(
-id,
-nombre,
-precio,
-imagen,
-boton
-){
-
-    const card =
-    boton.closest('.card-info');
-
-    const talla =
-    card.querySelector('.talla-select').value;
-
-    const color =
-    card.querySelector('.color-select').value;
+function agregarFactura(id, nombre, precio, imagen){
+    const card = document.getElementById(`card-prod-${id}`);
+    const talla = card.querySelector('.talla-select').value;
+    const color = card.querySelector('.color-select').value;
 
     factura.push({
-
-        id:id,
-        nombre:nombre,
-        precio:parseFloat(precio),
-        talla:talla,
-        color:color,
-        cantidad:1,
-        imagen:imagen
-
+        id: id,
+        nombre: nombre,
+        precio: parseFloat(precio),
+        talla: talla,
+        color: color,
+        cantidad: 1,
+        imagen: imagen
     });
 
     renderFactura();
-
 }
 
 /* =========================
 RENDER FACTURA
 ========================= */
-
 function renderFactura(){
-
-    const contenedor =
-    document.getElementById('factura-items');
-
+    const contenedor = document.getElementById('factura-items');
     contenedor.innerHTML = "";
-
     total = 0;
 
-    factura.forEach((item,index)=>{
-
+    factura.forEach((item, index)=>{
         total += item.precio;
-
         contenedor.innerHTML += `
-
         <div class="item-factura">
-
             <img src="${item.imagen}">
-
             <div class="factura-info">
-
-                <h4>
-                    ${item.nombre}
-                </h4>
-
-                <p>
-                    $${item.precio}
-                </p>
-
-                <small>
-                    Talla:
-                    ${item.talla}
-                </small>
-
-                <br>
-
-                <small>
-                    Color:
-                    ${item.color}
-                </small>
-
-                <br>
-
-                <small>
-                    Venta de Empleado
-                </small>
-
+                <h4>${item.nombre}</h4>
+                <p>$${item.precio}</p>
+                <small>Talla: ${item.talla}</small><br>
+                <small>Color: ${item.color}</small><br>
+                <small style="color: green; font-weight: bold;">Venta de Empleado</small>
             </div>
-
-            <button class="btn-remove"
-
-            onclick="eliminarItem(${index})">
-
-                X
-
-            </button>
-
+            <button class="btn-remove" onclick="eliminarItem(${index})">X</button>
         </div>
-
         `;
-
     });
 
-    document.getElementById('total')
-    .innerText =
-    total.toLocaleString();
-
-    document.getElementById('total-btn')
-    .innerText =
-    total.toLocaleString();
-
+    document.getElementById('total').innerText = total.toLocaleString();
+    document.getElementById('total-btn').innerText = total.toLocaleString();
 }
 
 /* =========================
-ELIMINAR
+ELIMINAR ITEM
 ========================= */
-
 function eliminarItem(index){
-
-    factura.splice(index,1);
-
+    factura.splice(index, 1);
     renderFactura();
-
 }
 
 /* =========================
-PAGAR
+PAGAR FACTURA
 ========================= */
-
+/* =========================
+PAGAR FACTURA
+========================= */
 function pagarFactura(){
-
     if(factura.length == 0){
-
-        alert("No hay productos");
-
+        alert("No hay productos en la factura");
         return;
     }
 
-    const metodo =
-    document.getElementById('metodo_pago').value;
+    const metodo = document.getElementById('metodo_pago').value;
 
-    fetch("/ventas/venta-empleado/",{
-
-        method:"POST",
-
-        headers:{
-
-            "Content-Type":"application/json",
+    // 🌟 Ahora sí apuntará perfectamente a /ventas/venta-empleado/
+    fetch("{% url 'ventas:venta_empleado' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
             "X-CSRFToken": obtenerCSRFToken()
-
         },
-
-        body:JSON.stringify({
-
-            productos:factura,
-
-            metodo_pago:metodo
-
+        body: JSON.stringify({
+            productos: factura,
+            metodo_pago: metodo
         })
-
     })
-
-    .then(response=>response.json())
-
-    .then(data=>{
-
-        console.log(data);
-
-        if(data.success){
-
-            document.getElementById(
-            'modal-pago'
-            ).style.display = 'flex';
-
-            factura = [];
-
-            renderFactura();
-
-        }else{
-
-            alert(data.message);
-
+    .then(response => {
+        if (!response.ok || response.headers.get("content-type").includes("text/html")) {
+            throw new Error("El servidor devolvió un HTML. Asegúrate de haber iniciado sesión como empleado.");
         }
-
+        return response.json();
     })
-
-    .catch(error=>{
-
-        console.log(error);
-
-        alert("Error al pagar");
-
+    .then(data => {
+        if(data.success){
+            document.getElementById('modal-pago').style.display = 'flex';
+            factura = [];
+            renderFactura();
+        } else {
+            alert("Error del servidor: " + data.message);
+        }
+    })
+    .catch(error => {
+        console.error(error);
+        alert(error.message || "Error de comunicación con el servidor");
     });
-
 }
 
 /* =========================
-CSRF
+OBTENER CSRF TOKEN
 ========================= */
-
 function obtenerCSRFToken(){
-
     let cookieValue = null;
-
-    const cookies =
-    document.cookie.split(';');
-
-    for(let i=0;i<cookies.length;i++){
-
-        let cookie =
-        cookies[i].trim();
-
+    const cookies = document.cookie.split(';');
+    for(let i=0; i<cookies.length; i++){
+        let cookie = cookies[i].trim();
         if(cookie.startsWith('csrftoken=')){
-
-            cookieValue =
-            cookie.substring('csrftoken='.length);
-
+            cookieValue = cookie.substring('csrftoken='.length);
         }
-
     }
-
     return cookieValue;
-
 }
-
 </script>
 
 {% endblock %}

@@ -484,17 +484,26 @@ def login_view(request):
         try:
             usuario = Usuario.objects.get(username=user_post)
             
-            if check_password(pass_post, usuario.contrasena):
-                # Limpieza de cola antes del flush
-                storage = messages.get_messages(request)
-                for _ in storage: pass 
-                
+            # 🌟 DEBUG: Mira tu consola de comandos al presionar "Ingresar"
+            print("\n" + "="*40)
+            print(f"DEBUG LOGIN FOR: {user_post}")
+            print(f"Clave escrita en formulario: '{pass_post}'")
+            print(f"Hash guardado en Base de Datos: '{usuario.contrasena}'")
+            
+            es_valida = check_password(pass_post, usuario.contrasena)
+            print(f"¿La contraseña coincide en Django?: {es_valida}")
+            print("="*40 + "\n")
+            
+            if es_valida:
+                # 1. Primero destruimos y recreamos la sesión de forma segura
                 request.session.flush() 
 
+                # 2. Asignamos los datos del usuario a la nueva sesión limpia
                 request.session['usuario_id'] = usuario.id_usuario
                 request.session['username'] = usuario.username
                 request.session['rol'] = usuario.id_rol_fk.nom_rol
 
+                # 3. Agregamos el mensaje de éxito DESPUÉS del flush
                 messages.success(request, f"Bienvenido, {usuario.username}")
 
                 # Estandarización de desvíos lógicos basados en rol normalizado
@@ -528,10 +537,19 @@ def registro_view(request):
     if request.method == 'POST':
         nombre = request.POST.get('nombre')
         direccion = request.POST.get('direccion')
-        telefono = request.POST.get('telefono')
+        telefono = request.POST.get('telefono', '').strip() # Quitamos espacios en blanco extras
         correo = request.POST.get('correo')
         usuario_val = request.POST.get('username', '').strip()
         contra = request.POST.get('password')
+
+        if telefono:
+            telefono = telefono.replace(" ", "").replace("-", "")
+            
+            if not telefono.startswith('+57'):
+                if telefono.startswith('57') and len(telefono) > 10:
+                    telefono = '+' + telefono
+                else:
+                    telefono = '+57' + telefono
 
         if Usuario.objects.filter(username=usuario_val).exists():
             messages.error(request, 'El nombre de usuario ya existe.')
@@ -550,7 +568,7 @@ def registro_view(request):
                 Cliente.objects.create(
                     nom_clien=nombre,
                     dir_clien=direccion,
-                    tel_clien=telefono,
+                    tel_clien=telefono, 
                     correo_clien=correo,
                     id_usuario_fk=nuevo_perfil
                 )

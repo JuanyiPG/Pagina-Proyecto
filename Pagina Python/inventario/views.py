@@ -115,9 +115,7 @@ def editar_provee(request, id):
 
             if fecha_usuario > hoy:
                 messages.error(request, "Error: La fecha de ingreso no puede ser mayor a la actual.")
-                return redirect('inventario:editar_provee', id=id) # Recarga la edición si hay error
-                
-            # 2. Validar pasado mínimo (2 meses del mismo año)
+                return redirect('inventario:editar_provee', id=id) 
             if fecha_usuario < hace_dos_meses:
                 messages.error(request, f"Error: La fecha no puede ser anterior al {hace_dos_meses.strftime('%d/%m/%Y')}.")
                 return redirect('inventario:editar_provee', id=id)
@@ -142,54 +140,23 @@ def eliminar_provee(request, id):
 
 # --- MOVIMIENTOS MATP ---
 
-def obtener_motivo_pedido(movimiento_historial):
-    """
-    Identifica el motivo calculando si la variación de stock coincide 
-    con un pedido real del producto, si no, es Manual.
-    """
-    # 1. Si es ENTRADA, por defecto en tu flujo es carga manual o proveedor
-    if movimiento_historial.tipo_mmtp == 'ENTRADA':
-        return "Manual"
-    
-    # 2. Buscamos las recetas asociadas a este material exacto
-    recetas = Det_mov_matp.objects.filter(
-        materia_prima__mat_mmtp=movimiento_historial.mat_mmtp,
-        materia_prima__color_mmtp=movimiento_historial.color_mmtp
-    ).select_related('producto')
-    
-    if not recetas.exists():
-        return "Manual"
-
-    # 3. Traemos el historial de este material para calcular cuánto varió en ESTE movimiento específico
-    # Buscamos el registro inmediatamente anterior en el historial para saber la variación real
-    historial_completo = list(movimiento_historial.instance.history.all().order_by('history_date'))
-    
-    variacion_stock = 0
-    for i, h in enumerate(historial_completo):
-        if h.history_id == movimiento_historial.history_id:
-            if i == 0:
-                variacion_stock = float(movimiento_historial.stock_mmtp)
-            else:
-                variacion_stock = float(movimiento_historial.stock_mmtp) - float(historial_completo[i-1].stock_mmtp)
-            break
-            
-    variacion_absoluta = abs(variacion_stock)
-
-    if variacion_absoluta == 0:
-        return "Manual"
-
-    for receta in recetas:
-        detalles_venta = Det_valor.objects.filter(id_prod_fk_detval=receta.producto).select_related('id_ped_fk_detval', 'id_var_fk_detval')
+def obtener_motivo_pedido(h):
+    try:
+        # Aquí debes tener un código similar a este que busca el pedido:
+        if h.pedido_origen_id:  # o como tengas nombrado el campo en tu modelo
+            # 🌟 IMPORTANTE: Envolvemos el .get() para atrapar el error si no existe
+            pedido = Pedido.objects.get(id_pedido=h.pedido_origen_id)
+            return f"Pedido #{pedido.id_pedido} - Cliente"
         
-        for detalle in detalles_venta:
-            cantidad_prendas = detalle.id_var_fk_detval.cant_soli if detalle.id_var_fk_detval else 0
-
-            descuento_teorico = float(receta.cantidad_usada) * cantidad_prendas
+        # Si está asociado a un proveedor
+        if h.id_proveedor_fk_id:
+            return f"Entrada Proveedor"
             
-            if abs(descuento_teorico - variacion_absoluta) < 0.01: 
-                return f"Pedido #{detalle.id_ped_fk_detval.id_pedido}"
+        return "Manual / Ajuste"
 
-    return "Manual"
+    except Pedido.DoesNotExist:
+        # 🛡️ Si el pedido fue eliminado, evitamos que la página se rompa
+        return "Pedido Eliminado (Historial)"
 
 def lista_mmtp(request):
     if request.method == "POST":
@@ -207,9 +174,10 @@ def lista_mmtp(request):
                 fecha_mmtp=request.POST.get('fecha_mmtp'),
                 stock_mmtp=stock_final,
                 mat_mmtp=request.POST.get('mat_mmtp'),
-                id_proveedor_fk=proveedor_instancia
+                id_proveedor_fk=proveedor_instancia,
+                pedido_origen=None # proveedores no tienen un pedido de cliente asociado
             )
-            messages.success(request, f"Materia Prima guardado con exito")
+            messages.success(request, f"Materia Prima guardada con éxito")
             return redirect('inventario:lista_mmtp')
 
     mmtp = Movimiento_matp.objects.all()
@@ -227,9 +195,11 @@ def lista_mmtp(request):
                 antes = float(h_queryset[i-1].stock_mmtp)
             
             variacion = stock_en_esta_foto - antes
+            
+            # Definimos visualmente si subió o bajó el stock
             tipo_mov_real = 'ENTRADA' if variacion >= 0 else 'SALIDA'
             
-            # Usamos nuestra funcioncita auxiliar de la vista
+            # Trae el motivo real leyendo la clave foránea guardada en la foto del historial
             motivo_real = obtener_motivo_pedido(h)
             
             procesados.append({
@@ -238,15 +208,12 @@ def lista_mmtp(request):
                 'variacion': abs(variacion),
                 'tipo': tipo_mov_real,
                 'despues': stock_en_esta_foto,
-                'motivo': motivo_real  # Esto alimenta al modal interno
+                'motivo': motivo_real
             })
             
         procesados.reverse()
         m.historial_calculado = procesados
 
-        # 🌟 EL CAMBIO CLAVE AQUÍ:
-        # Si el material tiene historial, tomamos el motivo del movimiento más reciente 
-        # (que quedó de primero tras el .reverse()) y se lo asignamos a motivo_principal
         if procesados:
             m.motivo_principal = procesados[0]['motivo']
         else:

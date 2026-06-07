@@ -77,7 +77,7 @@
 
         /* Personalización sutil para los botones de SweetAlert para que combinen con Luxy */
         .luxy-swal-confirm {
-            background-color: #632222 !important;
+            background-color: #752727 !important;
             color: white !important;
             border-radius: 8px !important;
             padding: 10px 24px !important;
@@ -87,6 +87,23 @@
             color: white !important;
             border-radius: 8px !important;
             padding: 10px 24px !important;
+        }
+
+        /* Estilos específicos para el nuevo botón de entrega */
+        .btn-entregado-action {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 12px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .btn-entregado-action:hover {
+            background-color: #1e7e34;
+            transform: scale(1.05);
         }
     </style>
 
@@ -112,7 +129,7 @@
                         <th>Estado</th>
                         <th>Prendas</th>
                         <th>Caja / Pagos</th>
-                        <th>Acción</th>
+                        <th>Acciones de Control</th>
                     </tr>
                 </thead>
 
@@ -124,7 +141,12 @@
                         <td>{{ p.fecha_formateada }}</td>
                         <td style="font-weight: bold; color: #7e1a3f;">${{ p.valor_ped }}</td>
                         <td>
-                            <span class="badge {% if p.estado_ped == 'Cancelado' or p.estado_ped == 'Prueba' %}bg-danger{% else %}bg-success{% endif %}" style="padding: 5px 10px; font-size: 11px;">
+                            <span class="badge 
+                                {% if p.estado_ped == 'Cancelado' or p.estado_ped == 'Prueba' %}bg-danger
+                                {% elif p.estado_ped == 'Pendiente' %}bg-warning text-dark
+                                {% elif p.estado_ped == 'Entregado' %}bg-primary
+                                {% else %}bg-success{% endif %}" 
+                                style="padding: 5px 10px; font-size: 11px;">
                                 {{ p.estado_ped }}
                             </span>
                         </td>
@@ -139,24 +161,46 @@
                             <button type="button" class="btn" 
                                 style="background-color: #800020; color: white; border-radius: 8px; padding: 6px 12px; font-size: 12px;" 
                                 data-bs-toggle="modal" data-bs-target="#modalPagos{{ forloop.counter }}">
-                                {% if p.abono_set and p.abono_set.count > 1 %}
-                                    <i class="fas fa-wallet"></i> Ver Abonos
-                                {% else %}
-                                    <i class="fas fa-money-bill-wave"></i> Ver Contado
-                                {% endif %}
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash-stack" viewBox="0 0 16 16">
+                                    <path d="M1 3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1zm7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
+                                    <path d="M0 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2z"/>
+                                </svg>
                             </button>
                         </td>
                         <td>
-                            {% if p.id_pedido != "Sin ID" %}
-                            <a href="{% url 'ventas:eliminar_pedido' p.id_pedido %}" 
-                               class="btn btn-sm btn-danger btn-eliminar-pedido" 
-                               style="border-radius: 6px; padding: 4px 8px; font-size: 12px; text-decoration: none;"
-                               data-id="{{ p.id_pedido }}">
-                                <i class="fas fa-trash"></i> Borrar
-                            </a>
-                            {% else %}
-                            <span class="text-muted" style="font-size: 11px;">Dato Huérfano</span>
-                            {% endif %}
+                            <div style="display: flex; gap: 5px; justify-content: center; align-items: center;">
+                                {% if p.id_pedido != "Sin ID" %}
+                                    
+                                    {% if p.estado_ped != 'Entregado' and p.estado_ped != 'Cancelado' %}
+                                        <button type="button" class="btn-entregado-action" onclick="confirmarEntregaPedido('{{ p.id_pedido }}')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-check" viewBox="0 0 16 16">
+                                            <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0z"/>
+                                            <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zm3.915 10L3.102 4h10.796l-1.313 7zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                                            </svg>
+                                        </button>
+                                    {% else %}
+                                        <span class="text-muted" style="font-size: 12px; font-style: italic;">Sin acciones</span>
+                                    {% endif %}
+
+                                    <a href="{% url 'ventas:eliminar_pedido' p.id_pedido %}" 
+                                        class="btn btn-sm btn-danger btn-eliminar-pedido" 
+                                        style="border-radius: 6px; padding: 4px 8px; font-size: 12px; text-decoration: none;"
+                                        data-id="{{ p.id_pedido }}">
+                                        <i class="fas fa-trash"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                                        </svg></i>
+                                    </a>
+
+                                    <form id="form-entregar-{{ p.id_pedido }}" method="POST" action="{% url 'ventas:gestionar_pedido' p.id_pedido %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="accion" value="entregado">
+                                    </form>
+
+                                {% else %}
+                                    <span class="text-muted" style="font-size: 11px;">Dato Huérfano</span>
+                                {% endif %}
+                            </div>
                         </td>
                     </tr>
                     {% empty %}
@@ -230,22 +274,22 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1);"></button>
             </div>
             <div class="modal-body" style="padding: 25px; text-align: center;">
-                
-                <div class="mb-4">
+
+                <div style="background: #fafafa; padding: 8px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #eee;">
+                    <small style="color: #666; font-weight: bold; text-transform: uppercase;">Valor Total del Pedido</small>
+                    <h3 style="margin: 5px 0 0 0; color: #7e1a3f; font-weight: bold;">${{ p.valor_ped }}</h3>
+
+                    <div class="mb-4">
                     {% if p.abono_set and p.abono_set.count > 1 or p.metodo_pago == "Abono" or p.metodo_pago == "Credito" %}
-                        <span class="badge bg-warning text-dark" style="font-size: 13px; padding: 8px 16px; border-radius: 20px;">
-                            <i class="fas fa-clock"></i> MÉTODOS DE PAGO: ABONOS / CRÉDITO
+                        <span style="font-size: 10px; padding: 8px 10px; margin: 10px 0 -10px 0">
+                            <i ></i> MÉTODOS DE PAGO: ABONOS / CRÉDITO
                         </span>
                     {% else %}
-                        <span class="badge bg-success" style="font-size: 13px; padding: 8px 16px; border-radius: 20px;">
-                            <i class="fas fa-check-circle"></i> MÉTODO DE PAGO: CONTADO ({% firstof p.metodo_pago "Efectivo" %})
+                        <span  style="font-size: 12px; padding: 8px 18px; margin: 10px 0 -10px 0;">
+                            <i ></i> MÉTODO DE PAGO: CONTADO ({% firstof p.metodo_pago "Efectivo" %})
                         </span>
                     {% endif %}
                 </div>
-
-                <div style="background: #fafafa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #eee;">
-                    <small style="color: #666; font-weight: bold; text-transform: uppercase;">Valor Total del Pedido</small>
-                    <h3 style="margin: 5px 0 0 0; color: #7e1a3f; font-weight: bold;">${{ p.valor_ped }}</h3>
                 </div>
 
                 <table class="table table-sm table-striped text-center align-middle">
@@ -281,20 +325,50 @@
 {% endfor %}
 
 <script>
+// Manejar la confirmación de la entrega del pedido por el Administrador
+function confirmarEntregaPedido(idPedido) {
+    Swal.fire({
+        title: '¿Confirmar entrega exitosa?',
+        text: 'Se enviará un correo de confirmación al cliente automáticamente.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, marcar entregado',
+        cancelButtonText: 'Volver atrás',
+        customClass: {
+            confirmButton: 'luxy-swal-confirm',
+            cancelButton: 'luxy-swal-cancel'
+        },
+        buttonsStyling: false,
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Mostrar estado de procesamiento limpio antes del submit
+            Swal.fire({
+                title: 'Enviando notificación...',
+                text: 'Actualizando registros y despachando correo electrónico.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            // Ejecuta el submit del formulario POST oculto
+            document.getElementById('form-entregar-' + idPedido).submit();
+        }
+    });
+}
+
 document.addEventListener("DOMContentLoaded", function() {
     
-    // 🌟 INTERCEPTOR DE ELIMINACIÓN CON SWEETALERT2
+    // INTERCEPTOR DE ELIMINACIÓN CON SWEETALERT2
     const botonesEliminar = document.querySelectorAll('.btn-eliminar-pedido');
-    
     botonesEliminar.forEach(boton => {
         boton.addEventListener('click', function(e) {
-            e.preventDefault(); // Detiene la navegación directa de Django
+            e.preventDefault(); 
             const urlDestino = this.getAttribute('href');
-            const idPedido = this.getAttribute('data-id');
 
             Swal.fire({
-                title: '¿Estás segurx?',
-                text: `Vas a eliminar el Pedido #${idPedido}. Esta acción limpiará todo su historial y prendas asociadas de forma permanente.`,
+                title: '¿Estás seguro?',
+                text: "Esta acción limpiará todo su historial y prendas asociadas de forma permanente.",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: '<i class="fas fa-trash"></i> Sí, borrar pedido',
@@ -303,11 +377,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     confirmButton: 'luxy-swal-confirm',
                     cancelButton: 'luxy-swal-cancel'
                 },
-                buttonsStyling: false, // Permite que use nuestros estilos CSS limpios
+                buttonsStyling: false, 
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Si confirma, mostramos una alerta de carga y redirigimos
                     Swal.fire({
                         title: 'Procesando...',
                         text: 'Limpiando registros de la base de datos.',
@@ -322,7 +395,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // CÓDIGO DEL BUSCADOR
+    // CÓDIGO DEL BUSCADOR DE LA TABLA
     const searchInput = document.getElementById('searchPed');
     const tableBody = document.querySelector('#TablePed tbody');
 
@@ -342,17 +415,11 @@ document.addEventListener("DOMContentLoaded", function() {
         let anyVisible = false;
 
         rows.forEach(row => {
-            if (row.id === 'searchEmptyRow' || row.id === 'noResultsRow') return;
+            if (row.id === 'searchEmptyRow') return;
 
             let matchFound = false;
-            
             Array.from(row.cells).forEach(cell => {
                 let cellText = cell.textContent.toLowerCase();
-                let input = cell.querySelector('input');
-                if (input) {
-                    cellText += " " + input.value.toLowerCase();
-                }
-
                 if (cellText.includes(filter)) {
                     matchFound = true;
                 }
