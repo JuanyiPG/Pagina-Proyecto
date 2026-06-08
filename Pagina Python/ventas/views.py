@@ -387,12 +387,13 @@ def lista_producto(request):
     
 
 @solo_personal
-def lista_producto_admin(request): 
+def lista_producto_admin(request):
     nuevo_hash = None
     materiales_db = Movimiento_matp.objects.all()
     productos = Producto.objects.all()
 
-    if request.method == 'POST': 
+    if request.method == 'POST':
+        # Captura de datos básicos
         imagen_produc = request.FILES.get('imagen_produc')
         nom_produc = request.POST.get('nom_produc')
         gen_produc = request.POST.get('gen_produc')
@@ -402,17 +403,19 @@ def lista_producto_admin(request):
         precio = request.POST.get('precio')
         dias_produccion = request.POST.get('dias_produccion')
 
-        # 🌟 NUEVO: Capturar las opciones de variantes elegidas
+        # Captura de las nuevas variantes
         tallas_elegidas = request.POST.getlist('tallas_seleccionadas[]')
         colores_elegidos = request.POST.getlist('colores_nuevos[]')
 
-        try: 
-            precio_limpio = re.sub(r'[^\d]', '', precio)
+        # Limpieza de precio
+        try:
+            precio_limpio = re.sub(r'[^\d.]', '', precio.replace(',', '.'))
             valor = Decimal(precio_limpio)
-        except(InvalidOperation, TypeError):
+        except (InvalidOperation, TypeError, ValueError):
             valor = Decimal('0.00')
 
-        if imagen_produc: 
+        # Procesamiento de imagen
+        if imagen_produc:
             hasher = hashlib.sha256()
             for chunk in imagen_produc.chunks():
                 hasher.update(chunk)
@@ -420,55 +423,56 @@ def lista_producto_admin(request):
             imagen_produc.seek(0)
 
             if Producto.objects.filter(imagen_hash=nuevo_hash).exists():
-                return render(request, 'ventas/producto/lista_product.html',{
+                return render(request, 'ventas/producto/lista_product.html', {
                     'error': 'ERROR: Esta prenda ya ha sido subida anteriormente.',
                     'materiales': materiales_db,
                     'productos': productos
                 })
-        
-        # Estructura lógica original e intacta
-        nuevo_p = Producto.objects.create(
-            imagen_product=imagen_produc, imagen_hash=nuevo_hash, nom_produc=nom_produc, gen_produc=gen_produc,
-            desc_produc=desc_produc, categoria_produc=categoria_produc, estado_produc=estado_produc, 
-            precio=valor, dias_produccion=dias_produccion
-        )
-        
-        # 🌟 Guardar la relación en la sesión para que el cliente la pueda leer sin alterar la tabla Producto
-        if not request.session.get('variaciones_productos'):
-            request.session['variaciones_productos'] = {}
-        
-        request.session['variaciones_productos'][str(nuevo_p.id_produc)] = {
-            'tallas': tallas_elegidas if tallas_elegidas else ["S", "M", "L"],
-            'colores': [c.strip().lower() for c in colores_elegidos if c.strip()] if colores_elegidos else ["blanco"]
-        }
-        request.session.modified = True
 
+        # Creación del producto guardando colores y tallas en la base de datos
+        nuevo_p = Producto.objects.create(
+            imagen_product=imagen_produc,
+            imagen_hash=nuevo_hash,
+            nom_produc=nom_produc,
+            gen_produc=gen_produc,
+            desc_produc=desc_produc,
+            categoria_produc=categoria_produc,
+            estado_produc=estado_produc,
+            precio=valor,
+            dias_produccion=dias_produccion,
+            # Aquí es donde guardamos las listas como texto separado por comas
+            tallas_disponibles=",".join(tallas_elegidas) if tallas_elegidas else "S,M,L",
+            colores_disponibles=",".join(colores_elegidos) if colores_elegidos else "#ffffff,#000000"
+        )
+
+        # Gestión de materiales asociados
         ids_materiales = request.POST.getlist('material_ids[]')
         cantidades = request.POST.getlist('cantidades[]')
 
         for id_mat, cant in zip(ids_materiales, cantidades):
             if id_mat and cant:
-                Det_mov_matp.objects.create(
-                    producto = nuevo_p,
-                    materia_prima_id = id_mat, 
-                    cantidad_usada = cant
-                )
+                try:
+                    Det_mov_matp.objects.create(
+                        producto=nuevo_p,
+                        materia_prima_id=id_mat,
+                        cantidad_usada=Decimal(cant)
+                    )
+                except (ValueError, InvalidOperation):
+                    continue
 
         return redirect('ventas:lista_producto_admin')
-        
-    return render(request, 'ventas/producto/lista_product.html',{
+
+    return render(request, 'ventas/producto/lista_product.html', {
         'materiales': materiales_db,
         'productos': productos
     })
 
 @solo_personal
-def editar_producto(request, id): 
+def editar_producto(request, id):
     producto = get_object_or_404(Producto, id_produc=id)
-    
-    # Obtener el modelo de inventario dinámicamente para evitar Error Circular
     Movimiento_matp = apps.get_model('inventario', 'Movimiento_matp')
     
-    if request.method == 'POST': 
+    if request.method == 'POST':
         nueva_imagen = request.FILES.get('imagen_product')
         if nueva_imagen:
             producto.imagen_product = nueva_imagen
@@ -482,49 +486,33 @@ def editar_producto(request, id):
         producto.gen_produc = request.POST.get('gen_produc')
         producto.desc_produc = request.POST.get('desc_produc', '')
         producto.categoria_produc = request.POST.get('categoria_produc')
-
+        
         dias = request.POST.get('dias_produccion')
         producto.dias_produccion = int(dias) if dias and dias.strip() != "" else 10
-
         producto.estado_produc = request.POST.get('estado_produc', 'Nuevo')
-        precio = request.POST.get('precio', '0')
         
-        try: 
-            # 🌟 CORRECCIÓN: Permite números enteros y decimales con punto (ej: 25000.50)
+        precio = request.POST.get('precio', '0')
+        try:
             precio_limpio = re.sub(r'[^\d.]', '', precio.replace(',', '.'))
-            valor = Decimal(precio_limpio)
-        except (InvalidOperation, TypeError):
-            valor = Decimal('0.00')
+            producto.precio = Decimal(precio_limpio)
+        except (InvalidOperation, TypeError, ValueError):
+            producto.precio = Decimal('0.00')
 
-        producto.precio = valor
-        producto.save()
-
-        # 🌟 Variantes (Estructura en Sesión)
         tallas_nuevas = request.POST.getlist('tallas_seleccionadas[]')
         colores_nuevos = request.POST.getlist('colores_nuevos[]')
-        colores_limpios = [c.strip().lower() for c in colores_nuevos if c.strip()]
+        
+        producto.tallas_disponibles = ",".join(tallas_nuevas) if tallas_nuevas else "S,M,L"
+        producto.colores_disponibles = ",".join(colores_nuevos) if colores_nuevos else "#ffffff,#000000"
+        
+        producto.save()
 
-        if 'variaciones_productos' not in request.session:
-            request.session['variaciones_productos'] = {}
-
-        id_str = str(producto.id_produc)
-        request.session['variaciones_productos'][id_str] = {
-            'tallas': tallas_nuevas if tallas_nuevas else ["S", "M", "L"],
-            'colores': colores_limpios if colores_limpios else ["blanco"]
-        }
-        request.session.modified = True
-
-        # 🌟 Materia Prima (Guardado en Base de Datos)
+        Det_mov_matp.objects.filter(producto=producto).delete()
         material_ids = request.POST.getlist('material_ids[]')
         cantidades = request.POST.getlist('cantidades[]')
-
-        # Eliminamos los materiales anteriores para reescribir los nuevos
-        Det_mov_matp.objects.filter(producto=producto).delete()
 
         for id_mat, cant in zip(material_ids, cantidades):
             if id_mat and cant:
                 try:
-                    # Buscamos la instancia real antes de guardarla
                     insumo = Movimiento_matp.objects.get(pk=id_mat)
                     Det_mov_matp.objects.create(
                         producto=producto,
@@ -536,15 +524,11 @@ def editar_producto(request, id):
 
         return redirect('ventas:lista_producto_admin')
         
-    # --- GET: Cargar datos guardados ---
-    materiales_db = Movimiento_matp.objects.all()  
+    materiales_db = Movimiento_matp.objects.all()
     detalles_materiales = Det_mov_matp.objects.filter(producto=producto).select_related('materia_prima')
 
-    id_str = str(producto.id_produc)
-    variaciones = request.session.get('variaciones_productos', {}).get(id_str, {})
-    
-    tallas_actuales = variaciones.get('tallas', ["S", "M", "L"])
-    colores_actuales = variaciones.get('colores', ["blanco"])
+    tallas_actuales = producto.tallas_disponibles.split(',') if producto.tallas_disponibles else ["S", "M", "L"]
+    colores_actuales = producto.colores_disponibles.split(',') if producto.colores_disponibles else ["#ffffff", "#000000"]
 
     contexto = {
         'producto': producto,
@@ -567,18 +551,10 @@ def eliminar_producto(request, product_id):
 @login_requerido_custom
 def producto_sin_personalizar(request, producto_id):
     producto = get_object_or_404(Producto, id_produc=producto_id)
-    
-    # Para evitar el aislamiento de sesiones Admin/Cliente, buscamos en la sesión activa.
-    variaciones_globales = request.session.get('variaciones_productos', {})
-    datos_producto = variaciones_globales.get(str(producto.id_produc), None)
-    
-    if datos_producto:
-        tallas = datos_producto['tallas']
-        colores = datos_producto['colores']
-    else:
-        # Si el cliente entra desde otra sesión, le mostramos valores base lógicos
-        tallas = ["S", "M", "L"]
-        colores = ["blanco", "negro"]
+
+    tallas = producto.tallas_disponibles.split(',') if producto.tallas_disponibles else ["S", "M", "L"]
+    colores = producto.colores_disponibles.split(',') if producto.colores_disponibles else ["#ffffff", "#000000"]
+
     
     if request.method == 'POST':
         cliente = obtener_cliente_actual(request)
@@ -875,10 +851,6 @@ def gestionar_pedido(request, id_pedido):
             return redirect('ventas:lista_pedidos_cliente')
             
         elif accion == "entregado":
-            # Control de seguridad: Si no es del personal, lo saca
-            if not request.user.is_staff:
-                messages.error(request, "No tienes permisos para confirmar entregas.")
-                return redirect('usuarios:login')
 
             pedido.estado_ped = "Entregado"
             pedido.save()

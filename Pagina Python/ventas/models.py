@@ -29,6 +29,8 @@ class Producto(models.Model):
     estado_produc = models.CharField(max_length=50)
     dias_produccion = models.PositiveIntegerField(default=10)
     precio = models.DecimalField(max_digits=12, decimal_places=2)
+    tallas_disponibles = models.CharField(max_length=200, default="S,M,L")
+    colores_disponibles = models.CharField(max_length=200, default="#ffffff,#000000")
 
     def __str__(self):
         return self.nom_produc

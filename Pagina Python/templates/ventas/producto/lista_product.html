@@ -203,7 +203,7 @@
             <div class="form-group" style="background: #fafafa; padding: 15px; border-radius: 10px; border: 1px solid #f0f0f0; margin-bottom: 20px;">
                 <label style="color: #6a0f2e; font-weight: bold; margin-bottom: 8px;">Tallas Disponibles para esta Prenda</label>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap; padding-top: 5px;">
-                    <label style="font-weight: 600; color: #555; cursor: pointer;"><input type="checkbox" name="tallas_seleccionadas[]" value="S" checked> S</label>
+                    <label style="font-weight: 600; color: #555; cursor: pointer;"><input type="checkbox" name="tallas_seleccionadas[]" value="S" checked required> S</label>
                     <label style="font-weight: 600; color: #555; cursor: pointer;"><input type="checkbox" name="tallas_seleccionadas[]" value="M" checked> M</label>
                     <label style="font-weight: 600; color: #555; cursor: pointer;"><input type="checkbox" name="tallas_seleccionadas[]" value="L" checked> L</label>
                     <label style="font-weight: 600; color: #555; cursor: pointer;"><input type="checkbox" name="tallas_seleccionadas[]" value="XL" checked> XL</label>
@@ -212,10 +212,10 @@
             </div>
 
             <div class="form-group" style="background: #fafafa; padding: 15px; border-radius: 10px; border: 1px solid #f0f0f0; margin-bottom: 20px;">
-                <label style="color: #6a0f2e; font-weight: bold;">Colores Disponibles (Nombres o Códigos Hexadecimales como #ff0000)</label>
+                <label style="color: #6a0f2e; font-weight: bold;">Colores Disponibles</label>
                 <div id="contenedor-colores" style="margin-top: 10px;">
                     <div class="fila-color" style="display: flex; gap: 10px; margin-bottom: 10px;">
-                        <input type="text" name="colores_nuevos[]" placeholder="Ej: fucsia, negro, blanco o #e0aaff" required style="flex: 2; padding: 10px; border: 1.5px solid #eee; border-radius: 8px;">
+                        <input type="color" name="colores_nuevos[]" required style="flex: 2; padding: 10px; border: 1px solid #eee; border-radius: 8px;">
                         <button type="button" onclick="eliminarColor(this)" style="background: #ff4d4d; color: white; border: none; padding: 5px 15px; cursor: pointer; border-radius: 8px; font-weight: bold;">✕</button>
                     </div>
                 </div>
@@ -319,13 +319,12 @@
 
 <template id="template-color">
     <div class="fila-color" style="display: flex; gap: 10px; margin-bottom: 10px;">
-        <input type="text" name="colores_nuevos[]" placeholder="Ej: fucsia, negro, blanco o #e0aaff" required style="flex: 2; padding: 10px; border: 1.5px solid #eee; border-radius: 8px;">
+        <input type="color" name="colores_nuevos[]" required style="flex: 2; padding: 10px; border: 1.5px solid #eee; border-radius: 8px;">
         <button type="button" onclick="eliminarColor(this)" style="background: #ff4d4d; color: white; border: none; padding: 5px 15px; cursor: pointer; border-radius: 8px; font-weight: bold;">✕</button>
     </div>
 </template>
 
 <script>
-    // 🌟 NUEVO: Dinamismo de Colores
     function agregarColor() {
         const contenedor = document.getElementById('contenedor-colores');
         const template = document.getElementById('template-color').content;

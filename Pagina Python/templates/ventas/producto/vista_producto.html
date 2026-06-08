@@ -261,17 +261,16 @@
                 <!-- COLORES INFINITOS EN CALIENTE CARGADOS POR EL ADMIN -->
                 <!-- ====================================================================== -->
                 <div style="margin-bottom: 25px;">
-                    <label style="display: block; margin-bottom: 12px; font-weight: bold; color: #555; font-size: 13px;">COLOR:</label>
                     <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                        {% for c in colores %}
-                        <label title="{{ c|capfirst }}">
-                            <input type="radio" name="color" value="{{ c }}" style="display:none;" required>
-                            <span class="color-circle" 
-                                style="background-color: {% if c|lower == 'rojo' %}#d90429{% elif c|lower == 'azul' %}#0077b6{% elif c|lower == 'blanco' %}#ffffff{% elif c|lower == 'gris' %}#8d99ae{% elif c|lower == 'negro' %}#2b2d42{% else %}{{ c }}{% endif %};">
-                            </span>
-                        </label>
-                        {% endfor %}
-                    </div>
+    {% for c in colores %}
+    <label title="{{ c }}">
+        <input type="radio" name="color" value="{{ c }}" style="display:none;" required>
+        <span class="color-circle" 
+            style="background-color: {{ c }}; border: 1px solid #ccc; display: inline-block; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;">
+        </span>
+    </label>
+    {% endfor %}
+</div>
                 </div>
 
                 <div style="margin-bottom: 30px; display: flex; align-items: center; gap: 15px;">
