@@ -128,7 +128,8 @@
                             </div>
                             <div class="form-group">
                                 <label style="color: #666;">Nueva Contraseña</label>
-                                <input type="password" name="password" placeholder="Dejar en blanco para no cambiar" class="input-style" style="border: 1px solid #7e1a3f50;" minlength="12" maxlength="64">
+                                <input type="password" name="password" placeholder="Dejar en blanco para no cambiar" class="input-style" style="border: 1px solid #7e1a3f50;" minlength="8" 
+            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" >
                                 <small style="color: #999; font-size: 10px;">* La contraseña actual está encriptada y no se puede mostrar.</small>
                             </div>
                         </div>

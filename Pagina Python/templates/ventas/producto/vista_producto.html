@@ -230,6 +230,7 @@
         <div class="form-pro">
             <h1 class="product-title">{{ producto.nom_produc }}</h1>
             <div class="product-price">$ {{ producto.precio }}</div>
+            <span style="margin: -20px, 20px, 30px, 20px; font-size: 12px;">Si desea hacer un pedido superior de 7 unidades, por favor comuniquese por medios como Instagram o WhatsApp</span>
 
             <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0 25px 0;">
 
@@ -242,9 +243,6 @@
             <form action="{% url 'ventas:producto_sin_personalizar' producto.id_produc %}" method="POST">
                 {% csrf_token %}
 
-                <!-- ====================================================================== -->
-                <!-- TALLAS CARGADAS DINÁMICAMENTE DESDE LA BASE/SESIÓN -->
-                <!-- ====================================================================== -->
                 <div style="margin-bottom: 25px;">
                     <label style="display:block; margin-bottom: 12px; font-weight: bold; color: #555; font-size: 13px;">TALLA:</label>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
@@ -257,9 +255,6 @@
                     </div>
                 </div>
 
-                <!-- ====================================================================== -->
-                <!-- COLORES INFINITOS EN CALIENTE CARGADOS POR EL ADMIN -->
-                <!-- ====================================================================== -->
                 <div style="margin-bottom: 25px;">
                     <div style="display: flex; gap: 15px; flex-wrap: wrap;">
     {% for c in colores %}
@@ -275,7 +270,7 @@
 
                 <div style="margin-bottom: 30px; display: flex; align-items: center; gap: 15px;">
                     <label style="font-weight: bold; color: #555; font-size: 13px;">CANTIDAD:</label>
-                    <input type="number" name="cantidad" value="1" min="1" 
+                    <input type="number" name="cantidad" value="1" min="1" max="7" 
                         style="width: 70px; padding: 12px; border-radius: 12px; border: 1px solid #ddd; text-align: center; font-weight: bold; font-size: 16px;">
                 </div>
 

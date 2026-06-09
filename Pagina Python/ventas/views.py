@@ -347,7 +347,7 @@ def eliminar_variacion (request, detalle_id):
 
 
 #----------------- CRUD PRODUCTO ------------------------------
-@login_requerido_custom
+
 def lista_producto(request):
     # Traemos los productos con sus recetas e insumos optimizados
     todos = Producto.objects.prefetch_related('det_mov_matp_set__materia_prima').all()

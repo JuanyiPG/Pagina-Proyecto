@@ -76,7 +76,7 @@
                                 <option value="CE">CE</option>
                                 <option value="Permiso Permanencia">Permiso Permanencia</option>
                             </select>
-                            <input type="text" name="num_ident" placeholder="Número" required style="flex:1; padding: 8px; border: 1px solid #ddd; border-radius: 6px;">
+                            <input type="number" name="num_ident" placeholder="Número" required style="flex:1; padding: 8px; border: 1px solid #ddd; border-radius: 6px;">
                         </div>
                     </div>
 
@@ -166,7 +166,8 @@
                                 </div>
                                 <div class="form-group" style="margin-bottom: 15px; text-align: left;">
                                     <label>Contraseña</label>
-                                    <input type="password" name="contrasena" id="u_pass" placeholder="********" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px;">
+                                    <input type="password" name="contrasena" id="u_pass" placeholder="********" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px;" minlength="8" 
+            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" >
                                 </div>
                                 
                                 <div class="form-group" style="text-align: left;">

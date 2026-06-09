@@ -131,17 +131,23 @@ def editar_usuario(request, id):
 
     if request.method == 'POST':
         username_nuevo = request.POST.get('username', '').strip()
-        nueva_contra = request.POST.get('contrasena')
+        # Capturamos el campo 'password' (el nombre del input nuevo)
+        nueva_contra = request.POST.get('password')
 
         if Usuario.objects.filter(username=username_nuevo).exclude(id_usuario=id).exists():
             messages.error(request, "⚠️ Ese nombre de usuario ya está en uso.")
-            return redirect('usuarios:lista_usuarios')
+            return redirect('usuarios:editar_usuario', id=id)
 
         usuario.username = username_nuevo
-        if nueva_contra and not nueva_contra.startswith('pbkdf2_sha256$'):
+        
+        # Lógica: Solo encriptar si el campo no está vacío
+        if nueva_contra and len(nueva_contra) >= 8: # Añade tus validaciones de longitud
             usuario.contrasena = make_password(nueva_contra)
 
-        usuario.id_rol_fk = Rol.objects.get(id_rol=request.POST['id_rol'])
+        rol_id = request.POST.get('id_rol')
+        if rol_id:
+            usuario.id_rol_fk = Rol.objects.get(id_rol=rol_id)
+            
         usuario.save()
         messages.success(request, "Usuario actualizado con éxito")
         return redirect('usuarios:lista_usuarios')
