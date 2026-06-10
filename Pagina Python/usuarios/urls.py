@@ -35,4 +35,5 @@ urlpatterns = [
     path('empleado/', views.panel_empleado, name='base_emple'),
     path('admin/estadisticas/', views.estadisticas_admin, name='estadisticas_admin'),
     path('perfil/editar/', views.editar_perfil, name='editar_perfil'),
+    path('perfil_cliente/', views.perfil_cliente, name='perfil_cliente'),
 ]

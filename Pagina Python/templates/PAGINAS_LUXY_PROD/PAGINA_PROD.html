@@ -250,7 +250,15 @@
         <div class="menu-superior" style="display: flex; align-items: center; gap: 15px;">
             
             {% if request.session.usuario_id %}
-                <a href="{% url 'usuarios:logout' %}" style="text-decoration: none; color: white; font-size: 14px; font-weight: bold;">Cerrar sesión</a>
+                <a href="{% url 'usuarios:perfil_cliente' %}"
+                     style="text-decoration: none; color: white; font-size: 14px; font-weight: bold;">
+                     Mi Perfil
+                </a>
+
+                <a href="{% url 'usuarios:logout' %}"
+                    style="text-decoration: none; color: white; font-size: 14px; font-weight: bold;">
+                    Cerrar sesión
+                </a>
             {% else %}
                 <a href="{% url 'usuarios:login' %}" style="text-decoration: none; color: white; font-size: 14px; font-weight: bold;">Iniciar sesión</a>
             {% endif %}

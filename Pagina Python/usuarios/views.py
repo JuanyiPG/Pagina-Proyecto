@@ -2,7 +2,7 @@ import hashlib
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from functools import wraps
-
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password, make_password
 from django.db import transaction
@@ -639,4 +639,27 @@ def editar_perfil(request):
     return render(request, 'usuarios/usuario/editar_perfil.html', {
         'usuario': usuario,
         'empleado': empleado
+    })
+
+
+def perfil_cliente(request):
+    usuario_id = request.session.get('usuario_id')
+
+    if not usuario_id:
+        return redirect('usuarios:login')
+
+    cliente = Cliente.objects.get(id_usuario_fk=usuario_id)
+
+    if request.method == 'POST':
+        cliente.nom_clien = request.POST.get('nom_clien')
+        cliente.correo_clien = request.POST.get('correo_clien')
+        cliente.tel_clien = request.POST.get('tel_clien')
+        cliente.dir_clien = request.POST.get('dir_clien')
+
+        cliente.save()
+
+        return redirect('usuarios:perfil_cliente')
+
+    return render(request, 'usuarios/clientes/Perfil_Cliente.html', {
+        'cliente': cliente
     })
