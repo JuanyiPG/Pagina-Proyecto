@@ -26,10 +26,14 @@
             <input type="text" name="telefono" placeholder="Teléfono" min="10" max="10" required>
             <input type="email" name="correo" placeholder="Correo" minlength="4" required>
             <input type="text" name="username" placeholder="User" minlength="4" required>
-            <input type="password" name="password" id="password" placeholder="Contraseña" required 
+            <input type="password" name="password" id="passwordField" placeholder="Contraseña" required 
             minlength="8" 
             pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
             title="Debe contener al menos un número, una letra mayúscula, una minúscula y 8 o más caracteres">
+                <span id="togglePassword" style="position: absolute; right: 55px; top: 79%; transform: translateY(-50%); cursor: pointer; font-size: 12px; color: #666;">
+                    mostrar
+                </span>
+            </input>
             <button type="submit" class="btn-action">Registrarse</button>
         </form>
     </div>
@@ -59,7 +63,11 @@
             {% endif %}
 
             <input type="text" name="username" placeholder="Usuario" required>
-            <input type="password" name="password" placeholder="Contraseña" required>
+            <input type="password" name="password" id="FieldPassword" placeholder="Contraseña" required>
+                <span id="togPassword" style="position: absolute; right: 60px; top: 59%; transform: translateY(-50%); cursor: pointer; font-size: 12px; color: #666;">
+                    mostrar
+                </span>
+            </input>
             <button type="submit" class="btn-action">Ingresar</button>
         </form>
     </div>
@@ -94,5 +102,28 @@
     });
 </script>
 
+<script>
+    const togglePassword = document.querySelector('#togglePassword');
+    const passwordField = document.querySelector('#passwordField');
+
+    togglePassword.addEventListener('click', function () {
+        const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordField.setAttribute('type', type);
+
+        this.textContent = (type === 'password') ? 'mostrar' : 'ocultar';
+    });
+</script>
+
+<script>
+    const togPassword = document.querySelector('#togPassword');
+    const FieldPassword = document.querySelector('#FieldPassword');
+
+    togPassword.addEventListener('click', function () {
+        const type = FieldPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+        FieldPassword.setAttribute('type', type);
+
+        this.textContent = (type === 'password') ? 'mostrar' : 'ocultar';
+    });
+</script>
 </body>
 </html>
