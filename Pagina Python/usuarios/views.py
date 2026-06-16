@@ -59,11 +59,16 @@ def lista_roles(request):
 def crear_rol(request):
     if request.method == 'POST':
         nom_rol = request.POST.get('nom_rol', '').strip()
-        if nom_rol:
+        if not nom_rol:
+            messages.error(request, "El nombre del rol no puede estar vacío.")
+            return redirect('usuarios:crear_rol') # O donde quieras redirigir
+
+        if Rol.objects.filter(nom_rol__iexact=nom_rol).exists():
+            messages.error(request, "El nombre del rol ya existe.")
+        else:
             Rol.objects.create(nom_rol=nom_rol)
             messages.success(request, "Rol guardado con éxito")
             return redirect('usuarios:lista_roles')
-        messages.error(request, "El nombre del rol no puede estar vacío.")
     return render(request, 'usuarios/roles/crear.html')
 
 
@@ -110,8 +115,8 @@ def crear_usuario(request):
         id_rol = request.POST.get('id_rol')
 
         if Usuario.objects.filter(username=username).exists():
-            messages.error(request, f"⚠️ El nombre de usuario '{username}' ya existe.")
-            return render(request, 'usuarios/usuario/crear.html', {'roles': roles})
+            messages.error(request, f"El nombre de usuario '{username}' ya existe.")
+            return render(request, 'usuarios/usuario/lista.html', {'roles': roles})
 
         rol = get_object_or_404(Rol, id_rol=id_rol)
         Usuario.objects.create(
@@ -121,7 +126,7 @@ def crear_usuario(request):
         )
         messages.success(request, "Usuario guardado con éxito")
         return redirect('usuarios:lista_usuarios')
-    return render(request, 'usuarios/usuario/crear.html', {'roles': roles})
+    return render(request, 'usuarios/usuario/lista.html', {'roles': roles})
 
 
 @solo_personal
@@ -135,7 +140,7 @@ def editar_usuario(request, id):
         nueva_contra = request.POST.get('password')
 
         if Usuario.objects.filter(username=username_nuevo).exclude(id_usuario=id).exists():
-            messages.error(request, "⚠️ Ese nombre de usuario ya está en uso.")
+            messages.error(request, "Ese nombre de usuario ya está en uso.")
             return redirect('usuarios:editar_usuario', id=id)
 
         usuario.username = username_nuevo
@@ -377,7 +382,7 @@ def editar_empleado(request, id):
                 usuario.save()
                 empleado.save()
 
-            messages.success(request, "✅ Información actualizada con éxito.")
+            messages.success(request, "Información actualizada con éxito.")
             return redirect('usuarios:lista_empleados')
 
         except Exception as e:

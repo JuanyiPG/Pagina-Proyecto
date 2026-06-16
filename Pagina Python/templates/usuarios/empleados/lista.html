@@ -45,14 +45,14 @@
         </div>
 
         {% if messages %}
-    {% for message in messages %}
-        {% if message.tags == 'error' %} 
-            <div style="background: #fdeaea; color: #e74c3c; padding: 12px; border-radius: 8px; border: 1px solid #e74c3c; margin-bottom: 20px; text-align: center;">
-                {{ message }}
+                <div class="container-mensajes" id="mensaje-django">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+            {{ message }}
             </div>
-        {% endif %}
-    {% endfor %}
-{% endif %}
+            {% endfor %}
+            </div>
+            {% endif %}
 
         <div class="form-card">
             <form method="POST" action="{% url 'usuarios:crear_empleado' %}" enctype="multipart/form-data">
@@ -76,7 +76,7 @@
                                 <option value="CE">CE</option>
                                 <option value="Permiso Permanencia">Permiso Permanencia</option>
                             </select>
-                            <input type="number" name="num_ident" placeholder="Número" required style="flex:1; padding: 8px; border: 1px solid #ddd; border-radius: 6px;">
+                            <input type="text" name="num_ident" placeholder="Número" required style="flex:1; padding: 8px; border: 1px solid #ddd; border-radius: 6px;" minlength="6" maxlength="10">
                         </div>
                     </div>
 
@@ -87,7 +87,7 @@
 
                     <div class="form-group">
                         <label>Correo Electrónico</label>
-                        <input type="email" name="correo_emple" placeholder="correo@luxy.com" minlength="5" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px;">
+                        <input type="email" name="correo_emple" placeholder="correo@luxy.com" minlength="7" maxlength="50" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px;">
                     </div>
 
                     <div class="form-group">
@@ -129,12 +129,12 @@
 
                     <div class="form-group">
                         <label>Teléfono</label>
-                        <input type="text" name="tel_emple" placeholder="300..." required min="10" max="10" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px;">
+                        <input type="text" name="tel_emple" placeholder="300..." minlength="10" maxlength="10" required style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px;">
                     </div>
                     
                     <div class="form-group" style="grid-column: span 2;">
                         <label>Dirección</label>
-                        <input type="text" name="dir_emple" placeholder="Calle..." required minlength="10" maxlength="80" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px;">
+                        <input type="text" name="dir_emple" placeholder="Calle..." required minlength="10" maxlength="110" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px;">
                     </div>
 
                     <div class="form-group">
@@ -352,5 +352,21 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const mensaje = document.getElementById("mensaje-django");
+        
+        if (mensaje) {
+            setTimeout(function() {
+                mensaje.style.transition = "opacity 1s ease";
+                mensaje.style.opacity = "0";
+                
+                setTimeout(function() {
+                    mensaje.remove();
+                }, 1000);
+            }, 5000); 
+        }
+    });
 </script>
 {% endblock %}
