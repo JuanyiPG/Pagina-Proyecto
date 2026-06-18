@@ -188,7 +188,7 @@
                         </div>
                         <div class="form-group">
                             <label>Técnica / Tipo</label>
-                            <input type="text" name="tipo_estamp" class="form-control-luxy" required placeholder="Ej: Bordado, DTF, Vinilo" minlength="10" maxlength="200">
+                            <input type="text" name="tipo_estamp" class="form-control-luxy" required placeholder="Ej: Bordado, DTF, Vinilo" minlength="5" maxlength="200">
                         </div>
                         <div class="form-group">
                             <label>Costo Adicional ($)</label>
@@ -300,6 +300,37 @@ function confirmarEliminacionEstampado(event, url) {
                     mensaje.remove();
                 }, 1000);
             }, 5000); 
+        }
+    });
+</script>
+<script>
+    // Seleccionamos el input por su atributo 'name'
+    const inputBusqueda = document.querySelector('input[name="q"]');
+    
+    inputBusqueda.addEventListener('keyup', function() {
+        let filter = this.value.toLowerCase().trim();
+        // Buscamos todas las tarjetas dentro de la grilla
+        let cards = document.querySelectorAll('.estampados-grid .card-item');
+        let anyVisible = false;
+
+        cards.forEach(card => {
+            // card.textContent une todo el contenido de texto dentro de la tarjeta
+            // (incluye nombre, costo y tipo de estampado)
+            let cardText = card.textContent.toLowerCase();
+            
+            if (cardText.includes(filter)) {
+                card.style.display = ""; // Visible
+                anyVisible = true;
+            } else {
+                card.style.display = "none"; // Oculta
+            }
+        });
+
+        // Manejo del mensaje "No se encontraron diseños"
+        // Si no hay nada visible, mostramos el mensaje de vacío
+        let emptyMessage = document.querySelector('.estampados-grid > div[style*="grid-column"]');
+        if (emptyMessage) {
+            emptyMessage.style.display = anyVisible ? "none" : "block";
         }
     });
 </script>

@@ -15,12 +15,16 @@
             <div class="form-grid">
                 <div class="form-group">
                     <label>Tipo de Movimiento</label>
-                    <input type="text" name="tipo_mmtp" value="{{ mmtp.tipo_mmtp }}" required maxlength="30" minlength="3" placeholder="Ej: Entrada">
+                    <select name="tipo_mmtp" required>
+                        <option value="{{ mmtp.tipo_mmtp }}" selected>{{ mmtp.tipo_mmtp }}</option>
+                        <option value="ENTRADA">Entrada (+)</option>
+                        <option value="SALIDA">Salida (-)</option>
+                    </select>
                 </div>
 
                 <div class="form-group">
                     <label>Material</label>
-                    <input type="text" step="0.01" name="mat_mmtp" value="{{ mmtp.mat_mmtp }}" maxlength="20" minlength="3" required>
+                    <input type="text" step="0.01" name="mat_mmtp" value="{{ mmtp.mat_mmtp }}" maxlength="20" minlength="3" readonly required>
                 </div>
                 
                 <div class="form-group">
@@ -30,7 +34,7 @@
                 
                 <div class="form-group">
                     <label>Fecha del Registro</label>
-                    <input type="date" name="fecha_mmtp" value="{{ mmtp.fecha_mmtp|date:'Y-m-d' }}" required>
+                    <input type="date" name="fecha_mmtp" value="{{ mmtp.fecha_mmtp|date:'Y-m-d' }}" id="fecha_mmtp" required>
                 </div>
                 
                 <div class="form-group">
@@ -62,4 +66,14 @@
         </form>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const inputFecha = document.getElementById('fecha_mmtp');
+        
+        const hoy = new Date().toISOString().split('T')[0];
+        
+        inputFecha.setAttribute('max', hoy);
+    });
+</script>
 {% endblock %}

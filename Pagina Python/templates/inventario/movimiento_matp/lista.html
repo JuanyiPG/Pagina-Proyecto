@@ -195,7 +195,7 @@
                 </div>
                 <div class="form-group">
                     <label>Fecha Registro</label>
-                    <input type="date" name="fecha_mmtp" required>
+                    <input type="date" name="fecha_mmtp" id="fecha_mmtp" required>
                 </div>
                 <div class="form-group">
                     <label>Cantidad (Magnitud)</label>
@@ -482,6 +482,16 @@ function confirmarEliminacionMMTP(event, url) {
                 }, 1000);
             }, 5000); 
         }
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const inputFecha = document.getElementById('fecha_mmtp');
+        
+        const hoy = new Date().toISOString().split('T')[0];
+        
+        inputFecha.setAttribute('max', hoy);
     });
 </script>
 {% endblock %}

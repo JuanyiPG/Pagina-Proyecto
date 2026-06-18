@@ -362,7 +362,6 @@ def lista_producto(request):
         else:
             for d in detalles:
                 try:
-                    # 🌟 Buscamos el ÚLTIMO movimiento real de este insumo en el inventario
                     ultimo_movimiento = Movimiento_matp.objects.filter(
                         mat_mmtp=d.materia_prima.mat_mmtp,
                         color_mmtp=d.materia_prima.color_mmtp
@@ -371,14 +370,11 @@ def lista_producto(request):
                     stock_actual = ultimo_movimiento.stock_mmtp
                     
                 except Movimiento_matp.DoesNotExist:
-                    # Si ni siquiera tiene un registro en movimientos, no hay stock disponible
                     stock_actual = 0
 
-                # 🚨 LA CORRECCIÓN CLAVE: Si el stock es menor o igual a 0, 
-                # o si no alcanza para cubrir la cantidad que usa la receta, se oculta.
                 if stock_actual <= 0 or stock_actual < d.cantidad_usada:
                     es_valido = False
-                    break # Detiene la revisión de este producto, ya sabemos que no tiene material
+                    break 
 
         if es_valido:
             productos_visibles.append(p)
@@ -460,6 +456,7 @@ def lista_producto_admin(request):
                 except (ValueError, InvalidOperation):
                     continue
 
+                messages.success(request, "Producto creado con éxito.")
         return redirect('ventas:lista_producto_admin')
 
     return render(request, 'ventas/producto/lista_product.html', {
@@ -522,6 +519,7 @@ def editar_producto(request, id):
                 except (Movimiento_matp.DoesNotExist, ValueError, InvalidOperation):
                     continue
 
+                messages.success(request, "Producto actualizado con exito.")
         return redirect('ventas:lista_producto_admin')
         
     materiales_db = Movimiento_matp.objects.all()
@@ -529,7 +527,7 @@ def editar_producto(request, id):
 
     tallas_actuales = producto.tallas_disponibles.split(',') if producto.tallas_disponibles else ["S", "M", "L"]
     colores_actuales = producto.colores_disponibles.split(',') if producto.colores_disponibles else ["#ffffff", "#000000"]
-
+    
     contexto = {
         'producto': producto,
         'materiales': materiales_db,
@@ -540,12 +538,17 @@ def editar_producto(request, id):
     return render(request, 'ventas/producto/editar_producto.html', contexto)
 
 @solo_personal
-def eliminar_producto(request, product_id): 
+def eliminar_producto(request, product_id):
     producto = get_object_or_404(Producto, id_produc=product_id)
-    if request.method == 'POST':
-        producto.delete()
-        return redirect('ventas:lista_producto_admin')
-    return render(request, 'ventas/producto/eliminar_producto.html', {'producto':producto})
+    
+    try:
+        with transaction.atomic():
+            producto.delete()
+            messages.success(request, f"✅ Producto '{producto.nom_produc}' eliminado correctamente.")
+    except Exception as e:
+        messages.error(request, f"❌ Error al intentar eliminar: {e}")
+
+    return redirect('ventas:lista_producto_admin')
 
 #----------------- PRODUCTO SIN VARIACION ---------------------
 @login_requerido_custom

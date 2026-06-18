@@ -116,7 +116,7 @@
         <div class="grid-form">
             <div>
                 <label class="luxy-label">Nombre Completo</label>
-                <input type="text" name="nombre" value="{{ cliente.nom_clien }}" class="luxy-input" required>
+                <input type="text" name="nombre" value="{{ cliente.nom_clien }}" class="luxy-input" minlength="3" readonly>
             </div>
             <div>
                 <label class="luxy-label">Correo Electrónico</label>
@@ -124,11 +124,11 @@
             </div>
             <div>
                 <label class="luxy-label">Teléfono</label>
-                <input type="text" name="telefono" value="{{ cliente.tel_clien }}" class="luxy-input" required>
+                <input type="text" name="telefono" value="{{ cliente.tel_clien }}" class="luxy-input" minlength="12" maxlength="12" required>
             </div>
             <div>
                 <label class="luxy-label">Dirección</label>
-                <input type="text" name="direccion" value="{{ cliente.dir_clien }}" class="luxy-input" required>
+                <input type="text" name="direccion" value="{{ cliente.dir_clien }}" class="luxy-input" minlength="10" maxlength="110" required>
             </div>
         </div>
 

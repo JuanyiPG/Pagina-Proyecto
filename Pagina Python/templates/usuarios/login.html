@@ -21,9 +21,9 @@
             {% csrf_token %}
             <h2>Registro</h2>
             <span class="subtitle">Ingrese sus datos personales</span>
-            <input type="text" name="nombre" placeholder="Nombre Completo" minlength="4" required>
-            <input type="text" name="direccion" placeholder="Dirección" minlength="10" required>
-            <input type="text" name="telefono" placeholder="Teléfono" min="10" max="10" required>
+            <input type="text" name="nombre" placeholder="Nombre Completo" minlength="3" required>
+            <input type="text" name="direccion" placeholder="Dirección" minlength="10" maxlength="110" required>
+            <input type="text" name="telefono" placeholder="Teléfono" minlength="10" maxlength="10" required>
             <input type="email" name="correo" placeholder="Correo" minlength="4" required>
             <input type="text" name="username" placeholder="User" minlength="4" required>
             <input type="password" name="password" id="passwordField" placeholder="Contraseña" required 
@@ -53,7 +53,7 @@
             <p class="{% if message.tags == 'info' or message.tags == 'success' %}success-msg{% else %}error-msg{% endif %}">
                 {{ message }}...
             </p>
-            
+             
         {% endif %}
     {% endfor %}
 {% endif %}
@@ -64,7 +64,7 @@
 
             <input type="text" name="username" placeholder="Usuario" required>
             <input type="password" name="password" id="FieldPassword" placeholder="Contraseña" required>
-                <span id="togPassword" style="position: absolute; right: 60px; top: 59%; transform: translateY(-50%); cursor: pointer; font-size: 12px; color: #666;">
+                <span id="togPassword" style="position: absolute; right: 60px; top: 60%; transform: translateY(-50%); cursor: pointer; font-size: 12px; color: #666;">
                     mostrar
                 </span>
             </input>

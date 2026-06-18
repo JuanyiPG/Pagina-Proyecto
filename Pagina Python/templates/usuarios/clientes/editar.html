@@ -14,7 +14,7 @@
 
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label>Nombre</label>
-                    <input type="text" name="nom_clien" value="{{ cliente.nom_clien }}" maxlength="4" minlength="25" required>
+                    <input type="text" name="nom_clien" value="{{ cliente.nom_clien }}" maxlength="25" minlength="4" required>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 15px;">
@@ -25,18 +25,18 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Teléfono</label>
-                        <input type="text" name="tel_clien" value="{{ cliente.tel_clien }}" min="10" max="10" required>
+                        <input type="text" name="tel_clien" value="{{ cliente.tel_clien }}" minlength="10" maxlength="10" required>
                     </div>
 
                     <div class="form-group">
                         <label>Correo</label>
-                        <input type="email" name="correo_clien" value="{{ cliente.correo_clien }}" maxlength="7" minlength="50" required>
+                        <input type="email" name="correo_clien" value="{{ cliente.correo_clien }}" maxlength="50" minlength="7" required>
                     </div>
                 </div>
 
                 <div class="form-group" style="margin-top: 15px;">
                     <label>Usuario</label>
-                        <input value="{{ cliente.id_usuario_fk.username }}" name="id_usuario_fk"  readonly>
+                        <input value="{{ cliente.id_usuario_fk.username }}" name="id_usuario_fk" readonly>
                     </input>
                 </div>
 

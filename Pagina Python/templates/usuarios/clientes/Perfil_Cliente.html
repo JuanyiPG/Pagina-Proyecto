@@ -148,9 +148,10 @@
     <div class="perfil-header">
 
         <button type="button"
-                class="btn-volver"
-                onclick="volverPagina()">
+                class="btn-volver"><a href="{% url 'ventas:lista_product' %}" style=" text-decoration: none; color: var(--primary); font-size: 14px; font-weight: bold; display: inline-flex; align-items: center; gap: 5px; z-index: 10; transition: 0.3s;">
             ← Volver
+        </a>
+        
         </button>
 
         <div class="foto-perfil">
@@ -213,6 +214,27 @@
                            required>
                 </div>
 
+                <div class="form-group">
+                    <label>Usuario</label>
+
+                    <input type="text"
+                           name="username"
+                           value="{{ usuario.username }}"
+                           class="input-style"
+                           readonly>
+                </div>
+
+
+                <div class="form-group">
+                    <label>Contraseña</label>
+
+                    <input type="password"
+                           name="password"
+                           value="{{ usuario.password }}"
+                           class="input-style">
+                           <samp>dejar vacio si no desea actualizarla</samp>
+                </div>
+
             </div>
 
 
@@ -230,13 +252,5 @@
 
 </div>
 
-
-<script>
-
-    function volverPagina(){
-        window.history.back();
-    }
-
-</script>
 
 {% endblock %}

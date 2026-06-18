@@ -149,7 +149,7 @@
         <div class="grid-campos">
             <div>
                 <label class="luxy-label">Nombre de Usuario</label>
-                <input type="text" name="username" value="{{ usuario.username }}" class="luxy-input" required>
+                <input type="text" name="username" value="{{ usuario.username }}" class="luxy-input" minlength="4" maxlength="50" required>
             </div>
 
             <div>
@@ -159,13 +159,13 @@
 
             <div class="campo-full">
                 <label class="luxy-label">Actualizar Contraseña</label>
-                <input type="password" name="contrasena" class="luxy-input" placeholder="Dejar vacío para no realizar cambios">
+                <input type="password" name="contrasena" class="luxy-input" placeholder="Dejar vacío para no realizar cambios" minlength="8" 
+            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" >>
                 <small style="color: #999;">Mínimo 8 caracteres para mayor seguridad.</small>
             </div>
         </div>
 
         <div class="btns-container">
-            <a href="{% url 'ventas:lista_pedido_e' %}" class="btn-luxy-cancel">CANCELAR</a>
             <button type="submit" class="btn-luxy-save">GUARDAR CAMBIOS</button>
         </div>
     </form>

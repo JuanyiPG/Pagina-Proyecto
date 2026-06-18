@@ -250,7 +250,7 @@
         <div class="menu-superior" style="display: flex; align-items: center; gap: 15px;">
             
             {% if request.session.usuario_id %}
-                <a href="{% url 'usuarios:perfil_cliente' %}"
+                <a href="{% url 'usuarios:perfil_cliente' request.session.usuario_id %}"
                      style="text-decoration: none; color: white; font-size: 14px; font-weight: bold;">
                      Mi Perfil
                 </a>

@@ -206,15 +206,15 @@ def crear_empleado(request):
 
         # Validaciones de unicidad y obligatoriedad
         if Empleado.objects.filter(num_ident=num_ident_val).exists():
-            messages.error(request, f"⚠️ La identificación {num_ident_val} ya está registrada.")
+            messages.error(request, f"La identificación {num_ident_val} ya está registrada.")
             return redirect('usuarios:lista_empleados')
 
         if Usuario.objects.filter(username=user_val).exists():
-            messages.error(request, f"⚠️ El nombre de usuario '{user_val}' ya existe.")
+            messages.error(request, f" El nombre de usuario '{user_val}' ya existe.")
             return redirect('usuarios:lista_empleados')
 
         if not user_val or not pass_val:
-            messages.error(request, "⚠️ Debes configurar el usuario y la contraseña.")
+            messages.error(request, "Debes configurar el usuario y la contraseña.")
             return redirect('usuarios:lista_empleados')
 
         foto_hash = None
@@ -223,7 +223,7 @@ def crear_empleado(request):
             foto_hash = hashlib.sha256(content).hexdigest()
             foto.seek(0)
             if Empleado.objects.filter(hash_foto=foto_hash).exists():
-                messages.error(request, "⚠️ Esta fotografía ya está registrada.")
+                messages.error(request, "Esta fotografía ya está registrada.")
                 return redirect('usuarios:lista_empleados')
 
         f_nac_str = request.POST.get('fecha_naci_emple')
@@ -238,7 +238,7 @@ def crear_empleado(request):
             f_ing = date.fromisoformat(f_ing_str)
             hoy = date.today()
         except ValueError:
-            messages.error(request, "⚠️ El formato de las fechas ingresadas no es válido.")
+            messages.error(request, "El formato de las fechas ingresadas no es válido.")
             return redirect('usuarios:lista_empleados')
 
         # Reglas de Negocio de Fechas
@@ -647,8 +647,9 @@ def editar_perfil(request):
     })
 
 
-def perfil_cliente(request):
+def perfil_cliente(request, id):
     usuario_id = request.session.get('usuario_id')
+    usuario = get_object_or_404(Usuario, id_usuario=id)
 
     if not usuario_id:
         return redirect('usuarios:login')
@@ -660,10 +661,12 @@ def perfil_cliente(request):
         cliente.correo_clien = request.POST.get('correo_clien')
         cliente.tel_clien = request.POST.get('tel_clien')
         cliente.dir_clien = request.POST.get('dir_clien')
+        usuario.username_nuevo = request.POST.get('username', '').strip()
+        usuario.nueva_contra = request.POST.get('password')
 
         cliente.save()
 
-        return redirect('usuarios:perfil_cliente')
+        return redirect('ventas:lista_product')
 
     return render(request, 'usuarios/clientes/Perfil_Cliente.html', {
         'cliente': cliente
