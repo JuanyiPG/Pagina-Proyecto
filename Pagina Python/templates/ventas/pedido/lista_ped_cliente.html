@@ -50,8 +50,8 @@
         </a>
     </div>
     
-    {% if pedidos_detallados %}
-    {% for item in pedidos_detallados %}
+    {% if pedidos_con_detalles %}
+    {% for item in pedidos_con_detalles %}
         {% if item.estado|lower != 'cancelado' and item.estado|lower != 'entregado' %}
         <div class="pedido-card">
             
@@ -69,8 +69,8 @@
                 
                 <div class="resumen-precios">
                     <div class="dato-precio">Total Pedido: <strong>${{ item.total }}</strong></div>
-                    <div class="dato-precio">Abonado: <strong>${{ item.abonado }}</strong></div>
-                    <div class="dato-precio">Saldo Pendiente: <strong class="saldo-rojo">${{ item.saldo }}</strong></div>
+                    <div class="dato-precio">Abonado: <strong>${{ item.total_abonado }}</strong></div>
+                    <div class="dato-precio">Saldo Pendiente: <strong class="saldo-rojo">${{ item.saldo_pendiente }}</strong></div>
                 </div>
             </div>
 

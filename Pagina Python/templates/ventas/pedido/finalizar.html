@@ -4,135 +4,109 @@
     <meta charset="UTF-8">
     <title>Finalizar Pedido #{{ pedido.id_pedido }}</title>
     <style>
-    :root {
-        --vinotinto: #800020;
-        --vinotinto-hover: #600018;
-        --blanco: #ffffff;
-        --gris-claro: #f4f4f4;
-        --texto: #333;
-    }
+        :root {
+            --vinotinto: #800020;
+            --vinotinto-hover: #600018;
+            --blanco: #ffffff;
+            --gris-claro: #f4f4f4;
+            --texto: #333;
+        }
 
-    body { 
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-        background-color: var(--gris-claro);
-        color: var(--texto);
-        margin: 0;
-        padding: 40px 20px;
-        line-height: 1.6; 
-    }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: var(--gris-claro);
+            color: var(--texto);
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6; 
+        }
 
-    .container { 
-        max-width: 550px; 
-        margin: auto; 
-        background: var(--blanco);
-        padding: 30px; 
-        border-radius: 12px; 
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        border-top: 8px solid var(--vinotinto);
-    }
+        .container { 
+            max-width: 550px; 
+            margin: auto; 
+            background: var(--blanco);
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-top: 8px solid var(--vinotinto);
+        }
 
-    h2 {
-        color: var(--vinotinto);
-        text-align: center;
-        margin-bottom: 25px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        font-size: 1.4rem;
-    }
+        h2 {
+            color: var(--vinotinto);
+            text-align: center;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1.4rem;
+        }
 
-    .resumen { 
-        background: #fffafa; /* Un blanco con un toque rojizo casi imperceptible */
-        padding: 20px; 
-        margin-bottom: 25px; 
-        border-radius: 8px;
-        border: 1px solid #eee;
-        border-left: 5px solid var(--vinotinto); 
-    }
+        .resumen { 
+            background: #fffafa;
+            padding: 20px; 
+            margin-bottom: 25px; 
+            border-radius: 8px;
+            border: 1px solid #eee;
+            border-left: 5px solid var(--vinotinto); 
+        }
 
-    .resumen p {
-        margin: 5px 0;
-    }
+        .resumen p { margin: 5px 0; }
 
-    .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: 20px; }
 
-    label { 
-        display: block; 
-        font-weight: 600; 
-        margin-bottom: 8px;
-        color: #555;
-    }
+        label { 
+            display: block; 
+            font-weight: 600; 
+            margin-bottom: 8px;
+            color: #555;
+        }
 
-    select { 
-        width: 100%; 
-        padding: 12px; 
-        border: 1px solid #ccc; 
-        border-radius: 6px;
-        background-color: white;
-        font-size: 15px;
-        transition: border-color 0.3s;
-    }
+        select { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ccc; 
+            border-radius: 6px;
+            background-color: white;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
 
-    select:focus {
-        outline: none;
-        border-color: var(--vinotinto);
-    }
+        select:focus { outline: none; border-color: var(--vinotinto); }
 
-    small {
-        display: block;
-        margin-top: 5px;
-        color: #777;
-        font-style: italic;
-    }
+        small { display: block; margin-top: 5px; color: #777; font-style: italic; }
 
-    .btn-confirmar { 
-        width: 100%;
-        background-color: var(--vinotinto); 
-        color: white; 
-        border: none; 
-        padding: 15px;
-        border-radius: 6px;
-        cursor: pointer; 
-        font-size: 16px; 
-        font-weight: bold;
-        text-transform: uppercase;
-        transition: background 0.3s, transform 0.2s;
-        box-shadow: 0 4px 6px rgba(128, 0, 32, 0.2);
-    }
+        .btn-confirmar { 
+            width: 100%;
+            background-color: var(--vinotinto); 
+            color: white; 
+            border: none; 
+            padding: 15px;
+            border-radius: 6px;
+            cursor: pointer; 
+            font-size: 16px; 
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background 0.3s, transform 0.2s;
+            box-shadow: 0 4px 6px rgba(128, 0, 32, 0.2);
+        }
 
-    .btn-confirmar:hover { 
-        background-color: var(--vinotinto-hover); 
-        transform: translateY(-1px);
-    }
+        .btn-confirmar:hover { background-color: var(--vinotinto-hover); transform: translateY(-1px); }
 
-    .btn-confirmar:active {
-        transform: translateY(0);
-    }
+        .messages { 
+            background: #ffe6e6; color: #d8000c; padding: 10px;
+            border-radius: 5px; margin-bottom: 20px; list-style: none; 
+        }
 
-    .messages { 
-        background: #ffe6e6;
-        color: #d8000c; 
-        padding: 10px;
-        border-radius: 5px;
-        margin-bottom: 20px;
-        list-style: none; 
-    }
+        hr { border: 0; border-top: 1px solid #eee; margin: 25px 0; }
 
-    hr {
-        border: 0;
-        border-top: 1px solid #eee;
-        margin: 25px 0;
-    }
+        a { color: var(--vinotinto); text-decoration: none; font-weight: 600; font-size: 14px; }
+        a:hover { text-decoration: underline; }
 
-    a {
-        color: var(--vinotinto);
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 14px;
-    }
-
-    a:hover {
-        text-decoration: underline;
-    }
+        /* Estilos para el detalle financiero */
+        .detalle-financiero {
+            display: flex; justify-content: space-between; text-align: center; margin-top: 15px;
+        }
+        .col-financiera { flex: 1; padding: 5px 0; }
+        .borde-lat { border-left: 1px solid #eee; border-right: 1px solid #eee; }
     </style>
 </head>
 <body>
@@ -149,9 +123,20 @@
     {% endif %}
 
     <div class="resumen">
-        {{ pedido.id_pedido }}
-        <p><strong>Cliente:</strong> {{ pedido.id_clien_fk.nom_clien }}</p>
-        <p><strong>Estado actual:</strong> {{ pedido.estado_ped }}</p>
+        <div class="detalle-financiero">
+            <div class="col-financiera">
+                <small>Total</small>
+                <strong>${{ total_productos }}</strong>
+            </div>
+            <div class="col-financiera borde-lat">
+                <small>Abonado</small>
+                <strong style="color: green;">${{ total_abonado }}</strong>
+            </div>
+            <div class="col-financiera">
+                <small>Pendiente</small>
+                <strong style="color: #a31c36;">${{ saldo_pendiente }}</strong>
+            </div>
+        </div>
     </div>
 
     <form method="POST" action="{% url 'ventas:finalizar_compra' pedido.id_pedido %}">
@@ -181,7 +166,7 @@
             Confirmar y Finalizar Pedido
         </button>
         
-        <p style="text-align: center;">
+        <p style="text-align: center; margin-top: 20px;">
             <a href="{% url 'ventas:ver_carrito' %}">Volver al carrito</a>
         </p>
     </form>
