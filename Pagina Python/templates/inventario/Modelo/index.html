@@ -142,9 +142,46 @@
         .label-style { font-weight: 700; font-size: 0.9rem; color: #333; display: block; margin-bottom: 8px; }
         
         input[type="color"] { width: 100%; height: 45px; border: none; border-radius: 10px; cursor: pointer; }
-        input[type="range"] { width: 100%; accent-color: var(--primary); margin-bottom: 20px; }
 
-        .acciones-footer { display: flex; flex-direction: column; gap: 10px; }
+        .btn-talla {
+            display: inline-block;
+            padding: 10px 18px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            background-color: #fff;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        .btn-talla:hover { border-color: #5e0925; background-color: #fcf8f9; }
+        .radio-talla:checked + .btn-talla {
+            background-color: #5e0925;
+            color: #fff;
+            border-color: #5e0925;
+            box-shadow: 0 3px 8px rgba(94, 9, 37, 0.2);
+        }
+
+        /* Estilos para los botones de tamaño (usando la misma lógica que tallas) */
+        .btn-tamano-estam {
+            display: block;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #333;
+            background-color: #fff;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .radio-tamano-estam:checked + .btn-tamano-estam {
+            background-color: #5e0925;
+            color: #fff;
+            border-color: #5e0925;
+        }
 
         .btn-main { 
             padding: 16px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; 
@@ -189,7 +226,6 @@
     <div id="container3d"></div>
 
     <div class="form-pro">
-        
         <input type="hidden" id="producto-id" value="{{ producto.id_produc }}">
 
        <h1 class="product-title">{{ producto.nom_produc }}</h1>
@@ -209,19 +245,33 @@
             <span class="label-style">Color de la tela:</span>
             <input type="color" id="color-input-global" value="#ffffff">
 
-            <span class="label-style" style="margin-top: 20px;">Talla:</span>
-            <select id="talla-seleccionada" style="width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #ddd;">
-                <option value="S">S</option>
-                <option value="M" selected>M</option>
-                <option value="L">L</option>
-                <option value="XL">XL</option>
-                <option value="XXL">XXL</option>
-            </select>
+            <span class="label-style" style="margin-top: 20px; display: block;">Talla:</span>
+            <div class="tallas-contenedor" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 5px;">
+                {% for t in tallas %} 
+                    <label style="margin: 0; cursor: pointer;">
+                        <input type="radio" name="talla_personalizada" value="{{ t }}" class="radio-talla" style="display:none;" required {% if forloop.first %}checked{% endif %}>
+                        <span class="btn-talla">{{ t }}</span>
+                    </label>
+                {% endfor %}
+            </div>
             
-            <span class="label-style" style="margin-top: 20px;">Tamaño del diseño:</span>
-            <input type="range" id="sizeSlider" min="10" max="250" value="80">
+            <span class="label-style" style="margin-top: 20px; display: block;">Tamaño del diseño:</span>
+            <div class="tallas-contenedor" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 5px;">
+                <label style="margin: 0; cursor: pointer;">
+                    <input type="radio" name="tamano_estam" value="40" class="radio-tamano-estam" style="display:none;" checked>
+                    <span class="btn-tamano-estam">Pequeño<br>+$0</span>
+                </label>
+                <label style="margin: 0; cursor: pointer;">
+                    <input type="radio" name="tamano_estam" value="100" class="radio-tamano-estam" style="display:none;">
+                    <span class="btn-tamano-estam">Medio<br>+$5000</span>
+                </label>
+                <label style="margin: 0; cursor: pointer;">
+                    <input type="radio" name="tamano_estam" value="180" class="radio-tamano-estam" style="display:none;">
+                    <span class="btn-tamano-estam">Grande<br>+$10000</span>
+                </label>
+            </div>
 
-            <div class="control-tabs">
+            <div class="control-tabs" style="margin-top: 20px;">
                 <button class="tab-btn active" onclick="showTab('tab-ninguno', this); limpiarTodo();">Original</button>
                 <button class="tab-btn" onclick="showTab('tab-propio', this)">Mi Foto</button>
                 <button class="tab-btn" onclick="showTab('tab-lista', this)">Catálogo</button>
@@ -240,7 +290,6 @@
                 <p id="error-message" style="color: #e74c3c; font-weight: bold; margin-top: 5px; display: none;"></p>
             </div>
 
-
             <div id="tab-lista" class="panel-opcion">
                 <div class="galeria-disenos">
                     {% for est in estampados %}
@@ -257,22 +306,18 @@
         </div>
 
         <div class="acciones-footer">
-            <button id="btn-limpiar-estampados" style="display:none; position: absolute;"></button>
-            
+            <button id="btn-limpiar-estampados" style="display:none;"></button>
             <button class="btn-main btn-guardar" id="btn-procesar-guardado">
                 <span id="texto-boton">✅ Guardar Diseño</span>
             </button>
             <a href="{% url 'ventas:producto_sin_personalizar' producto.id_produc %}" class="btn-main btn-cancelar">❌ Salir sin Cambios</a>
-            
             <footer>
                 &copy; 2026 Luxy Fashion | SENA
             </footer>
         </div>
     </div>
 </div>
-
 <script>
-    // El HTML ahora solo gestiona los cambios de pestañas del panel visual
     function showTab(tabId, btn) {
         document.querySelectorAll('.panel-opcion').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -283,23 +328,38 @@
     function limpiarTodo() {
         const btnLimpiar = document.getElementById('btn-limpiar-estampados');
         if(btnLimpiar) btnLimpiar.click();
-        
         const inputFoto = document.getElementById('imageInput');
         if(inputFoto) inputFoto.value = "";
-        
         document.querySelectorAll('.diseno-item').forEach(i => i.classList.remove('selected'));
-        // Notificamos limpieza de texturas precargadas
         window.dispatchEvent(new CustomEvent('cambioEstampadoManual', { detail: { url: null, id: null } }));
     }
 
     function seleccionarEstampado(url, id, elemento) {
         document.querySelectorAll('.diseno-item').forEach(i => i.classList.remove('selected'));
         elemento.classList.add('selected');
-        // Notificamos al main.js qué imagen del catálogo fue seleccionada
+        const tamano = document.querySelector('input[name="tamano_estam"]:checked').value;
         window.dispatchEvent(new CustomEvent('cambioEstampadoManual', { 
-            detail: { url: url, id: id } 
+            detail: { url: url, id: id, escala: tamano } 
         }));
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const btnGuardar = document.getElementById('btn-procesar-guardado');
+        if (btnGuardar) {
+            btnGuardar.addEventListener('click', (evento) => {
+                const tallaMarcada = document.querySelector('input[name="talla_personalizada"]:checked');
+                const tamanoMarcado = document.querySelector('input[name="tamano_estam"]:checked');
+                if (tallaMarcada) {
+                    const tallaSeleccionada = tallaMarcada.value;
+                    const tamanoSeleccionado = tamanoMarcado ? tamanoMarcado.value : '40';
+                    console.log("Talla:", tallaSeleccionada, "Tamaño:", tamanoSeleccionado);
+                } else {
+                    evento.preventDefault();
+                    alert("Por favor, selecciona una talla antes de guardar.");
+                }
+            });
+        }
+    });
 </script>
 
 <script type="importmap">
@@ -308,13 +368,8 @@
 
 <script type="module">
     import { modelo } from "{% static 'js/main.js' %}";
-    
-    // Aseguramos que el CSRF esté disponible para los envíos a la base de datos desde main.js
     window.csrfToken = "{{ csrf_token }}";
-
-    window.addEventListener('load', () => {
-        modelo();
-    });
+    window.addEventListener('load', () => { modelo(); });
 </script>
 </body>
 </html>

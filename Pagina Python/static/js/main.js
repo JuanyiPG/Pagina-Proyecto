@@ -4,10 +4,23 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { DecalGeometry } from 'three/addons/geometries/DecalGeometry.js';
 
 /**
- * Módulo de personalización 3D para Luxy Fashion
+ * Módulo de personalización 3D para Luxy Fashion (Adaptado para Cliente y Empleado)
  */
-export function modelo() {
-    const container = document.getElementById("container3d");
+export function modelo(config = {}) {
+    // 🔍 CONFIGURACIÓN DINÁMICA DE IDS
+    const IDs = {
+        container: config.container || "container3d",
+        colorInput: config.colorInput || "color-input-global",
+        btnLimpiar: config.btnLimpiar || "btn-limpiar-estampados",
+        btnGuardar: config.btnGuardar || "btn-procesar-guardado",
+        imageInput: config.imageInput || "imageInput",
+        getEsclala: config.getEscala || (() => {
+            const radio = document.querySelector('input[name="tamano_estam"]:checked');
+            return (radio ? parseInt(radio.value) : 100); 
+        })
+    };
+
+    const container = document.getElementById(IDs.container);
     if (!container) return;
 
     // --- 1. CONFIGURACIÓN DE ESCENA Y RENDERER ---
@@ -21,10 +34,12 @@ export function modelo() {
     const renderer = new THREE.WebGLRenderer({ 
         antialias: true, 
         alpha: true,
-        preserveDrawingBuffer: true // 🌟 CRUCIAL: Mantiene el buffer para que toDataURL() no salga negro
+        preserveDrawingBuffer: true 
     });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
+    
+    container.innerHTML = "";
     container.appendChild(renderer.domElement);
 
     // --- 2. ILUMINACIÓN ---
@@ -33,11 +48,11 @@ export function modelo() {
     lightFront.position.set(5, 5, 5);
     scene.add(lightFront);
 
-    // --- 3. CONTROLES (ZOOM DESACTIVADO) ---
+    // --- 3. CONTROLES ---
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    controls.enableZoom = false; // 🔒 Bloquea que el usuario pueda agrandar o alejar el modelo
+    controls.enableZoom = false; 
 
     // --- 4. VARIABLES DE ESTADO ---
     let meshCamiseta = [];
@@ -47,6 +62,7 @@ export function modelo() {
     let contadorEstampados = 0;
     let idEstampadoSeleccionado = null; 
     window.listaEstampadosIds = []; 
+    window.precioExtraTamano = 0;
 
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
@@ -75,8 +91,7 @@ export function modelo() {
             }
         });
 
-        // Aplicar color inicial detectado en el HTML
-        const colorInput = document.getElementById('color-input-global');
+        const colorInput = document.getElementById(IDs.colorInput);
         if (colorInput) aplicarColor(colorInput.value);
     });
 
@@ -124,8 +139,8 @@ export function modelo() {
             opacity: esPrevia ? 0.6 : 1.0
         });
 
-        const slider = document.getElementById('sizeSlider');
-        const size = (slider ? parseInt(slider.value) : 60) / 50; 
+        const escalaValor = IDs.getEsclala();
+        const size = escalaValor / 100; 
         const dimensiones = new THREE.Vector3(size, size, 1.0);
 
         const m = new THREE.Matrix4();
@@ -141,44 +156,31 @@ export function modelo() {
     }
 
     // --- 8. EVENTOS DE INTERACCIÓN ---
-
-    // Cambios de color desde el input HTML
-    const colorInputGlobal = document.getElementById('color-input-global');
-    if (colorInputGlobal) {
-        colorInputGlobal.addEventListener('input', (e) => {
-            aplicarColor(e.target.value);
+    document.querySelectorAll('input[name="tamano_estam"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            const val = e.target.value;
+            window.precioExtraTamano = (val === '180') ? 10000 : (val === '100' ? 5000 : 0);
         });
-    }
+    });
 
-    // 🌟 TU PROCEDIMIENTO DE CARGA DE IMAGEN PROPIA (FILE INPUT) RECUPERADO
-    const imageInputPropio = document.getElementById('imageInput');
+    document.getElementById(IDs.colorInput)?.addEventListener('input', (e) => aplicarColor(e.target.value));
+
+    const imageInputPropio = document.getElementById(IDs.imageInput);
     if (imageInputPropio) {
         imageInputPropio.addEventListener('change', (e) => {
             const archivo = e.target.files[0];
             const errorMsg = document.getElementById('error-message');
-            
             if (archivo) {
-                const limitBytes = 2 * 1024 * 1024; // Límite 2MB
-                if (archivo.size > limitBytes) {
-                    if (errorMsg) {
-                        errorMsg.textContent = "❌ El archivo es muy grande. El límite máximo es de 2 MB.";
-                        errorMsg.style.display = "block";
-                    }
-                    e.target.value = ""; 
-                    ultimaTextura = null;
-                    idEstampadoSeleccionado = null;
-                    return;
+                if (archivo.size > 2 * 1024 * 1024) {
+                    if (errorMsg) { errorMsg.textContent = "❌ Máximo 2 MB."; errorMsg.style.display = "block"; }
+                    e.target.value = ""; return;
                 }
-
-                if (errorMsg) errorMsg.style.display = "none";
-
                 const reader = new FileReader();
-                reader.onload = function(event) {
+                reader.onload = (event) => {
                     textureLoader.load(event.target.result, (tex) => {
                         tex.colorSpace = THREE.SRGBColorSpace;
                         ultimaTextura = tex;
-                        idEstampadoSeleccionado = "imagen_propia"; 
-                        console.log("Imagen propia cargada con éxito en el lienzo 3D.");
+                        idEstampadoSeleccionado = "imagen_propia";
                     });
                 };
                 reader.readAsDataURL(archivo);
@@ -186,7 +188,6 @@ export function modelo() {
         });
     }
 
-    // Listener del catálogo manual (Imágenes precargadas del servidor)
     window.addEventListener('cambioEstampadoManual', (event) => {
         const { url, id } = event.detail;
         idEstampadoSeleccionado = id;
@@ -201,150 +202,90 @@ export function modelo() {
         }
     });
 
-    // Teclado (Tecla A para modo estampado)
     window.addEventListener('keydown', (e) => {
-        if (e.key.toLowerCase() === 'a') {
-            teclaAPresionada = true;
-            controls.enabled = false; 
-        }
+        if (e.key.toLowerCase() === 'a') { teclaAPresionada = true; controls.enabled = false; }
     });
 
     window.addEventListener('keyup', (e) => {
-        if (e.key.toLowerCase() === 'a') {
-            teclaAPresionada = false;
-            controls.enabled = true; 
-            eliminarPrevisualizacion();
-        }
+        if (e.key.toLowerCase() === 'a') { teclaAPresionada = false; controls.enabled = true; eliminarPrevisualizacion(); }
     });
 
-    // Movimiento del mouse
     renderer.domElement.addEventListener('mousemove', (event) => {
-        if (!ultimaTextura || !teclaAPresionada || contadorEstampados >= 2) {
-            eliminarPrevisualizacion();
-            return;
-        }
+        if (!ultimaTextura || !teclaAPresionada || contadorEstampados >= 2) { eliminarPrevisualizacion(); return; }
         const rect = renderer.domElement.getBoundingClientRect();
         mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
         mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
         raycaster.setFromCamera(mouse, camera);
         const intersects = raycaster.intersectObjects(meshCamiseta);
-
         eliminarPrevisualizacion();
         if (intersects.length > 0) crearDecal(intersects[0], true);
     });
 
-    // Clic para FIJAR estampado
     renderer.domElement.addEventListener('click', () => {
-        if (!decalVistaPrevia || !teclaAPresionada) return;
-        if (contadorEstampados >= 2) return alert("Máximo 2 estampados permitidos.");
-        
+        if (!decalVistaPrevia || !teclaAPresionada || contadorEstampados >= 2) return;
         decalVistaPrevia.name = "estampado_fijo";
         decalVistaPrevia.material.opacity = 1.0;
-        
-        if (idEstampadoSeleccionado) {
-            window.listaEstampadosIds.push(idEstampadoSeleccionado);
-        }
-
+        if (idEstampadoSeleccionado) window.listaEstampadosIds.push(idEstampadoSeleccionado);
         decalVistaPrevia = null; 
         contadorEstampados++;
     });
 
-    // Botón Limpiar
-    const btnLimpiar = document.getElementById('btn-limpiar-estampados');
-    if (btnLimpiar) {
-        btnLimpiar.onclick = () => {
-            const fijos = scene.children.filter(obj => obj.name === "estampado_fijo");
-            fijos.forEach(obj => {
-                obj.geometry.dispose();
-                obj.material.dispose();
-                scene.remove(obj);
-            });
-            window.listaEstampadosIds = [];
-            contadorEstampados = 0;
-            ultimaTextura = null;
-            idEstampadoSeleccionado = null;
-            const inputFoto = document.getElementById('imageInput');
-            if(inputFoto) inputFoto.value = "";
-        };
-    }
+    document.getElementById(IDs.btnLimpiar)?.addEventListener('click', () => {
+        scene.children.filter(obj => obj.name === "estampado_fijo").forEach(obj => {
+            obj.geometry.dispose(); obj.material.dispose(); scene.remove(obj);
+        });
+        window.listaEstampadosIds = []; contadorEstampados = 0;
+    });
 
-    // --- 9. LÓGICA DE GUARDADO COMPLETA ---
+    // --- 9. LÓGICA DE GUARDADO CORREGIDA ---
     async function guardarConfiguracion() {
-        console.log("Iniciando proceso de guardado...");
-
-        const btnSave = document.getElementById('btn-procesar-guardado');
-        const textoBtn = document.getElementById('texto-boton');
-
-        if (btnSave) {
-            btnSave.disabled = true;
-            if (textoBtn) textoBtn.innerText = "Guardando...";
-        }
+        const btnSave = document.getElementById(IDs.btnGuardar);
+        if (btnSave) btnSave.disabled = true;
 
         try {
             eliminarPrevisualizacion();
-            
-            // 📸 FORZAMOS EL RENDERIZADO JUSTO ANTES DE TOMAR LA FOTO DE FRENTE
             renderer.render(scene, camera);
-            const imagenBase64 = renderer.domElement.toDataURL('image/png');
             
             const datos = {
                 'producto_id': document.getElementById('producto-id').value,
-                'color': document.getElementById('color-input-global').value,
-                'talla': document.getElementById('talla-seleccionada')?.value || 'M',
+                'color': document.getElementById(IDs.colorInput).value,
+                'talla': document.querySelector('input[name="talla_personalizada"]:checked').value,
                 'cantidad': 1,
-                'foto_frente': imagenBase64, // Aquí va la captura en Base64 para la DB
-                'cantidad_total_estampados': window.listaEstampadosIds.length, 
-                'lista_estampados': window.listaEstampadosIds, 
+                'estampado_id': idEstampadoSeleccionado,
+                'lista_estampados': window.listaEstampadosIds,
+                'cantidad_total_estampados': contadorEstampados,
+                'costo_tamano_estampado': window.precioExtraTamano || 0,
+                'foto_frente': renderer.domElement.toDataURL('image/png')
             };
 
             const response = await fetch('/inventario/guardar-diseno/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': window.csrfToken || getCookie('csrftoken'),
+                    'X-CSRFToken': getCookie('csrftoken'),
                 },
                 body: JSON.stringify(datos)
             });
 
             const resultado = await response.json();
-            
             if (resultado.status === 'success') {
-                console.log("Éxito, redirigiendo...");
-                window.location.href = '/ventas/carrito/';
+                window.location.href = "/ventas/carrito/"; // Ajusta tu ruta de carrito
             } else {
-                throw new Error(resultado.message || "Error al procesar el diseño.");
+                throw new Error(resultado.message);
             }
         } catch (error) {
-            console.error("Error en el guardado:", error);
             alert("Error: " + error.message);
-            
-            if (btnSave) {
-                btnSave.disabled = false;
-                if (textoBtn) textoBtn.innerText = "✅ Guardar Diseño";
-            }
+            if (btnSave) btnSave.disabled = false;
         }
     }
 
-    const btnEjecutar = document.getElementById('btn-procesar-guardado');
-    if (btnEjecutar) {
-        btnEjecutar.onclick = (e) => {
-            e.preventDefault();
-            guardarConfiguracion();
-        };
-    }
+    document.getElementById(IDs.btnGuardar)?.addEventListener('click', guardarConfiguracion);
 
-    // --- 10. BUCLE DE ANIMACIÓN Y RESIZE ---
+    // --- 10. BUCLE ANIMACIÓN ---
     function animate() {
         requestAnimationFrame(animate);
         controls.update();
         renderer.render(scene, camera);
     }
     animate();
-
-    window.addEventListener('resize', () => {
-        camera.aspect = container.clientWidth / container.clientHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(container.clientWidth, container.clientHeight);
-    });
 }

@@ -406,9 +406,13 @@ def eliminar_estampado(request, id):
 def modelo(request, producto_id):
     producto = get_object_or_404(Producto, id_produc=producto_id)
     estampados = Estampado.objects.all() 
+    tallas = producto.tallas_disponibles.split(',') if producto.tallas_disponibles else ["S", "M", "L", "XL", "XXL"]
+    # ---------------------------
+
     return render(request, 'inventario/modelo/index.html', {
         'producto': producto,
-        'estampados': estampados  
+        'estampados': estampados,
+        'tallas': tallas  # <--- ¡IMPORTANTE: Agrega esto aquí!
     })
 
 class ProveedorViewSet(viewsets.ModelViewSet):
@@ -433,10 +437,9 @@ def b64_to_file(data, filename):
 def guardar_diseno_3d(request):
     if request.method == 'POST':
         try:
-            # 1. TU LÓGICA DE SESIÓN (No se toca)
+            # 1. IDENTIFICACIÓN DE SESIÓN FLEXIBLE
             cliente_usuario = obtener_cliente_actual(request)
-            if not cliente_usuario:
-                return JsonResponse({'status': 'error', 'message': 'Sesión no válida'}, status=401)
+            es_empleado = request.session.get('username') is not None or not cliente_usuario
 
             # 2. CARGA DE DATOS
             data = json.loads(request.body)
@@ -444,56 +447,47 @@ def guardar_diseno_3d(request):
             color = data.get('color')
             talla = data.get('talla') 
             cantidad = int(data.get('cantidad', 1))
-            estampado_id = data.get('estampado_id') # ID del último/principal
-            
-            # --- NUEVAS VARIABLES PARA EL CÁLCULO MÚLTIPLE ---
-            lista_ids_estampados = data.get('lista_estampados', []) # Lista de todos los IDs puestos
+            estampado_id = data.get('estampado_id')
+            lista_ids_estampados = data.get('lista_estampados', []) 
             total_estampados_escena = int(data.get('cantidad_total_estampados', 0))
-            
             foto_frente_base64 = data.get('foto_frente')
+            
+            # --- NUEVO: Capturar el costo adicional por el tamaño del estampado ---
+            # Si viene del cliente (que no tiene esta opción), por defecto es 0.
+            costo_tamano_estampado = float(data.get('costo_tamano_estampado', 0))
 
             producto_base = get_object_or_404(Producto, id_produc=producto_id)
 
-            # --- 3. LÓGICA DE PRECIOS CORREGIDA (Suma cada estampado individualmente) ---
+            # 3. LÓGICA DE PRECIOS
             precio_unitario = float(producto_base.precio)
             extra_total_estampados = 0
             estampado_obj_principal = None
 
-            # A. Primero sumamos los costos de los estampados de catálogo que estén en la lista
             for est_id in lista_ids_estampados:
-                # 🌟 SOLUCIÓN: Si el ID es el texto de tu interfaz, saltamos la búsqueda en la DB
-                if est_id == "imagen_propia":
-                    continue
-
+                if est_id == "imagen_propia": continue
                 try:
                     est_temp = Estampado.objects.get(id_estamp=est_id)
                     extra_total_estampados += float(est_temp.costo_adi)
-                    
-                    # Guardamos el último como principal para la relación en la DB
                     if str(est_id) == str(estampado_id):
                         estampado_obj_principal = est_temp
-                except Estampado.DoesNotExist:
-                    continue
+                except Estampado.DoesNotExist: continue
             
-            # B. Si no logramos asignar el principal arriba, intentamos con el estampado_id directo
             if not estampado_obj_principal and estampado_id and estampado_id != "imagen_propia":
-                try:
-                    estampado_obj_principal = Estampado.objects.get(id_estamp=estampado_id)
+                try: estampado_obj_principal = Estampado.objects.get(id_estamp=estampado_id)
                 except: pass
 
-            # C. Lógica para estampados propios (subidos por el usuario)
-            # Filtramos los "imagen_propia" de la lista de IDs para que la resta matemática cuadre exacta
             lista_solo_catalogo = [x for x in lista_ids_estampados if x != "imagen_propia"]
-            cantidad_propios = total_estampados_escena - len(lista_solo_catalogo)
-            
-            if cantidad_propios > 0:
-                extra_total_estampados += (20000 * cantidad_propios) # 20k por cada uno propio
+            amount_propios = total_estampados_escena - len(lista_solo_catalogo)
+            if amount_propios > 0:
+                extra_total_estampados += (20000 * amount_propios)
+
+            # --- NUEVO: Sumar el costo del tamaño del estampado al total de extras ---
+            extra_total_estampados += costo_tamano_estampado
 
             precio_unitario += extra_total_estampados
             valor_total_final = int(precio_unitario * cantidad)
-            # -----------------------------------------------------------------------
 
-            # 4. PROCESAR IMAGEN (TU LÓGICA ORIGINAL)
+            # 4. PROCESAR IMAGEN
             archivo_foto = None
             if foto_frente_base64 and ';base64,' in foto_frente_base64:
                 format, imgstr = foto_frente_base64.split(';base64,')
@@ -501,11 +495,11 @@ def guardar_diseno_3d(request):
                 nombre_archivo = f"diseno_{uuid.uuid4()}.{ext}"
                 archivo_foto = ContentFile(base64.b64decode(imgstr), name=nombre_archivo)
 
-            # 5. GUARDADO (TU ESTRUCTURA ORIGINAL CON DATOS NUEVOS)
+            # 5. GUARDADO ATÓMICO
             with transaction.atomic():
                 personalizacion = PedidoPersonalizado.objects.create(
                     producto=producto_base,
-                    estampado=estampado_obj_principal, # Quedará en null si es 100% propia, evitando errores
+                    estampado=estampado_obj_principal, 
                     color_hex=color,
                     tipo_personalizacion="3D",
                     foto_frente=archivo_foto,
@@ -521,28 +515,36 @@ def guardar_diseno_3d(request):
                     id_estam_fk_var=estampado_obj_principal 
                 )
 
-                pedido, _ = Pedido.objects.get_or_create(
-                    id_clien_fk=cliente_usuario,
-                    estado_ped='Carrito',
-                    defaults={'subtotal_ped': 0, 'valor_ped': 0, 'metodo_pago': 'Pendiente'}
-                )
+                # DETERMINAR PEDIDO
+                if es_empleado:
+                    pedido_asociado = Pedido.objects.create(
+                        subtotal_ped=0, valor_ped=0, 
+                        estado_ped='Procesando_Emp', metodo_pago='Efectivo',
+                        id_clien_fk=None 
+                    )
+                else:
+                    pedido_asociado = obtener_o_crear_pedido_cliente(cliente_usuario)
 
-                Det_valor.objects.create(
-                    id_ped_fk_detval=pedido, 
+                detalle = Det_valor.objects.create(
+                    id_ped_fk_detval=pedido_asociado,
                     id_prod_fk_detval=producto_base,
                     id_var_fk_detval=nueva_variacion,
                     id_personalizacion_3d=personalizacion,
                     valor_total=valor_total_final, 
-                    tipo_pedido='Personalizado'
+                    tipo_pedido="Venta Personalizada"
                 )
 
-            return JsonResponse({'status': 'success', 'message': '¡Diseño guardado correctamente!'})
+            return JsonResponse({
+                    'status': 'success', 
+                    'detalle_id': detalle.id_det_valor, 
+                    'precio_final': valor_total_final
+                })
 
         except Exception as e:
-            print(f"Error detallado: {str(e)}")
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
     return JsonResponse({'status': 'error', 'message': 'Método no permitido'}, status=405)
+
 
 def eliminar_pedido_personalizado(request, id):
     pedido = get_object_or_404(PedidoPersonalizado, id=id)

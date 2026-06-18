@@ -257,15 +257,15 @@
 
                 <div style="margin-bottom: 25px;">
                     <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-    {% for c in colores %}
-    <label title="{{ c }}">
-        <input type="radio" name="color" value="{{ c }}" style="display:none;" required>
-        <span class="color-circle" 
-            style="background-color: {{ c }}; border: 1px solid #ccc; display: inline-block; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;">
-        </span>
-    </label>
-    {% endfor %}
-</div>
+                    {% for c in colores %}
+                    <label title="{{ c }}">
+                        <input type="radio" name="color" value="{{ c }}" style="display:none;" required>
+                        <span class="color-circle" 
+                            style="background-color: {{ c }}; border: 1px solid #ccc; display: inline-block; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;">
+                        </span>
+                    </label>
+                    {% endfor %}
+                </div>
                 </div>
 
                 <div style="margin-bottom: 30px; display: flex; align-items: center; gap: 15px;">

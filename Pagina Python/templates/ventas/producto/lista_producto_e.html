@@ -7,6 +7,15 @@
 :root{
     --vino:#800020;
     --vinoOscuro:#5e0018;
+    
+    /* Variables exactas del personalizador 3D */
+    --primary: #6a0f2e; 
+    --primary-light: #fdf8f9; 
+    --primary-border: #f2d7e0;
+    --bg: #f4eeee; 
+    --info: #0c5460; 
+    --info-bg: #d1ecf1; 
+    --dark: #2d3436;
 }
 
 body{
@@ -14,7 +23,7 @@ body{
 }
 
 /* =========================
-CONTENEDOR
+CONTENEDOR PRINCIPAL
 ========================= */
 .table-container{
     padding:40px;
@@ -22,7 +31,7 @@ CONTENEDOR
 }
 
 /* =========================
-TITULO
+TITULO Y BUSCADOR
 ========================= */
 .title-section h2{
     font-size:40px;
@@ -34,9 +43,6 @@ TITULO
     color:#777;
 }
 
-/* =========================
-BUSCADOR
-========================= */
 #product-search{
     width:100%;
     max-width:600px;
@@ -50,7 +56,7 @@ BUSCADOR
 }
 
 /* =========================
-GRID
+GRID DE PRODUCTOS
 ========================= */
 .productos-grid{
     display:grid;
@@ -58,9 +64,6 @@ GRID
     gap:30px;
 }
 
-/* =========================
-CARD
-========================= */
 .card-item{
     background:white;
     border-radius:25px;
@@ -117,7 +120,7 @@ CARD
 }
 
 /* =========================
-BOTON
+BOTONES
 ========================= */
 .btn-factura{
     width:100%;
@@ -135,8 +138,26 @@ BOTON
     opacity:.9;
 }
 
+.btn-personalizar-3d {
+    width:100%; 
+    margin-top:10px; 
+    padding:12px; 
+    border:2px solid var(--vino); 
+    border-radius:16px; 
+    background:transparent; 
+    color:var(--vino); 
+    font-weight:bold; 
+    cursor:pointer;
+    transition: 0.3s;
+}
+
+.btn-personalizar-3d:hover {
+    background: var(--vino);
+    color: white;
+}
+
 /* =========================
-FACTURA
+PANEL DE FACTURACIÓN (DERECHA)
 ========================= */
 .factura-panel{
     position:fixed;
@@ -156,9 +177,6 @@ FACTURA
     font-size:35px;
 }
 
-/* =========================
-ITEM FACTURA
-========================= */
 .item-factura{
     display:flex;
     gap:12px;
@@ -166,6 +184,7 @@ ITEM FACTURA
     border-radius:18px;
     padding:12px;
     margin-top:15px;
+    align-items: center;
 }
 
 .item-factura img{
@@ -173,6 +192,8 @@ ITEM FACTURA
     height:80px;
     object-fit:cover;
     border-radius:14px;
+    background: #fff;
+    border: 1px solid #eee;
 }
 
 .factura-info{
@@ -181,11 +202,13 @@ ITEM FACTURA
 
 .factura-info h4{
     margin:0;
+    font-size: 16px;
 }
 
 .factura-info p{
     color:var(--vino);
     font-weight:bold;
+    margin: 4px 0 0 0;
 }
 
 .btn-remove{
@@ -196,11 +219,9 @@ ITEM FACTURA
     background:crimson;
     color:white;
     cursor:pointer;
+    font-weight: bold;
 }
 
-/* =========================
-TOTAL
-========================= */
 .total-factura{
     margin-top:30px;
     font-size:30px;
@@ -208,9 +229,6 @@ TOTAL
     font-weight:bold;
 }
 
-/* =========================
-BOTON PAGAR
-========================= */
 .btn-pagar{
     width:100%;
     margin-top:20px;
@@ -222,6 +240,208 @@ BOTON PAGAR
     font-size:18px;
     font-weight:bold;
     cursor:pointer;
+}
+
+/* ====================================================================================
+ESTILOS DEL MODAL FLOTANTE 3D
+==================================================================================== */
+.luxy-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none; /* Control dinámico limpio mediante JavaScript */
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+}
+
+.luxy-modal-container {
+    background: white;
+    width: 95%;
+    height: 92%;
+    border-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 10px 45px rgba(0,0,0,0.3);
+}
+
+.main-wrapper { 
+    display: flex; 
+    padding: 20px; 
+    gap: 20px; 
+    flex: 1;
+    height: calc(100% - 70px);
+    box-sizing: border-box;
+}
+
+#container3d-empleado { 
+    flex: 1.5; 
+    background: white; 
+    border-radius: 25px; 
+    position: relative; 
+    overflow: hidden; 
+    border: 1px solid #eee;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+.form-pro { 
+    flex: 0 0 410px; 
+    background: white; 
+    padding: 25px; 
+    border-radius: 25px; 
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1); 
+    display: flex; 
+    flex-direction: column;
+    max-height: 100%;
+    box-sizing: border-box;
+}
+
+.instrucciones-box {
+    background: var(--info-bg); 
+    color: var(--info); 
+    padding: 12px; 
+    border-radius: 15px;
+    margin-bottom: 15px; 
+    border-left: 5px solid var(--info); 
+    font-size: 0.8rem;
+    line-height: 1.4;
+}
+
+.controles-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+    margin-bottom: 15px;
+}
+
+.controles-scroll::-webkit-scrollbar { width: 5px; }
+.controles-scroll::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 10px; }
+
+.control-tabs { 
+    display: flex; 
+    background: #f1f3f5; 
+    padding: 5px; 
+    border-radius: 15px; 
+    gap: 5px; 
+    margin-bottom: 15px; 
+}
+
+.tab-btn {
+    flex: 1; padding: 10px 5px; border: none; background: transparent;
+    color: #666; border-radius: 10px; cursor: pointer; font-weight: bold; 
+    font-size: 0.75rem; text-transform: uppercase; transition: 0.3s;
+}
+.tab-btn.active { background: white; color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+
+.panel-opcion { display: none; padding: 10px 0; }
+.panel-opcion.active { display: block; animation: fadeIn 0.3s; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.galeria-disenos {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.diseno-item {
+    border: 1px solid #eee;
+    border-radius: 12px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: 0.3s;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+}
+
+.diseno-item img { width: 100%; height: 85px; object-fit: contain; margin-bottom: 5px; }
+.diseno-nombre { font-size: 0.75rem; font-weight: bold; color: #444; text-align: center; }
+.diseno-precio { font-size: 0.75rem; color: #2e7d32; font-weight: bold; }
+
+.diseno-item:hover { border-color: var(--primary-border); background: var(--primary-light); }
+.diseno-item.selected { border-color: var(--primary); background: var(--primary-light); }
+
+.label-style { font-weight: 700; font-size: 0.9rem; color: #333; display: block; margin-bottom: 6px; }
+
+input[type="color"] { width: 100%; height: 40px; border: none; border-radius: 10px; cursor: pointer; }
+
+/* Cuadros de Talla */
+.btn-talla {
+    display: inline-block;
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    background-color: #fff;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+.btn-talla:hover {
+    border-color: #5e0925; 
+    background-color: #fcf8f9;
+}
+.radio-talla:checked + .btn-talla {
+    background-color: #5e0925; 
+    color: #fff;               
+    border-color: #5e0925;
+    box-shadow: 0 3px 8px rgba(94, 9, 37, 0.2);
+}
+
+/* Cuadros de selección para tamaños del estampado */
+.cuadro-tamano {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #333;
+    background-color: #fff;
+    text-align: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+.cuadro-tamano:hover {
+    border-color: #5e0925;
+    background-color: #fcf8f9;
+}
+.cuadro-tamano.activo {
+    background-color: #5e0925;
+    color: #fff;
+    border-color: #5e0925;
+    box-shadow: 0 3px 8px rgba(94, 9, 37, 0.2);
+}
+
+.btn-main { 
+    padding: 14px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; 
+    width: 100%; text-transform: uppercase; transition: 0.3s; text-align: center; text-decoration: none; display: block;
+    font-size: 0.85rem;
+}
+.btn-guardar { 
+    background: var(--primary); 
+    color: white; 
+    box-shadow: 0 4px 15px rgba(106, 15, 46, 0.2); 
+}
+.btn-guardar:hover { background: #4e0a22; transform: translateY(-2px); }
+.btn-guardar:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+
+footer { 
+    background: #5e0925; 
+    color: white; 
+    padding: 10px; 
+    text-align: center; 
+    font-size: 0.7rem; 
+    margin: 15px -25px -25px -25px; 
+    border-radius: 0 0 25px 25px;
 }
 </style>
 
@@ -250,7 +470,7 @@ BOTON PAGAR
                 <h3 class="product-name">{{ p.nom_produc }}</h3>
                 <p class="product-price">${{ p.precio }}</p>
 
-                <label class="label-option">Talla</label>
+                <label class="label-option">Talla Base</label>
                 <select class="select-option talla-select">
                     <option value="S">S</option>
                     <option value="M">M</option>
@@ -258,7 +478,7 @@ BOTON PAGAR
                     <option value="XL">XL</option>
                 </select>
 
-                <label class="label-option">Color</label>
+                <label class="label-option">Color Base</label>
                 <select class="select-option color-select">
                     <option value="Negro">Negro</option>
                     <option value="Blanco">Blanco</option>
@@ -275,6 +495,12 @@ BOTON PAGAR
                 )">
                     🛍️ Añadir a factura
                 </button>
+
+                {% if 'camiseta' in p.nom_produc|lower %}
+                <button type="button" class="btn-personalizar-3d" onclick="abrirPersonalizador3D('{{ p.id_produc }}', '{{ p.nom_produc }}', '{{ p.precio }}')">
+                    🎨 Personalizar en 3D
+                </button>
+                {% endif %}
             </div>
         </div>
         {% endfor %}
@@ -302,7 +528,7 @@ BOTON PAGAR
     </button>
 </div>
 
-<div id="modal-pago" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.6); display:none; justify-content:center; align-items:center; z-index:99999;">
+<div id="modal-pago" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.6); display:none; justify-content:center; align-items:center; z-index:9999999;">
     <div style="background:white; width:400px; padding:40px; border-radius:25px; text-align:center;">
         <h2 style="color:#800020;">Pago realizado</h2>
         <p>Venta de Empleado registrada correctamente</p>
@@ -310,56 +536,153 @@ BOTON PAGAR
     </div>
 </div>
 
+<div id="modal-personalizador-3d" class="luxy-modal-overlay">
+    <div class="luxy-modal-container">
+        
+        <div style="padding:15px 30px; background:var(--vino); color:white; display:flex; justify-content:space-between; align-items:center; height:70px; box-sizing:border-box;">
+            <h3 style="margin:0; font-family:'Segoe UI'; font-weight:bold; font-size: 18px;">🛠️ Panel de Personalización Profesional Luxy (Empleado)</h3>
+            <button type="button" onclick="cerrarPersonalizador3D()" style="background:white; color:var(--vino); border:none; padding:8px 16px; border-radius:12px; font-weight:bold; cursor:pointer;">❌ Cerrar Ventana</button>
+        </div>
+
+        <div class="main-wrapper">
+            <div id="container3d-empleado"></div>
+
+            <div class="form-pro">
+                <input type="hidden" id="producto-id" value="">
+                <input type="hidden" id="talla-seleccionada" value="S">
+                <input type="range" id="sizeSlider" min="10" max="250" value="40" style="display:none;">
+
+                <h1 id="modal-product-title" style="font-size: 22px; margin: 0 0 5px 0; font-weight: bold; color: #2d3436;">Producto</h1>
+                <b><div class="product-price" id="modal-product-price" style="color: #5e0925; font-size: 24px; margin-bottom: 15px;">$ 0</div></b>
+
+                <div class="instrucciones-box">
+                    <strong style="display: block; margin-bottom: 3px;">🎮 Controles Rápidos:</strong>
+                    • Cambia color y texturas desde los paneles inferiores.<br>
+                    • Mantén presionado <b>Tecla 'A' + Clic</b> sobre la prenda para fijar el estampado.<br>
+                    • Máximo 2 estampados por camiseta.
+                </div>
+
+                <div class="controles-scroll">
+                    <span class="label-style">Color de la tela:</span>
+                    <input type="color" id="color-input-global" value="#ffffff">
+
+                    <span class="label-style" style="margin-top: 15px; display: block;">Talla de la Camiseta:</span>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 5px;">
+                        <label style="margin: 0; cursor: pointer;">
+                            <input type="radio" name="talla_m_emp" value="S" class="radio-talla" style="display:none;" checked onclick="document.getElementById('talla-seleccionada').value = 'S'">
+                            <span class="btn-talla">S</span>
+                        </label>
+                        <label style="margin: 0; cursor: pointer;">
+                            <input type="radio" name="talla_m_emp" value="M" class="radio-talla" style="display:none;" onclick="document.getElementById('talla-seleccionada').value = 'M'">
+                            <span class="btn-talla">M</span>
+                        </label>
+                        <label style="margin: 0; cursor: pointer;">
+                            <input type="radio" name="talla_m_emp" value="L" class="radio-talla" style="display:none;" onclick="document.getElementById('talla-seleccionada').value = 'L'">
+                            <span class="btn-talla">L</span>
+                        </label>
+                        <label style="margin: 0; cursor: pointer;">
+                            <input type="radio" name="talla_m_emp" value="XL" class="radio-talla" style="display:none;" onclick="document.getElementById('talla-seleccionada').value = 'XL'">
+                            <span class="btn-talla">XL</span>
+                        </label>
+                    </div>
+
+
+                    <span class="label-style" style="margin-top: 15px; display:block;">Cantidad:</span>
+                        <input type="number" id="input-cantidad-3d" value="1" min="1" max="99" 
+                            style="width: 100%; padding: 10px; border-radius: 12px; border: 1px solid #ddd; margin-bottom: 15px;">
+                    <span class="label-style" style="margin-top: 15px; display:block;">Tamaño del Estampado:</span>
+
+
+                    <div style="display:flex; gap:8px; margin-top:5px;">
+                        <div class="cuadro-tamano activo" data-scale="40" data-extra="0" onclick="cambiarTamanoCaja(this)">
+                            <span>Chiquito</span>
+                            <small style="display:block; font-size:10px; color:#666; margin-top:2px;">Base ($0)</small>
+                        </div>
+                        <div class="cuadro-tamano" data-scale="90" data-extra="5000" onclick="cambiarTamanoCaja(this)">
+                            <span>Mediano</span>
+                            <small style="display:block; font-size:10px; color:#2e7d32; margin-top:2px; font-weight:bold;">+ $5.000</small>
+                        </div>
+                        <div class="cuadro-tamano" data-scale="180" data-extra="12000" onclick="cambiarTamanoCaja(this)">
+                            <span>Enorme</span>
+                            <small style="display:block; font-size:10px; color:#2e7d32; margin-top:2px; font-weight:bold;">+ $12.000</small>
+                        </div>
+                    </div>
+
+                    <div class="control-tabs" style="margin-top:20px;">
+                        <button class="tab-btn active" onclick="showTab('tab-ninguno', this); limpiarTodo();">Original</button>
+                        <button class="tab-btn" onclick="showTab('tab-propio', this)">Mi Foto</button>
+                        <button class="tab-btn" onclick="showTab('tab-lista', this)">Catálogo</button>
+                    </div>
+
+                    <div id="tab-ninguno" class="panel-opcion active">
+                        <p style="color: #999; font-size: 0.8rem; text-align: center; font-style: italic;">Sin estampados activos.</p>
+                    </div>
+
+                    <div id="tab-propio" class="panel-opcion">
+                        <span class="label-style">Subir Logotipo personalizado:</span>
+                        <input type="file" id="imageInput" accept="image/jpeg, image/png">
+                        <p id="error-message" style="color: #e74c3c; font-weight: bold; margin-top: 5px; display: none;"></p>
+                    </div>
+
+                    <div id="tab-lista" class="panel-opcion">
+                        <div class="galeria-disenos">
+                            {% for est in estampados %}
+                                <div class="diseno-item" onclick="seleccionarEstampado('{{ est.imagen_estamp.url }}', '{{ est.id_estamp }}', this)">
+                                    <img src="{{ est.imagen_estamp.url }}" alt="{{ est.nombre_estamp }}">
+                                    <div class="diseno-nombre">{{ est.nombre_estamp }}</div>
+                                    <div class="diseno-precio">+$ {{ est.costo_adi }}</div>
+                                </div>
+                            {% empty %}
+                                <p style="grid-column: span 2; font-size: 0.75rem; color: #bbb; text-align: center;">No hay estampados en la BD.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="acciones-footer">
+                    <button id="btn-limpiar-estampados" style="display:none;"></button>
+                    <button class="btn-main btn-guardar" id="btn-procesar-guardado">
+                        <span>✅ Guardar y Cargar a Factura</span>
+                    </button>
+                    <footer>
+                        &copy; 2026 Luxy Fashion | SENA
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="importmap">
+    { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }
+</script>
+
 <script>
 let factura = [];
 let total = 0;
+window.precioExtraTamano = 0; 
+window.productoActualId = null; // Variable global requerida en main.js por la línea 185
 
-/* =========================
-BUSCADOR
-========================= */
+/* BUSCADOR */
 document.getElementById('product-search').addEventListener('input', function(e){
     const texto = e.target.value.toLowerCase();
-    const cards = document.querySelectorAll('.product-card');
-
-    cards.forEach(card=>{
+    document.querySelectorAll('.product-card').forEach(card=>{
         const nombre = card.querySelector('.product-name').textContent.toLowerCase();
-        if(nombre.includes(texto)){
-            card.style.display = 'block';
-        }else{
-            card.style.display = 'none';
-        }
+        card.style.display = nombre.includes(texto) ? 'block' : 'none';
     });
 });
 
-/* =========================
-AGREGAR FACTURA
-========================= */
 function agregarFactura(id, nombre, precio, imagen){
     const card = document.getElementById(`card-prod-${id}`);
     const talla = card.querySelector('.talla-select').value;
     const color = card.querySelector('.color-select').value;
-
-    factura.push({
-        id: id,
-        nombre: nombre,
-        precio: parseFloat(precio),
-        talla: talla,
-        color: color,
-        cantidad: 1,
-        imagen: imagen
-    });
-
+    factura.push({ id, nombre, precio: parseFloat(precio), talla, color, cantidad: 1, imagen });
     renderFactura();
 }
 
-/* =========================
-RENDER FACTURA
-========================= */
 function renderFactura(){
     const contenedor = document.getElementById('factura-items');
-    contenedor.innerHTML = "";
-    total = 0;
-
+    contenedor.innerHTML = ""; total = 0;
     factura.forEach((item, index)=>{
         total += item.precio;
         contenedor.innerHTML += `
@@ -367,89 +690,134 @@ function renderFactura(){
             <img src="${item.imagen}">
             <div class="factura-info">
                 <h4>${item.nombre}</h4>
-                <p>$${item.precio}</p>
-                <small>Talla: ${item.talla}</small><br>
-                <small>Color: ${item.color}</small><br>
-                <small style="color: green; font-weight: bold;">Venta de Empleado</small>
+                <p>$${item.precio.toLocaleString()}</p>
+                <small>Talla: ${item.talla} | Color: ${item.color}</small>
             </div>
             <button class="btn-remove" onclick="eliminarItem(${index})">X</button>
-        </div>
-        `;
+        </div>`;
     });
-
     document.getElementById('total').innerText = total.toLocaleString();
     document.getElementById('total-btn').innerText = total.toLocaleString();
 }
 
-/* =========================
-ELIMINAR ITEM
-========================= */
-function eliminarItem(index){
-    factura.splice(index, 1);
-    renderFactura();
-}
+function eliminarItem(index){ factura.splice(index, 1); renderFactura(); }
 
-/* =========================
-PAGAR FACTURA
-========================= */
-/* =========================
-PAGAR FACTURA
-========================= */
 function pagarFactura(){
-    if(factura.length == 0){
-        alert("No hay productos en la factura");
-        return;
-    }
-
+    if(factura.length == 0) return alert("No hay productos cargados en la factura.");
     const metodo = document.getElementById('metodo_pago').value;
-
-    // 🌟 Ahora sí apuntará perfectamente a /ventas/venta-empleado/
     fetch("{% url 'ventas:venta_empleado' %}", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": obtenerCSRFToken()
-        },
-        body: JSON.stringify({
-            productos: factura,
-            metodo_pago: metodo
-        })
+        headers: { "Content-Type": "application/json", "X-CSRFToken": obtenerCSRFToken() },
+        body: JSON.stringify({ productos: factura, metodo_pago: metodo })
     })
-    .then(response => {
-        if (!response.ok || response.headers.get("content-type").includes("text/html")) {
-            throw new Error("El servidor devolvió un HTML. Asegúrate de haber iniciado sesión como empleado.");
-        }
-        return response.json();
-    })
+    .then(res => res.json())
     .then(data => {
         if(data.success){
             document.getElementById('modal-pago').style.display = 'flex';
-            factura = [];
-            renderFactura();
-        } else {
-            alert("Error del servidor: " + data.message);
-        }
-    })
-    .catch(error => {
-        console.error(error);
-        alert(error.message || "Error de comunicación con el servidor");
+            factura = []; renderFactura();
+        } else { alert("Error: " + data.message); }
     });
 }
 
-/* =========================
-OBTENER CSRF TOKEN
-========================= */
 function obtenerCSRFToken(){
-    let cookieValue = null;
-    const cookies = document.cookie.split(';');
+    let v = null; const cookies = document.cookie.split(';');
     for(let i=0; i<cookies.length; i++){
-        let cookie = cookies[i].trim();
-        if(cookie.startsWith('csrftoken=')){
-            cookieValue = cookie.substring('csrftoken='.length);
-        }
+        let c = cookies[i].trim();
+        if(c.startsWith('csrftoken=')) v = c.substring(10);
     }
-    return cookieValue;
+    return v;
+}
+
+function showTab(tabId, btn) {
+    document.querySelectorAll('.panel-opcion').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    btn.classList.add('active');
+}
+
+function limpiarTodo() {
+    const btn = document.getElementById('btn-limpiar-estampados');
+    if(btn) btn.click();
+    document.querySelectorAll('.diseno-item').forEach(i => i.classList.remove('selected'));
+    window.dispatchEvent(new CustomEvent('cambioEstampadoManual', { detail: { url: null, id: null } }));
+}
+
+function seleccionarEstampado(url, id, elemento) {
+    document.querySelectorAll('.diseno-item').forEach(i => i.classList.remove('selected'));
+    elemento.classList.add('selected');
+    window.dispatchEvent(new CustomEvent('cambioEstampadoManual', { detail: { url: url, id: id } }));
+}
+
+function cambiarTamanoCaja(elemento) {
+    document.querySelectorAll('.cuadro-tamano').forEach(el => el.classList.remove('activo'));
+    elemento.classList.add('activo');
+    let escalaMalla = elemento.getAttribute('data-scale');
+    window.precioExtraTamano = parseFloat(elemento.getAttribute('data-extra'));
+    let sliderOculto = document.getElementById('sizeSlider');
+    if (sliderOculto) {
+        sliderOculto.value = escalaMalla;
+        sliderOculto.dispatchEvent(new Event('input'));
+    }
 }
 </script>
 
+<script type="module">
+    import { modelo } from "{% static 'js/main.js' %}";
+
+    // 1. Funciones de apertura/cierre
+    window.abrirPersonalizador3D = function(id, nombre, precio) {
+        window.productoActualId = id; 
+        document.getElementById('producto-id').value = id;
+        document.getElementById('modal-product-title').innerText = nombre;
+        document.getElementById('modal-product-price').innerText = "$ " + parseFloat(precio).toLocaleString();
+        
+        const modal = document.getElementById('modal-personalizador-3d');
+        modal.style.display = 'flex';
+
+        modelo({
+            container: "container3d-empleado" 
+        });
+    }
+
+    window.cerrarPersonalizador3D = function() {
+        document.getElementById('modal-personalizador-3d').style.display = 'none';
+        
+        // FORZAR desbloqueo del botón de guardado (asumiendo que tiene ID 'btn-guardar-3d')
+        const btnGuardar = document.getElementById('btn-guardar-3d');
+        if (btnGuardar) {
+            btnGuardar.disabled = false;
+        }
+        
+        // Limpieza de Three.js (muy importante)
+        const container = document.getElementById("container3d-empleado");
+        container.innerHTML = ""; 
+    }
+
+    // 2. NUEVO: Escucha el evento que viene desde el main.js cuando el guardado es exitoso
+    window.addEventListener('disenoGuardadoExitoso', (e) => {
+        const datos = e.detail;
+        const precioBase = parseFloat(document.getElementById('modal-product-price').innerText.replace(/\D/g,''));
+        
+        // Capturamos la cantidad que ingresó el empleado
+        const cantidadSeleccionada = parseInt(document.getElementById('input-cantidad-3d').value) || 1;
+        
+        factura.push({
+            id: datos.producto_id,
+            nombre: `Camiseta Personalizada`,
+            precio: (precioBase + datos.costo_tamano_estampado) * cantidadSeleccionada, // Precio total por las unidades
+            talla: datos.talla,
+            color: datos.color,
+            cantidad: cantidadSeleccionada, // Ahora guardamos la cantidad real
+            imagen: datos.foto_frente
+        });
+        
+        renderFactura();
+        cerrarPersonalizador3D();
+        
+        // Resetear cantidad a 1 para la próxima vez
+        document.getElementById('input-cantidad-3d').value = 1;
+    });
+
+    
+</script>
 {% endblock %}
