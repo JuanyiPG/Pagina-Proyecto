@@ -658,48 +658,40 @@ footer {
 </script>
 
 <script>
-    let factura = [];
-    let total = 0;
-    window.precioExtraTamano = 0; 
-    window.productoActualId = null;
+let factura = [];
+let total = 0;
+window.precioExtraTamano = 0; 
+window.productoActualId = null; // Variable global requerida en main.js por la línea 185
 
-    /* BUSCADOR */
-    document.getElementById('product-search').addEventListener('input', function(e){
-        const texto = e.target.value.toLowerCase();
-        document.querySelectorAll('.product-card').forEach(card=>{
-            const nombre = card.querySelector('.product-name').textContent.toLowerCase();
-            card.style.display = nombre.includes(texto) ? 'block' : 'none';
-        });
+/* BUSCADOR */
+document.getElementById('product-search').addEventListener('input', function(e){
+    const texto = e.target.value.toLowerCase();
+    document.querySelectorAll('.product-card').forEach(card=>{
+        const nombre = card.querySelector('.product-name').textContent.toLowerCase();
+        card.style.display = nombre.includes(texto) ? 'block' : 'none';
     });
+});
 
-    function agregarFactura(id, nombre, precio, imagen){
-        const card = document.getElementById(`card-prod-${id}`);
-        const talla = card.querySelector('.talla-select').value;
-        const color = card.querySelector('.color-select').value;
-        factura.push({ id, nombre, precio: parseFloat(precio), talla, color, cantidad: 1, imagen });
-        renderFactura();
-    }
+function agregarFactura(id, nombre, precio, imagen){
+    const card = document.getElementById(`card-prod-${id}`);
+    const talla = card.querySelector('.talla-select').value;
+    const color = card.querySelector('.color-select').value;
+    factura.push({ id, nombre, precio: parseFloat(precio), talla, color, cantidad: 1, imagen });
+    renderFactura();
+}
 
-    function renderFactura(){
+function renderFactura(){
     const contenedor = document.getElementById('factura-items');
-    contenedor.innerHTML = ""; 
-    total = 0;
-    
+    contenedor.innerHTML = ""; total = 0;
     factura.forEach((item, index)=>{
-        // Forzamos el precio a número y validamos si es 0
-        let precioUnitario = parseFloat(item.precio) || 0;
-        let cantidad = parseInt(item.cantidad) || 1;
-        let subtotal = precioUnitario * cantidad;
-        
-        total += subtotal;
-        
+        total += item.precio;
         contenedor.innerHTML += `
         <div class="item-factura">
             <img src="${item.imagen}">
             <div class="factura-info">
                 <h4>${item.nombre}</h4>
-                <p>$${subtotal.toLocaleString()}</p> <small>Talla: ${item.talla || 'N/A'} | Color: ${item.color || 'N/A'}</small>
-                <br><small>Cant: ${cantidad}</small>
+                <p>$${item.precio.toLocaleString()}</p>
+                <small>Talla: ${item.talla} | Color: ${item.color}</small>
             </div>
             <button class="btn-remove" onclick="eliminarItem(${index})">X</button>
         </div>`;
@@ -708,138 +700,124 @@ footer {
     document.getElementById('total-btn').innerText = total.toLocaleString();
 }
 
-    function eliminarItem(index){ factura.splice(index, 1); renderFactura(); }
+function eliminarItem(index){ factura.splice(index, 1); renderFactura(); }
 
-    function pagarFactura(){
-        if(factura.length == 0) return alert("No hay productos cargados en la factura.");
-        const metodo = document.getElementById('metodo_pago').value;
-        fetch("{% url 'ventas:venta_empleado' %}", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "X-CSRFToken": obtenerCSRFToken() },
-            body: JSON.stringify({ productos: factura, metodo_pago: metodo })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.success){
-                document.getElementById('modal-pago').style.display = 'flex';
-                factura = []; renderFactura();
-            } else { alert("Error: " + data.message); }
-        });
-    }
+function pagarFactura(){
+    if(factura.length == 0) return alert("No hay productos cargados en la factura.");
+    const metodo = document.getElementById('metodo_pago').value;
+    fetch("{% url 'ventas:venta_empleado' %}", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-CSRFToken": obtenerCSRFToken() },
+        body: JSON.stringify({ productos: factura, metodo_pago: metodo })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success){
+            document.getElementById('modal-pago').style.display = 'flex';
+            factura = []; renderFactura();
+        } else { alert("Error: " + data.message); }
+    });
+}
 
-    function obtenerCSRFToken(){
-        let v = null; const cookies = document.cookie.split(';');
-        for(let i=0; i<cookies.length; i++){
-            let c = cookies[i].trim();
-            if(c.startsWith('csrftoken=')) v = c.substring(10);
-        }
-        return v;
+function obtenerCSRFToken(){
+    let v = null; const cookies = document.cookie.split(';');
+    for(let i=0; i<cookies.length; i++){
+        let c = cookies[i].trim();
+        if(c.startsWith('csrftoken=')) v = c.substring(10);
     }
+    return v;
+}
 
-    function showTab(tabId, btn) {
-        document.querySelectorAll('.panel-opcion').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        btn.classList.add('active');
-    }
+function showTab(tabId, btn) {
+    document.querySelectorAll('.panel-opcion').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    btn.classList.add('active');
+}
 
-    function limpiarTodo() {
-        const btn = document.getElementById('btn-limpiar-estampados');
-        if(btn) btn.click();
-        document.querySelectorAll('.diseno-item').forEach(i => i.classList.remove('selected'));
-        window.dispatchEvent(new CustomEvent('cambioEstampadoManual', { detail: { url: null, id: null } }));
-    }
+function limpiarTodo() {
+    const btn = document.getElementById('btn-limpiar-estampados');
+    if(btn) btn.click();
+    document.querySelectorAll('.diseno-item').forEach(i => i.classList.remove('selected'));
+    window.dispatchEvent(new CustomEvent('cambioEstampadoManual', { detail: { url: null, id: null } }));
+}
 
-    function seleccionarEstampado(url, id, elemento) {
-        document.querySelectorAll('.diseno-item').forEach(i => i.classList.remove('selected'));
-        elemento.classList.add('selected');
-        window.dispatchEvent(new CustomEvent('cambioEstampadoManual', { detail: { url: url, id: id } }));
-    }
+function seleccionarEstampado(url, id, elemento) {
+    document.querySelectorAll('.diseno-item').forEach(i => i.classList.remove('selected'));
+    elemento.classList.add('selected');
+    window.dispatchEvent(new CustomEvent('cambioEstampadoManual', { detail: { url: url, id: id } }));
+}
 
-    function cambiarTamanoCaja(elemento) {
-        document.querySelectorAll('.cuadro-tamano').forEach(el => el.classList.remove('activo'));
-        elemento.classList.add('activo');
-        let escalaMalla = elemento.getAttribute('data-scale');
-        window.precioExtraTamano = parseFloat(elemento.getAttribute('data-extra'));
-        let sliderOculto = document.getElementById('sizeSlider');
-        if (sliderOculto) {
-            sliderOculto.value = escalaMalla;
-            sliderOculto.dispatchEvent(new Event('input'));
-        }
+function cambiarTamanoCaja(elemento) {
+    document.querySelectorAll('.cuadro-tamano').forEach(el => el.classList.remove('activo'));
+    elemento.classList.add('activo');
+    let escalaMalla = elemento.getAttribute('data-scale');
+    window.precioExtraTamano = parseFloat(elemento.getAttribute('data-extra'));
+    let sliderOculto = document.getElementById('sizeSlider');
+    if (sliderOculto) {
+        sliderOculto.value = escalaMalla;
+        sliderOculto.dispatchEvent(new Event('input'));
     }
+}
 </script>
 
 <script type="module">
     import { modelo } from "{% static 'js/main.js' %}";
-console.log("Módulo cargado correctamente")
+
+    // 1. Funciones de apertura/cierre
     window.abrirPersonalizador3D = function(id, nombre, precio) {
         window.productoActualId = id; 
         document.getElementById('producto-id').value = id;
         document.getElementById('modal-product-title').innerText = nombre;
         document.getElementById('modal-product-price').innerText = "$ " + parseFloat(precio).toLocaleString();
-        document.getElementById('modal-personalizador-3d').style.display = 'flex';
-        modelo({ container: "container3d-empleado" });
-    };
+        
+        const modal = document.getElementById('modal-personalizador-3d');
+        modal.style.display = 'flex';
+
+        modelo({
+            container: "container3d-empleado" 
+        });
+    }
 
     window.cerrarPersonalizador3D = function() {
         document.getElementById('modal-personalizador-3d').style.display = 'none';
-        document.getElementById("container3d-empleado").innerHTML = ""; 
-    };
+        
+        // FORZAR desbloqueo del botón de guardado (asumiendo que tiene ID 'btn-guardar-3d')
+        const btnGuardar = document.getElementById('btn-guardar-3d');
+        if (btnGuardar) {
+            btnGuardar.disabled = false;
+        }
+        
+        // Limpieza de Three.js (muy importante)
+        const container = document.getElementById("container3d-empleado");
+        container.innerHTML = ""; 
+    }
 
-   const manejarGuardado = async (e) => {
-    if (window.procesandoGuardado) return;
-    window.procesandoGuardado = true;
-
-    // 1. Preparamos los datos básicos para enviarlos a tu vista Django
-    const datos3d = e.detail;
-    const payload = {
-        producto_id: window.productoActualId,
-        color: document.getElementById('color-input-global').value,
-        talla: document.getElementById('talla-seleccionada').value,
-        cantidad: parseInt(document.getElementById('input-cantidad-3d').value),
-        estampado_id: datos3d.estampado_id,
-        foto_frente: datos3d.foto_frente,
-        // Agregamos otros campos que tu vista requiera
-    };
-
-    try {
-        // 2. Enviamos al servidor para que ÉL calcule el precio
-        const response = await fetch("{% url 'inventario:guardar-diseno' %}", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "X-CSRFToken": obtenerCSRFToken() },
-            body: JSON.stringify(payload)
+    // 2. NUEVO: Escucha el evento que viene desde el main.js cuando el guardado es exitoso
+    window.addEventListener('disenoGuardadoExitoso', (e) => {
+        const datos = e.detail;
+        const precioBase = parseFloat(document.getElementById('modal-product-price').innerText.replace(/\D/g,''));
+        
+        // Capturamos la cantidad que ingresó el empleado
+        const cantidadSeleccionada = parseInt(document.getElementById('input-cantidad-3d').value) || 1;
+        
+        factura.push({
+            id: datos.producto_id,
+            nombre: `Camiseta Personalizada`,
+            precio: (precioBase + datos.costo_tamano_estampado) * cantidadSeleccionada, // Precio total por las unidades
+            talla: datos.talla,
+            color: datos.color,
+            cantidad: cantidadSeleccionada, // Ahora guardamos la cantidad real
+            imagen: datos.foto_frente
         });
         
-        const data = await response.json();
+        renderFactura();
+        cerrarPersonalizador3D();
+        
+        // Resetear cantidad a 1 para la próxima vez
+        document.getElementById('input-cantidad-3d').value = 1;
+    });
 
-        if (data.status === 'success') {
-            // 3. RECIBIMOS EL PRECIO CALCULADO POR DJANGO
-            const nuevoProducto = {
-                id: payload.producto_id,
-                nombre: `Camiseta Personalizada`,
-                precio: parseFloat(data.precio_final), // <-- PRECIO REAL DE LA BD
-                talla: payload.talla,
-                color: payload.color,
-                cantidad: payload.cantidad,
-                imagen: payload.foto_frente,
-                id_estampado: payload.estampado_id,
-                es_3d: true
-            };
-
-            factura.push(nuevoProducto);
-            renderFactura();
-            window.cerrarPersonalizador3D();
-        } else {
-            alert("Error al calcular precio en servidor: " + data.message);
-        }
-    } catch (err) {
-        console.error("Error:", err);
-    } finally {
-        window.procesandoGuardado = false;
-    }
-};
-
-    window.removeEventListener('disenoGuardadoExitoso', manejarGuardado);
-    window.addEventListener('disenoGuardadoExitoso', manejarGuardado);
+    
 </script>
 {% endblock %}
