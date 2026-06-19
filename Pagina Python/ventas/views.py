@@ -21,6 +21,13 @@ from usuarios.views import solo_personal, login_requerido_custom
 from .models import Abono, Pedido, Variacion, Det_valor, Producto, Det_mov_matp, Cliente
 from inventario.models import Estampado, Movimiento_matp
 
+#modelo 2d
+import base64
+import uuid
+from django.core.files.base import ContentFile
+from inventario.models import PedidoPersonalizado
+
+
 #---------------------- COMPROBAR LOGIN ------------------------------
 
 def obtener_cliente_actual(request):
@@ -166,8 +173,9 @@ def lista_var_e(request):
         'id_ped_fk_detval', 
         'id_prod_fk_detval', 
         'id_var_fk_detval', 
-        'id_ped_fk_detval__id_clien_fk'
-    )
+        'id_ped_fk_detval__id_clien_fk',
+        'id_personalizacion_3d'
+        ).order_by('-id_ped_fk_detval__id_pedido')
 
     pedidos_agrupados = {}
 
@@ -1009,6 +1017,7 @@ def gestionar_inventario(pedido, operacion):
 
 #---------------------- listas empleados --------------------------------------------------------
 
+
 def lista_producto_e(request):
     productos = Producto.objects.all()
     estampados = Estampado.objects.all()
@@ -1032,7 +1041,7 @@ def venta_empleado(request):
             nombre_empleado = request.session.get('username', 'Empleado Sistema')
 
             with transaction.atomic():
-                # 1. Crear el Pedido base
+                # 1. Crear el Pedido base (AFUERA del bucle para agrupar todo)
                 pedido = Pedido.objects.create(
                     subtotal_ped=0,
                     valor_ped=0,
@@ -1041,58 +1050,51 @@ def venta_empleado(request):
                     id_clien_fk=None  
                 )
 
-                total = Decimal('0')
+                total_general = Decimal('0')
 
-                # 2. Recorrer cada producto enviado desde el carrito/tabla
+                # 2. Recorrer cada producto del carrito (estándar o personalizado)
                 for item in productos:
-                    producto = Producto.objects.get(id_produc=item['id'])
-                    cantidad = int(item['cantidad'])
-                    talla = item['talla']
-                    color = item['color']
+                    try:
+                        producto = Producto.objects.get(id_produc=item['id'])
+                    except Producto.DoesNotExist:
+                        return JsonResponse({'success': False, 'message': f"Producto con ID {item['id']} no encontrado"})
+
+                    cantidad = int(item.get('cantidad', 1))
+                    talla = item.get('talla', 'M')
+                    color = item.get('color', 'Blanco')
                     
                     id_estampado = item.get('id_estampado')
                     foto_frente_base64 = item.get('foto_frente')
-                    
-                    # 🔒 DETECTOR DE TRAMPAS: Leemos la escala numérica que viene del 3D
-                    # Si no viene (porque es un producto normal), por defecto es 0.0
                     escala_estampado = float(item.get('escala_estampado', 0.0))
 
+                    # Lógica de precios
                     precio_base_producto = Decimal(str(producto.precio))
                     personalizacion_3d = None
-                    tamano_texto = "Estándar"
                     descripcion_mat = "Venta Empleado"
 
-                    # 💰 CÁLCULO MATEMÁTICO INTACTO DESDE EL SERVIDOR
+                    # Si tiene personalización 3D (identificamos si tiene datos_3d o es personalizado)
                     if id_estampado:
-                        # Si es imagen propia subida por el cliente
                         if id_estampado == "imagen_propia":
-                            precio_base_producto += Decimal('20000') # Tarifa base por diseño propio
+                            precio_base_producto += Decimal('20000')
                             descripcion_mat = "Venta Empleado 3D - Imagen Propia"
-                        # Si es del catálogo de Luxy Fashion
                         else:
-                            estampado = Estampado.objects.get(id_estampado=id_estampado)
-                            precio_base_producto += Decimal(str(estampado.precio))
-                            descripcion_mat = "Venta Empleado 3D - Catálogo"
+                            try:
+                                estampado = Estampado.objects.get(id_estampado=id_estampado)
+                                precio_base_producto += Decimal(str(estampado.precio))
+                                descripcion_mat = "Venta Empleado 3D - Catálogo"
+                            except Estampado.DoesNotExist:
+                                pass
                         
-                        # 🛡️ BLINDAJE: Django decide el tamaño real según la escala numérica del objeto
+                        # Ajuste por escala
                         if escala_estampado >= 1.2:
                             precio_base_producto += Decimal('12000')
-                            tamano_texto = "Grande"
                         elif escala_estampado >= 0.7:
                             precio_base_producto += Decimal('5000')
-                            tamano_texto = "Mediano"
-                        else:
-                            precio_base_producto += Decimal('0')
-                            tamano_texto = "Chiquito"
-                        
-                        # Guardamos el registro del tamaño real calculado por el servidor en la descripción
-                        descripcion_mat += f" ({tamano_texto} - Escala: {escala_estampado})"
 
-                        # 📸 CAPTURA VISUAL DE EVIDENCIA
+                        # Crear objeto de personalización 3D
                         if foto_frente_base64 and ";base64," in foto_frente_base64:
                             import base64
                             from django.core.files.base import ContentFile
-                            
                             format, imgstr = foto_frente_base64.split(';base64,')
                             ext = format.split('/')[-1]
                             
@@ -1103,8 +1105,8 @@ def venta_empleado(request):
                             )
                             personalizacion_3d.save()
 
-                    # Calcular subtotal definitivo multiplicando por la cantidad
-                    subtotal = precio_base_producto * cantidad
+                    # Calcular subtotal del ítem
+                    subtotal_item = precio_base_producto * cantidad
 
                     # 3. Crear Variación
                     variacion = Variacion.objects.create(
@@ -1112,12 +1114,12 @@ def venta_empleado(request):
                         cant_soli=cantidad,
                         color_var=color,
                         mat_var=descripcion_mat,
-                        costo_var=subtotal
+                        costo_var=subtotal_item
                     )
 
-                    # 4. Crear Detalle de Valor
+                    # 4. Crear Detalle de Valor (vinculado al pedido único creado afuera)
                     Det_valor.objects.create(
-                        valor_total=subtotal,
+                        valor_total=subtotal_item,
                         tipo_pedido=f"Venta Empleado: {nombre_empleado}",
                         id_ped_fk_detval=pedido,
                         id_var_fk_detval=variacion,
@@ -1125,25 +1127,24 @@ def venta_empleado(request):
                         id_personalizacion_3d=personalizacion_3d 
                     )
 
-                    total += subtotal
+                    total_general += subtotal_item
 
-                # 5. Actualizar totales del pedido
-                pedido.subtotal_ped = total
-                pedido.valor_ped = total
+                # 5. Finalizar: Actualizar totales del pedido y registrar abono
+                pedido.subtotal_ped = total_general
+                pedido.valor_ped = total_general
                 pedido.save()
 
-                # 6. Registrar el Abono/Pago inmediato
                 Abono.objects.create(
-                    monto_abono=total,
+                    monto_abono=total_general,
                     metodo_pago=metodo_pago,
-                    descripcion=f"Venta registrada por {nombre_empleado}",
+                    descripcion=f"Venta total registrada por {nombre_empleado}",
                     id_pedido_fk_abono=pedido
                 )
 
-                # 7. Descontar stock de materias primas
+                # 6. Descontar stock (una sola vez por el pedido completo)
                 gestionar_inventario(pedido, 'RESTAR')
 
-            return JsonResponse({'success': True, 'message': 'Pago realizado correctamente'})
+            return JsonResponse({'success': True, 'message': 'Pedido conjunto realizado correctamente'})
 
         except Exception as e:
             return JsonResponse({'success': False, 'message': str(e)})
