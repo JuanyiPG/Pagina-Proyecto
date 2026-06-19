@@ -21,13 +21,6 @@ from usuarios.views import solo_personal, login_requerido_custom
 from .models import Abono, Pedido, Variacion, Det_valor, Producto, Det_mov_matp, Cliente
 from inventario.models import Estampado, Movimiento_matp
 
-#modelo 2d
-import base64
-import uuid
-from django.core.files.base import ContentFile
-from inventario.models import PedidoPersonalizado
-
-
 #---------------------- COMPROBAR LOGIN ------------------------------
 
 def obtener_cliente_actual(request):
@@ -173,9 +166,8 @@ def lista_var_e(request):
         'id_ped_fk_detval', 
         'id_prod_fk_detval', 
         'id_var_fk_detval', 
-        'id_ped_fk_detval__id_clien_fk',
-        'id_personalizacion_3d'
-        ).order_by('-id_ped_fk_detval__id_pedido')
+        'id_ped_fk_detval__id_clien_fk'
+    )
 
     pedidos_agrupados = {}
 
@@ -581,7 +573,8 @@ def producto_sin_personalizar(request, producto_id):
                     id_prod_fk_detval=producto,
                     id_var_fk_detval=variacion,
                     valor_total=int(producto.precio * cantidad),
-                    tipo_pedido='Estandar'
+                    tipo_pedido='Estandar',
+                    cant=cantidad
                 )
 
         messages.success(request, f"{producto.nom_produc} añadido al carrito.")
@@ -682,22 +675,6 @@ def finalizar_pedido(request, pedido_id):
         return redirect('login')
     
     pedido = get_object_or_404(Pedido, id_pedido=pedido_id)
-    detalles = Det_valor.objects.filter(id_ped_fk_detval=pedido)
-    
-    # --- CÁLCULOS FINANCIEROS (Fuera del POST para disponibilidad en GET) ---
-    resultados = detalles.aggregate(
-        total=Sum('valor_total'),
-        max_espera=Max('id_prod_fk_detval__dias_produccion')
-    )
-    
-    total_productos = Decimal(str(resultados['total'] or 0))
-    dias_produccion = resultados['max_espera'] or 1
-    
-    abonos_previos = Abono.objects.filter(id_pedido_fk_abono=pedido).aggregate(total_abonos=Sum('monto_abono'))
-    total_abonado = Decimal(str(abonos_previos['total_abonos'] or 0))
-    
-    saldo_pendiente = total_productos - total_abonado
-    # -----------------------------------------------------------------------
     
     if request.method == 'POST':
         tipo_pago = request.POST.get('tipo_pago')
@@ -705,16 +682,26 @@ def finalizar_pedido(request, pedido_id):
         if tipo_pago == 'abono':
             return redirect('ventas:crear_abono', pedido_id=pedido.id_pedido)
             
+        detalles = Det_valor.objects.filter(id_ped_fk_detval=pedido)
+        
         if not detalles.exists():
             messages.error(request, "Tu carrito está vacío.")
             return redirect('ventas:lista_product')
+        
+        resultados = detalles.aggregate(
+            total=Sum('valor_total'),
+            max_espera=Max('id_prod_fk_detval__dias_produccion')
+        )
+        
+        total_real = resultados['total'] or 0
+        dias_produccion = resultados['max_espera'] or 1
         
         try: 
             with transaction.atomic(): 
                 alerta_stock = gestionar_inventario(pedido, operacion='RESTAR')
                 
-                pedido.subtotal_ped = total_productos
-                pedido.valor_ped = total_productos
+                pedido.subtotal_ped = total_real
+                pedido.valor_ped = total_real
                 pedido.metodo_pago = request.POST.get('metodo_pago')
                 pedido.fecha_ped = timezone.now().date()
                 pedido.fecha_entrega = timezone.now().date() + timedelta(days=dias_produccion)
@@ -723,25 +710,22 @@ def finalizar_pedido(request, pedido_id):
 
                 Abono.objects.create(
                     id_pedido_fk_abono=pedido,
-                    monto_abono=saldo_pendiente,
+                    monto_abono=total_real, 
                     metodo_pago=request.POST.get('metodo_pago'),
-                    descripcion=f"Pago final por saldo pendiente de ${saldo_pendiente}."
+                    descripcion="Pago Exitoso."
                 )
 
-                messages.success(request, f"¡Pedido confirmado! Saldo liquidado: ${saldo_pendiente}. Estará listo el {pedido.fecha_entrega}")
+                if alerta_stock: 
+                    print(f"El pedido {pedido.id_pedido} requiere compra de {alerta_stock}")
+
+                messages.success(request, f"¡Pedido confirmado! Estará listo el {pedido.fecha_entrega}")
                 return redirect('ventas:lista_product')
             
         except Exception as e: 
             messages.error(request, f"Error al procesar el pago: {e}")
             return redirect('ventas:ver_carrito')
 
-    # Al llegar aquí (GET), las variables ya existen y el template las recibirá correctamente
-    return render(request, 'ventas/pedido/finalizar.html', {
-        'pedido': pedido, 
-        'total_productos': total_productos,
-        'total_abonado': total_abonado,
-        'saldo_pendiente': saldo_pendiente
-    })
+    return render(request, 'ventas/pedido/finalizar.html', {'pedido': pedido})
 
 
 @login_requerido_custom
@@ -749,15 +733,6 @@ def lista_pedidos_client(request):
     cliente = obtener_cliente_actual(request)
     if not cliente:
         return redirect('usuarios:login')
-    total_pedidos_cliente = Pedido.objects.filter(id_clien_fk=cliente).count()
-    print(f"DEBUG: Cliente {cliente} tiene {total_pedidos_cliente} pedidos en total.")
-    
-    # Imprime cuántos pedidos quedan tras el filtro
-    pedidos_queryset = Pedido.objects.filter(
-        id_clien_fk=cliente
-    ).exclude(estado_ped__in=['Entregado', 'Cancelado']).order_by('-id_pedido')
-    
-    print(f"DEBUG: Pedidos después del filtro: {pedidos_queryset.count()}")
     
     pedidos_queryset = Pedido.objects.filter(
         id_clien_fk=cliente
@@ -789,7 +764,7 @@ def lista_pedidos_client(request):
             'bloqueado': bloqueado
         })
 
-    return render(request, 'ventas/pedido/lista_ped_cliente.html', {
+    return render(request, 'ventas/pedido/mis_pedidos.html', {
         'pedidos_con_detalles': pedidos_con_detalles
     })
 
@@ -891,47 +866,49 @@ def gestionar_pedido(request, id_pedido):
 #------------------------ CARRITO --------------------------
 @login_requerido_custom
 def ver_carrito(request): 
-    cliente = obtener_cliente_actual(request)
+    try:
+        cliente = obtener_cliente_actual(request)
+    except Cliente.DoesNotExist:
+        cliente = None # Manejo seguro si no se encuentra cliente
 
-    # 1. Definimos los pedidos base (Carrito O Pendientes de pago)
-    # Excluimos terminados/cancelados
+    # CORRECCIÓN: Usamos Q para incluir pedidos del cliente O pedidos de empleados (cliente=None)
+    # y filtramos estados activos.
     pedidos = Pedido.objects.filter(
         Q(id_clien_fk=cliente) | Q(id_clien_fk__isnull=True)
     ).exclude(
         estado_ped__in=['Entregado', 'Cancelado', 'Completado']
-    )
+    ).order_by('-id_pedido')
+
+    if not pedidos.exists():
+        return render(request, 'ventas/pedido/carrito.html', {'pedidos_info': []})
 
     pedidos_info = [] 
     formato = Decimal('0.00')
 
     for pedido in pedidos:
-        # Calculamos totales
-        items = Det_valor.objects.filter(id_ped_fk_detval=pedido).select_related('id_var_fk_detval')
+        items = Det_valor.objects.filter(id_ped_fk_detval=pedido).select_related('id_var_fk_detval', 'id_prod_fk_detval')
+
+        total_product = 0
+        for item in items:
+            if item.id_var_fk_detval:
+                total_product += item.id_var_fk_detval.cant_soli
         
-        # Total productos
         total_raw = items.aggregate(Sum('valor_total'))['valor_total__sum'] or 0
         total_productos = Decimal(str(total_raw)).quantize(formato)
 
-        # Total abonado
         abono_raw = Abono.objects.filter(id_pedido_fk_abono=pedido).aggregate(Sum('monto_abono'))['monto_abono__sum'] or 0
         total_abonado = Decimal(str(abono_raw)).quantize(formato)
         
         saldo_pendiente = (total_productos - total_abonado).quantize(formato)
 
-        # 2. LÓGICA CLAVE: 
-        # Mostramos si está en 'Carrito' O si tiene saldo pendiente
-        if pedido.estado_ped == 'Carrito' or saldo_pendiente > 0:
-            
-            # Verificamos si tiene personalización 3D
-            tiene_3d = items.filter(id_personalizacion_3d__isnull=False).exists()
-
+        if saldo_pendiente >= 0 or pedido.estado_ped == 'Carrito':
             pedidos_info.append({
                 'pedido': pedido,
                 'items': items,
+                'total_product': total_product,
                 'total_productos': total_productos,
                 'total_abonado': total_abonado,
-                'saldo_pendiente': saldo_pendiente,
-                'tiene_3d': tiene_3d, # Variable para el template
+                'saldo_pendiente': max(0, saldo_pendiente),
             })
 
     return render(request, 'ventas/pedido/carrito.html', {'pedidos_info': pedidos_info})
@@ -1017,7 +994,6 @@ def gestionar_inventario(pedido, operacion):
 
 #---------------------- listas empleados --------------------------------------------------------
 
-
 def lista_producto_e(request):
     productos = Producto.objects.all()
     estampados = Estampado.objects.all()
@@ -1041,7 +1017,7 @@ def venta_empleado(request):
             nombre_empleado = request.session.get('username', 'Empleado Sistema')
 
             with transaction.atomic():
-                # 1. Crear el Pedido base (AFUERA del bucle para agrupar todo)
+                # 1. Crear el Pedido base
                 pedido = Pedido.objects.create(
                     subtotal_ped=0,
                     valor_ped=0,
@@ -1050,51 +1026,58 @@ def venta_empleado(request):
                     id_clien_fk=None  
                 )
 
-                total_general = Decimal('0')
+                total = Decimal('0')
 
-                # 2. Recorrer cada producto del carrito (estándar o personalizado)
+                # 2. Recorrer cada producto enviado desde el carrito/tabla
                 for item in productos:
-                    try:
-                        producto = Producto.objects.get(id_produc=item['id'])
-                    except Producto.DoesNotExist:
-                        return JsonResponse({'success': False, 'message': f"Producto con ID {item['id']} no encontrado"})
-
-                    cantidad = int(item.get('cantidad', 1))
-                    talla = item.get('talla', 'M')
-                    color = item.get('color', 'Blanco')
+                    producto = Producto.objects.get(id_produc=item['id'])
+                    cantidad = int(item['cantidad'])
+                    talla = item['talla']
+                    color = item['color']
                     
                     id_estampado = item.get('id_estampado')
                     foto_frente_base64 = item.get('foto_frente')
+                    
+                    # 🔒 DETECTOR DE TRAMPAS: Leemos la escala numérica que viene del 3D
+                    # Si no viene (porque es un producto normal), por defecto es 0.0
                     escala_estampado = float(item.get('escala_estampado', 0.0))
 
-                    # Lógica de precios
                     precio_base_producto = Decimal(str(producto.precio))
                     personalizacion_3d = None
+                    tamano_texto = "Estándar"
                     descripcion_mat = "Venta Empleado"
 
-                    # Si tiene personalización 3D (identificamos si tiene datos_3d o es personalizado)
+                    # 💰 CÁLCULO MATEMÁTICO INTACTO DESDE EL SERVIDOR
                     if id_estampado:
+                        # Si es imagen propia subida por el cliente
                         if id_estampado == "imagen_propia":
-                            precio_base_producto += Decimal('20000')
+                            precio_base_producto += Decimal('20000') # Tarifa base por diseño propio
                             descripcion_mat = "Venta Empleado 3D - Imagen Propia"
+                        # Si es del catálogo de Luxy Fashion
                         else:
-                            try:
-                                estampado = Estampado.objects.get(id_estampado=id_estampado)
-                                precio_base_producto += Decimal(str(estampado.precio))
-                                descripcion_mat = "Venta Empleado 3D - Catálogo"
-                            except Estampado.DoesNotExist:
-                                pass
+                            estampado = Estampado.objects.get(id_estampado=id_estampado)
+                            precio_base_producto += Decimal(str(estampado.precio))
+                            descripcion_mat = "Venta Empleado 3D - Catálogo"
                         
-                        # Ajuste por escala
+                        # 🛡️ BLINDAJE: Django decide el tamaño real según la escala numérica del objeto
                         if escala_estampado >= 1.2:
                             precio_base_producto += Decimal('12000')
+                            tamano_texto = "Grande"
                         elif escala_estampado >= 0.7:
                             precio_base_producto += Decimal('5000')
+                            tamano_texto = "Mediano"
+                        else:
+                            precio_base_producto += Decimal('0')
+                            tamano_texto = "Chiquito"
+                        
+                        # Guardamos el registro del tamaño real calculado por el servidor en la descripción
+                        descripcion_mat += f" ({tamano_texto} - Escala: {escala_estampado})"
 
-                        # Crear objeto de personalización 3D
+                        # 📸 CAPTURA VISUAL DE EVIDENCIA
                         if foto_frente_base64 and ";base64," in foto_frente_base64:
                             import base64
                             from django.core.files.base import ContentFile
+                            
                             format, imgstr = foto_frente_base64.split(';base64,')
                             ext = format.split('/')[-1]
                             
@@ -1105,8 +1088,8 @@ def venta_empleado(request):
                             )
                             personalizacion_3d.save()
 
-                    # Calcular subtotal del ítem
-                    subtotal_item = precio_base_producto * cantidad
+                    # Calcular subtotal definitivo multiplicando por la cantidad
+                    subtotal = precio_base_producto * cantidad
 
                     # 3. Crear Variación
                     variacion = Variacion.objects.create(
@@ -1114,12 +1097,12 @@ def venta_empleado(request):
                         cant_soli=cantidad,
                         color_var=color,
                         mat_var=descripcion_mat,
-                        costo_var=subtotal_item
+                        costo_var=subtotal
                     )
 
-                    # 4. Crear Detalle de Valor (vinculado al pedido único creado afuera)
+                    # 4. Crear Detalle de Valor
                     Det_valor.objects.create(
-                        valor_total=subtotal_item,
+                        valor_total=subtotal,
                         tipo_pedido=f"Venta Empleado: {nombre_empleado}",
                         id_ped_fk_detval=pedido,
                         id_var_fk_detval=variacion,
@@ -1127,24 +1110,25 @@ def venta_empleado(request):
                         id_personalizacion_3d=personalizacion_3d 
                     )
 
-                    total_general += subtotal_item
+                    total += subtotal
 
-                # 5. Finalizar: Actualizar totales del pedido y registrar abono
-                pedido.subtotal_ped = total_general
-                pedido.valor_ped = total_general
+                # 5. Actualizar totales del pedido
+                pedido.subtotal_ped = total
+                pedido.valor_ped = total
                 pedido.save()
 
+                # 6. Registrar el Abono/Pago inmediato
                 Abono.objects.create(
-                    monto_abono=total_general,
+                    monto_abono=total,
                     metodo_pago=metodo_pago,
-                    descripcion=f"Venta total registrada por {nombre_empleado}",
+                    descripcion=f"Venta registrada por {nombre_empleado}",
                     id_pedido_fk_abono=pedido
                 )
 
-                # 6. Descontar stock (una sola vez por el pedido completo)
+                # 7. Descontar stock de materias primas
                 gestionar_inventario(pedido, 'RESTAR')
 
-            return JsonResponse({'success': True, 'message': 'Pedido conjunto realizado correctamente'})
+            return JsonResponse({'success': True, 'message': 'Pago realizado correctamente'})
 
         except Exception as e:
             return JsonResponse({'success': False, 'message': str(e)})
