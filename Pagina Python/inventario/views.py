@@ -434,7 +434,6 @@ def b64_to_file(data, filename):
 
 # ... (Todo el resto de tus importaciones y funciones de Proveedores/Movimientos quedan exactamente IGUAL) ...
 
-@csrf_exempt
 def guardar_diseno_3d(request):
     if request.method == 'POST':
         try:
@@ -454,6 +453,7 @@ def guardar_diseno_3d(request):
             foto_frente_base64 = data.get('foto_frente')
             
             # --- NUEVO: Capturar el costo adicional por el tamaño del estampado ---
+            # Si viene del cliente (que no tiene esta opción), por defecto es 0.
             costo_tamano_estampado = float(data.get('costo_tamano_estampado', 0))
 
             producto_base = get_object_or_404(Producto, id_produc=producto_id)
@@ -481,7 +481,7 @@ def guardar_diseno_3d(request):
             if amount_propios > 0:
                 extra_total_estampados += (20000 * amount_propios)
 
-            # --- Sumar el costo del tamaño del estampado al total de extras ---
+            # --- NUEVO: Sumar el costo del tamaño del estampado al total de extras ---
             extra_total_estampados += costo_tamano_estampado
 
             precio_unitario += extra_total_estampados
