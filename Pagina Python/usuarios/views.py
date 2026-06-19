@@ -661,13 +661,19 @@ def perfil_cliente(request, id):
         cliente.correo_clien = request.POST.get('correo_clien')
         cliente.tel_clien = request.POST.get('tel_clien')
         cliente.dir_clien = request.POST.get('dir_clien')
-        usuario.username_nuevo = request.POST.get('username', '').strip()
-        usuario.nueva_contra = request.POST.get('password')
-
         cliente.save()
 
+        usuario.username = request.POST.get('username', '').strip()
+        nueva_contra = request.POST.get('password', '').strip()
+        if nueva_contra:
+            usuario.contrasena = make_password(nueva_contra)
+        
+        usuario.save() # Guardamos los cambios de usuario (username y/o contraseña)
+
+        messages.success(request, "Perfil actualizado correctamente.")
         return redirect('ventas:lista_product')
 
     return render(request, 'usuarios/clientes/Perfil_Cliente.html', {
-        'cliente': cliente
+        'cliente': cliente,
+        'usuario':usuario
     })
