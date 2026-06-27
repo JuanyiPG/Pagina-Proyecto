@@ -10,123 +10,310 @@
         /* --- ESTILOS BASE --- */
         body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4eeee; margin: 0; padding: 0; overflow-x: hidden; }
 
-        header {
-            background: linear-gradient(to right, #f9f9f9, #540a1f);
-            height: 80px; padding: 0 20px; display: flex;
-            justify-content: space-between; align-items: center;
-            position: fixed; top: 0; width: 100%; z-index: 9999;
-            box-sizing: border-box;
-        }
+header{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:80px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 20px;
+    box-sizing:border-box;
+    z-index:9999;
 
-        .menu-superior a { margin-left: 20px; text-decoration: none; color: white; font-size: 14px; font-weight: bold; }
+    background:transparent;
+    transition:.4s ease;
+}
 
-        /* Ajuste en principal para que el sticky funcione correctamente */
-        .principal { 
-            display: flex; 
-            min-height: 100vh; 
-            align-items: flex-start; /* Alinea al inicio para que el sticky tenga base */
-        }
+/* Cuando bajas a los productos */
 
-        video.VPP {
-            width: 100%;
-            height: 500px;
-            object-fit: cover;
-            margin-top: 80px;
-            display: block;
-        }
+header.scrolled{
 
-        /* --- FILTROS LATERALES FIJOS (CORREGIDO) --- */
-        .filtros {
-            padding: 30px 20px; 
-            background: white; 
-            width: 220px;
-            border-right: 1px solid #efeeee; 
-            /* Sticky hace que se quede pegado al bajar */
-            position: -webkit-sticky; /* Soporte para Safari */
-            position: sticky;
-            top: 80px; /* Se queda pegado justo debajo del header */
-            height: calc(100vh - 80px); /* Ocupa el alto restante de la pantalla */
-            box-sizing: border-box;
-            flex-shrink: 0;
-            z-index: 100;
-        }
+    background:linear-gradient(to right,#f9f9f9,#540a1f);
 
-        .filtros h3 { color: rgb(87, 16, 29); text-transform: uppercase; font-size: 16px; margin-bottom: 20px; }
-        .filtros ul { padding: 0; }
-        .filtros li { list-style: none; margin-bottom: 15px; cursor: pointer; color: #540a1f; font-size: 14px; transition: 0.3s; }
-        .filtros li:hover { font-weight: bold; }
+    box-shadow:0 4px 15px rgba(0,0,0,.12);
 
-        /* --- GRID DE PRODUCTOS --- */
-        .container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-            gap: 20px;
-            padding: 20px 15px 40px 15px; 
-            flex: 1;
-            align-content: start;
-        }
+    backdrop-filter:blur(10px);
 
-        /* --- TARJETA CON EFECTO HOVER --- */
-        .card {
-            background: white; 
-            position: relative; 
-            overflow: hidden; 
-            transition: 0.4s ease; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            height: 420px; 
-            border-radius: 2px;
-        }
+}
 
-        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(84, 10, 31, 0.15); }
+.menu-superior a { margin-left: 20px; text-decoration: none; color: white; font-size: 14px; font-weight: bold; }
 
-        .imagen-container { position: relative; width: 100%; height: 100%; }
+/* Ajuste en principal para que el sticky funcione correctamente */
+.principal { 
+    display: flex; 
+    min-height: 100vh; 
+    align-items: flex-start; /* Alinea al inicio para que el sticky tenga base */
+}
+/*=========================================
+=            VIDEO PRINCIPAL              =
+=========================================*/
 
-        .card img {
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
-            transition: transform 0.5s ease;
-        }
+.hero-video{
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
 
-        .card:hover img { transform: scale(1.1); }
+/* Capa oscura sobre el video */
 
-        .product-info {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px;
-            text-align: center;
-            transform: translateY(100%); 
-            transition: transform 0.4s ease;
-            z-index: 10;
-        }
+.hero-video::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        rgba(0,0,0,.18),
+        rgba(0,0,0,.28)
+    );
+    z-index: 1;
+    pointer-events: none;
+}
 
-        .card:hover .product-info { transform: translateY(0); }
+/* Video */
 
-        .corazon { 
-            position: absolute; 
-            top: 10px; 
-            right: 10px; 
-            font-size: 18px; 
-            cursor: pointer; 
-            color: #540a1f; 
-            background: rgba(255,255,255,0.8); 
-            width: 32px; 
-            height: 32px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            border-radius: 50%; 
-            z-index: 11;
-        }
+video.VPP{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    display: block;
+}
 
-        .nombre strong { color: #333; font-size: 14px; text-transform: uppercase; display: block; }
-        .precio-actual { font-weight: bold; color: #540a1f; font-size: 17px; margin-top: 5px; display: block; }
-        .gen-tag { font-size: 10px; color: #888; margin-top: 5px; text-transform: uppercase; }
+/* Texto encima del video */
 
-        footer {
+.hero-contenido{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    z-index: 2;
+    width: 90%;
+}
+
+.hero-contenido h1{
+    font-size: 65px;
+    font-weight: 300;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.hero-contenido p{
+    font-size: 20px;
+    margin-bottom: 35px;
+}
+
+.hero-contenido a{
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    border-bottom: 2px solid white;
+    padding-bottom: 6px;
+    transition: .3s;
+}
+
+.hero-contenido a:hover{
+    letter-spacing: 2px;
+}
+/*==========================
+CONTENEDOR
+==========================*/
+
+.principal{
+    display:flex;
+    align-items:flex-start;
+    background:#fafafa;
+    gap:35px;
+    padding:35px;
+}
+
+/*==========================
+FILTROS
+==========================*/
+/*==========================
+FILTROS
+==========================*/
+
+.filtros{
+    width:260px;
+    background:#fff;
+    border-radius:15px;
+    padding:30px;
+    position:sticky;
+    top:100px;
+    height:fit-content;
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+    border:1px solid #ececec;
+}
+
+.filtros h3{
+    color:#5e0925;
+    font-size:22px;
+    margin-bottom:25px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:2px;
+}
+
+.filtros hr{
+    border:none;
+    border-top:1px solid #ececec;
+    margin:10px 0;
+}
+
+.filtros ul{
+    margin:0;
+    padding:0;
+}
+
+.filtros li{
+    list-style:none;
+    padding:12px 0;
+    margin-bottom:8px;
+    cursor:pointer;
+    color:#555;
+    font-size:15px;
+    font-weight:500;
+    position:relative;
+    transition:.3s;
+}
+
+.filtros li::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:4px;
+    width:0;
+    height:2px;
+    background:#5e0925;
+    transition:.35s;
+}
+
+.filtros li:hover{
+    color:#5e0925;
+}
+
+.filtros li:hover::after{
+    width:60%;
+}/*==========================
+CONTENEDOR PRODUCTOS
+==========================*/
+
+.container{
+    flex:1;
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(370px,1fr));
+    gap:55px;
+    padding:35px 45px;
+    background:#fff;
+}
+
+/*==========================
+TARJETA
+==========================*/
+
+.card{
+    background:transparent;
+    border:none;
+    box-shadow:none;
+    overflow:hidden;
+    height:auto;
+    transition:.3s;
+}
+
+.card:hover{
+    transform:none;
+}
+
+/*==========================
+IMAGEN
+==========================*/
+
+.imagen-container{
+    width:100%;
+    aspect-ratio:3/4;
+    position:relative;
+    overflow:hidden;
+    background:#f8f8f8;
+}
+
+.card img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    transition:.45s;
+}
+
+.card:hover img{
+    transform:scale(1.04);
+}
+
+/*==========================
+CORAZON
+==========================*/
+
+.corazon{
+    position:absolute;
+    top:12px;
+    right:12px;
+    background:transparent;
+    box-shadow:none;
+    width:auto;
+    height:auto;
+    font-size:24px;
+    color:#222;
+    transition:.3s;
+}
+
+.corazon:hover{
+    transform:scale(1.15);
+}
+
+/*==========================
+INFORMACION
+==========================*/
+
+.product-info{
+    position:static;
+    background:transparent;
+    transform:none;
+    padding:18px 0 0;
+    text-align:left;
+}
+
+.card:hover .product-info{
+    transform:none;
+}
+
+.nombre strong{
+    font-size:15px;
+    font-weight:400;
+    color:#666;
+    text-transform:none;
+    line-height:23px;
+}
+
+.precio-actual{
+    display:block;
+    margin-top:12px;
+    font-size:22px;
+    color:#111;
+    font-weight:600;
+}
+
+.gen-tag{
+    margin-top:10px;
+    font-size:12px;
+    color:#999;
+    letter-spacing:1px;
+    text-transform:uppercase;
+}
+footer {
   background-color: #5e0925;
   color: #fff;
   padding: 20px 10px;
@@ -242,7 +429,7 @@
 </head>
 <body>
 
-   <header style="background: linear-gradient(to right, #f9f9f9, #540a1f); height: 80px; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; width: 100%; z-index: 9999; box-sizing: border-box;">
+   <header>
         <div class="logo">
             <a href="{% url 'index' %}"><img src="{% static 'IMG/logo.png' %}" height="60px"></a>
         </div>
@@ -298,9 +485,19 @@
         </div>
     </header>
 
-    <video autoplay muted loop class="VPP">
-        <source src="{% static 'videos/VideoPClien.mp4' %}" type="video/mp4">
-    </video>
+    <div class="hero-video">
+
+        <video autoplay muted loop class="VPP">
+            <source src="{% static 'videos/VideoPClien.mp4' %}" type="video/mp4">
+        </video>
+
+        <div class="hero-contenido">
+            <h1>VISTE TU PROPIO ESTILO</h1>
+            <p>Descubre prendas diseñadas para destacar en cualquier ocasión.</p>
+            <a href="#">Explorar Ahora</a>
+        </div>
+
+    </div>
 
     <div class="principal">
         <aside class="filtros">
@@ -377,6 +574,26 @@ function filtrar(criterio) {
         }
     });
 }
+</script>
+<script>
+
+const header = document.querySelector("header");
+const hero = document.querySelector(".hero-video");
+
+window.addEventListener("scroll", () => {
+
+    if(window.scrollY > hero.offsetHeight - 80){
+
+        header.classList.add("scrolled");
+
+    }else{
+
+        header.classList.remove("scrolled");
+
+    }
+
+});
+
 </script>
 </body>
 </html>
