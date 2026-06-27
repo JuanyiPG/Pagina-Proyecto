@@ -239,47 +239,58 @@ export function modelo(config = {}) {
 
     // --- 9. LÓGICA DE GUARDADO CORREGIDA ---
     async function guardarConfiguracion() {
-        const btnSave = document.getElementById(IDs.btnGuardar);
-        if (btnSave) btnSave.disabled = true;
+    const btnSave = document.getElementById(IDs.btnGuardar);
+    if (btnSave) btnSave.disabled = true;
 
-        try {
-            eliminarPrevisualizacion();
-            renderer.render(scene, camera);
-            
-            const datos = {
-                'producto_id': document.getElementById('producto-id').value,
-                'color': document.getElementById(IDs.colorInput).value,
-                'talla': document.querySelector('input[name="talla_personalizada"]:checked').value,
-                'cantidad': 1,
-                'estampado_id': idEstampadoSeleccionado,
-                'lista_estampados': window.listaEstampadosIds,
-                'cantidad_total_estampados': contadorEstampados,
-                'costo_tamano_estampado': window.precioExtraTamano || 0,
-                'foto_frente': renderer.domElement.toDataURL('image/png')
-            };
+    try {
+        eliminarPrevisualizacion();
+        renderer.render(scene, camera);
 
-            const response = await fetch('/inventario/guardar-diseno/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken'),
-                },
-                body: JSON.stringify(datos)
-            });
+        const productoEl = document.getElementById('producto-id');
+        const colorEl = document.getElementById(IDs.colorInput);
+        const tallaEl =
+            document.querySelector('input[name="talla_personalizada"]:checked') ||
+            document.querySelector('input[name="talla_var"]:checked') ||
+            document.querySelector('input[name="talla_m_emp"]:checked')
+        const datos = {
+            producto_id: productoEl ? productoEl.value : null,
+            color: colorEl ? colorEl.value : null,
+            talla: tallaEl?.value || "S",
+            cantidad: 1,
+            estampado_id: idEstampadoSeleccionado,
+            lista_estampados: window.listaEstampadosIds,
+            cantidad_total_estampados: contadorEstampados,
+            costo_tamano_estampado: window.precioExtraTamano || 0,
+            escala_estampado: IDs.getEsclala() / 100,
+            foto_frente: renderer.domElement.toDataURL('image/png')
+        };
 
-            const resultado = await response.json();
-            if (resultado.status === 'success') {
-                window.location.href = "/ventas/carrito/"; // Ajusta tu ruta de carrito
-            } else {
-                throw new Error(resultado.message);
-            }
-        } catch (error) {
-            alert("Error: " + error.message);
-            if (btnSave) btnSave.disabled = false;
+        const response = await fetch('/inventario/guardar-diseno/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            body: JSON.stringify(datos)
+        });
+
+        const resultado = await response.json();
+
+        if (resultado.status === 'success') {
+            window.dispatchEvent(new CustomEvent('disenoGuardadoExitoso', {
+                detail: resultado
+            }));
+        } else {
+            throw new Error(resultado.message);
         }
-    }
 
-    document.getElementById(IDs.btnGuardar)?.addEventListener('click', guardarConfiguracion);
+    } catch (error) {
+        alert("Error: " + error.message);
+        if (btnSave) btnSave.disabled = false;
+    }
+}
+
+document.getElementById(IDs.btnGuardar)?.addEventListener('click', guardarConfiguracion);
 
     // --- 10. BUCLE ANIMACIÓN ---
     function animate() {

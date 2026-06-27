@@ -455,6 +455,7 @@ def guardar_diseno_3d(request):
             # --- NUEVO: Capturar el costo adicional por el tamaño del estampado ---
             # Si viene del cliente (que no tiene esta opción), por defecto es 0.
             costo_tamano_estampado = float(data.get('costo_tamano_estampado', 0))
+            escala_estampado = float(data.get('escala_estampado',0.4))
 
             producto_base = get_object_or_404(Producto, id_produc=producto_id)
 
