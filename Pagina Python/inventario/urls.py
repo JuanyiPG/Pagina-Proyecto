@@ -30,7 +30,8 @@ urlpatterns=[
   
   
     path('modelo/<int:producto_id>/', views.modelo, name='modelo'),
-    path('guardar-diseno/', views.guardar_diseno_3d, name='guardar-diseno'), # ESTA ES LA LÍNEA CLAVE
+    path('guardar-diseno/', views.guardar_diseno_3d, name='guardar-diseno'),
+    path('api/eliminar-modelo-3d/', views.eliminar_diseno_3d, name='eliminar-modelo-3d'),
 ]
 
 urlpatterns += router.urls
