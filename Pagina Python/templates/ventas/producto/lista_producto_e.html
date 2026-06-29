@@ -863,12 +863,15 @@ window.addEventListener('disenoGuardadoExitoso', (e) => {
             ? parseInt(inputCantidad.value) || 1
             : 1;
 
+    const precioFinal =
+    Number(datos.precio_total ?? datos.precio_unitario ?? 0);
+
     factura.push({
         id: datos.producto_id,
         nombre: 'Camiseta Personalizada',
-        precio: Number(datos.precio_unitario),
-        subtotal: Number(datos.precio_total),
-        cantidad: Number(datos.cantidad),
+        precio: precioFinal,
+        subtotal: precioFinal,
+        cantidad: Number(datos.cantidad || 1),
         talla: datos.talla,
         color: datos.color,
         imagen: datos.foto_frente
