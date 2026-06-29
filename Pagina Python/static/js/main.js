@@ -7,19 +7,34 @@ import { DecalGeometry } from 'three/addons/geometries/DecalGeometry.js';
  * Módulo de personalización 3D para Luxy Fashion (Adaptado para Cliente y Empleado)
  */
 export function modelo(config = {}) {
-    // 🔍 CONFIGURACIÓN DINÁMICA DE IDS
+
+    if (window.personalizador3DInicializado) {
+        return;
+    }
+    window.personalizador3DInicializado = true;
+
     const IDs = {
         container: config.container || "container3d",
         colorInput: config.colorInput || "color-input-global",
         btnLimpiar: config.btnLimpiar || "btn-limpiar-estampados",
         btnGuardar: config.btnGuardar || "btn-procesar-guardado",
         imageInput: config.imageInput || "imageInput",
-        getEsclala: config.getEscala || (() => {
-            const radio = document.querySelector('input[name="tamano_estam"]:checked');
-            return (radio ? parseInt(radio.value) : 100); 
+        getEscala: config.getEscala || (() => {
+            const cuadro = document.querySelector('.cuadro-tamano.activo');
+            if (cuadro) {
+                return parseInt(cuadro.dataset.scale);
+            }
+            const radio = document.querySelector(
+                'input[name="tamano_estam"]:checked'
+            );
+
+            if (radio) {
+                return parseInt(radio.value);
+            }
+
+            return 40;
         })
     };
-
     const container = document.getElementById(IDs.container);
     if (!container) return;
 
@@ -61,7 +76,7 @@ export function modelo(config = {}) {
     let teclaAPresionada = false;
     let contadorEstampados = 0;
     let idEstampadoSeleccionado = null; 
-    window.listaEstampadosIds = []; 
+    window.listaEstampados = [];
     window.precioExtraTamano = 0;
 
     const raycaster = new THREE.Raycaster();
@@ -139,7 +154,7 @@ export function modelo(config = {}) {
             opacity: esPrevia ? 0.6 : 1.0
         });
 
-        const escalaValor = IDs.getEsclala();
+        const escalaValor = IDs.getEscala();
         const size = escalaValor / 100; 
         const dimensiones = new THREE.Vector3(size, size, 1.0);
 
@@ -155,13 +170,7 @@ export function modelo(config = {}) {
         if (esPrevia) decalVistaPrevia = decalMesh;
     }
 
-    // --- 8. EVENTOS DE INTERACCIÓN ---
-    document.querySelectorAll('input[name="tamano_estam"]').forEach(radio => {
-        radio.addEventListener('change', (e) => {
-            const val = e.target.value;
-            window.precioExtraTamano = (val === '180') ? 10000 : (val === '100' ? 5000 : 0);
-        });
-    });
+
 
     document.getElementById(IDs.colorInput)?.addEventListener('input', (e) => aplicarColor(e.target.value));
 
@@ -212,80 +221,221 @@ export function modelo(config = {}) {
 
     renderer.domElement.addEventListener('mousemove', (event) => {
         if (!ultimaTextura || !teclaAPresionada || contadorEstampados >= 2) { eliminarPrevisualizacion(); return; }
-        const rect = renderer.domElement.getBoundingClientRect();
-        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-        raycaster.setFromCamera(mouse, camera);
-        const intersects = raycaster.intersectObjects(meshCamiseta);
-        eliminarPrevisualizacion();
+            const rect = renderer.domElement.getBoundingClientRect();
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(meshCamiseta);
+            eliminarPrevisualizacion();
         if (intersects.length > 0) crearDecal(intersects[0], true);
     });
 
     renderer.domElement.addEventListener('click', () => {
-        if (!decalVistaPrevia || !teclaAPresionada || contadorEstampados >= 2) return;
-        decalVistaPrevia.name = "estampado_fijo";
-        decalVistaPrevia.material.opacity = 1.0;
-        if (idEstampadoSeleccionado) window.listaEstampadosIds.push(idEstampadoSeleccionado);
-        decalVistaPrevia = null; 
-        contadorEstampados++;
-    });
+    if (!decalVistaPrevia || !teclaAPresionada || contadorEstampados >= 2) {
+        return;
+    }
+
+    decalVistaPrevia.name = "estampado_fijo";
+    decalVistaPrevia.material.opacity = 1.0;
+
+    if (idEstampadoSeleccionado) {
+
+        const precioImagen =
+            idEstampadoSeleccionado === "imagen_propia"
+                ? (
+                    parseFloat(
+                        document.getElementById("precio-imagen-propia")?.value
+                    ) || 0
+                )
+                : 0;
+
+       window.listaEstampados.push({
+            id: idEstampadoSeleccionado,
+            tipo: idEstampadoSeleccionado === "imagen_propia"
+                ? "propio"
+                : "catalogo",
+            tamano: IDs.getEscala(),
+            precio: 0
+        });
+    }
+
+    decalVistaPrevia = null;
+    contadorEstampados++;
+});
 
     document.getElementById(IDs.btnLimpiar)?.addEventListener('click', () => {
         scene.children.filter(obj => obj.name === "estampado_fijo").forEach(obj => {
             obj.geometry.dispose(); obj.material.dispose(); scene.remove(obj);
         });
-        window.listaEstampadosIds = []; contadorEstampados = 0;
+        window.listaEstampados = []; contadorEstampados = 0;
     });
 
-    // --- 9. LÓGICA DE GUARDADO CORREGIDA ---
-    async function guardarConfiguracion() {
-        const btnSave = document.getElementById(IDs.btnGuardar);
-        if (btnSave) btnSave.disabled = true;
+  // --- 9. LÓGICA DE GUARDADO ---
+async function guardarConfiguracion() {
 
-        try {
-            eliminarPrevisualizacion();
-            renderer.render(scene, camera);
-            
-            const datos = {
-                'producto_id': document.getElementById('producto-id').value,
-                'color': document.getElementById(IDs.colorInput).value,
-                'talla': document.querySelector('input[name="talla_personalizada"]:checked').value,
-                'cantidad': 1,
-                'estampado_id': idEstampadoSeleccionado,
-                'lista_estampados': window.listaEstampadosIds,
-                'cantidad_total_estampados': contadorEstampados,
-                'costo_tamano_estampado': window.precioExtraTamano || 0,
-                'foto_frente': renderer.domElement.toDataURL('image/png')
-            };
+    const btnSave = document.getElementById(IDs.btnGuardar);
 
-            const response = await fetch('/inventario/guardar-diseno/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken'),
-                },
-                body: JSON.stringify(datos)
-            });
+    if (btnSave) btnSave.disabled = true;
 
-            const resultado = await response.json();
-            if (resultado.status === 'success') {
-                window.location.href = "/ventas/carrito/"; // Ajusta tu ruta de carrito
-            } else {
-                throw new Error(resultado.message);
-            }
-        } catch (error) {
-            alert("Error: " + error.message);
-            if (btnSave) btnSave.disabled = false;
-        }
-    }
+    try {
 
-    document.getElementById(IDs.btnGuardar)?.addEventListener('click', guardarConfiguracion);
-
-    // --- 10. BUCLE ANIMACIÓN ---
-    function animate() {
-        requestAnimationFrame(animate);
-        controls.update();
+        eliminarPrevisualizacion();
         renderer.render(scene, camera);
+
+        console.log("producto-id:", document.getElementById('producto-id'));
+        console.log("color:", document.getElementById(IDs.colorInput));
+        console.log("talla:", document.querySelector('input[name="talla_personalizada"]:checked'));
+
+        window.listaEstampados.forEach(est => {
+            if (est.id === "imagen_propia") {
+                est.precio =
+                    parseFloat(
+                        document.getElementById("precio-imagen-propia")?.value
+                    ) || 0;
+            }
+        });
+
+        const datos = {
+            producto_id: document.getElementById('producto-id').value,
+            color: document.getElementById(IDs.colorInput).value,
+            talla: document.querySelector('input[name="talla_personalizada"]:checked').value,
+            cantidad:parseInt(document.getElementById('input-cantidad-3d')?.value) || 1,
+            estampado_id: window.listaEstampados.length > 0
+                ? window.listaEstampados[0].id
+                : null,
+
+            lista_estampados: window.listaEstampados,
+            cantidad_total_estampados: contadorEstampados,
+            tamano_estampado: IDs.getEscala(),
+            foto_frente: renderer.domElement.toDataURL('image/png')
+        };
+        console.log("CONTADOR:", contadorEstampados);
+        console.log("LISTA:", window.listaEstampados);
+        const response = await fetch('/inventario/guardar-diseno/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(datos)
+        });
+
+        const resultado = await response.json();
+        console.log("Respuesta servidor:", resultado);
+        console.log("es_empleado:", resultado.es_empleado);
+        console.log("Respuesta servidor:", resultado);
+
+        if (resultado.status === 'success') {
+
+            if (resultado.es_empleado) {
+
+                window.dispatchEvent(
+                    new CustomEvent('disenoGuardadoExitoso', {
+                        detail: {
+                            producto_id: resultado.producto_id,
+                            precio_unitario: Number(resultado.precio_unitario),
+                            precio_final: Number(resultado.precio_final),
+                            cantidad: resultado.cantidad,
+                            talla: resultado.talla,
+                            color: resultado.color,
+                            foto_frente: resultado.foto_frente,
+                            estampado_id: resultado.estampado_id,
+                            tamano_estampado: resultado.tamano_estampado,
+                            lista_estampados: resultado.lista_estampados,
+                            cantidad_total_estampados:
+                                resultado.cantidad_total_estampados
+                        }
+                    })
+                );
+
+            } else {
+
+                window.location.href = "/ventas/carrito/";
+
+            }
+
+        } else {
+
+            alert(resultado.message || "Error al guardar diseño");
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+        alert("Error: " + error.message);
+
+    } finally {
+
+        if (btnSave) btnSave.disabled = false;
+
     }
-    animate();
+}
+
+const btnGuardar = document.getElementById(IDs.btnGuardar);
+
+if (btnGuardar) {
+    btnGuardar.onclick = guardarConfiguracion;
+}
+
+// --- 10. BUCLE ANIMACIÓN ---
+function animate() {
+
+    requestAnimationFrame(animate);
+
+    controls.update();
+
+    renderer.render(scene, camera);
+}
+
+animate();
+
+window.reiniciarPersonalizador = function () {
+    // Eliminar estampados del modelo
+    scene.children
+        .filter(obj => obj.name === "estampado_fijo")
+        .forEach(obj => {
+            obj.geometry.dispose();
+            obj.material.dispose();
+            scene.remove(obj);
+        });
+
+    eliminarPrevisualizacion();
+
+    // Reiniciar variables
+    contadorEstampados = 0;
+    window.listaEstampados = [];
+    ultimaTextura = null;
+    idEstampadoSeleccionado = null;
+
+    // Reiniciar color del modelo
+    aplicarColor("#ffffff");
+
+    // Reiniciar inputs
+    document.getElementById(IDs.colorInput).value = "#ffffff";
+
+    const inputImagen = document.getElementById(IDs.imageInput);
+    if (inputImagen) {
+        inputImagen.value = "";
+    }
+
+    const inputPrecio = document.getElementById("precio-imagen-propia");
+    if (inputPrecio) {
+        inputPrecio.value = "";
+    }
+
+    const inputCantidad = document.getElementById("input-cantidad-3d");
+    if (inputCantidad) {
+        inputCantidad.value = 1;
+    }
+
+    // Seleccionar la primera talla nuevamente
+    const primeraTalla = document.querySelector(
+        'input[name="talla_personalizada"]'
+    );
+
+    if (primeraTalla) {
+        primeraTalla.checked = true;
+    }
+};
 }
