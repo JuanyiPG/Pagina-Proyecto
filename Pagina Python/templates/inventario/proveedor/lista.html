@@ -316,7 +316,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         num_tel: user.phone.replace(/\D/g, '').substring(0,10) || "3000000000"
                     };
 
-                    fetch('http://127.0.0.1:8000/inventario/api/proveedores/', {
+                    fetch('https://luxy-fashion.onrender.com/inventario/api/proveedores/', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
