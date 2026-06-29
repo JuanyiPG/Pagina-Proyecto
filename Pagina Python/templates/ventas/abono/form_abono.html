@@ -1,196 +1,339 @@
 {% block content %}
+{% load static %}
 <style>
-/* RESET Y FONDO */
-body {
-    background-color: #f4f4f4 !important;
-    margin: 0;
-    padding: 20px;
-    font-family: 'Segoe UI', sans-serif;
-}
+    :root {
+        --vinotinto: #800020;
+        --vinotinto-hover: #600018;
+        --vinotinto-linea: rgba(128, 0, 32, 0.3);
+        --blanco: #ffffff;
+        --gris-limpio: #f8fafc;
+        --texto-dark: #1e293b;
+        --texto-gray: #64748b;
+    }
 
-/* CONTENEDOR PRINCIPAL FORZADO */
-.container {
-    max-width: 700px !important; /* Evita que se estire a los lados */
-    margin: 40px auto !important;
-}
+    body { 
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        background-color: var(--gris-limpio) !important;
+        color: var(--texto-dark);
+        margin: 0;
+        padding: 40px 20px;
+    }
 
-/* LA TARJETA (CARD) */
-.card {
-    border: none !important;
-    border-radius: 15px !important;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
-    overflow: hidden;
-    background: white;
-}
+    /* -----------------------------------------
+       TU HEADER ORIGINAL (INTACTO)
+    ----------------------------------------- */
+    header { 
+        background: white; height: 80px; padding:0 20px; 
+        display: flex; justify-content: space-between; align-items: center; 
+        position: fixed; top: 0; width: 100%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+        margin-left: -20px;
+        z-index: 1000;
+    }
 
-/* CABECERA VINOTINTO */
-.card-header {
-    background: #800020 !important; /* Vinotinto */
-    color: white !important;
-    padding: 25px !important;
-    text-align: center;
-    border: none !important;
-}
+    /* -----------------------------------------
+       CONTENEDOR ASIMÉTRICO DE ALTA COSTURA
+    ----------------------------------------- */
+    .container { 
+        max-width: 650px !important; 
+        margin: auto !important; 
+        margin-top: 140px !important; 
+        background: var(--blanco);
+        padding: 45px; 
+        border-radius: 32px 4px 32px 4px !important; /* Esquinas asimétricas dramáticas */
+        box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(128, 0, 32, 0.05);
+    }
 
-.card-header h3 {
-    margin: 0;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-weight: bold;
-}
+    h3 {
+        color: var(--texto-dark);
+        text-align: left;
+        margin: 0 0 35px 0;
+        font-weight: 800;
+        font-size: 1.7rem;
+        letter-spacing: -0.5px;
+        position: relative;
+        padding-bottom: 10px;
+        text-transform: none !important;
+    }
+    
+    h3::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 40px;
+        height: 4px;
+        background: var(--vinotinto);
+        border-radius: 2px;
+    }
 
-/* CUERPO DE LA TARJETA */
-.card-body {
-    padding: 35px !important;
-}
+    /* -----------------------------------------
+       RESUMEN FINANCIERO EN FORMATO DE "TAGS"
+    ----------------------------------------- */
+    .row.text-center { 
+        background: transparent !important;
+        padding: 0 !important; 
+        margin: 0 0 40px 0 !important; 
+        border: none !important;
+        display: flex; 
+        gap: 15px;
+        justify-content: space-between;
+    }
 
-/* SECCIÓN DE MONTOS (TOTAL, ABONADO, PENDIENTE) */
-.row.text-center {
-    background: #fffafa;
-    border: 1px solid #eee;
-    border-radius: 12px;
-    padding: 20px 10px !important;
-    margin: 15px 0 30px 0 !important;
-    display: flex;
-    justify-content: space-around;
-}
+    .col-4 { 
+        flex: 1; 
+        min-width: 120px;
+        background: var(--gris-limpio);
+        padding: 12px 20px !important;
+        border-radius: 12px !important;
+        text-align: left !important;
+        border: none !important;
+        border-left: 4px solid var(--texto-gray) !important;
+    }
 
-.col-4 {
-    flex: 1;
-    text-align: center;
-}
+    .row.text-center .col-4:nth-child(2) { border-left: 4px solid #16a34a !important; background: #f0fdf4; } 
+    .row.text-center .col-4:nth-child(3) { border-left: 4px solid var(--vinotinto) !important; background: #fdf2f2; } 
 
-.stat-label { 
-    display: block;
-    font-size: 0.7rem;
-    color: #888;
-    text-transform: uppercase;
-}
+    .stat-label, .text-muted { 
+        display: block; 
+        color: var(--texto-gray) !important; 
+        font-size: 11px !important; 
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 2px;
+    }
 
-/* INPUTS Y SELECTS */
-.form-label {
-    font-weight: 600;
-    color: #444;
-    margin-bottom: 8px;
-}
+    .col-4 strong {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-top: 2px;
+        display: block;
+        color: var(--texto-dark);
+    }
 
-.form-control, .form-select {
-    border: 1.5px solid #ddd !important;
-    border-radius: 8px !important;
-    padding: 12px !important;
-    margin-bottom: 20px;
-}
+    /* -----------------------------------------
+       FORMULARIO CON LÍNEAS DE DISEÑO PURAS
+    ----------------------------------------- */
+    .mb-3 { 
+        margin-bottom: 35px !important; 
+        position: relative;
+    }
 
-.form-control:focus {
-    border-color: #800020 !important;
-    box-shadow: 0 0 0 3px rgba(128, 0, 32, 0.1) !important;
-}
+    .form-label { 
+        display: block; 
+        font-weight: 700 !important; 
+        margin-bottom: 6px !important;
+        color: var(--vinotinto) !important;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
 
-/* INFO DEL CLIENTE */
-.bg-light {
-    background-color: #f8f9fa !important;
-    padding: 15px !important;
-    border-radius: 10px;
-    border-left: 5px solid #800020;
-    margin-bottom: 25px;
-}
+    .form-control, .form-select { 
+        width: 100%; 
+        padding: 12px 0px !important; 
+        border: none !important;
+        border-bottom: 2px solid var(--vinotinto-linea) !important; /* Solo línea inferior */
+        border-radius: 0 !important;
+        background-color: transparent !important;
+        font-size: 16px !important;
+        color: var(--texto-dark) !important;
+        font-weight: 500;
+        transition: all 0.3s ease !important;
+        outline: none;
+        margin-bottom: 0px !important;
+        box-shadow: none !important;
+    }
 
-/* BOTÓN PRINCIPAL */
-.btn-success {
-    background-color: #800020 !important;
-    border: none !important;
-    padding: 15px !important;
-    font-weight: bold !important;
-    text-transform: uppercase;
-    border-radius: 8px !important;
-    width: 100%;
-    transition: 0.3s;
-    color: white !important;
-    cursor: pointer;
-}
+    textarea.form-control {
+        padding: 12px 0px !important;
+        resize: none;
+    }
 
-.btn-success:hover {
-    background-color: #600018 !important;
-    transform: translateY(-2px);
-}
+    .form-select {
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23800020' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 5px center;
+    }
 
-/* ENLACE VOLVER */
-.btn-outline-secondary {
-    display: block;
-    text-align: center;
-    margin-top: 15px;
-    color: #666;
-    text-decoration: none;
-    font-size: 0.9rem;
-}
+    /* Animación de la línea inferior al hacer clic */
+    .form-control:focus, .form-select:focus { 
+        border-bottom: 2px solid var(--vinotinto) !important;
+        padding-left: 8px !important; /* Desplazamiento interactivo */
+        background-color: transparent !important;
+    }
+
+    .form-text { 
+        display: block; 
+        margin-top: 8px; 
+        color: var(--texto-gray); 
+        font-size: 12px;
+    }
+
+    /* -----------------------------------------
+       BOTÓN CORREGIDO (YA NO SE PONE BLANCO)
+    ----------------------------------------- */
+    .btn-success { 
+        width: 100%;
+        background: var(--vinotinto) !important;
+        color: white !important; 
+        border: none !important; 
+        padding: 18px !important;
+        border-radius: 24px 4px 24px 4px !important; /* Sigue el patrón del contenedor */
+        cursor: pointer; 
+        font-size: 14px !important; 
+        font-weight: 700 !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: 0 10px 25px rgba(128, 0, 32, 0.15) !important;
+    }
+
+    .btn-success:hover { 
+        background: var(--vinotinto-hover) !important;
+        box-shadow: 0 15px 30px rgba(128, 0, 32, 0.25) !important;
+        border-radius: 4px 24px 4px 24px !important; /* Invierte las esquinas al pasar el mouse */
+        transform: translateY(-1px) !important;
+    }
+
+    /* SOLUCIÓN AL CLIC: Se mantiene firme y oscurece de forma sobria */
+    .btn-success:active {
+        background: #4a0012 !important; /* Tono vino muy oscuro y elegante */
+        transform: translateY(1px) !important;
+        box-shadow: 0 5px 10px rgba(128, 0, 32, 0.15) !important;
+    }
+
+    .btn-outline-secondary { 
+        display: inline-block;
+        width: 100%;
+        text-align: center;
+        margin-top: 25px;
+        color: var(--texto-gray) !important; 
+        text-decoration: none; 
+        font-weight: 700; 
+        font-size: 12px; 
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: color 0.2s;
+    }
+    
+    .btn-outline-secondary:hover { 
+        color: var(--vinotinto) !important;
+        background: transparent !important;
+        border: none !important;
+    }
 </style>
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">Registrar Abono</h3>
-                </div>
-                <div class="card-body">
-                    
-                    <div class="row text-center mb-3">
-                        <div class="col-4">
-                            <small class="text-muted d-block">Total</small>
-                            <strong>${{ total_productos}}</strong>
-                        </div>
-                        <div class="col-4 border-start border-end">
-                            <small class="text-muted d-block">Abonado</small>
-                            <span class="text-success"><strong>${{ total_abonado }}</strong></span>
-                        </div>
-                        <div class="col-4">
-                            <small class="text-muted d-block">Pendiente</small>
-                            <span class="text-danger"><strong>${{ saldo_pendiente }}</strong></span>
-                        </div>
-                    </div>
 
-                    <form method="POST" action="{% url 'ventas:crear_abono' pedido.id_pedido %}">
-                        {% csrf_token %}
+<header>
+    <div><a href="{% url 'ventas:ver_carrito' %}"><img src="{% static 'img/Logo_Luxy_Fashion.jpg' %}" height="60" alt="Logo"></a></div>
+</header>
 
-                        <div class="mb-3">
-                            <label for="monto_abono" class="form-label">Monto a abonar ahora ($)</label>
-                            <input type="text" 
-                            id="monto_abono" 
-                            name="monto_abono" 
-                                class="form-control form-control-lg border-primary" 
-                                placeholder="¿Cuánto deseas pagar?" 
-                                required>
-                            <div class="form-text">
-                                No puedes superar el saldo pendiente de <strong>${{ saldo_pendiente }}</strong>.
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="metodo_pago" class="form-label">Método de Pago</label>
-                            <select name="metodo_pago" id="metodo_pago" class="form-select" required>
-                                <option value="" disabled selected>Selecciona uno...</option>
-                                <option value="Efectivo">Efectivo</option>
-                                <option value="Transferencia">Transferencia (Nequi/Daviplata)</option>
-                                <option value="Tarjeta">Tarjeta de Crédito/Débito</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3" style="display: flex;">
-                            <label for="descripcion" class="form-label" style="margin: 30px;">Descripción o Notas</label>
-                            <textarea name="descripcion" style="padding: 50px;"
-                            class="form-control" 
-                            id="descripcion" 
-                                    rows="2" 
-                                    placeholder="Ej: Pago de la primera cuota"></textarea>
-                        </div>
-
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-success btn-lg">Confirmar Pago</button>
-                            <a href="{% url 'ventas:ver_carrito' %}" class="btn btn-outline-secondary">Volver al carrito</a>
-                        </div>
-                    </form>
-                </div>
-            </div>
+<div class="container">
+    <h3>Registrar Abono</h3>
+    
+    <div class="row text-center">
+        <div class="col-4">
+            <small class="stat-label">Total</small>
+            <strong>${{ total_productos }}</strong>
+        </div>
+        <div class="col-4">
+            <small class="stat-label">Abonado</small>
+            <strong style="color: #16a34a;">${{ total_abonado }}</strong>
+        </div>
+        <div class="col-4">
+            <small class="stat-label">Pendiente</small>
+            <strong id="saldo-pendiente-display" style="color: var(--vinotinto);" data-saldo="{{ saldo_pendiente }}">${{ saldo_pendiente }}</strong>
         </div>
     </div>
+
+    <form method="POST" action="{% url 'ventas:crear_abono' pedido.id_pedido %}" id="form-abono" onsubmit="return validarAntesDeEnviar()">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="monto_abono" class="form-label">Monto a abonar ahora ($)</label>
+            <input type="number" id="monto_abono" name="monto_abono" class="form-control" step="any" placeholder="¿Cuánto deseas pagar?" required>
+            
+            <div class="form-text">
+                No puedes superar el saldo pendiente de <strong>${{ saldo_pendiente }}</strong>.
+            </div>
+            
+            <div id="error-monto" class="text-danger fw-bold mt-1" style="display: none; color: #dc3545;">
+                ❌ El monto no puede ser superior al saldo pendiente.
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="metodo_pago" class="form-label">Método de Pago</label>
+            <select name="metodo_pago" id="metodo_pago" class="form-select" required>
+                <option value="" disabled selected>Selecciona uno...</option>
+                <option value="Efectivo">Efectivo</option>
+                <option value="Transferencia">Transferencia (Nequi/Daviplata)</option>
+                <option value="Tarjeta">Tarjeta de Crédito/Débito</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción o Notas</label>
+            <textarea name="descripcion" class="form-control" id="descripcion" rows="2" placeholder="Ej: Pago de la primera cuota"></textarea>
+        </div>
+
+        <button type="submit" id="btn-confirmar" class="btn-success">Confirmar Pago</button>
+        <a href="{% url 'ventas:ver_carrito' %}" class="btn-outline-secondary">← Volver al carrito</a>
+    </form>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Selector del método de pago guardado (Tu script original)
+        const metodoGuardado = localStorage.getItem('metodoPagoGuardado');
+        const selectAbono = document.getElementById('metodo_pago');
+        if (metodoGuardado && selectAbono) {
+            selectAbono.value = metodoGuardado;
+        }
+
+        // --- Lógica de Validación de Montos ---
+        const inputMonto = document.getElementById('monto_abono');
+        const msgError = document.getElementById('error-monto');
+        const btnConfirmar = document.getElementById('btn-confirmar');
+        
+        // Extraemos la variable limpiándola de posibles puntos o comas que traiga Django
+        let saldoRaw = "{{ saldo_pendiente }}";
+        const saldoMaximo = parseFloat(saldoRaw.replace(/[^0-9.-]+/g, "")) || 0;
+
+        inputMonto.addEventListener('input', function() {
+            const montoIngresado = parseFloat(this.value) || 0;
+
+            if (montoIngresado > saldoMaximo) {
+                // Mostrar alerta visual y deshabilitar interacción
+                msgError.style.display = 'block';
+                btnConfirmar.disabled = true;
+                btnConfirmar.style.opacity = '0.5';
+                inputMonto.style.borderColor = '#dc3545'; // Borde rojo
+            } else {
+                // Estado normal si es correcto
+                msgError.style.display = 'none';
+                btnConfirmar.disabled = false;
+                btnConfirmar.style.opacity = '1';
+                inputMonto.style.borderColor = '';
+            }
+        });
+    });
+
+    // Filtro de seguridad extra: Evita que presionen "Enter" o fuercen el envío del formulario
+    function validarAntesDeEnviar() {
+        const inputMonto = document.getElementById('monto_abono');
+        let saldoRaw = "{{ saldo_pendiente }}";
+        const saldoMaximo = parseFloat(saldoRaw.replace(/[^0-9.-]+/g, "")) || 0;
+        const montoIngresado = parseFloat(inputMonto.value) || 0;
+
+        if (montoIngresado > saldoMaximo) {
+            alert("No puedes procesar un pago mayor al saldo pendiente.");
+            return false; // Cancela el submit de Django
+        }
+        return true;
+    }
+</script>
 {% endblock %}

@@ -674,7 +674,7 @@ def finalizar_pedido(request, pedido_id):
 
     if not cliente: 
         messages.error(request, "Perfil de cliente no encontrado.")
-        return redirect('login')
+        return redirect('usuarios:login')
     
     pedido = get_object_or_404(Pedido, id_pedido=pedido_id)
     detalles = Det_valor.objects.filter(id_ped_fk_detval=pedido)
@@ -794,7 +794,7 @@ def editar_pedido(request, id):
     cliente = obtener_cliente_actual(request)
     if not cliente: 
         messages.error(request, "Perfil de cliente no encontrado.")
-        return redirect('login')
+        return redirect('usuarios:login')
         
     pedido = get_object_or_404(Pedido, id_pedido=id)
 

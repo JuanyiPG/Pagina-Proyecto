@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,112 +8,231 @@
         :root {
             --vinotinto: #800020;
             --vinotinto-hover: #600018;
+            --vinotinto-linea: rgba(128, 0, 32, 0.3);
             --blanco: #ffffff;
-            --gris-claro: #f4f4f4;
-            --texto: #333;
+            --gris-limpio: #f8fafc;
+            --texto-dark: #1e293b;
+            --texto-gray: #64748b;
         }
 
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: var(--gris-claro);
-            color: var(--texto);
+            background-color: var(--gris-limpio);
+            color: var(--texto-dark);
             margin: 0;
             padding: 40px 20px;
-            line-height: 1.6; 
+        }
+
+        header { 
+            background: white; height: 80px; padding:0 20px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            position: fixed; top: 0; width: 100%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            margin-left: -20px;
+            z-index: 1000;
         }
 
         .container { 
-            max-width: 550px; 
+            max-width: 650px; 
             margin: auto; 
+            margin-top: 100px; 
             background: var(--blanco);
-            padding: 30px; 
-            border-radius: 12px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border-top: 8px solid var(--vinotinto);
+            padding: 45px; 
+            border-radius: 32px 4px 32px 4px; 
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(128, 0, 32, 0.05);
         }
 
         h2 {
-            color: var(--vinotinto);
-            text-align: center;
-            margin-bottom: 25px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 1.4rem;
+            color: var(--texto-dark);
+            text-align: left;
+            margin-bottom: 35px;
+            font-weight: 800;
+            font-size: 1.7rem;
+            letter-spacing: -0.5px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 4px;
+            background: var(--vinotinto);
+            border-radius: 2px;
         }
 
         .resumen { 
-            background: #fffafa;
-            padding: 20px; 
-            margin-bottom: 25px; 
-            border-radius: 8px;
-            border: 1px solid #eee;
-            border-left: 5px solid var(--vinotinto); 
+            background: transparent;
+            padding: 0; 
+            margin-bottom: 40px; 
+            border: none;
         }
 
-        .resumen p { margin: 5px 0; }
+        .detalle-financiero {
+            display: flex; 
+            gap: 15px;
+            flex-wrap: wrap;
+        }
 
-        .form-group { margin-bottom: 20px; }
+        .col-financiera { 
+            flex: 1; 
+            min-width: 120px;
+            background: var(--gris-limpio);
+            padding: 12px 20px;
+            border-radius: 12px;
+            text-align: left;
+            border-left: 4px solid var(--texto-gray);
+            transition: all 0.3s ease;
+        }
+
+        .col-financiera:nth-child(2) { border-left-color: #16a34a; background: #f0fdf4; } /* Abonado */
+        .col-financiera:nth-child(3) { border-left-color: var(--vinotinto); background: #fdf2f2; } /* Pendiente */
+
+        .col-financiera small { 
+            display: block; 
+            color: var(--texto-gray); 
+            font-size: 11px; 
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .col-financiera strong {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-top: 2px;
+            display: block;
+        }
+
+        .form-group { 
+            margin-bottom: 35px; 
+            position: relative;
+        }
 
         label { 
             display: block; 
-            font-weight: 600; 
-            margin-bottom: 8px;
-            color: #555;
+            font-weight: 700; 
+            margin-bottom: 6px;
+            color: var(--vinotinto);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         select { 
             width: 100%; 
-            padding: 12px; 
-            border: 1px solid #ccc; 
-            border-radius: 6px;
-            background-color: white;
-            font-size: 15px;
-            transition: border-color 0.3s;
+            padding: 12px 0px; 
+            border: none;
+            border-bottom: 2px solid var(--vinotinto-linea);
+            border-radius: 0;
+            background-color: transparent;
+            font-size: 16px;
+            color: var(--texto-dark);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            outline: none;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23800020' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 5px center;
         }
 
-        select:focus { outline: none; border-color: var(--vinotinto); }
-
-        small { display: block; margin-top: 5px; color: #777; font-style: italic; }
-
-        .btn-confirmar { 
-            width: 100%;
-            background-color: var(--vinotinto); 
-            color: white; 
-            border: none; 
-            padding: 15px;
-            border-radius: 6px;
-            cursor: pointer; 
-            font-size: 16px; 
-            font-weight: bold;
-            text-transform: uppercase;
-            transition: background 0.3s, transform 0.2s;
-            box-shadow: 0 4px 6px rgba(128, 0, 32, 0.2);
+        /* Corregido: Animación limpia de la línea inferior al hacer clic */
+        select:focus { 
+            border-bottom: 2px solid var(--vinotinto);
+            box-shadow: 0 4px 12px rgba(128, 0, 32, 0.03);
+            padding-left: 8px; 
         }
 
-        .btn-confirmar:hover { background-color: var(--vinotinto-hover); transform: translateY(-1px); }
+        .form-group small { 
+            display: block; 
+            margin-top: 8px; 
+            color: var(--texto-gray); 
+            font-size: 12px;
+        }
 
         .messages { 
-            background: #ffe6e6; color: #d8000c; padding: 10px;
-            border-radius: 5px; margin-bottom: 20px; list-style: none; 
+            background: #fef2f2; 
+            color: #991b1b; 
+            padding: 14px;
+            border-radius: 8px; 
+            margin-bottom: 25px; 
+            list-style: none; 
+            font-size: 14px;
         }
 
-        hr { border: 0; border-top: 1px solid #eee; margin: 25px 0; }
-
-        a { color: var(--vinotinto); text-decoration: none; font-weight: 600; font-size: 14px; }
-        a:hover { text-decoration: underline; }
-
-        /* Estilos para el detalle financiero */
-        .detalle-financiero {
-            display: flex; justify-content: space-between; text-align: center; margin-top: 15px;
+        hr { 
+            border: 0; 
+            border-top: 1px solid #f1f5f9; 
+            margin: 40px 0 30px 0; 
         }
-        .col-financiera { flex: 1; padding: 5px 0; }
-        .borde-lat { border-left: 1px solid #eee; border-right: 1px solid #eee; }
+
+        /* -----------------------------------------
+            BOTÓN ASIMÉTRICO UNIFICADO Y CORREGIDO
+        ----------------------------------------- */
+        .btn-confirmar { 
+            width: 100%;
+            background: var(--vinotinto);
+            color: white; 
+            border: none; 
+            padding: 18px;
+            border-radius: 24px 4px 24px 4px;
+            cursor: pointer; 
+            font-size: 14px; 
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 25px rgba(128, 0, 32, 0.15);
+        }
+
+        .btn-confirmar:hover { 
+            background: var(--vinotinto-hover);
+            box-shadow: 0 15px 30px rgba(128, 0, 32, 0.25);
+            border-radius: 4px 24px 4px 24px; /* Invierte las esquinas de forma interactiva */
+            transform: translateY(-1px);
+        }
+
+        /* SOLUCIÓN AL CLIC: Firmeza absoluta, no se blanquea y mantiene estilo premium */
+        .btn-confirmar:active {
+            background: #4a0012 !important; 
+            transform: translateY(1px);
+            box-shadow: 0 5px 10px rgba(128, 0, 32, 0.15);
+        }
+
+        .back-container {
+            text-align: center; 
+            margin-top: 25px;
+        }
+
+        a.btn-volver { 
+            color: var(--texto-gray); 
+            text-decoration: none; 
+            font-weight: 700; 
+            font-size: 12px; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: color 0.2s;
+        }
+        
+        a.btn-volver:hover { 
+            color: var(--vinotinto);
+        }
+</style>
     </style>
 </head>
 <body>
 
+<header>
+    <div><a href="{% url 'ventas:ver_carrito' %}"><img src="{% static 'img/Logo_Luxy_Fashion.jpg' %}" height="60" alt="Logo"></a></div>
+</header>
+
 <div class="container">
-    <h2>Confirmar Finalización de Pedido</h2>
+    <h2>Pagar Pedido</h2>
 
     {% if messages %}
     <ul class="messages">
@@ -125,16 +245,16 @@
     <div class="resumen">
         <div class="detalle-financiero">
             <div class="col-financiera">
-                <small>Total</small>
+                <small>Total Productos</small>
                 <strong>${{ total_productos }}</strong>
             </div>
-            <div class="col-financiera borde-lat">
-                <small>Abonado</small>
-                <strong style="color: green;">${{ total_abonado }}</strong>
+            <div class="col-financiera">
+                <small>Monto Abonado</small>
+                <strong style="color: #16a34a;">${{ total_abonado }}</strong>
             </div>
             <div class="col-financiera">
-                <small>Pendiente</small>
-                <strong style="color: #a31c36;">${{ saldo_pendiente }}</strong>
+                <small>Saldo Pendiente</small>
+                <strong style="color: var(--vinotinto);">${{ saldo_pendiente }}</strong>
             </div>
         </div>
     </div>
@@ -166,11 +286,22 @@
             Confirmar y Finalizar Pedido
         </button>
         
-        <p style="text-align: center; margin-top: 20px;">
-            <a href="{% url 'ventas:ver_carrito' %}">Volver al carrito</a>
-        </p>
+        <div class="back-container">
+            <a href="{% url 'ventas:ver_carrito' %}" class="btn-volver">← Volver al carrito</a>
+        </div>
     </form>
 </div>
 
 </body>
 </html>
+<script>
+    const selectPago = document.getElementById('metodo_pago');
+
+    selectPago.addEventListener('change', function() {
+        // Guarda el valor en la memoria del navegador bajo la clave "metodoPagoGuardado"
+        localStorage.setItem('metodoPagoGuardado', this.value);
+    });
+
+    // Guardar el valor inicial por si no lo cambia
+    localStorage.setItem('metodoPagoGuardado', selectPago.value);
+</script>

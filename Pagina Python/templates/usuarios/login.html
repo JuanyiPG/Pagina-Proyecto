@@ -1,4 +1,32 @@
 {% load static %}
+<style>
+    /* El contenedor define el área de juego */
+    .input-container {
+        position: relative;
+        display: inline-block; /* O 'block' dependiendo de tu diseño */
+        width: 100%; /* Se adapta al ancho que desees */
+    }
+
+    /* El input ocupa todo el ancho del contenedor */
+    #FieldPassword {
+        width: 100%;
+        padding-right: 70px; /* Espacio extra a la derecha para que el texto no tape la contraseña */
+        box-sizing: border-box; /* Evita que el padding deforme el tamaño del input */
+    }
+
+    /* El span ahora se posiciona RESPECTO al contenedor padre */
+    #togPassword {
+        position: absolute;
+        right: 15px; /* Separación desde el borde derecho del input */
+        top: 50%;   /* Centrado vertical perfecto */
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 12px;
+        color: #666;
+        user-select: none; /* Evita que se seleccione el texto al hacer doble click */
+    }
+</style>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -63,11 +91,10 @@
             {% endif %}
 
             <input type="text" name="username" placeholder="Usuario" required>
-            <input type="password" name="password" id="FieldPassword" placeholder="Contraseña" required>
-                <span id="togPassword" style="position: absolute; right: 60px; top: 60%; transform: translateY(-50%); cursor: pointer; font-size: 12px; color: #666;">
-                    mostrar
-                </span>
-            </input>
+            <div class="input-container">
+                <input type="password" name="password" id="FieldPassword" placeholder="Contraseña" required>
+                <span id="togPassword">mostrar</span>
+            </div>
             <button type="submit" class="btn-action">Ingresar</button>
         </form>
     </div>
