@@ -212,6 +212,86 @@
             margin: 20px -25px -25px -25px; 
             border-radius: 0 0 25px 25px;
         }
+        /* ===== Cantidad ===== */
+    .cantidad-contenedor {
+        margin-top: 8px;
+    }
+
+    #input-cantidad-3d {
+        width: 100%;
+        padding: 14px;
+        border: 2px solid #eee;
+        border-radius: 15px;
+        background: #fafafa;
+        font-size: 15px;
+        font-weight: 600;
+        color: #333;
+        text-align: center;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+    }
+
+    #input-cantidad-3d:focus {
+        outline: none;
+        border-color: #5e0925;
+        background: #fff;
+        box-shadow: 0 0 0 4px rgba(94, 9, 37, 0.1);
+    }
+
+    /* ===== Tamaños del estampado ===== */
+    .tamano-estampado-contenedor {
+        display: flex;
+        gap: 12px;
+        margin-top: 10px;
+    }
+
+    .tamano-estampado-contenedor label {
+        flex: 1;
+    }
+
+    .btn-tamano-estam {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 14px 10px;
+        border: 2px solid #eee;
+        border-radius: 16px;
+        background: #fff;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        min-height: 85px;
+    }
+
+    .btn-tamano-estam strong {
+        font-size: 14px;
+        color: #333;
+        margin-bottom: 6px;
+    }
+
+    .btn-tamano-estam small {
+        font-size: 12px;
+        color: #2e7d32;
+        font-weight: 700;
+    }
+
+    .btn-tamano-estam:hover {
+        transform: translateY(-3px);
+        border-color: #5e0925;
+        background: #fcf8f9;
+        box-shadow: 0 8px 20px rgba(94, 9, 37, 0.12);
+    }
+
+    .radio-tamano-estam:checked + .btn-tamano-estam {
+        background: linear-gradient(135deg, #6a0f2e, #5e0925);
+        border-color: #5e0925;
+        box-shadow: 0 10px 25px rgba(94, 9, 37, 0.25);
+    }
+
+    .radio-tamano-estam:checked + .btn-tamano-estam strong,
+    .radio-tamano-estam:checked + .btn-tamano-estam small {
+        color: #fff;
+    }
     </style>
 </head>
 <body> 
@@ -254,26 +334,51 @@
                     </label>
                 {% endfor %}
             </div>
-            
-            <span class="label-style" style="margin-top: 20px; display: block;">Tamaño del diseño:</span>
-            <div class="tallas-contenedor" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 5px;">
-                <label style="margin: 0; cursor: pointer;">
-                    <input type="radio" name="tamano_estam" value="40" class="radio-tamano-estam" style="display:none;" checked>
-                    <span class="btn-tamano-estam">Pequeño<br>+$0</span>
-                </label>
-                <label style="margin: 0; cursor: pointer;">
-                    <input type="radio" name="tamano_estam" value="100" class="radio-tamano-estam" style="display:none;">
-                    <span class="btn-tamano-estam">Medio<br>+$5000</span>
-                </label>
-                <label style="margin: 0; cursor: pointer;">
-                    <input type="radio" name="tamano_estam" value="180" class="radio-tamano-estam" style="display:none;">
-                    <span class="btn-tamano-estam">Grande<br>+$10000</span>
-                </label>
-            </div>
+            <span class="label-style" style="margin-top:20px; display:block;">
+    Cantidad:
+</span>
+
+<div class="cantidad-contenedor">
+    <input type="number"
+           name="cantidad_personalizada"
+           id="input-cantidad-3d"
+           value="1"
+           min="1"
+           max="10">
+</div>
+
+<span class="label-style" style="margin-top:20px; display:block;">
+    Tamaño del diseño:
+</span>
+
+<div class="tamano-estampado-contenedor">
+    <label>
+        <input type="radio" name="tamano_estam" value="40"class="radio-tamano-estam" hidden checked>
+        <span class="btn-tamano-estam">
+            <strong>Pequeño</strong>
+            <small>Base ($0)</small>
+        </span>
+    </label>
+
+    <label>
+        <input type="radio" name="tamano_estam" value="100"class="radio-tamano-estam" hidden>
+        <span class="btn-tamano-estam">
+            <strong>Medio</strong>
+            <small>+ $5.000</small>
+        </span>
+    </label>
+
+    <label>
+        <input type="radio" name="tamano_estam" value="180" class="radio-tamano-estam" hidden>
+        <span class="btn-tamano-estam">
+            <strong>Grande</strong>
+            <small>+ $12.000</small>
+        </span>
+    </label>
+</div>
 
             <div class="control-tabs" style="margin-top: 20px;">
                 <button class="tab-btn active" onclick="showTab('tab-ninguno', this); limpiarTodo();">Original</button>
-                <button class="tab-btn" onclick="showTab('tab-propio', this)">Mi Foto</button>
                 <button class="tab-btn" onclick="showTab('tab-lista', this)">Catálogo</button>
             </div>
 
@@ -281,13 +386,6 @@
                 <p style="color: #999; font-size: 0.85rem; text-align: center; font-style: italic;">
                     Sin estampados seleccionados.
                 </p>
-            </div>
-
-            <div id="tab-propio" class="panel-opcion">
-                <span class="label-style">Cargar imagen (.png, .jpg):</span>
-                <b>$20000,00</b>
-                <input type="file" id="imageInput" accept="image/jpeg, image/png">
-                <p id="error-message" style="color: #e74c3c; font-weight: bold; margin-top: 5px; display: none;"></p>
             </div>
 
             <div id="tab-lista" class="panel-opcion">
@@ -318,6 +416,8 @@
     </div>
 </div>
 <script>
+
+    
     function showTab(tabId, btn) {
         document.querySelectorAll('.panel-opcion').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -342,6 +442,8 @@
             detail: { url: url, id: id, escala: tamano } 
         }));
     }
+
+    
 
     document.addEventListener('DOMContentLoaded', () => {
         const btnGuardar = document.getElementById('btn-procesar-guardado');
