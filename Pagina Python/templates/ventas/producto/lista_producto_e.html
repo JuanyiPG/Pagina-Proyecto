@@ -749,7 +749,36 @@ function renderFactura() {
         total.toLocaleString();
 }
 
-function eliminarItem(index){ factura.splice(index, 1); renderFactura(); }
+function eliminarItem(index){
+
+    const item = factura[index];
+
+    // 1. Si es diseño 3D → eliminar en backend
+    if(item.diseno_id){
+
+        fetch("/inventario/api/eliminar-modelo-3d/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": obtenerCSRFToken()
+            },
+            body: JSON.stringify({
+                diseno_id: item.diseno_id
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log("🗑️ Eliminado en BD:", data);
+        })
+        .catch(err => {
+            console.error("Error eliminando en BD:", err);
+        });
+    }
+
+    // 2. eliminar del frontend
+    factura.splice(index, 1);
+    renderFactura();
+}
 
 function pagarFactura(){
     if(factura.length == 0) return alert("No hay productos cargados en la factura.");
@@ -874,7 +903,8 @@ window.addEventListener('disenoGuardadoExitoso', (e) => {
         cantidad: Number(datos.cantidad || 1),
         talla: datos.talla,
         color: datos.color,
-        imagen: datos.foto_frente
+        imagen: datos.foto_frente,
+        diseno_id: datos.diseno_id
     });
 
     renderFactura();
