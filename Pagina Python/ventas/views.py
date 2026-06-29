@@ -19,7 +19,8 @@ from django.apps import apps
 from email.policy import default
 from usuarios.views import solo_personal, login_requerido_custom
 from .models import Abono, Pedido, Variacion, Det_valor, Producto, Det_mov_matp, Cliente
-from inventario.models import Estampado, Movimiento_matp
+from inventario.models import Estampado, Movimiento_matp, PedidoPersonalizado
+from inventario.services import calcular_precio_personalizacion
 
 #---------------------- COMPROBAR LOGIN ------------------------------
 
@@ -254,12 +255,11 @@ def crear_variacion(request, producto_id, pedido_id):
         
         with transaction.atomic():
             variacion = Variacion.objects.create(
-                talla_var=request.POST.get('talla_var'),
-                cant_soli=int(request.POST.get('cant_soli')),
-                color_var=request.POST.get('color_var'),
-                mat_var=request.POST.get('mat_var'),
-                costo_var=estam_obj.costo_adi,
-                id_estam_fk_var=estam_obj
+                talla_var=talla,
+                cant_soli=cantidad,
+                color_var=color,
+                mat_var=descripcion_mat,
+                costo_var=precio_base_producto
             )
 
             pedido_actual = get_object_or_404(Pedido, id_pedido=pedido_id)
@@ -524,6 +524,9 @@ def producto_sin_personalizar(request, producto_id):
 
     tallas = producto.tallas_disponibles.split(',') if producto.tallas_disponibles else ["S", "M", "L"]
     colores = producto.colores_disponibles.split(',') if producto.colores_disponibles else ["#ffffff", "#000000"]
+    if request.method == 'POST':
+        print("ENTRÓ AL POST")
+        print(request.POST)
 
     if request.method == 'POST':
         cliente = obtener_cliente_actual(request)
@@ -1052,10 +1055,12 @@ def venta_empleado(request):
                     
                     id_estampado = item.get('id_estampado')
                     foto_frente_base64 = item.get('foto_frente')
-                    
-                    # 🔒 DETECTOR DE TRAMPAS: Leemos la escala numérica que viene del 3D
-                    # Si no viene (porque es un producto normal), por defecto es 0.0
-                    escala_estampado = float(item.get('escala_estampado', 0.0))
+                    tamano_estampado = float(item.get('tamano_estampado', 40))
+                    lista_estampados = item.get('lista_estampados',[])
+                    print("LISTA:", lista_estampados)
+                    cantidad_total_estampados = int(item.get('cantidad_total_estampados',0))
+                    print("TOTAL:", cantidad_total_estampados)
+                    print("ITEM:", item)
 
                     precio_base_producto = Decimal(str(producto.precio))
                     personalizacion_3d = None
@@ -1065,28 +1070,34 @@ def venta_empleado(request):
                     # 💰 CÁLCULO MATEMÁTICO INTACTO DESDE EL SERVIDOR
                     if id_estampado:
                         # Si es imagen propia subida por el cliente
-                        if id_estampado == "imagen_propia":
-                            precio_base_producto += Decimal('20000') # Tarifa base por diseño propio
-                            descripcion_mat = "Venta Empleado 3D - Imagen Propia"
-                        # Si es del catálogo de Luxy Fashion
-                        else:
-                            estampado = Estampado.objects.get(id_estampado=id_estampado)
-                            precio_base_producto += Decimal(str(estampado.precio))
-                            descripcion_mat = "Venta Empleado 3D - Catálogo"
-                        
+                        costo_imagen_propia = float(
+                            item.get('costo_imagen_propia', 20000)
+                        )
+
+                        precio_base_producto = calcular_precio_personalizacion(
+                            producto.precio,
+                            lista_estampados,
+                            tamano_estampado,
+                            cantidad_total_estampados,
+                            costo_imagen_propia
+                        )
+                                                
                         # 🛡️ BLINDAJE: Django decide el tamaño real según la escala numérica del objeto
-                        if escala_estampado >= 1.2:
-                            precio_base_producto += Decimal('12000')
+                        precio_tamano = Decimal('0')
+                        if tamano_estampado >= 180:
+                            precio_tamano = Decimal('12000')
                             tamano_texto = "Grande"
-                        elif escala_estampado >= 0.7:
-                            precio_base_producto += Decimal('5000')
+
+                        elif tamano_estampado >= 90:
+                            precio_tamano = Decimal('5000')
                             tamano_texto = "Mediano"
+
                         else:
-                            precio_base_producto += Decimal('0')
-                            tamano_texto = "Chiquito"
+                            tamano_texto = "Pequeño"
+
                         
                         # Guardamos el registro del tamaño real calculado por el servidor en la descripción
-                        descripcion_mat += f" ({tamano_texto} - Escala: {escala_estampado})"
+                        descripcion_mat += f" ({tamano_texto})"
 
                         # 📸 CAPTURA VISUAL DE EVIDENCIA
                         if foto_frente_base64 and ";base64," in foto_frente_base64:
@@ -1096,12 +1107,19 @@ def venta_empleado(request):
                             format, imgstr = foto_frente_base64.split(';base64,')
                             ext = format.split('/')[-1]
                             
-                            personalizacion_3d = Personalizacion_3d.objects.create()
-                            personalizacion_3d.foto_frente = ContentFile(
-                                base64.b64decode(imgstr), 
-                                name=f"render_empleado_{personalizacion_3d.id}.{ext}"
-                            )
-                            personalizacion_3d.save()
+                            archivo_foto = ContentFile(
+                            base64.b64decode(imgstr),
+                            name=f"render_empleado.{ext}"
+                        )
+
+                        personalizacion_3d = PedidoPersonalizado.objects.create(
+                            producto=producto,
+                            estampado=None,
+                            color_hex=color,
+                            tipo_personalizacion="3D",
+                            foto_frente=archivo_foto,
+                            precio_final=precio_base_producto
+                        )
 
                     # Calcular subtotal definitivo multiplicando por la cantidad
                     subtotal = precio_base_producto * cantidad
