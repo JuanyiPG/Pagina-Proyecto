@@ -588,3 +588,26 @@ def eliminar_pedido_personalizado(request, id):
         if img and os.path.exists(img.path): os.remove(img.path)
     pedido.delete()
     return redirect('ventas:ver_carrito')
+
+@csrf_exempt
+def eliminar_diseno_3d(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            diseno_id = data.get("diseno_id")
+
+            pedido = get_object_or_404(PedidoPersonalizado, id=diseno_id)
+
+            # borrar archivos
+            for img in [pedido.foto_frente, pedido.foto_espalda, pedido.foto_lateral]:
+                if img and os.path.exists(img.path):
+                    os.remove(img.path)
+
+            pedido.delete()
+
+            return JsonResponse({"success": True})
+
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
+
+    return JsonResponse({"success": False, "error": "Método no permitido"})
