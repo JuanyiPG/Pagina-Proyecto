@@ -41,12 +41,12 @@
         .logo-link img { height: 65px; transition: transform 0.3s; }
         .logo-link:hover img { transform: scale(1.05); }
 
-        .main-wrapper { 
-            flex: 1; 
-            display: flex; 
-            padding: 20px; 
-            gap: 20px; 
-            height: calc(100vh - 80px); 
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            padding: 12px; /* antes 20px */
+            gap: 12px; /* antes 20px */
+            height: calc(100vh - 80px);
             box-sizing: border-box;
         }
 
@@ -60,52 +60,59 @@
             box-shadow: 0 5px 20px rgba(0,0,0,0.05);
         }
 
-        .form-pro { 
-            flex: 0 0 400px; 
-            background: white; 
-            padding: 25px; 
-            border-radius: 25px; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1); 
-            display: flex; 
+        .form-pro {
+            flex: 0 0 340px; 
+            background: white;
+            padding: 18px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            display: flex;
             flex-direction: column;
             max-height: 100%;
             box-sizing: border-box;
         }
 
         .instrucciones-box {
-            background: var(--info-bg); 
-            color: var(--info); 
-            padding: 15px; 
-            border-radius: 15px;
-            margin-bottom: 20px; 
-            border-left: 5px solid var(--info); 
-            font-size: 0.85rem;
-            line-height: 1.5;
+            background: var(--info-bg);
+            color: var(--info);
+            padding: 10px; /* antes 15px */
+            border-radius: 12px;
+            margin-bottom: 12px; /* antes 20px */
+            border-left: 5px solid var(--info);
+            font-size: 0.75rem; /* antes 0.85rem */
+            line-height: 1.3;
         }
 
         .controles-scroll {
             flex: 1;
             overflow-y: auto;
             padding-right: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .controles-scroll::-webkit-scrollbar { width: 5px; }
         .controles-scroll::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 10px; }
 
-        .control-tabs { 
-            display: flex; 
-            background: #f1f3f5; 
-            padding: 5px; 
-            border-radius: 15px; 
-            gap: 5px; 
-            margin-bottom: 20px; 
+        .control-tabs {
+            display: flex;
+            background: #f1f3f5;
+            padding: 4px;
+            border-radius: 12px;
+            gap: 4px;
+            margin-bottom: 12px; 
         }
         
         .tab-btn {
-            flex: 1; padding: 12px 5px; border: none; background: transparent;
-            color: #666; border-radius: 10px; cursor: pointer; font-weight: bold; 
-            font-size: 0.7rem; text-transform: uppercase; transition: 0.3s;
+            flex: 1;
+            padding: 8px 5px; /* antes 12px */
+            border: none;
+            background: transparent;
+            color: #666;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.65rem; /* antes 0.7rem */
+            text-transform: uppercase;
         }
         .tab-btn.active { background: white; color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
 
@@ -117,12 +124,12 @@
         .galeria-disenos {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            gap: 8px; /* antes 12px */
         }
 
         .diseno-item {
             border: 1px solid #eee;
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
             overflow: hidden;
             transition: 0.3s;
@@ -130,31 +137,53 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 8px;
+            padding: 6px; /* antes 8px */
         }
 
-        .diseno-item img { width: 100%; height: 85px; object-fit: contain; margin-bottom: 5px; }
-        .diseno-nombre { font-size: 0.7rem; font-weight: bold; color: #444; text-align: center; }
+        .diseno-item img {
+            width: 100%;
+            height: 60px; /* antes 85px */
+            object-fit: contain;
+            margin-bottom: 4px;
+        }
+        .diseno-nombre {
+            font-size: 0.6rem; /* antes 0.7rem */
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .diseno-precio {
+            font-size: 0.6rem;
+        }
 
         .diseno-item:hover { border-color: var(--primary-border); background: var(--primary-light); }
         .diseno-item.selected { border-color: var(--primary); background: var(--primary-light); }
 
-        .label-style { font-weight: 700; font-size: 0.9rem; color: #333; display: block; margin-bottom: 8px; }
-        
-        input[type="color"] { width: 100%; height: 45px; border: none; border-radius: 10px; cursor: pointer; }
+        .label-style {
+            font-weight: 700;
+            font-size: 0.8rem; 
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+
+        input[type="color"] {
+            width: 100%;
+            height: 35px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
 
         .btn-talla {
-            display: inline-block;
-            padding: 10px 18px;
+            padding: 8px 14px; /* antes 10px 18px */
             border: 1px solid #ddd;
-            border-radius: 10px;
-            font-size: 14px;
+            border-radius: 8px;
+            font-size: 12px; /* antes 14px */
             font-weight: bold;
-            color: #333;
-            background-color: #fff;
-            text-align: center;
-            transition: all 0.2s ease;
         }
+
         .btn-talla:hover { border-color: #5e0925; background-color: #fcf8f9; }
         .radio-talla:checked + .btn-talla {
             background-color: #5e0925;
@@ -184,9 +213,17 @@
         }
 
         .btn-main { 
-            padding: 16px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; 
-            width: 100%; text-transform: uppercase; transition: 0.3s; text-align: center; text-decoration: none; display: block;
-            font-size: 0.9rem;
+            border-radius: 50px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            width: 100%; 
+            text-transform: uppercase; 
+            transition: 0.3s; 
+            text-align: center; 
+            text-decoration: none; 
+            display: block;
+            padding: 12px;
+            font-size: 0.8rem;
         }
         .btn-guardar { 
             background: var(--primary); 
@@ -219,15 +256,13 @@
 
     #input-cantidad-3d {
         width: 100%;
-        padding: 14px;
+        padding: 10px; /* antes 14px */
         border: 2px solid #eee;
-        border-radius: 15px;
+        border-radius: 12px;
         background: #fafafa;
-        font-size: 15px;
+        font-size: 13px; /* antes 15px */
         font-weight: 600;
-        color: #333;
         text-align: center;
-        transition: all 0.3s ease;
         box-sizing: border-box;
     }
 
@@ -241,38 +276,34 @@
     /* ===== Tamaños del estampado ===== */
     .tamano-estampado-contenedor {
         display: flex;
-        gap: 12px;
-        margin-top: 10px;
+        gap: 8px; /* antes 12px */
+        margin-top: 6px;
     }
 
     .tamano-estampado-contenedor label {
         flex: 1;
     }
 
-    .btn-tamano-estam {
+   .btn-tamano-estam {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: 14px 10px;
+        padding: 10px 6px; /* antes 14px 10px */
         border: 2px solid #eee;
-        border-radius: 16px;
+        border-radius: 12px;
         background: #fff;
         cursor: pointer;
         transition: all 0.25s ease;
-        min-height: 85px;
+        min-height: 65px; /* antes 85px */
     }
 
     .btn-tamano-estam strong {
-        font-size: 14px;
-        color: #333;
-        margin-bottom: 6px;
+        font-size: 12px; /* antes 14px */
     }
 
     .btn-tamano-estam small {
-        font-size: 12px;
-        color: #2e7d32;
-        font-weight: 700;
+        font-size: 10px; /* antes 12px */
     }
 
     .btn-tamano-estam:hover {
@@ -292,6 +323,211 @@
     .radio-tamano-estam:checked + .btn-tamano-estam small {
         color: #fff;
     }
+
+    .titulo-producto {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.product-title {
+    margin: 0;
+    font-size: 1.3rem;
+    line-height: 1.2;
+}
+
+    .btn-ayuda-producto {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    padding: 8px 14px;
+    min-height: 38px;
+
+    border: 2px solid #5e0925;
+    border-radius: 20px;
+    background: #fff;
+    color: #5e0925;
+
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+
+    cursor: pointer;
+    transition: all 0.25s ease;
+    flex-shrink: 0;
+}
+
+.btn-ayuda-producto:hover {
+    background: #5e0925;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* Caja del tutorial */
+.driver-popover {
+    border-radius: 18px !important;
+    padding: 10px !important;
+}
+
+/* Título */
+.driver-popover-title {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    margin-bottom: 10px !important;
+}
+
+/* Descripción */
+.driver-popover-description {
+    font-size: 15px !important;
+    line-height: 1.6 !important;
+}
+
+/* Contenedor de botones */
+.driver-popover-footer {
+    margin-top: 20px !important;
+}
+
+/* Botones */
+.driver-popover-next-btn,
+.driver-popover-prev-btn,
+.driver-popover-close-btn {
+    padding: 10px 18px !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    border-radius: 12px !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.25s ease !important;
+}
+
+/* Botón siguiente */
+.driver-popover-next-btn {
+    background: #5e0925 !important;
+    color: white !important;
+}
+
+/* Botón anterior */
+.driver-popover-prev-btn {
+    background: #f3f3f3 !important;
+    color: #333 !important;
+}
+
+/* Hover */
+.driver-popover-next-btn:hover,
+.driver-popover-prev-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* Botón cerrar (X) */
+.driver-popover-close-btn {
+    font-size: 20px !important;
+    padding: 6px 12px !important;
+}
+
+.modal-tutorial {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    backdrop-filter: blur(4px);
+}
+
+.modal-tutorial-box {
+    background: white;
+    width: 420px;
+    max-width: 90%;
+    border-radius: 24px;
+    padding: 35px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    animation: aparecerModal .3s ease;
+}
+
+.modal-icono {
+    font-size: 55px;
+    margin-bottom: 15px;
+}
+
+.modal-tutorial-box h2 {
+    margin: 0;
+    color: #5e0925;
+    font-size: 28px;
+}
+
+.modal-tutorial-box p {
+    color: #555;
+    line-height: 1.7;
+    margin: 20px 0 30px;
+}
+
+.modal-botones {
+    display: flex;
+    gap: 15px;
+}
+
+.modal-botones button {
+    flex: 1;
+    border: none;
+    border-radius: 14px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.btn-modal-principal {
+    background: #5e0925;
+    color: white;
+}
+
+.btn-modal-principal:hover {
+    background: #7c1236;
+    transform: translateY(-2px);
+}
+
+.btn-modal-secundario {
+    background: #f3f3f3;
+    color: #444;
+}
+
+.btn-modal-secundario:hover {
+    background: #e7e7e7;
+    transform: translateY(-2px);
+}
+
+@keyframes aparecerModal {
+    from {
+        opacity: 0;
+        transform: scale(.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Agrandar la ventana del tutorial */
+.driver-popover {
+    width: min(850px, 90vw) !important;
+    max-width: 80vw !important;
+    max-height: 80vh !important;
+    overflow-y: auto !important;
+    padding: 5px !important;
+}
+
+/* Agrandar el área de descripción */
+.driver-popover-description {
+    max-width: 100% !important;
+    font-size: 15px !important;
+    line-height: 1.7 !important;
+}
     </style>
 </head>
 <body> 
@@ -304,20 +540,22 @@
 
 <div class="main-wrapper">
     <div id="container3d"></div>
-
+    
     <div class="form-pro">
+        
         <input type="hidden" id="producto-id" value="{{ producto.id_produc }}">
+       <div class="titulo-producto">
+            <h1 class="product-title">{{ producto.nom_produc }}</h1>
 
-       <h1 class="product-title">{{ producto.nom_produc }}</h1>
+            <button id="btn-tutorial" class="btn-ayuda-producto">
+                ❓ Ayuda
+            </button>
+        </div>
        <b><div class="product-price" style="color: #5e0925; font-size: 25px; font-family: 'Times New Roman', Times, serif;">$ {{ producto.precio }}</div></b>
        <br>
-
         <div class="instrucciones-box">
-            <strong style="display: block; margin-bottom: 5px;">🎮 Cómo personalizar:</strong>
-            • <b>Color:</b> Elige el color de la tela abajo.<br>
-            • <b>Catálogo:</b> Selecciona un diseño y ajusta su tamaño.<br>
-            • <b>Estampar:</b> Mantén <b>Tecla 'A'</b> + <b>Clic</b> sobre la prenda.<br>
-            • <b>Límite:</b> Máximo 2 estampados.
+            <strong style="display: block; margin-bottom: 5px;">AVISO:</strong>
+            • <b>Estampados:</b> Máximo 2 estampados.
         </div>
 
         <div class="controles-scroll">
@@ -325,7 +563,7 @@
             <span class="label-style">Color de la tela:</span>
             <input type="color" id="color-input-global" value="#ffffff">
 
-            <span class="label-style" style="margin-top: 20px; display: block;">Talla:</span>
+            <span class="label-style" style="margin-top: 12px; display: block;">Talla:</span>
             <div class="tallas-contenedor" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 5px;">
                 {% for t in tallas %} 
                     <label style="margin: 0; cursor: pointer;">
@@ -334,7 +572,7 @@
                     </label>
                 {% endfor %}
             </div>
-            <span class="label-style" style="margin-top:20px; display:block;">
+            <span class="label-style" style="margin-top:12px; display:block;">
     Cantidad:
 </span>
 
@@ -347,7 +585,7 @@
            max="10">
 </div>
 
-<span class="label-style" style="margin-top:20px; display:block;">
+<span class="label-style" style="margin-top:12px; display:block;">
     Tamaño del diseño:
 </span>
 
@@ -377,8 +615,8 @@
     </label>
 </div>
 
-            <div class="control-tabs" style="margin-top: 20px;">
-                <button class="tab-btn active" onclick="showTab('tab-ninguno', this); limpiarTodo();">Original</button>
+            <div class="control-tabs" style="margin-top: 12px;">
+                <button class="tab-btn active" onclick="showTab('tab-ninguno', this); limpiarTodo();">Sin estampados</button>
                 <button class="tab-btn" onclick="showTab('tab-lista', this)">Catálogo</button>
             </div>
 
@@ -389,7 +627,7 @@
             </div>
 
             <div id="tab-lista" class="panel-opcion">
-                <div class="galeria-disenos">
+                <div class="galeria-disenos" id="catalogo-tutorial" >
                     {% for est in estampados %}
                         <div class="diseno-item" onclick="seleccionarEstampado('{{ est.imagen_estamp.url }}', '{{ est.id_estamp }}', this)">
                             <img src="{{ est.imagen_estamp.url }}" alt="{{ est.nombre_estamp }}">
@@ -412,6 +650,28 @@
             <footer>
                 &copy; 2026 Luxy Fashion | SENA
             </footer>
+        </div>
+    </div>
+    <div id="modal-tutorial" class="modal-tutorial">
+        <div class="modal-tutorial-box">
+            <div class="modal-icono"></div>
+
+            <h2>¿No sabes usar el modelo 3D?</h2>
+
+            <p>
+                Te enseñaremos cómo girar la prenda, cambiar el color y colocar
+                estampados en menos de un minuto.
+            </p>
+
+            <div class="modal-botones">
+                <button id="btn-saltar-tutorial" class="btn-modal-secundario">
+                    Más tarde
+                </button>
+
+                <button id="btn-ver-tutorial" class="btn-modal-principal">
+                    Ver tutorial
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -472,6 +732,242 @@
     import { modelo } from "{% static 'js/main.js' %}";
     window.csrfToken = "{{ csrf_token }}";
     window.addEventListener('load', () => { modelo(); });
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js/dist/driver.css">
+<script src="https://cdn.jsdelivr.net/npm/driver.js/dist/driver.js.iife.js"></script>
+<script>
+
+document.getElementById("btn-tutorial")
+    .addEventListener("click", () => {
+
+        // Volver el panel al inicio
+        document.querySelector(".controles-scroll")
+            .scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        // Esperar a que termine el scroll y empezar el tutorial
+        setTimeout(() => {
+            driver.drive();
+        }, 300);
+    });
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const driver = window.driver.js.driver({
+        showProgress: true,
+
+        onDestroyed: () => {
+            document.querySelector(".controles-scroll")
+                .scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+
+            showTab(
+                "tab-ninguno",
+                document.querySelectorAll(".tab-btn")[0]
+            );
+        },
+
+        steps: [
+            {
+                popover: {
+                    title: "¿Cómo usar el modelo 3D?",
+                    description: `
+                        <div style="text-align:center;">
+                          <video autoplay muted loop playsinline
+                            src="{% static 'videos/Tutorial_Modelo3D_Cliente.mp4' %}"
+                            style="
+                                width:100%;
+                                max-width:100%;
+                                height:auto;
+                                aspect-ratio:16/9;
+                                object-fit:contain;
+                                border-radius:16px;
+                                border:2px solid #eee;
+                                box-shadow:0 8px 20px rgba(0,0,0,0.18);
+                                display:block;
+                                margin:0 auto 18px;
+                            ">
+                        </video>
+
+                            <div style="
+                                text-align:left;
+                                font-size:14px;
+                                line-height:1.8;
+                                background:#fafafa;
+                                padding:14px;
+                                border-radius:12px;
+                                border:1px solid #eee;
+                            ">
+                                🖱️ <b>Girar:</b> Mantén clic izquierdo y arrastra.<br><br>
+
+                                📏 <b>Tamaño del diseño:</b>
+                                Elige primero el tamaño del diseño antes de estampar.<br><br>
+
+                                🎨 <b>Estampar:</b>
+                                Mantén la tecla <b>A</b> y haz clic sobre la prenda.<br><br>
+
+                                ❌ <b>Borrar estampados:</b>
+                                Ve a la pestaña <b>Sin estampados</b> para eliminar todos los estampados.
+                            </div>
+
+                        </div>
+                    `
+                }
+            },
+
+            {
+                element: "#container3d",
+                popover: {
+                    title: "Vista 3D",
+                    description:
+                        "Aquí puedes ver la prenda en tiempo real y colocar los estampados."
+                }
+            },
+
+            {
+                element: "#color-input-global",
+                popover: {
+                    title: "Color de la tela",
+                    description:
+                        "Selecciona el color que tendrá la prenda."
+                }
+            },
+
+            {
+                element: ".tallas-contenedor",
+                popover: {
+                    title: "Talla",
+                    description:
+                        "Elige la talla de la prenda."
+                }
+            },
+
+            {
+                element: "#input-cantidad-3d",
+                popover: {
+                    title: "Cantidad",
+                    description:
+                        "Selecciona cuántas unidades deseas comprar."
+                }
+            },
+
+            {
+                element: "#catalogo-tutorial",
+                popover: {
+                    title: "Catálogo",
+                    description:
+                        "Aquí eliges el estampado que deseas aplicar."
+                },
+
+                onHighlightStarted: () => {
+
+                    document.querySelectorAll(".panel-opcion")
+                        .forEach(p => p.classList.remove("active"));
+
+                    document.getElementById("tab-lista")
+                        .classList.add("active");
+
+                    document.querySelectorAll(".tab-btn")
+                        .forEach(b => b.classList.remove("active"));
+
+                    document.querySelectorAll(".tab-btn")[1]
+                        .classList.add("active");
+
+                    setTimeout(() => {
+                        const contenedor =
+                            document.querySelector(".controles-scroll");
+
+                        const catalogo =
+                            document.getElementById("catalogo-tutorial");
+
+                        contenedor.scrollTo({
+                            top: catalogo.offsetTop - 20,
+                            behavior: "smooth"
+                        });
+                    }, 200);
+                }
+            },
+
+            {
+                element: "#btn-procesar-guardado",
+
+                onHighlightStarted: () => {
+
+                    document.querySelector(".controles-scroll")
+                        .scrollTo({
+                            top: 0,
+                            behavior: "smooth"
+                        });
+
+                    document.querySelectorAll(".panel-opcion")
+                        .forEach(p => p.classList.remove("active"));
+
+                    document.getElementById("tab-ninguno")
+                        .classList.add("active");
+
+                    document.querySelectorAll(".tab-btn")
+                        .forEach(b => b.classList.remove("active"));
+
+                    document.querySelectorAll(".tab-btn")[0]
+                        .classList.add("active");
+                },
+
+                popover: {
+                    title: "Guardar diseño",
+                    description:
+                        "Cuando termines tu personalización, presiona aquí para guardar el diseño."
+                }
+            }
+        ]
+    });
+
+   document.getElementById("btn-tutorial")
+        .addEventListener("click", () => {
+
+            document.querySelector(".controles-scroll").scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+            showTab(
+                "tab-ninguno",
+                document.querySelectorAll(".tab-btn")[0]
+            );
+
+            setTimeout(() => {
+                driver.drive();
+            }, 300);
+        });
+        if (!localStorage.getItem("tutorial3DMostrado")) {
+
+            setTimeout(() => {
+                document.getElementById("modal-tutorial").style.display = "flex";
+            }, 800);
+
+            document.getElementById("btn-ver-tutorial")
+                .addEventListener("click", () => {
+
+                    document.getElementById("modal-tutorial").style.display = "none";
+
+                    localStorage.setItem("tutorial3DMostrado", "si");
+
+                    driver.drive();
+                });
+
+            document.getElementById("btn-saltar-tutorial")
+                .addEventListener("click", () => {
+
+                    document.getElementById("modal-tutorial").style.display = "none";
+
+                    localStorage.setItem("tutorial3DMostrado", "si");
+                });
+        }
+
+});
 </script>
 </body>
 </html>
