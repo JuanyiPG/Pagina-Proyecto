@@ -670,7 +670,13 @@ def lista_det_val(request):
 
 @login_requerido_custom
 def finalizar_pedido(request, pedido_id):
+    print("===== FINALIZAR PEDIDO =====")
+    print("SESSION:", dict(request.session))
+    print("usuario_id:", request.session.get('usuario_id'))
+    print("rol:", request.session.get('rol'))
+
     cliente = obtener_cliente_actual(request)
+    print("CLIENTE:", cliente)
 
     if not cliente: 
         messages.error(request, "Perfil de cliente no encontrado.")
@@ -703,6 +709,7 @@ def finalizar_pedido(request, pedido_id):
         if not detalles.exists():
             messages.error(request, "Tu carrito está vacío.")
             return redirect('ventas:lista_product')
+            
         
         try: 
             with transaction.atomic(): 
