@@ -947,16 +947,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("modal-tutorial").style.display = "flex";
             }, 800);
 
-            document.getElementById("btn-ver-tutorial")
-                .addEventListener("click", () => {
-
-                    document.getElementById("modal-tutorial").style.display = "none";
-
-                    localStorage.setItem("tutorial3DMostrado", "si");
-
-                    driver.drive();
-                });
-
             document.getElementById("btn-saltar-tutorial")
                 .addEventListener("click", () => {
 
