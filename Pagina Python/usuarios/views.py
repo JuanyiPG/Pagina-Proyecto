@@ -654,8 +654,7 @@ def perfil_cliente(request, id):
     if not usuario_id:
         return redirect('usuarios:login')
 
-    cliente = Cliente.objects.get(id_usuario_fk=usuario_id)
-
+    cliente = get_object_or_404(Cliente, id_usuario_fk__id_usuario=usuario_id)
     if request.method == 'POST':
         cliente.nom_clien = request.POST.get('nom_clien')
         cliente.correo_clien = request.POST.get('correo_clien')
