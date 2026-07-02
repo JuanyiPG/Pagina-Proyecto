@@ -486,6 +486,9 @@ footer {
                     <option value="Azul">Azul</option>
                 </select>
 
+                <label class="label-option">Cantidad</label>
+                <input type="number" class="cantidad-select" value="1" min="1"  style="width:100%; padding:12px;  border-radius:14px; border:1px solid #ddd;">
+
                 <button class="btn-factura"
                 onclick="agregarFactura(
                 '{{ p.id_produc }}',
@@ -569,20 +572,24 @@ footer {
                     <span class="label-style" style="margin-top: 15px; display: block;">Talla de la Camiseta:</span>
                     <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 5px;">
                         <label style="margin: 0; cursor: pointer;">
-                            <input type="radio" name="talla_m_emp" value="S" class="radio-talla" style="display:none;" checked onclick="document.getElementById('talla-seleccionada').value = 'S'">
+                            <input type="radio" name="talla_personalizada" value="S" class="radio-talla" style="display:none;" checked onclick="document.getElementById('talla-seleccionada').value = 'S'">
                             <span class="btn-talla">S</span>
                         </label>
                         <label style="margin: 0; cursor: pointer;">
-                            <input type="radio" name="talla_m_emp" value="M" class="radio-talla" style="display:none;" onclick="document.getElementById('talla-seleccionada').value = 'M'">
+                            <input type="radio" name="talla_personalizada" value="M" class="radio-talla" style="display:none;" onclick="document.getElementById('talla-seleccionada').value = 'M'">
                             <span class="btn-talla">M</span>
                         </label>
                         <label style="margin: 0; cursor: pointer;">
-                            <input type="radio" name="talla_m_emp" value="L" class="radio-talla" style="display:none;" onclick="document.getElementById('talla-seleccionada').value = 'L'">
+                            <input type="radio" name="talla_personalizada" value="L" class="radio-talla" style="display:none;" onclick="document.getElementById('talla-seleccionada').value = 'L'">
                             <span class="btn-talla">L</span>
                         </label>
                         <label style="margin: 0; cursor: pointer;">
-                            <input type="radio" name="talla_m_emp" value="XL" class="radio-talla" style="display:none;" onclick="document.getElementById('talla-seleccionada').value = 'XL'">
+                            <input type="radio" name="talla_personalizada" value="XL" class="radio-talla" style="display:none;" onclick="document.getElementById('talla-seleccionada').value = 'XL'">
                             <span class="btn-talla">XL</span>
+                        </label>
+                         <label style="margin: 0; cursor: pointer;">
+                            <input type="radio" name="talla_personalizada" value="XLL" class="radio-talla" style="display:none;" onclick="document.getElementById('talla-seleccionada').value = 'XLL'">
+                            <span class="btn-talla">XLL</span>
                         </label>
                     </div>
 
@@ -594,15 +601,15 @@ footer {
 
 
                     <div style="display:flex; gap:8px; margin-top:5px;">
-                        <div class="cuadro-tamano activo" data-scale="40" data-extra="0" onclick="cambiarTamanoCaja(this)">
+                        <div class="cuadro-tamano activo" data-scale="40" onclick="cambiarTamanoCaja(this)">
                             <span>Chiquito</span>
                             <small style="display:block; font-size:10px; color:#666; margin-top:2px;">Base ($0)</small>
                         </div>
-                        <div class="cuadro-tamano" data-scale="90" data-extra="5000" onclick="cambiarTamanoCaja(this)">
+                        <div class="cuadro-tamano" data-scale="90"onclick="cambiarTamanoCaja(this)">
                             <span>Mediano</span>
                             <small style="display:block; font-size:10px; color:#2e7d32; margin-top:2px; font-weight:bold;">+ $5.000</small>
                         </div>
-                        <div class="cuadro-tamano" data-scale="180" data-extra="12000" onclick="cambiarTamanoCaja(this)">
+                        <div class="cuadro-tamano" data-scale="180" onclick="cambiarTamanoCaja(this)">
                             <span>Enorme</span>
                             <small style="display:block; font-size:10px; color:#2e7d32; margin-top:2px; font-weight:bold;">+ $12.000</small>
                         </div>
@@ -622,6 +629,14 @@ footer {
                         <span class="label-style">Subir Logotipo personalizado:</span>
                         <input type="file" id="imageInput" accept="image/jpeg, image/png">
                         <p id="error-message" style="color: #e74c3c; font-weight: bold; margin-top: 5px; display: none;"></p>
+                        <span class="label-style" style="margin-top:15px;">
+                            Precio del estampado personalizado:
+                        </span>
+
+                        <input type="number" id="precio-imagen-propia" value="0" min="0"  step="1000" style=" width:100%; padding:10px; border:1px solid #ddd; border-radius:12px; margin-top:8px; ">
+                        <small style="color:#666;">
+                            Solo aplica cuando se usa una imagen subida por el empleado.
+                        </small>
                     </div>
 
                     <div id="tab-lista" class="panel-opcion">
@@ -672,35 +687,98 @@ document.getElementById('product-search').addEventListener('input', function(e){
     });
 });
 
-function agregarFactura(id, nombre, precio, imagen){
+function agregarFactura(id, nombre, precio, imagen) {
+    console.log("ID:", id);
+    console.log("Nombre:", nombre);
+    console.log("Precio recibido:", precio);
+    console.log("Imagen:", imagen);
+
     const card = document.getElementById(`card-prod-${id}`);
+
     const talla = card.querySelector('.talla-select').value;
     const color = card.querySelector('.color-select').value;
-    factura.push({ id, nombre, precio: parseFloat(precio), talla, color, cantidad: 1, imagen });
+    const cantidad = parseInt(
+        card.querySelector('.cantidad-select').value
+    ) || 1;
+
+    const precioNumerico = parseFloat(precio) || 0;
+
+    factura.push({
+        id,
+        nombre,
+        precio: precioNumerico,
+        talla,
+        color,
+        cantidad,
+        imagen
+    });
+
+    console.log("Producto agregado:", factura[factura.length - 1]);
+
     renderFactura();
 }
 
-function renderFactura(){
+function renderFactura() {
     const contenedor = document.getElementById('factura-items');
-    contenedor.innerHTML = ""; total = 0;
-    factura.forEach((item, index)=>{
-        total += item.precio;
+    contenedor.innerHTML = "";
+    total = 0;
+
+    factura.forEach((item, index) => {
+        const subtotal =item.subtotal ??(item.precio * item.cantidad);
+        total += subtotal;
+
         contenedor.innerHTML += `
         <div class="item-factura">
             <img src="${item.imagen}">
             <div class="factura-info">
                 <h4>${item.nombre}</h4>
-                <p>$${item.precio.toLocaleString()}</p>
-                <small>Talla: ${item.talla} | Color: ${item.color}</small>
+                <p>$${subtotal.toLocaleString()}</p>
+                <small>
+                    Cantidad: ${item.cantidad}<br>
+                    Talla: ${item.talla} | Color: ${item.color}
+                </small>
             </div>
-            <button class="btn-remove" onclick="eliminarItem(${index})">X</button>
+            <button class="btn-remove"
+                    onclick="eliminarItem(${index})">X</button>
         </div>`;
     });
-    document.getElementById('total').innerText = total.toLocaleString();
-    document.getElementById('total-btn').innerText = total.toLocaleString();
+
+    document.getElementById('total').innerText =
+        total.toLocaleString();
+    document.getElementById('total-btn').innerText =
+        total.toLocaleString();
 }
 
-function eliminarItem(index){ factura.splice(index, 1); renderFactura(); }
+function eliminarItem(index){
+
+    const item = factura[index];
+
+    // 1. Si es diseño 3D → eliminar en backend
+    if(item.diseno_id){
+
+        fetch("/inventario/api/eliminar-modelo-3d/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": obtenerCSRFToken()
+            },
+            body: JSON.stringify({
+                diseno_id: item.diseno_id
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log("🗑️ Eliminado en BD:", data);
+        })
+        .catch(err => {
+            console.error("Error eliminando en BD:", err);
+        });
+    }
+
+    // 2. eliminar del frontend
+    factura.splice(index, 1);
+    renderFactura();
+}
 
 function pagarFactura(){
     if(factura.length == 0) return alert("No hay productos cargados en la factura.");
@@ -751,73 +829,92 @@ function seleccionarEstampado(url, id, elemento) {
 function cambiarTamanoCaja(elemento) {
     document.querySelectorAll('.cuadro-tamano').forEach(el => el.classList.remove('activo'));
     elemento.classList.add('activo');
-    let escalaMalla = elemento.getAttribute('data-scale');
-    window.precioExtraTamano = parseFloat(elemento.getAttribute('data-extra'));
-    let sliderOculto = document.getElementById('sizeSlider');
-    if (sliderOculto) {
-        sliderOculto.value = escalaMalla;
-        sliderOculto.dispatchEvent(new Event('input'));
-    }
+
+    const escala = parseInt(elemento.dataset.scale);
+    document.getElementById('sizeSlider').value = escala;
 }
 </script>
 
 <script type="module">
-    import { modelo } from "{% static 'js/main.js' %}";
+import { modelo } from "{% static 'js/main.js' %}";
 
-    // 1. Funciones de apertura/cierre
-    window.abrirPersonalizador3D = function(id, nombre, precio) {
-        window.productoActualId = id; 
-        document.getElementById('producto-id').value = id;
-        document.getElementById('modal-product-title').innerText = nombre;
-        document.getElementById('modal-product-price').innerText = "$ " + parseFloat(precio).toLocaleString();
-        
-        const modal = document.getElementById('modal-personalizador-3d');
-        modal.style.display = 'flex';
+let modeloInicializado = false;
 
+// Abrir modal
+window.abrirPersonalizador3D = function(id, nombre, precio) {
+
+    window.productoActualId = id;
+
+    document.getElementById('producto-id').value = id;
+    document.getElementById('modal-product-title').innerText = nombre;
+    document.getElementById('modal-product-price').innerText =
+        "$ " + parseFloat(precio).toLocaleString();
+
+    document.getElementById('modal-personalizador-3d').style.display = 'flex';
+
+    if (!modeloInicializado) {
         modelo({
-            container: "container3d-empleado" 
+            container: "container3d-empleado"
         });
-    }
 
-    window.cerrarPersonalizador3D = function() {
-        document.getElementById('modal-personalizador-3d').style.display = 'none';
-        
-        // FORZAR desbloqueo del botón de guardado (asumiendo que tiene ID 'btn-guardar-3d')
-        const btnGuardar = document.getElementById('btn-guardar-3d');
-        if (btnGuardar) {
-            btnGuardar.disabled = false;
-        }
-        
-        // Limpieza de Three.js (muy importante)
-        const container = document.getElementById("container3d-empleado");
-        container.innerHTML = ""; 
+        modeloInicializado = true;
+    } else {
+        window.reiniciarPersonalizador();
     }
+};
 
-    // 2. NUEVO: Escucha el evento que viene desde el main.js cuando el guardado es exitoso
-    window.addEventListener('disenoGuardadoExitoso', (e) => {
-        const datos = e.detail;
-        const precioBase = parseFloat(document.getElementById('modal-product-price').innerText.replace(/\D/g,''));
-        
-        // Capturamos la cantidad que ingresó el empleado
-        const cantidadSeleccionada = parseInt(document.getElementById('input-cantidad-3d').value) || 1;
-        
-        factura.push({
-            id: datos.producto_id,
-            nombre: `Camiseta Personalizada`,
-            precio: (precioBase + datos.costo_tamano_estampado) * cantidadSeleccionada, // Precio total por las unidades
-            talla: datos.talla,
-            color: datos.color,
-            cantidad: cantidadSeleccionada, // Ahora guardamos la cantidad real
-            imagen: datos.foto_frente
-        });
-        
-        renderFactura();
-        cerrarPersonalizador3D();
-        
-        // Resetear cantidad a 1 para la próxima vez
-        document.getElementById('input-cantidad-3d').value = 1;
+
+// Cerrar modal
+window.cerrarPersonalizador3D = function() {
+
+    document.getElementById('modal-personalizador-3d').style.display = 'none';
+
+    const btnGuardar = document.getElementById('btn-procesar-guardado');
+    if (btnGuardar) {
+        btnGuardar.disabled = false;
+    }
+};
+
+
+// Evento que recibe el guardado desde main.js
+window.addEventListener('disenoGuardadoExitoso', (e) => {
+
+    console.log("SE EJECUTÓ EL EVENTO");
+    console.log("EVENTO RECIBIDO", e.detail);
+
+    const datos = e.detail;
+
+    const inputCantidad =
+        document.getElementById('input-cantidad-3d');
+
+    const cantidadSeleccionada =
+        inputCantidad
+            ? parseInt(inputCantidad.value) || 1
+            : 1;
+
+    const precioFinal =
+    Number(datos.precio_total ?? datos.precio_unitario ?? 0);
+
+    factura.push({
+        id: datos.producto_id,
+        nombre: 'Camiseta Personalizada',
+        precio: precioFinal,
+        subtotal: precioFinal,
+        cantidad: Number(datos.cantidad || 1),
+        talla: datos.talla,
+        color: datos.color,
+        imagen: datos.foto_frente,
+        diseno_id: datos.diseno_id
     });
 
-    
+    renderFactura();
+
+    cerrarPersonalizador3D();
+
+    document.getElementById(
+        'input-cantidad-3d'
+    ).value = 1;
+});
+
 </script>
 {% endblock %}

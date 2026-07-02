@@ -35,7 +35,8 @@ from django.contrib.auth.decorators import login_required
 
 # Importaciones desde Ventas (Para el Carrito)
 from ventas.models import Det_mov_matp, Producto, Pedido, Det_valor, Cliente, Variacion
-from ventas.views import obtener_cliente_actual
+from .services import calcular_precio_personalizacion
+from ventas.views import (obtener_cliente_actual)
 
 # Importaciones desde Usuarios (Para Seguridad)
 from usuarios.models import Usuario
@@ -438,8 +439,11 @@ def guardar_diseno_3d(request):
     if request.method == 'POST':
         try:
             # 1. IDENTIFICACIÓN DE SESIÓN FLEXIBLE
-            cliente_usuario = obtener_cliente_actual(request)
-            es_empleado = request.session.get('username') is not None or not cliente_usuario
+            rol = request.session.get('rol', '')
+            es_empleado = rol.lower() == 'empleado'
+
+            print("ROL:", request.session.get('rol'))
+            print("ES EMPLEADO:", es_empleado)
 
             # 2. CARGA DE DATOS
             data = json.loads(request.body)
@@ -454,39 +458,48 @@ def guardar_diseno_3d(request):
             
             # --- NUEVO: Capturar el costo adicional por el tamaño del estampado ---
             # Si viene del cliente (que no tiene esta opción), por defecto es 0.
-            costo_tamano_estampado = float(data.get('costo_tamano_estampado', 0))
-            escala_estampado = float(data.get('escala_estampado',0.4))
+            tamano_estampado = float(data.get('tamano_estampado', 40))
+            costo_imagen_propia = float(data.get('costo_imagen_propia', 0))
 
             producto_base = get_object_or_404(Producto, id_produc=producto_id)
 
             # 3. LÓGICA DE PRECIOS
-            precio_unitario = float(producto_base.precio)
-            extra_total_estampados = 0
             estampado_obj_principal = None
 
-            for est_id in lista_ids_estampados:
-                if est_id == "imagen_propia": continue
+            # ==============================
+            # SUMAR EL VALOR DE LOS ESTAMPADOS
+            # ==============================
+            print("PRECIO PRODUCTO:", producto_base.precio)
+            print("LISTA ESTAMPADOS:", lista_ids_estampados)
+
+            precio_unitario = calcular_precio_personalizacion(
+                producto_base.precio,
+                lista_ids_estampados
+            )
+
+            print("PRECIO UNITARIO CALCULADO:", precio_unitario)
+
+            valor_total_final = int(
+                Decimal(precio_unitario) * cantidad
+            )
+
+
+            # ==============================
+            # POR SI EL ESTAMPADO PRINCIPAL
+            # NO QUEDÓ ASIGNADO
+            # ==============================
+            if (
+                estampado_obj_principal is None and
+                estampado_id and
+                estampado_id != "imagen_propia"
+            ):
                 try:
-                    est_temp = Estampado.objects.get(id_estamp=est_id)
-                    extra_total_estampados += float(est_temp.costo_adi)
-                    if str(est_id) == str(estampado_id):
-                        estampado_obj_principal = est_temp
-                except Estampado.DoesNotExist: continue
-            
-            if not estampado_obj_principal and estampado_id and estampado_id != "imagen_propia":
-                try: estampado_obj_principal = Estampado.objects.get(id_estamp=estampado_id)
-                except: pass
+                    estampado_obj_principal = Estampado.objects.get(
+                        id_estamp=estampado_id
+                    )
+                except Estampado.DoesNotExist:
+                    pass
 
-            lista_solo_catalogo = [x for x in lista_ids_estampados if x != "imagen_propia"]
-            amount_propios = total_estampados_escena - len(lista_solo_catalogo)
-            if amount_propios > 0:
-                extra_total_estampados += (20000 * amount_propios)
-
-            # --- NUEVO: Sumar el costo del tamaño del estampado al total de extras ---
-            extra_total_estampados += costo_tamano_estampado
-
-            precio_unitario += extra_total_estampados
-            valor_total_final = int(precio_unitario * cantidad)
 
             # 4. PROCESAR IMAGEN
             archivo_foto = None
@@ -504,7 +517,7 @@ def guardar_diseno_3d(request):
                     color_hex=color,
                     tipo_personalizacion="3D",
                     foto_frente=archivo_foto,
-                    precio_final=precio_unitario 
+                    precio_final=precio_unitario
                 )
 
                 nueva_variacion = Variacion.objects.create(
@@ -517,29 +530,51 @@ def guardar_diseno_3d(request):
                 )
 
                 # DETERMINAR PEDIDO
+                cliente_usuario = obtener_cliente_actual(request)
+                cliente_usuario = obtener_cliente_actual(request)
+
                 if es_empleado:
-                    pedido_asociado = Pedido.objects.create(
-                        subtotal_ped=0, valor_ped=0, 
-                        estado_ped='Procesando_Emp', metodo_pago='Efectivo',
-                        id_clien_fk=None 
-                    )
+                    pedido_asociado = None
                 else:
-                    pedido_asociado = obtener_o_crear_pedido_cliente(cliente_usuario)
-
-                detalle = Det_valor.objects.create(
-                    id_ped_fk_detval=pedido_asociado,
-                    id_prod_fk_detval=producto_base,
-                    id_var_fk_detval=nueva_variacion,
-                    id_personalizacion_3d=personalizacion,
-                    valor_total=valor_total_final, 
-                    tipo_pedido="Venta Personalizada"
-                )
-
+                    pedido_asociado, _ = Pedido.objects.get_or_create(
+                        id_clien_fk=cliente_usuario,
+                        estado_ped='Carrito',
+                        defaults={
+                            'subtotal_ped': 0,
+                            'valor_ped': 0,
+                            'metodo_pago': 'Pendiente'
+                        }
+                    )
+                print("ES EMPLEADO:", es_empleado)
+                print("CLIENTE:", cliente_usuario)
+                print("PEDIDO:", pedido_asociado)    
+                if pedido_asociado:
+                    Det_valor.objects.create(
+                        id_ped_fk_detval=pedido_asociado,
+                        id_prod_fk_detval=producto_base,
+                        id_var_fk_detval=nueva_variacion,
+                        id_personalizacion_3d=personalizacion,
+                        valor_total=valor_total_final,
+                        tipo_pedido="Venta Personalizada"
+                    )
+                    print("CLIENTE:", cliente_usuario)
+            print("SESSION USERNAME:", request.session.get('username'))
+            print("ES EMPLEADO:", es_empleado)
             return JsonResponse({
-                    'status': 'success', 
-                    'detalle_id': detalle.id_det_valor, 
-                    'precio_final': valor_total_final
-                })
+                'status': 'success',
+                'es_empleado': es_empleado,
+                'producto_id': producto_base.id_produc,
+                'precio_unitario': precio_unitario,
+                'cantidad': cantidad,
+                'precio_final': int(valor_total_final),
+                'talla': talla,
+                'color': color,
+                'foto_frente': foto_frente_base64,
+                'estampado_id': estampado_id,
+                'tamano_estampado': data.get('tamano_estampado', 40),
+                'lista_estampados': lista_ids_estampados,
+                'cantidad_total_estampados': total_estampados_escena
+            })
 
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
@@ -553,3 +588,26 @@ def eliminar_pedido_personalizado(request, id):
         if img and os.path.exists(img.path): os.remove(img.path)
     pedido.delete()
     return redirect('ventas:ver_carrito')
+
+@csrf_exempt
+def eliminar_diseno_3d(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            diseno_id = data.get("diseno_id")
+
+            pedido = get_object_or_404(PedidoPersonalizado, id=diseno_id)
+
+            # borrar archivos
+            for img in [pedido.foto_frente, pedido.foto_espalda, pedido.foto_lateral]:
+                if img and os.path.exists(img.path):
+                    os.remove(img.path)
+
+            pedido.delete()
+
+            return JsonResponse({"success": True})
+
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
+
+    return JsonResponse({"success": False, "error": "Método no permitido"})

@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-tin1l8h#zk^n7ei6zu+($)=su#76^$e4hs$o01!3_%4(z+g3cs
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['luxy-fashion.onrender.com','localhost', '127.0.0.1']
 
 
 # Application definition
@@ -49,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -82,11 +83,11 @@ WSGI_APPLICATION = 'LuxyFashion.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'LUXY_FASHION',
-        'USER':'root',
-        'PASSWORD': '',
-        'HOST':'localhost',
-        'PORT': '3306',
+        'NAME': 'defaultdb',
+        'USER':'avnadmin',
+        'PASSWORD': 'AVNS_3TqtlIYqI9AWNmKcHEs',
+        'HOST':'luxy-fashion-db-yuliethjuncopsw-00e3.a.aivencloud.com',
+        'PORT': '20451',
     }
 }
 
@@ -122,6 +123,8 @@ USE_TZ = True
 
 # --- ARCHIVOS ESTÁTICOS ---
 STATIC_URL = '/static/'
+import os
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]

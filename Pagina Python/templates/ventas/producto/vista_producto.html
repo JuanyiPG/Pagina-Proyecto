@@ -240,7 +240,7 @@
                 </a>
             {% endif %}
 
-            <form action="{% url 'ventas:producto_sin_personalizar' producto.id_produc %}" method="POST">
+            <form id="form-carrito" action="{% url 'ventas:producto_sin_personalizar' producto.id_produc %}" method="POST">
                 {% csrf_token %}
 
                 <div style="margin-bottom: 25px;">
@@ -248,7 +248,7 @@
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                         {% for t in tallas %}
                             <label>
-                                <input type="radio" name="talla" value="{{ t }}" style="display:none;" required>
+                                <input type="radio" name="talla" value="{{ t }}" style="display:none;" >
                                 <span class="btn-talla">{{ t }}</span>
                             </label>
                         {% endfor %}
@@ -259,7 +259,7 @@
                     <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                     {% for c in colores %}
                     <label title="{{ c }}">
-                        <input type="radio" name="color" value="{{ c }}" style="display:none;" required>
+                        <input type="radio" name="color" value="{{ c }}" style="display:none;" >
                         <span class="color-circle" 
                             style="background-color: {{ c }}; border: 1px solid #ccc; display: inline-block; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;">
                         </span>
@@ -281,21 +281,50 @@
         </div>
     </div>
 </div>
-
+<div id="notificacion" style="
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #800020;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    display: none;
+    font-weight: bold;
+    z-index: 9999;
+">
+</div>
 <footer>
     <p>&copy; 2026 Luxy Fashion | SENA</p>
 </footer>
 
 <script>
-    // Función para intercambiar imágenes de la galería
-    function changeImg(src, el) {
-        const mainImg = document.getElementById('main-product-img');
-        mainImg.src = src;
-        
-        // Quitar clase activa de todas las miniaturas y ponerla en la seleccionada
-        document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
-        el.classList.add('active');
-    }
-</script>
+    document.addEventListener("DOMContentLoaded", function () {
 
+        function mostrarNotificacion(mensaje) {
+            const n = document.getElementById("notificacion");
+            n.innerText = mensaje;
+            n.style.display = "block";
+
+            setTimeout(() => {
+                n.style.display = "none";
+            }, 2500);
+        }
+
+        const form = document.getElementById("form-carrito");
+
+        form.addEventListener("submit", function(e) {
+
+            const talla = document.querySelector('input[name="talla"]:checked');
+            const color = document.querySelector('input[name="color"]:checked');
+
+            if (!talla || !color) {
+                e.preventDefault();
+                mostrarNotificacion("⚠️ Debes seleccionar talla y color antes de continuar");
+            }
+        });
+
+    });
+</script>
 {% endblock %}
