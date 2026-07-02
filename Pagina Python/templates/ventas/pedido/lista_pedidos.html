@@ -140,15 +140,7 @@
                         <td class="cliente">{{ p.id_clien_fk.nom_clien|default:"Cliente General" }}</td>
                         <td>{{ p.fecha_formateada }}</td>
                         <td style="font-weight: bold; color: #7e1a3f;">${{ p.valor_ped }}</td>
-                        <td>
-                            <span class="badge 
-                                {% if p.estado_ped == 'Cancelado' or p.estado_ped == 'Prueba' %}bg-danger
-                                {% elif p.estado_ped == 'Pendiente' %}bg-warning text-dark
-                                {% elif p.estado_ped == 'Entregado' %}bg-primary
-                                {% else %}bg-success{% endif %}" 
-                                style="padding: 5px 10px; font-size: 11px;">
-                                {{ p.estado_ped }}
-                            </span>
+                        
                         </td>
                         <td>
                             <button type="button" class="btn btn-sm btn-outline-dark" 
